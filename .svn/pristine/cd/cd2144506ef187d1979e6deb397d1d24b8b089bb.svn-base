@@ -1,0 +1,198 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+   
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(9){
+		width: 140px;
+	}
+	.table-striped>tbody>tr>td:nth-child(4){
+		text-align: left;
+	}
+	.table-striped>tbody>tr>td:nth-child(5){
+		text-align: left;
+	}
+	
+	
+</style>
+
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>三维漫游</b></span>
+	</div>
+	<div class="panel-heading">
+		<div class="form-inline" >
+			<div class = "div-diqu pull-left" >
+				<label>区域:</label>
+				<select id="quxian" class="form-control input-sm" style="width:150px; font-size:14px" onchange="Change()">
+					<option value="" >全部</option>
+				</select>
+			</div>
+			<div class = "div-qiye pull-left" style="margin-left: 10px">
+				<label>企业:</label>
+				<select id="qiye" class="form-control input-sm" style="width:150px; font-size:14px">
+					<option value="" >全部</option>
+				</select>
+			</div>
+			<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left:5px"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="panel-body">
+			<table id="sanwei"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/querySanwei" ></table>
+	</div>
+</div>
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+		
+        "columns": [
+			{
+				"data" : "sheng",
+				"title" : "省",width:70
+			},{
+				"data" : "shi",
+				"title" : "市",width:70
+			},{
+				"data" : "xian",
+				"title" : "区",width:70
+			},{
+				"data" : "qymc",
+				"title" : "企业名称",width:210
+			},{
+				"data" : "kdmc",
+				"title" : "库点名称",width:210
+			},{
+				"title":"操作",
+            	"render": function (data,type,row,meta) {
+                   	return "<a target='_blank' href="+row['url']+">详情</a>";
+            	}
+            }]
+	});
+});
+
+$(document).ready(function() {
+	$("#quxian").select2();
+	$("#qiye").select2();
+
+	
+	/* 加载区县 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		 success:function(data){
+			$.each(data,function(i, n){      
+				$("#quxian").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+			});
+		 }
+	});
+	
+	/*企业性质初始化  */
+	$.ajax({
+		url: "${ctxPath}/cangchugl/queryQiyeXZ",
+		dataType: "json",
+		success: function(data) {
+			$.each(data,function(i, n){
+					$("#xingzhi").append("<option value="+n.qyxzbh+">"+n.qyxzmc+"</option>");
+			});
+		}
+	});
+	/* 企业信息初始化 */
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findQiyexinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		dataType:'json',
+		success:function(data){
+			
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+		}
+	});
+
+});
+
+
+function Change(){
+	$("#qiye").empty();
+    $("#qiye").select2("val", "");
+	$("#qiye").append('<option value="" selected>全部</option>');
+	$("#qiye").trigger('change');//动态改变值以后必须触发改变时间。否则将不会生效
+	var xian = $("#quxian").val();
+	var xian1 = $("#quxian").find("option:selected").text()!="全部"?$("#quxian").find("option:selected").text():"";
+	
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findQiyexinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":xian1},
+		dataType:'json',
+		success:function(data){
+			//$("#qiye").append('<option value="全部">全部</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+		}
+	});
+	
+}
+
+function doSearch(){
+	var xian=$("#quxian").find("option:selected").text();  
+	var qymc=	$("#qiye").find("option:selected").text();
+	if(xian=="全部"){
+		xian="";
+	}
+	if(qymc=="全部"){
+		qymc="";
+	}
+
+	document.querySelector('#sanwei').dataset.queryparam="&xian="+xian+"&qymc="+qymc;
+	datatable.ajax.reload(null,true);
+}
+
+
+function ditujwd(){
+	var liucid = $("#liucid").val();
+	dialog1=BootstrapDialog.show({
+	    title: '获取经纬度',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="${gisurl}idxLocate.jsp?x=118.79169361&y=31.90677465#userconsent#"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   var ifmObj=obj.document.getElementByIdx_x("iframe中控件的ID");
+        	   window.frames["iframe"].document.getElementByIdx_x("元素id");
+           },
+          cssClass: 'btn-success btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+</script>
+<%
+	}
+%>

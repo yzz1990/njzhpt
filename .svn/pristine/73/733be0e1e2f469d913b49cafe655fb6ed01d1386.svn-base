@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">		
+		<title>${systemtitle}</title>
+		<!-- =============== VENDOR STYLES ===============-->
+		<!-- FONT AWESOME-->
+		
+		<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css"> 
+		<script src="${ctxPath}/js/jquery.min.js"></script>
+
+		<!-- =============== BOOTSTRAP STYLES ===============-->
+		<link rel="stylesheet" href="${ctxPath}/css/bootstrap.min.css" id="bscss">
+		<link rel="stylesheet" href="${ctxPath}/css/bootstrap-slider.min.css" id="bscss">
+		<script src="${ctxPath}/js/bootstrap.min.js"></script>
+		<!-- =============== APP STYLES ===============-->
+		<link rel="stylesheet" href="${ctxPath}/css/app.css" id="maincss">
+		
+		<link rel="stylesheet" href="${ctxPath}/css/theme-e.css">
+		<!----------select-------------->
+		<link rel="stylesheet" href="${ctxPath}/css/select2.css">
+		<link rel="stylesheet" href="${ctxPath}/css/select2-bootstrap.css">
+		<script src="${ctxPath}/js/select2.js"></script>
+		<!----------echarts-------------->
+		<script src="${ctxPath}/js/echarts.min.js"></script>
+		<script src="${ctxPath}/js/echarts-all-3.js?_v_=1479966781202"></script>		
+		<!----------uploadifive-------------->
+		<script src="${ctxPath}/web/jquery.uploadifive.min.js"></script>
+		<link href='${ctxPath}/web/uploadifive.css' />
+		<!----------bootstrapdialog-------------->
+		<link href="${ctxPath}/css/bootstrap-dialog.min.css" rel="stylesheet">
+		<script src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+		<!----------dataTables-------------->
+		<link href='${ctxPath}/css/dataTables.bootstrap.css' rel='stylesheet'>
+	    <script type="text/javascript" language="javascript" src="${ctxPath}/js/jquery.dataTables.min.js"></script>
+	    <script type="text/javascript" language="javascript" src="${ctxPath}/js/dataTables.bootstrap.js"></script>
+		<script src='${ctxPath}/resource/datagrid.js'></script>
+		<!----------dataTables-------------->
+		<!----------kindeditor--------->
+		 <script src='${ctxPath}/js/kindeditor-all-min.js'></script> 
+		<script src='${ctxPath}/js/zh-CN.js'></script>
+		<link rel="stylesheet" href='${ctxPath}/css/default.css'>
+		<link rel="stylesheet" href='${ctxPath}/css/prettify.css'>
+		<!------ datetimepicker ------>
+		<link rel="stylesheet" href="${ctxPath}/css/bootstrap-datetimepicker.min.css">
+		<script src="${ctxPath}/js/bootstrap-datetimepicker.min.js"></script>
+		<script src="${ctxPath}/js/bootstrap-datetimepicker.zh-CN.js"></script>
+		<!------ datetimepicker ------>
+	
+		<style type="text/css">
+			body, .wrapper > section {
+			    background-color: #FFFFFF;
+			}
+			.panel-body {
+			    padding: 0px;
+			}
+			div.dataTables_info{
+				padding-top: 4px;
+				padding-left: 4px;
+			}
+			.nav>li>a:focus, .nav>li>a:hover{
+				background-color: transparent;
+			}
+			.sidebar .nav > li > a {
+				color:white;
+				font-family: '微软雅黑';
+			}
+			
+			.nav>li>a>i{
+				width:20px;
+				text-align: center;
+			}
+			.CT-icon1 {
+				margin-right: 10px;
+			}
+			
+			#list-city-area {
+				position: relative;
+				left: -35px;
+			}
+			
+			#CT-exit {
+				width: 70px;
+				height: 70px;
+				background-color: rgba(38, 158, 196, 0);
+				float: right;
+				right: 0px;
+				padding: 21px;
+				padding-top: 15px;
+			}
+			#CT-qxxg {
+			    font-weight:400;
+			    color:white;
+				width: 70px;
+				height: 70px;
+				background-color: rgba(38, 158, 196, 0);
+				float: right;
+				right: 0px;
+				padding: 21px;
+				padding-top: 15px;
+			}
+			#CT-xgmm {
+			    font-weight:400;
+			    color:white;
+				width: 100px;
+				height: 70px;
+				background-color: rgba(38, 158, 196, 0);
+				float: right;
+				right: 0px;
+				padding: 21px;
+				padding-top: 15px;
+				text-align: center;
+			}
+			#CT-dbsx{
+				font-weight:400;
+			    color:white;
+				width: 70px;
+				height: 70px;
+				background-color: rgba(38, 158, 196, 0);
+				float: right;
+				right: 0px;
+				padding: 21px;
+				padding-top: 15px;
+			}
+			
+			#dblist{
+				/* display:none;
+				width:180px;
+				height:150px;
+				overflow-y:auto;
+				margin-left:-30px;
+				margin-top:10px; */
+				display:none;
+				    margin-top: 16px;
+    				z-index: 3;
+    				width: 170px;
+			   	 	margin-left:-30px ;
+			    	padding: 7px 0;
+			        list-style-type: none;
+			    	background: #fff;
+			    	box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+				list-style-type: none;
+				
+				
+			}
+			
+			/* #dblist li{
+				margin-left:-25px;
+			} */
+			
+			#head {
+				float: right;	
+				margin-top: 14px;
+				margin-right: 25px;
+			}
+			
+			.CT-title-text {
+				font-family: 微软雅黑;
+				font-size: 14px;
+				color: #fff;
+			}
+			
+			#userName {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-time {
+				float: right;
+				margin-top: 20px;
+				margin-right: 20px;
+			}
+			
+			#CT-weather {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-date {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+				margin-left: 20px;
+			}
+			
+			#CT-icon-weather {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-ptbt {
+				font-family: STXingkai;
+				font-size: 30px;
+				color: #fff;
+				height: 70px;
+				line-height: 70px;
+				margin-left: 10px;
+			}
+			
+			.nav > li.active .nav {
+			    background-color: rgb(60, 115, 148);
+			    color: #FFFFFF;
+			}
+			.table-striped>thead>tr>th{
+				text-align: center;
+			}
+			.table-striped>tbody>tr {
+				font-family: '微软雅黑'
+			}
+			.wrapper > .aside {
+			    padding: 5px;
+    			margin-top: 70px;
+			    border-radius: 20px;
+			    background-color: #FFFFFF;
+			}
+			@media only screen and (min-width: 768px)
+			.wrapper>.aside .aside-inner {
+			    border-radius: 7px;
+			    padding-top: 0px;
+			}
+			.wrapper>.aside .aside-inner {
+			    border-radius: 7px;
+			    padding-top: 0px;
+			    height: 100%;
+			    width: 210px; 
+			    overflow: hidden;
+			}
+			.panel {
+			     margin-bottom: 20px;
+			     background-color: #fff;
+			     border: 0px; 
+			     border-radius: 4px;
+			    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+			     box-shadow: 0 0px 0px rgba(0,0,0,.05); 
+			}
+			table.dataTable {
+			    clear: both;
+			    margin-top: 0px !important;
+			    margin-bottom: 6px !important;
+			    max-width: none !important;
+			}
+			.panel-default>.panel-heading {
+			    color: #333;
+			    background-color: #FFFFFF;
+			    border-color: #ddd;
+			}
+			input,.form-control,.select2-container--default .select2-selection--single {
+			    background-color: #fff;
+			    border: 1px solid #8ABADC;
+			    border-radius: 4px;
+			    box-shadow: darkorange;
+			    -moz-box-shadow: inset 0 0 10px #CCC;
+			    -webkit-box-shadow: inset 0 0 10px #CCC;
+			    box-shadow: inset 0 0 20px #E8F2F9;
+			}
+			table.datatables>thead>tr:nth-of-type(odd){
+				 background-color: #B5DCFF;
+			}
+			.table-striped>tbody>tr:nth-of-type(odd) {
+			    background-color: #E8F2F9;
+			}
+			.table-striped>tbody>tr:nth-of-type(even) {
+			    background-color: #FFFFFF;
+			}
+			.pagination>li>a, .pagination>li>span {
+			    position: relative;
+			    float: left;
+			    padding: 6px 12px;
+			    margin-left: -1px;
+			    line-height: 1.42857143;
+			    color: #337ab7;
+			    text-decoration: none;
+			    background-color: #E8F2F9;
+   				border: 1px solid #BEE2FB;
+			}
+			.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+			    z-index: 3;
+			    color: white;
+			    cursor: default;
+			    background-color: #5CB85C;
+			    border-color: #5CB85C;
+			}
+			.sidebar .nav > li.active .nav {
+			    background-color: rgb(85, 155, 197);
+			    color: #FFFFFF;
+			}
+			.table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+			    border-bottom-width: 1px;
+			}
+			.sidebar:after{
+			  width: 0px;
+			}
+			.panel.panel-default {
+			    border-top-width: 3px;
+			    margin-top: 6px;
+			}
+			.panel-default>.panel-heading{
+				border-left: 1px solid #ADD8E6;
+				border-bottom: 1px solid #ADD8E6;
+				border-right: 1px solid #ADD8E6;
+				border-radius: 3px;
+			}
+			.sidebar .nav > li.active > a {
+			    background-color: #4298B3;
+			    color: #FFFFFF;
+			}
+			.sidebar-subnav {
+			    background-color: rgb(66, 152, 179);
+			}
+			.table>thead>tr>th {
+			    vertical-align: bottom;
+			  border:1px solid #FFFFFF;
+			    border-bottom: 1px solid #E8F2F9;
+			}
+			#boss{
+				background-color: rgb(255, 255, 255);
+				font-size: ${session.fontsize!+"px"};
+			}
+			.btn-xs{
+				font-size: ${session.fontsize!+"px"};
+			}
+			.row {
+			    margin-right: -10px;
+			    margin-left: -15px;
+			}
+			.CT-font{
+		  		font-family:微软雅黑;
+	   			font-size:14px;
+	   			color:#fff;
+		   		float:right;
+	   			margin-top:18px;
+	   			margin-right: 13px;
+	  		 }
+	  		 .slider.slider-horizontal{
+	  		 	float: right;
+	  		 	margin-top:20px;
+	  		 	margin-left: -10px;
+	  		 }
+	  		 .sidebar-subnav>li .nav>li {
+			    padding-left: 25px;
+			}
+			
+		</style>
+	</head>
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel">上传进度</h4>
+				</div>
+				<div class="modal-body">
+					<i id="progress"></i>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<body id="boss">
+		<div class="wrapper">
+			<!-- top navbar-->
+			<header class="topnavbar-wrapper"  >
+				<!-- START Top Navbar-->
+				<nav role="navigation" class="navbar topnavbar" id="CTitle" >
+					<!-- logo图标-->
+					<div class="navbar-header1">
+						<a href="#" class="navbar-brand">
+							<div class="brand-logo">
+								<img src="${ctxPath}/img/indexlogo.png" alt="App Logo" class="img-responsive">
+							</div>
+						</a>
+					</div>
+					<!-- END navbar header-->
+					<!-- 平台标题区-->
+					<div class="nav-wrapper" id="CTintitle" style="background-image: url('${ctxPath}/img/topline.png');" >
+						<div id="CT-textitle">
+						<img alt="" src="${ctxPath}/login/leftlogo.png" height="50px" style="margin-left:-60px;margin-top: -15px;">
+							<span id="CT-ptbt" style="">${systemtitle}${array.contain(session.userinfo.auth,'auth_county')?"--"+session.userinfo.area.name+"子系统":""}</span>
+							
+							<!-- 权限系统链接 -->
+							<div id="CT-qxxg" style="font-size: 14px;">
+								<!-- <a href="${ctxPath}/login/logout" style="text-decoration: none;"> <img alt="" src="${ctxPath}/img/exit.png"><br /> <span style="color: #fff">退出</span>
+								</a> -->
+								<a href="${ctxPath}/${array.contain(session.userinfo.auth,'auth_manager')?'index_nj.html':'login/logout'}" style="text-decoration: none;"> <img alt="" src="${ctxPath}/img/exit.png"><br /> <span style="color: #fff">${array.contain(session.userinfo.auth,'auth_manager')?'首页':'退出'}</span>
+								</a>
+							</div>
+							<!-- 待办事项处理 -->
+						 
+							<span id="CT-dbsx" style="font-size: 14px;" hidden>
+								<a id="CT-dbsxa" href="javascript:void(0)" onclick="getDbsx()" style="text-decoration: none;width:40px"><span style="color: red">待办</span>
+								</a>
+								<ul id="dblist" class="panel-body panel panel-default">
+					            </ul>
+							</span>
+						
+							<!-- 修改密码 -->
+							<!-- <div id="CT-xgmm" style="font-size: 14px;">
+								<a href="javascript:void(0)" onclick="xiugaimima()" style="text-decoration: none;"><img alt="" src="${ctxPath}/img/lock.png" style="height: 25px;"><br /> <span style="color: #fff">修改密码</span>
+								</a>
+							</div> -->
+							<!-- 退出 -->
+							<div id="CT-exit" style="font-size: 14px;" ${array.contain(session.userinfo.auth,'auth_manager')?'':'hidden'}>
+								<a href="http://49.65.0.27:8080/framework/framework/yonghuguanli.html" style="text-decoration: none;" target="_blank"> <img alt="" src="${ctxPath}/image/7.png" height="25px"></em><span style="color: #fff">权限</span>
+								</a>
+							</div>&nbsp;
+
+							<!-- 头像 -->
+							<span id="userName" class="CT-title-text">您好,${session.userinfo.user.realname}</span>
+
+							<!-- 天气时钟 -->
+							<!-- <span id="CT-weather" class="CT-title-text">${tianqi.data.record.tq!}&nbsp;&nbsp;${tianqi.data.record.wendu!}</span> <img id="CT-icon-weather" src="${tianqi.data.record.tianqitupian!}" width="30px" height="30px"> <span id="CT-time" class="CT-title-text">--:--:--</span> <span id="CT-date" class="CT-title-text">今天是：20--年--月--日&nbsp&nbsp 星期-</span> -->
+							<span id="CT-weather" class="CT-title-text"></span> <img id="CT-icon-weather" src="" width="30px" height="30px"> <span id="CT-time" class="CT-title-text">--:--:--</span> <span id="CT-date" class="CT-title-text">今天是：20--年--月--日&nbsp&nbsp 星期-</span>
+							<!-- 字体调节插件 -->
+							<input id="fontsize"   data-ui-slider="" style="width:80px;float:right;" type="text" data-slider-min="12" data-slider-max="18" data-slider-step="2" data-slider-value="${session.fontsize}" data-slider-orientation="horizontal" class="slider slider-horizontal" >     		
+               				<span id="CT-font" class="CT-font">字体大小：</span>
+               				<!-- 字体调节插件 -->
+						</div>
+					</div>
+				</nav>
+				<!-- END Top Navbar-->
+			</header>
+			<!-- sidebar-->
+			<aside class="aside">
+				<!-- START Sidebar (left)-->
+				<div class="aside-inner">
+					<nav data-sidebar-anyclick-close="" class="sidebar">
+						<!-- START sidebar nav-->
+						<ul class="nav">
+							<%							
+                            for(record in session.userinfo.ams){
+                                if(record.childcount>0){
+                                    print("<li style=' margin-left: -10px;'>");
+                                    print("<a href=\"#"+record.id+"\" title=\""+record.name+"\" data-toggle=\"collapse\">");    
+                                    print("<i class=\""+record.icon+"\" style=\"color:#cdcdcd;margin-right:10px;\"></i>");
+                                    print("<span>"+record.name+"</span><i class=\"fa fa-angle-down text-white pull-right\" aria-hidden=\"true\"></i>");         
+                                    print("</a>");
+                                    print("<ul id=\""+record.id+"\" class=\"nav sidebar-subnav collapse\">");
+                                    for(child in record.children){
+	                                    if(child.childcount>0){
+		                                    print("<li style=\"margin-left:-10px;\">");
+		                                    print("<a href=\"#"+child.id+"\" title=\""+child.name+"\" data-toggle=\"collapse\">");		                                    
+		                                    print("<i class='fa fa-angle-down text-white pull-left' style='margin-left: -10px;' aria-hidden='true'></i>");
+		                                    print("<span style='margin-left: 10px;'>"+child.name+"</span>");
+		                                    print("</a>");
+		                                    print("<ul id=\""+child.id+"\" class=\"nav sidebar-subnav collapse\">");
+		                                    for(secondchild in child.children){
+		                                    	if(secondchild.linkaddress==''){
+		                                    %>
+											<li>
+												<a href="javascript:void(0)" title="${secondchild.name}" >
+													
+													<span style="margin-left: 10px;">${secondchild.name}</span>
+												</a>
+											</li>
+		                                    <%
+		                                    	}else{
+		                        			%>
+											<li>
+												<a href="${ctxPath+secondchild.linkaddress}" title="${secondchild.name}">
+													
+													<span style="margin-left: 10px;">${secondchild.name}</span>
+												</a>
+											</li>
+		                        			<%
+		                                    }}
+		                                    print("</ul>");
+		                                    print("</li>");
+		                                }else{
+		                                    
+		                                  if(child.linkaddress==''){
+		                                 	print("<li style=\"margin-left:-20px;\"><a href='javascript:void(0)' title=\""+child.name+"\" > <i class='fa fa-angle-right text-white pull-left' aria-hidden='true'></i> <span>&nbsp;&nbsp;&nbsp;"+ child.name+"</span></a></li>");
+		                                  }else if(strutil.contain(child.linkaddress,'http')){
+		                                  	print("<li style=\"margin-left:-20px;\"><a href=\""+child.linkaddress+"\" title=\""+child.name+"\" target='_blank'><i class='fa fa-angle-right text-white pull-left' aria-hidden='true'></i><span>&nbsp;&nbsp;&nbsp;"+child.name+"</span></a></li>");
+		                                  }else{
+		                                  	print("<li style=\"margin-left:-20px;\"><a href=\""+ctxPath+child.linkaddress+"\" title=\""+child.name+"\"><i class='fa fa-angle-right text-white pull-left' aria-hidden='true'></i><span>&nbsp;&nbsp;&nbsp;"+child.name+"</span></a></li>");
+		                                  }
+											
+		                                }
+                                    }
+                                    print("</ul>");
+                                    print("</li>");
+                                }else{
+                                 	if(record.linkaddress==''){
+                                   		 print("<li style='margin-left:-10px;'><a href='javascript:void(0)' title=\""+record.name+"\"  ><i class=\""+record.icon+"\" style=\"color:#cdcdcd;margin-right:10px;\"></i><span>"+record.name+"</span></a></li>");
+                                	}else{
+                                		 print("<li style='margin-left:-10px;'><a href=\""+ctxPath+record.linkaddress+"\" title=\""+record.name+"\"><i class=\""+record.icon+"\" style=\"color:#cdcdcd;margin-right:10px;\"></i><span>"+record.name+"</span></a></li>");
+                                	}
+                                	}
+                            }
+	                        %>
+						</ul>
+						<!-- END sidebar nav-->
+					</nav>
+				</div>
+				<!-- END Sidebar (left)-->
+			</aside>
+
+			<!-- Main section-->
+			<section>
+				<!-- Page content-->
+				<div class="row">
+					<div class="col-md-12"> ${layoutContent}</div>
+				</div>
+			</section>
+			<!-- Page footer-->
+
+		</div>
+		<!-- =============== VENDOR SCRIPTS ===============-->
+		<!-- MODERNIZR-->
+		<script src="${ctxPath}/js/modernizr.custom.js"></script>
+		<!-- BOOTSTRAP-->
+		<script src="${ctxPath}/js/bootstrap.js"></script>
+		<script src="${ctxPath}/js/bootstrap-slider.min.js"></script>
+		<!--highchart -->
+		<script src="${ctxPath}/js/highcharts.js"></script>
+		<!-- JQUERY EASING-->
+		<script src="${ctxPath}/js/jquery.easing.js"></script>
+		<!-- ANIMO-->
+		<script src="${ctxPath}/js/animo.js"></script>
+		<!-- SLIMSCROLL-->
+		<script src="${ctxPath}/js/jquery.slimscroll.min.js"></script>
+		<script src="${ctxPath}/js/jquery.storageapi.js"></script>
+		<!-- =============== APP SCRIPTS ===============-->
+		<script src="${ctxPath}/js/app.js"></script>
+		
+		<script type="text/javascript">
+			//修改密阿
+			/* var dialog;
+			function xiugaimima(){
+				dialog=BootstrapDialog.show({
+				    title: '修改密码 ',
+					closeByBackdrop: true,
+				    message:$('<iframe frameborderno="0" id="if1" name="if1" style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/weihu/xiugaimima.html"/>'),
+				    onshow:function(dlg){
+			       	dlg.$modalDialog.css("width","500px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","310px");//modal-dialog
+			       },
+			       buttons: [{
+			           label: '保存',
+			           action: function(dialog) {
+			        	   document.getElementById("if1").contentWindow.baocun(); 
+			           },
+			          cssClass: 'btn-xs btn-success'
+			          
+			       },{
+			           label: '关闭',
+			           action: function(dialog) {
+			               dialog.close();
+			           },
+			          cssClass: 'btn-xs btn-danger'
+			       }]
+				});
+			} */
+			
+			var paidui = [];
+			var dbsm = 0;
+			
+			$(function(){
+				$.ajax({
+					url:'${ctxPath}/jibenxinxi/findtianqi',
+					type:'post',
+					data:{"page":1,"rows":1},
+					dataType:'json',
+					success:function(data){
+						$("#CT-weather").text(data.list.list[0].tq +' '+data.list.list[0].wendu);
+						$("#CT-icon-weather").attr("src",data.list.list[0].tianqitupian);
+						
+					}
+				});
+						
+				
+				var userid = '${session.userinfo.user.id}';
+				//加载待办事务
+				$.ajax({
+					url:'${ctxPath}/renyuan/queryWorkPlan',
+					type:'post',
+					data:{'userid':userid},
+					dataType:'json',
+					success:function(data){
+						//获取待办数量
+						if(data.length > 0){
+							var li = '<li><a class="thridmessag" href="${ctxPath}/renyuan/workplan/workplan.html">有'+data.length+'条工作计划</a></li>';
+							$("#dblist").append(li);
+							paidui.push(li);
+							var index = paidui.length;
+							if(index>0){
+								$("#CT-dbsx").find("span").text("待办"+index+"条");
+								$("#CT-dbsx").show();
+							}
+							
+						}
+						
+						//企业备案审批
+						$.ajax({
+							url:'${ctxPath}/emergency/getqiyeba.do',
+							type:'post',
+							data:{'shenpiren':userid},
+							dataType:'json',
+							success:function(data){
+								
+								var index0 = 0;
+								var index1 = 0;
+								var index2 = 0;
+								for(var i = 0; i < data.list.length; i++){
+									var rizhi = data.list[i].beianriqi;
+									rizhi = rizhi.substring(0,10);
+									var flag = data.list[i].status.substring(1,2);
+									var flago = data.list[i].status.substring(0,1);
+									var countlc = data.list[i].countlc;
+									if(flag == "0"){
+										index0++;
+									}else if(flago == (countlc+1)){
+										index1++;
+									}else{
+										index2++;
+									}
+								}
+								if(index2 > 0){
+									var li = '<li><a class="thridmessag" href="${ctxPath}/oa/qiyebeian/shenpi_qiyebeian.html">有'+index2+'条企业备案审批作业</a></li>';
+									$("#dblist").append(li);
+									paidui.push(li);
+									var index = paidui.length;
+									if(index>0){
+										$("#CT-dbsx").find("span").text("待办"+index+"条");
+										$("#CT-dbsx").show();
+									}
+									
+								}
+								//环流熏蒸审批
+								$.ajax({
+									url:'${ctxPath}/emergency/getxunzhenba.do',
+									type:'post',
+									data:{'shenpiren':userid},
+									dataType:'json',
+									success:function(data){
+										var index0 = 0;
+										var index1 = 0;
+										var index2 = 0;
+										for(var i = 0; i < data.list.length; i++){
+											var rizhi = data.list[i].beianriqi;
+											rizhi = rizhi.substring(0,10);
+											var liuchengid = data.list[i].liuchenghao;
+											var flag = data.list[i].status.substring(1,2);
+											var flago = data.list[i].status.substring(0,1);
+											var countlc = data.list[i].countlc;
+											if(flag == "0"){
+												index0++;
+											}else if(flago == (countlc+1)){
+												index1++;
+											}else{
+												index2++;
+											}
+										}
+				
+										if(index2 > 0){
+											var li = '<li><a class="thridmessag" href="${ctxPath}/oa/xunzhengbeian/xunzhengbeianshenpi.html">有'+index2+'条熏蒸备案审批作业</a></li>';
+											$("#dblist").append(li);
+											paidui.push(li);
+											var index = paidui.length;
+											if(index>0){
+												$("#CT-dbsx").find("span").text("待办"+index+"条");
+												$("#CT-dbsx").show();
+											}
+										}
+										//轮换申请
+										$.ajax({
+											url:'${ctxPath}/lunhuan/getlhsqbysp.do',
+											type:'post',
+											data:{'shenpiren':userid},
+											dataType:'json',
+											success:function(data){
+												var index0 = 0;
+												var index2 = 0;
+												for(var i = 0; i < data.list.length; i++){
+													var status = data.list[i].lhsq_zt;
+													if(status == "1"){
+														index0++;
+													}else if(status=='5'){
+														index2++;
+													}
+												}
+						
+												if(index0 > 0){
+													var li = '<li><a class="thridmessag" href="${ctxPath}/remote/lunhuanguanli/lunhuanshenqingqx.html">有'+index0+'条轮换申请审批作业</a></li>';
+													$("#dblist").append(li);
+													paidui.push(li);
+													var index = paidui.length;
+													if(index>0){
+														$("#CT-dbsx").find("span").text("待办"+index+"条");
+														$("#CT-dbsx").show();
+													}
+												}
+												if(index2 > 0){
+													var li = '<li><a class="thridmessag" href="${ctxPath}/remote/lunhuanguanli/lunhuanshenqingqx.html">有'+index2+'条验收申请审批作业</a></li>';
+													$("#dblist").append(li);
+													paidui.push(li);
+													var index = paidui.length;
+													if(index>0){
+														$("#CT-dbsx").find("span").text("待办"+index+"条");
+														$("#CT-dbsx").show();
+													}
+												}
+												if(${array.contain(session.userinfo.auth,'auth_munireserve')}){
+													//储备粮计划审核
+													$.ajax({
+														url:'${ctxPath}/chubeiliangJH/getcbljhsp.do',
+														type:'post',
+														data:{'shenpiren':userid},
+														dataType:'json',
+														success:function(data){
+															var index0 = 0;
+															for(var i = 0; i < data.list.length; i++){
+																var status = data.list[i].status;
+																if(status == "1"){
+																	index0++;
+																}
+															}
+									
+															if(index0 > 0){
+																var li = '<li><a class="thridmessag" href="${ctxPath}/remote/chuliang/bgzhangcblglzx.html">有'+index0+'条市储审核审批作业</a></li>';
+																$("#dblist").append(li);
+																paidui.push(li);
+																var index = paidui.length;
+																if(index>0){
+																	$("#CT-dbsx").find("span").text("待办"+index+"条");
+																	$("#CT-dbsx").show();
+																}
+															}
+														},
+														error:function(){
+															if("${session.userinfo}"==""){
+																window.location.href="${ctxPath}/login/login.html";
+															}else{
+																
+															}
+														}
+													});
+												}
+											},
+											error:function(){
+												if("${session.userinfo}"==""){
+													window.location.href="${ctxPath}/login/login.html";
+												}else{
+													
+												}
+											}
+											
+										});
+									},
+									error:function(){
+										if("${session.userinfo}"==""){
+											window.location.href="${ctxPath}/login/login.html";
+										}else{
+											//alert("获取环流熏蒸信息失败");
+										}
+									}
+								});
+
+							},
+							error:function(){
+								if("${session.userinfo}"==""){
+									window.location.href="${ctxPath}/login/login.html";
+								}else{
+									//alert("获取企业备案失败");
+								}
+							}
+						});
+
+					},
+					error:function(){
+						//alert("${session.userinfo.user.realname}");
+						//if("${session.userinfo}"==""){
+							window.location.href="${ctxPath}/login/login.html";
+						//}else{
+							//alert("遍历待办事项失败");
+						//}
+					}
+				});
+				
+				//加载审批流程
+				var role = '${session.userinfo.role.code}';
+				if(${array.contain(session.userinfo.auth,'auth_company')}){
+					var dep = '${session.userinfo.dep.id}';
+					//加载企业备案
+					$.ajax({
+						url:'${ctxPath}/emergency/getqiyeba.do',
+						type:'post',
+						data:{'qiyeid':dep},
+						dataType:'json',
+						success:function(data){
+							var index0 = 0;
+							var index1 = 0;
+							var index2 = 0;
+							for(var i = 0; i < data.list.length; i++){
+								var rizhi = data.list[i].beianriqi;
+								rizhi = rizhi.substring(0,10);
+								var flag = data.list[i].status.substring(1,2);
+								var flago = data.list[i].status.substring(0,1);
+								var countlc = data.list[i].countlc;
+								if(flag == "0"){
+									index0++;
+								}else if(flago == (countlc+1)){
+									index1++;
+								}else{
+									index2++;
+								}
+							}
+
+							if(index2 > 0){
+								var li = '<li><a class="thridmessag" href="${ctxPath}/oa/qiyebeian/qiyebeianview.html">企业备案正在审批'+index2+'条</a></li>';
+								$("#dblist").append(li);
+								paidui.push(li);
+								var index = paidui.length;
+								if(index>0){
+									$("#CT-dbsx").find("span").text("待办"+index+"条");
+									$("#CT-dbsx").show();
+								}
+							}
+							if(index0 > 0){
+								var li = '<li><a class="thridmessag" href="${ctxPath}/oa/qiyebeian/qiyebeianview.html">企业备案审审批未通过'+index0+'条</a></li>';
+								$("#dblist").append(li);
+								paidui.push(li);
+								var index = paidui.length;
+								if(index>0){
+									$("#CT-dbsx").find("span").text("待办"+index+"条");
+									$("#CT-dbsx").show();
+								}
+							}
+							//加载熏蒸备案
+							$.ajax({
+								url:'${ctxPath}/emergency/getxunzhenba.do',
+								type:'post',
+								data:{'qiyeid':dep},
+								dataType:'json',
+								success:function(data){
+									var index0 = 0;
+									var index1 = 0;
+									var index2 = 0;
+									for(var i = 0; i < data.list.length; i++){
+										var rizhi = data.list[i].beianriqi;
+										rizhi = rizhi.substring(0,10);
+										var liuchengid = data.list[i].liuchenghao;
+										var flag = data.list[i].status.substring(1,2);
+										var flago = data.list[i].status.substring(0,1);
+										var countlc = data.list[i].countlc;
+										if(flag == "0"){
+											index0++;
+										}else if(flago == (countlc+1)){
+											index1++;
+										}else{
+											index2++;
+										}
+									}
+									if(index0 > 0){
+										var li = '<li><a class="thridmessag" href="${ctxPath}/oa/xunzhengbeian/xunzhengbeianview.html">熏蒸备案审批未通过'+index0+'条</a></li>';
+										$("#dblist").append(li);
+										paidui.push(li);
+										var index = paidui.length;
+										if(index>0){
+											$("#CT-dbsx").find("span").text("待办"+index+"条");
+											$("#CT-dbsx").show();
+										}
+									}
+									if(index2 > 0){
+										var li = '<li><a class="thridmessag" href="${ctxPath}/oa/xunzhengbeian/xunzhengbeianview.html">熏蒸备案正在审批'+index2+'条</a></li>';
+										$("#dblist").append(li);
+										paidui.push(li);
+										var index = paidui.length;
+										if(index>0){
+											$("#CT-dbsx").find("span").text("待办"+index+"条");
+											$("#CT-dbsx").show();
+										}
+									}
+									/*
+									if(index1 > 0){
+										var li = '<li><a class="thridmessag" href="javascript:void(0)">熏蒸备案审批已通过'+index1+'条</a></li>';
+										$("#dblist").find("ul").append(li);
+										paidui.push(li);
+										var index = paidui.length;
+										if(index>0){
+											$("#CT-dbsx").find("span").text("待办"+index+"条");
+											$("#CT-dbsx").show();
+										}
+									}
+									*/
+									
+									//轮换申请
+									$.ajax({
+										url:'${ctxPath}/lunhuan/getlhsp.do',
+										type:'post',
+										data:{'qiyeid':dep},
+										dataType:'json',
+										success:function(data){
+											var index0 = 0;
+											var index2 = 0;
+											var index3 = 0;
+											var index4 = 0;
+											for(var i = 0; i < data.list.length; i++){
+												var status = data.list[i].lhsq_zt;
+												if(status == "1"){
+													index0++;
+												}else if(status=='5'){
+													index2++;
+												}else if(status=='10'){
+													index3++;
+												}else if(status=='20'){
+													index4++;
+												}
+											}
+					
+											if(index0 > 0){
+												var li = '<li><a class="thridmessag" href="${ctxPath}/remote/lunhuanguanli/lunhuanshenqingqy.html">轮换申请正在审批'+index0+'条</a></li>';
+												$("#dblist").append(li);
+												paidui.push(li);
+												var index = paidui.length;
+												if(index>0){
+													$("#CT-dbsx").find("span").text("待办"+index+"条");
+													$("#CT-dbsx").show();
+												}
+											}
+											if(index2 > 0){
+												var li = '<li><a class="thridmessag" href="${ctxPath}/remote/lunhuanguanli/lunhuanshenqingqy.html">验收申请正在审批'+index2+'条</a></li>';
+												$("#dblist").append(li);
+												paidui.push(li);
+												var index = paidui.length;
+												if(index>0){
+													$("#CT-dbsx").find("span").text("待办"+index+"条");
+													$("#CT-dbsx").show();
+												}
+											}
+											if(index3 > 0){
+												var li = '<li><a class="thridmessag" href="${ctxPath}/remote/lunhuanguanli/lunhuanshenqingqy.html">轮换申请审批未通过'+index3+'条</a></li>';
+												$("#dblist").append(li);
+												paidui.push(li);
+												var index = paidui.length;
+												if(index>0){
+													$("#CT-dbsx").find("span").text("待办"+index+"条");
+													$("#CT-dbsx").show();
+												}
+											}
+											if(index4 > 0){
+												var li = '<li><a class="thridmessag" href="${ctxPath}/remote/lunhuanguanli/lunhuanshenqingqy.html">验收申请审批未通过'+index4+'条</a></li>';
+												$("#dblist").append(li);
+												paidui.push(li);
+												var index = paidui.length;
+												if(index>0){
+													$("#CT-dbsx").find("span").text("待办"+index+"条");
+													$("#CT-dbsx").show();
+												}
+											}
+											
+											//储备粮计划申请
+											$.ajax({
+												url:'${ctxPath}/chubeiliangJH/getcbljhsq.do',
+												type:'post',
+												data:{'qiyeid':dep},
+												dataType:'json',
+												success:function(data){
+													var index0 = 0;
+													var index2 = 0;
+													for(var i = 0; i < data.list.length; i++){
+														var status = data.list[i].status;
+														if(status == "1"){
+															index0++;
+														}else if(status=='2'){
+															index2++;
+														}
+													}
+							
+													if(index0 > 0){
+														var li = '<li><a class="thridmessag" href="${ctxPath}/remote/chuliang/bgzhangzsgc.html">市储审核正在审批'+index0+'条</a></li>';
+														$("#dblist").append(li);
+														paidui.push(li);
+														var index = paidui.length;
+														if(index>0){
+															$("#CT-dbsx").find("span").text("待办"+index+"条");
+															$("#CT-dbsx").show();
+														}
+													}
+													if(index2 > 0){
+														var li = '<li><a class="thridmessag" href="${ctxPath}/remote/chuliang/bgzhangzsgc.html">市储审核审批未通过'+index2+'条</a></li>';
+														$("#dblist").append(li);
+														paidui.push(li);
+														var index = paidui.length;
+														if(index>0){
+															$("#CT-dbsx").find("span").text("待办"+index+"条");
+															$("#CT-dbsx").show();
+														}
+													}
+												},
+												error:function(){
+													if("${session.userinfo}"==""){
+														window.location.href="${ctxPath}/login/login.html";
+													}else{
+														
+													}
+												}
+											});
+											
+										},
+										error:function(){
+											if("${session.userinfo}"==""){
+												window.location.href="${ctxPath}/login/login.html";
+											}else{
+												
+											}
+										}
+									});
+									
+								},
+								error:function(){
+									alert("加载熏蒸备案失败");
+								}
+							});
+						},
+						error:function(){
+							alert("加载企业备案失败");
+						}
+					});
+					
+					
+					
+					
+				}
+			});
+				
+	
+			//点击区域按钮样式切换
+			$(".city").click(function(e) {
+
+				$.post("${ctxPath}/juece/changecity", {
+					city: $(this).text()
+				}, function(obj) {
+
+					window.location.reload();
+
+				});
+			});
+
+			var url = window.location.href;
+			$('#fontsize').slider({
+				formatter: function(value) {
+					var size;
+					if(value == 12) {
+						size = "小";
+					} else if(value == 14) {
+						size = "中";
+					} else if(value == 16) {
+						size = "大";
+					} else if(value == 18) {
+						size = "特大";
+					}
+					return size;
+				}
+			});
+
+			$("#fontsize").on("slideStop", function(slideEvt) {
+				$.post("${ctxPath}/jibenxinxi/changeFontSize", {
+					size: slideEvt.value,
+					url: url
+				}, function(obj) {
+					if(obj.ret) {
+						$("#boss").css("font-size", obj.size);
+						$("li").css("font-size", obj.size);
+						//$("a").css("font-size", obj.size);
+					} else {
+						$("#error").html(obj.message);
+					}
+				}, 'jsonp');
+			})
+		
+
+			//获取系统时间  hh-mm-ss
+			function Curenthhmmss() {
+				var now = new Date();
+				var hh = now.getHours(); //时
+				var mm = (now.getMinutes() % 60); //分
+				if(now.getMinutes() / 60 > 1) {
+					hh += Math.floor(now.getMinutes() / 60);
+				}
+				var ss = now.getSeconds();
+				var clock = "";
+				if(hh < 10)
+					clock += "0";
+				clock += hh + ":";
+				if(mm < 10)
+					clock += '0';
+				clock += mm + ":";
+				if(ss < 10)
+					clock += '0';
+				clock += ss;
+				return(clock);
+			}
+			//获取年月日
+			function Curentyymmdd() {
+
+				var now = new Date();
+				var year = now.getFullYear(); //年  
+				var month = now.getMonth() + 1; //月  
+				var day = now.getDate();
+				var clock = year + "年";
+				if(month < 10)
+					clock += "0";
+				clock += month + "月";
+				if(day < 10)
+					clock += "0";
+				clock += day + "日";
+				return(clock);
+			}
+			var flag = true;
+
+			$(function() {
+				var date = new Date();
+				//alert(date.getDay());
+				var day = date.getDay();
+				var wmffWeek;
+				var arr_wmffWeek = new Array("星期天", "星期一", "星期二", "星期三", "星期四",
+					"星期五", "星期六");
+				wmffWeek = arr_wmffWeek[day];
+				// alert(wmffWeek);
+				$("#CT-date").text("今天是：" + Curentyymmdd()+" "+ wmffWeek);
+			});
+			setInterval(function() {
+				$("#CT-time").text(Curenthhmmss());
+			}, 1000);
+			if(typeof contentinit == "function") {
+				contentinit();
+			}
+			$("a[href*='${servletPath}']").parent().addClass("active");
+			
+			function getDbsx(){
+				
+				
+				if($("#dblist").is(":hidden")) 
+				{ 
+					 $("#dblist").animate({
+					      height:'show'
+					    });
+				}else{
+					 $("#dblist").animate({
+					      height:'hide'
+					    });
+				}
+				
+			}
+			
+			
+			
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,84 @@
+package com.zkzy.njzhpt.validator;
+
+import java.util.HashMap;
+
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.validate.Validator;
+import com.zkzy.njzhpt.bo.jibenxinxiBo;
+
+public class editQiyexinxiValidator extends Validator {
+
+	@Override
+	protected void handleError(Controller arg0) {
+		arg0.keepPara("name");
+		String json = "{\"ret\":false,\"message\":\"" + arg0.getAttr("nameMsg")
+				+ "\"}";
+		arg0.renderJson(json);
+	}
+
+	@Override
+	protected void validate(Controller arg0) {
+		this.setShortCircuit(true);
+		if ("/jibenxinxi/upQiyexinxi".equals(this.getActionKey())) {
+			
+			validateRequiredString("ln", "nameMsg", "请输入用户名！");
+			try{
+				HashMap<String, Object> param=new HashMap<String, Object>();
+				param.put("depid", arg0.getPara("ID"));
+				param.put("page",1);
+				param.put("rows", 1);
+				Page<Record>  userlist=Duang.duang(jibenxinxiBo.class).findUserInfo(param);
+				if(userlist.getList().size()>0){
+					String loginname=userlist.getList().get(0).getStr("loginname");
+					if(!loginname.equals(arg0.getPara("ln"))){
+						param.remove("depid");param.put("loginname", arg0.getPara("ln"));
+						Page<Record>  userinfo=Duang.duang(jibenxinxiBo.class).findUserInfo(param);
+						if(userinfo.getList().size()>0){
+							addError("nameMsg", "该用户名已存在!");							
+						}
+					}
+				}
+			}catch(Exception e){
+				handleError(arg0);
+			}
+			validateRequiredString("pw", "pw", "请输入密码！");
+			validateRequiredString("sheng", "nameMsg", "请选择省信息！");
+			validateRequiredString("shi", "nameMsg", "请选择市信息！");
+			validateRequiredString("xian", "nameMsg", "请选择县信息！");
+			validateRequiredString("qymc", "nameMsg", "请输入企业名称！");
+			validateRequiredString("qyzzjgdm", "nameMsg", "请输入组织机构代码！");
+			try{			
+				HashMap<String, Object> param=new HashMap<String, Object>();
+				HashMap<String, Object> param1=new HashMap<String, Object>();
+				
+					param.put("ID", arg0.getPara("ID"));
+					param.put("page",1);
+					param.put("rows", 1);
+					Record  qiye=Duang.duang(jibenxinxiBo.class).findQiyexinxi(param).getList().get(0);
+					if(qiye!=null){
+						if(!qiye.getStr("qyzzjgdm").equals(arg0.getPara("qyzzjgdm"))){
+							param1.put("qyzzjgdm",arg0.getPara("qyzzjgdm"));
+							param1.put("page",1);
+							param1.put("rows",1);
+							Record  qiye1=Duang.duang(jibenxinxiBo.class).findQiyexinxi(param1).getList().get(0);
+							if(qiye1!=null){
+								addError("nameMsg", "该企业已经存在!");
+							}
+						}
+					}
+			}catch(Exception e){
+				handleError(arg0);
+			}
+			validateRequiredString("qyxzbh", "nameMsg", "请输入企业性质！");
+			validateRequiredString("jyywlxbh", "nameMsg", "请输入经营业务类型！");
+			validateRequiredString("fddbr", "nameMsg", "请输入法定代表人！");
+			validateRequiredString("zhuceshijian", "nameMsg", "请输入企业注册时间！");
+			validateRequiredString("tbsj", "nameMsg", "请输入填报时间！");
+			validateRequiredString("cfzcr", "nameMsg", "请输入仓房总容量！");
+		}
+	}
+
+}

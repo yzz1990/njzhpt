@@ -1,0 +1,436 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+   <link href="${ctxPath}/resources/css/jquery-ui-themes.css" type="text/css" rel="stylesheet"/>
+    <link href="${ctxPath}/resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="${ctxPath}/data/styles.css" type="text/css" rel="stylesheet"/>
+     <link href="${ctxPath}/files/事件登记/styles.css" type="text/css" rel="stylesheet"/>
+   <script src="${ctxPath}/resources/scripts/jquery-ui-1.8.10.custom.min.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/axQuery.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/globals.js"></script>
+    <script src="${ctxPath}/resources/scripts/axutils.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/annotation.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/axQuery.std.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/doc.js"></script>
+    <script src="${ctxPath}/data/document.js"></script>
+    <script src="${ctxPath}/resources/scripts/messagecenter.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/events.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/recording.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/action.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/expr.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/geometry.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/flyout.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/ie.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/model.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/repeater.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/sto.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/utils.temp.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/variables.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/drag.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/move.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/visibility.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/style.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/adaptive.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/tree.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/init.temp.js"></script>
+    <script src="${ctxPath}/files/事件登记/data1.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/legacy.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/viewer.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/math.js"></script> 
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return '${ctxPath}/resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return '${ctxPath}/resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return '${ctxPath}/resources/reload.html'; };
+    </script>
+    <style>
+	
+	.wrapper > .aside {
+    
+    height: 900px;
+	}
+	</style>
+    <div id="base" class="">
+
+      <!-- Unnamed (矩形) -->
+      <div id="u2775" style="border: 1px solid #ADD8E6"  class="ax_default box_3">
+        <div id="u2775_div" class=""></div>
+       
+        <div id="u2776" class="text" style="visibility: visible;">
+        <img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+          <p><span style="font-family:'应用字体 Bold', '应用字体';">&nbsp;&nbsp;事件登记</span></p>
+        </div>
+      </div> 
+     <!--  <div id="u2775" style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="/njzhpt/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b> 事件登记</b></span>
+				</div> -->
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2777" class="ax_default _文本框">
+        <input id="u2777_input" type="text" value="事件名称：" class="text_sketch"/>
+      </div>
+
+      <!-- 事件名称 (文本框) -->
+      <div id="u2778" class="ax_default _文本框" data-label="事件名称">
+        <input id="u2778_input" type="text" value="" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2779" class="ax_default _文本框">
+        <input id="u2779_input" type="text" value="发生地点：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2780" class="ax_default _文本框">
+        <input id="u2780_input" type="text" value="时间：" class="text_sketch"/>
+      </div>
+
+      <!-- 时间 (文本框) -->
+      <div id="u2781" class="ax_default _文本框" data-label="时间">
+        <input id="u2781_input" type="text" value="" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2782" class="ax_default _文本框">
+        <input id="u2782_input" type="text" value="调查人员：" class="text_sketch"/>
+      </div>
+
+      <!-- 调查人员 (文本框) -->
+      <div id="u2783" class="ax_default _文本框" data-label="调查人员">
+        <input id="u2783_input" type="text" value="" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2784" class="ax_default _文本框">
+        <input id="u2784_input" type="text" value="事件详情：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2785" class="ax_default _文本框">
+        <input id="u2785_input" type="text" value="现场照片：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u2786" class="ax_default sticky_3">
+        <div id="u2786_div" class=""></div>
+        <!-- Unnamed () -->
+        <div id="u2787" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (水平线) -->
+      <div id="u2788" class="ax_default line">
+        <img id="u2788_img" class="img " src="${ctxPath}/images/事件登记/u2788.png"/>
+        <!-- Unnamed () -->
+        <div id="u2789" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Bold', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (垂直线) -->
+      <div id="u2790" class="ax_default line">
+        <img id="u2790_img" class="img " src="${ctxPath}/images/事件登记/u2790.png"/>
+        <!-- Unnamed () -->
+        <div id="u2791" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Bold', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2792" class="ax_default _文本框">
+        <input id="u2792_input" type="text" value="事件分析：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2793" class="ax_default _文本框">
+        <input id="u2793_input" type="text" value="事件等级：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (下拉列表框) -->
+      <div id="u2794" class="ax_default _下拉列表框">
+        <select id="u2794_input" class="text_sketch">
+          <option value="未告警">未告警</option>
+          <option selected value="Ⅳ级">Ⅳ级</option>
+          <option value="Ⅲ级">Ⅲ级</option>
+          <option value="Ⅱ级">Ⅱ级</option>
+          <option value="Ⅰ级">Ⅰ级</option>
+        </select>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2795" class="ax_default _文本框">
+        <input id="u2795_input" type="text" value="牵涉人口：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2796" class="ax_default _文本框">
+        <input id="u2796_input" type="text" value="口粮标准：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u2797" class="ax_default _文本框">
+        <input id="u2797_input" type="text" value="价格：" class="text_sketch"/>
+      </div>
+
+      <!-- 文本1 (文本框) -->
+      <div id="u2798" class="ax_default _文本框 ax_default_hidden" data-label="文本1" style="display: none; visibility: hidden">
+        <input id="u2798_input" type="text" value="10000人" class="text_sketch"/>
+      </div>
+
+      <!-- 文本2 (文本框) -->
+      <div id="u2799" class="ax_default _文本框 ax_default_hidden" data-label="文本2" style="display: none; visibility: hidden">
+        <input id="u2799_input" type="text" value="0.35Kg/人/天" class="text_sketch"/>
+      </div>
+
+      <!-- 文本3 (文本框) -->
+      <div id="u2800" class="ax_default _文本框 ax_default_hidden" data-label="文本3" style="display: none; visibility: hidden">
+        <input id="u2800_input" type="text" value="10元/Kg" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (提交按钮) -->
+      <div id="u2801" class="ax_default html_button">
+        <input id="u2801_input" type="submit" value="预警存档" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (提交按钮) -->
+      <div id="u2802" class="ax_default html_button">
+        <input id="u2802_input" type="submit" value="应急保供" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (树状菜单) -->
+      <div id="u2803" class="ax_default _树节点 treeroot">
+        <div id="u2803_children" class="u2803_children">
+
+          <!-- Unnamed (树节点) -->
+          <div id="u2804" class="ax_default _树节点 treenode">
+
+            <!-- Unnamed (图片) -->
+            <div id="u2805" class="ax_default _图片">
+              <img id="u2805_img" class="img " src="${ctxPath}/images/事件登记/u2805_selected.png"/>
+              <!-- Unnamed () -->
+              <div id="u2806" class="text" style="display: none; visibility: hidden">
+                <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+              </div>
+            </div>
+            <!-- Unnamed (矩形) -->
+            <div id="u2807" class="" selectiongroup="u2803_tree_group">
+              <div id="u2807_div" class=""></div>
+              <!-- Unnamed () -->
+              <div id="u2808" class="text" style="visibility: visible;">
+                <p><span style="font-family:'应用字体 Regular', '应用字体';">连云港市</span></p>
+              </div>
+            </div>
+            <div id="u2804_children" class="u2804_children">
+
+              <!-- Unnamed (树节点) -->
+              <div id="u2809" class="ax_default _树节点 treenode">
+
+                <!-- Unnamed (图片) -->
+                <div id="u2810" class="ax_default _图片">
+                  <img id="u2810_img" class="img " src="${ctxPath}/images/事件登记/u2805.png"/>
+                  <!-- Unnamed () -->
+                  <div id="u2811" class="text" style="display: none; visibility: hidden">
+                    <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+                  </div>
+                </div>
+                <!-- Unnamed (矩形) -->
+                <div id="u2812" class="" selectiongroup="u2803_tree_group">
+                  <div id="u2812_div" class=""></div>
+                  <!-- Unnamed () -->
+                  <div id="u2813" class="text" style="visibility: visible;">
+                    <p><span style="font-family:'应用字体 Regular', '应用字体';">市区</span></p>
+                  </div>
+                </div>
+                <div id="u2809_children" class="u2809_children" style="visibility:hidden;">
+
+                  <!-- Unnamed (树节点) -->
+                  <div id="u2814" class="ax_default _树节点 treenode">
+
+                    <!-- Unnamed (图片) -->
+                    <div id="u2815" class="ax_default _图片">
+                      <img id="u2815_img" class="img " src="${ctxPath}/images/事件登记/u2805.png"/>
+                      <!-- Unnamed () -->
+                      <div id="u2816" class="text" style="display: none; visibility: hidden">
+                        <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+                      </div>
+                    </div>
+                    <!-- Unnamed (矩形) -->
+                    <div id="u2817" class="" selectiongroup="u2803_tree_group">
+                      <div id="u2817_div" class=""></div>
+                      <!-- Unnamed () -->
+                      <div id="u2818" class="text" style="visibility: visible;">
+                        <p><span style="font-family:'应用字体 Regular', '应用字体';">街道1</span></p>
+                      </div>
+                    </div>
+                    <div id="u2814_children" class="u2814_children" style="visibility:hidden;">
+
+                      <!-- Unnamed (树节点) -->
+                      <div id="u2819" class="ax_default _树节点 treenode">
+                        <!-- Unnamed (矩形) -->
+                        <div id="u2820" class="" selectiongroup="u2803_tree_group">
+                          <div id="u2820_div" class=""></div>
+                          <!-- Unnamed () -->
+                          <div id="u2821" class="text" style="visibility: visible;">
+                            <p><span style="font-family:'应用字体 Regular', '应用字体';">社区1</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unnamed (树节点) -->
+              <div id="u2822" class="ax_default _树节点 treenode">
+                <!-- Unnamed (矩形) -->
+                <div id="u2823" class="" selectiongroup="u2803_tree_group">
+                  <div id="u2823_div" class=""></div>
+                  <!-- Unnamed () -->
+                  <div id="u2824" class="text" style="visibility: visible;">
+                    <p><span style="font-family:'应用字体 Regular', '应用字体';">海州区</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unnamed (树节点) -->
+              <div id="u2825" class="ax_default _树节点 treenode">
+                <!-- Unnamed (矩形) -->
+                <div id="u2826" class="" selectiongroup="u2803_tree_group">
+                  <div id="u2826_div" class=""></div>
+                  <!-- Unnamed () -->
+                  <div id="u2827" class="text" style="visibility: visible;">
+                    <p><span style="font-family:'应用字体 Regular', '应用字体';">赣榆区</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unnamed (树节点) -->
+              <div id="u2828" class="ax_default _树节点 treenode">
+                <!-- Unnamed (矩形) -->
+                <div id="u2829" class="" selectiongroup="u2803_tree_group">
+                  <div id="u2829_div" class=""></div>
+                  <!-- Unnamed () -->
+                  <div id="u2830" class="text" style="visibility: visible;">
+                    <p><span style="font-family:'应用字体 Regular', '应用字体';">东海县</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unnamed (树节点) -->
+              <div id="u2831" class="ax_default _树节点 treenode">
+                <!-- Unnamed (矩形) -->
+                <div id="u2832" class="" selectiongroup="u2803_tree_group">
+                  <div id="u2832_div" class=""></div>
+                  <!-- Unnamed () -->
+                  <div id="u2833" class="text" style="visibility: visible;">
+                    <p><span style="font-family:'应用字体 Regular', '应用字体';">灌云县</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unnamed (树节点) -->
+              <div id="u2834" class="ax_default _树节点 treenode">
+                <!-- Unnamed (矩形) -->
+                <div id="u2835" class="" selectiongroup="u2803_tree_group">
+                  <div id="u2835_div" class=""></div>
+                  <!-- Unnamed () -->
+                  <div id="u2836" class="text" style="visibility: visible;">
+                    <p><span style="font-family:'应用字体 Regular', '应用字体';">灌南县</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (热区) -->
+      <div id="u2837" class="ax_default">
+      </div>
+
+      <!-- 事件详情 (多行文本框) -->
+      <div id="u2838" class="ax_default _多行文本框" data-label="事件详情">
+        <textarea id="u2838_input" class="text_sketch"></textarea>
+      </div>
+
+      <!-- Unnamed (热区) -->
+      <div id="u2839" class="ax_default">
+      </div>
+
+      <!-- 图1 (图片) -->
+      <div id="u2840" class="ax_default _图片" data-label="图1">
+        <img id="u2840_img" class="img " src="${ctxPath}/images/事件登记/图1_u2840.png"/>
+        <!-- Unnamed () -->
+        <div id="u2841" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u2842" class="ax_default _图片">
+        <img id="u2842_img" class="img " src="${ctxPath}/images/事件登记/u2842.png"/>
+        <!-- Unnamed () -->
+        <div id="u2843" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u2844" class="ax_default _图片">
+        <img id="u2844_img" class="img " src="${ctxPath}/images/事件登记/u2844.png"/>
+        <!-- Unnamed () -->
+        <div id="u2845" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (热区) -->
+      <div id="u2846" class="ax_default">
+      </div>
+
+      <!-- 事件分析 (多行文本框) -->
+      <div id="u2847" class="ax_default _多行文本框" data-label="事件分析">
+        <textarea id="u2847_input" class="text_sketch"></textarea>
+      </div>
+
+      <!-- Unnamed (热区) -->
+      <div id="u2848" class="ax_default">
+      </div>
+
+      <!-- 组合1 (组合) -->
+      <div id="u2849" class="ax_default ax_default_hidden" data-label="组合1" style="display: none; visibility: hidden">
+
+        <!-- Unnamed (提交按钮) -->
+        <div id="u2850" class="ax_default html_button">
+          <input id="u2850_input" type="submit" value="存档成功！" class="text_sketch"/>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u2851" class="ax_default box_1">
+          <div id="u2851_div" class=""></div>
+          <!-- Unnamed () -->
+          <div id="u2852" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">确定</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (提交按钮) -->
+      <div id="u2853" class="ax_default html_button">
+        <input id="u2853_input" type="submit" value="预警存档" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (水平线) -->
+      <div id="u2854" class="ax_default line">
+        <img id="u2854_img" class="img " src="${ctxPath}/images/第四步/u1204.png"/>
+        <!-- Unnamed () -->
+        <div id="u2855" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+    </div>
+
+<%
+	}
+%>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>库区情况</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/fontawesome/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addkuqqk",title="新增库区情况";
+	if (isNotEmpty(parameter.id)) {
+		var kqqk = @com.zkzy.njzhpt.dao.CangchuglDao.findKqqk({"id":parameter.id,"page":"1","rows":"100"});
+		obj = kqqk.list[0];
+		url = ctxPath+"/cangchugl/upkuqqk";
+		title = "编辑库区情况";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	库区情况                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${obj.qyzzjgdm}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="quyu">所属辖区:</label>
+										<input id="quyu" name="quyu" class="form-control" placeholder="所属辖区" value="${obj.quyu}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="kdmc">库点名称:</label>
+										<input id="kdmc" name="kdmc" class="form-control" placeholder="库点名称" value="${obj.kdmc}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="zcr">总仓容:</label>
+										<input id="zcr" name="zcr" class="form-control" placeholder="总仓容" value="${obj.zcr}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="zgr">总罐容:</label>
+										<input id="zgr" name="zgr" class="form-control" placeholder="总罐容" value="${obj.zgr}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="mianji">面积（m²）:</label>
+										<input id="mianji" name="mianji" class="form-control" placeholder="面积（m²）" value="${obj.mianji}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="fyfcxn">防雨防潮性能:</label>
+										<select id="fyfcxn" name="fyfcxn" class="form-control">
+											<option value="1" ${obj.fyfcxn=="1"?" selected"}>优</option>
+											<option value="0" ${obj.fyfcxn=="0"?" selected"}>良</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="mbsdxn">密闭杀毒性能:</label>
+										<select id="mbsdxn" name="mbsdxn" class="form-control">
+											<option value="1" ${obj.mbsdxn=="1"?" selected"}>优</option>
+											<option value="0" ${obj.mbsdxn=="0"?" selected"}>良</option>
+										</select>
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="nfszcc">能否散装储存:</label>
+										<select id="nfszcc" name="nfszcc" class="form-control">
+											<option value="1" ${obj.nfszcc=="1"?" selected"}>能</option>
+											<option value="0" ${obj.nfszcc=="0"?" selected"}>不能</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="ywtfss">有无通风设施:</label>
+										<select id="ywtfss" name="ywtfss" class="form-control">
+											<option value="1" ${obj.ywtfss=="1"?" selected"}>有</option>
+											<option value="0" ${obj.ywtfss=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">	
+									<div class="form-group">
+										<label for="jssj">建设时间:</label>
+										<input id="jssj" name="jssj" class="form-control" placeholder="建设时间" value="${obj.jssj}">
+									</div>	
+								</div>
+							</div>
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+
+function savekqqk() {
+	var form = $(".widget-body form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		}
+	});
+}
+
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+</script>
+
+</body>
+</html>

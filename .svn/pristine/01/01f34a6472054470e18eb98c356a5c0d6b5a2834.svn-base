@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>库点</title>
+<%
+		var qyzzjgdm="";
+		if(!isEmpty(parameter.qyzzjgdm)){
+			qyzzjgdm=parameter.qyzzjgdm;
+		}
+%>
+</head>
+<script type="text/javascript">
+$(function(){
+	var ul=""; var param={};
+	if("${qyzzjgdm}"!=""){
+		param={"qyzzjgdm":"${qyzzjgdm}"};
+	}
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findsuoshukd',
+		type:'post',			
+		data:param,
+		dataType:'json',
+		success:function(data){
+			for (var i=0;i<data.length;i++) {
+				ul+= '<li id="'+data[i].kdbm+'" class="jzkdcf">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="file" href="javascript:jzkdcf(\''+data[i].kdbm+'\')">'+data[i].kdmc+'</a></li>';
+			}
+			$("#browser").append(ul);
+		}
+	});
+	
+});
+	
+</script>
+<body>
+	<ul id="browser" class="filetree">
+			<li id="jzkd"><span class="folder"></i>企业下属库点</span></li>	
+	</ul>
+</body>
+</html>

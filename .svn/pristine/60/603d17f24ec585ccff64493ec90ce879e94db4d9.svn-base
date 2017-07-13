@@ -1,0 +1,113 @@
+body, div, ul, ol, h1, h2 {
+	margin: 0;
+	padding: 0
+}
+img {
+	border: 0
+}
+li {
+	list-style: none;
+	margin: 0;
+	padding: 0
+}
+a {
+	margin: 0;
+	outline: none;
+	padding: 0;
+	text-decoration: none
+}
+/*
++----------------------------------------------------------------+
+	Extras
++----------------------------------------------------------------+
+*/
+
+.cf:before, .cf:after {
+	content: " ";
+	display: table
+}
+.cf:after {
+	clear: both
+}
+.clear {
+	clear: both
+}
+/*
++----------------------------------------------------------------+
+	Definicoes Gerais
++----------------------------------------------------------------+
+*/
+
+body {
+	text-align: center;	
+}
+/*
++----------------------------------------------------------------+
+	Slideshow
++----------------------------------------------------------------+
+*/
+
+.slider {
+	position: absolute;
+	top: 0px;	
+	left: 0px;	
+	right: 0px;	
+	bottom: 0px;	
+	margin: 0 auto;	
+}
+.slider-container {
+	width: 100%;	
+	height: 100%;	
+	overflow: hidden;	
+	position: absolute;
+}
+.slider-container .slider-wrapper {
+	top: 0px;
+	left: 0px;	
+	position: absolute;
+	overflow: hidden;
+	width: 5000em; /*Fix for prevent display errors*/
+	-webkit-transition: all 800ms ease;
+	-moz-transition: all 800ms ease;
+	-o-transition: all 800ms ease;
+	transition: all 800ms ease;
+}
+.slider-container .slide {
+	float: left;	
+	overflow: hidden;
+	position: relative;
+	
+}
+.slider-nav {	
+	width: 100%;
+	text-align: center;
+	position: absolute;
+	bottom: 10px;		
+}
+.slider-nav li {
+	display: inline;
+	padding: 3px;
+}
+.slider-nav .bullet {
+	width: 16px;
+	height: 16px;
+	background-color: #59baa8;
+	border-radius: 50%;
+	display: inline-block;
+	text-indent: -9000px;
+	overflow: hidden;	
+}
+.slider-nav .active {
+	background-color: #e7433b
+}
+.slider-nav .prev, .slider-nav .next {
+	width: 16px;
+	height: 16px;
+	background: url('img/sprite.png') no-repeat;
+	display: inline-block;
+	text-indent: -9000px;
+	overflow: hidden;	
+}
+.slider-nav .next {
+	background-position: -15px top
+}

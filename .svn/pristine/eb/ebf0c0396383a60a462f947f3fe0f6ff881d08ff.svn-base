@@ -1,0 +1,67 @@
+package com.zkzy.njzhpt.controller;
+
+import java.util.HashMap;
+
+import com.ggy.common.utils.ParamUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.zkzy.njzhpt.bo.CommondBo;
+import com.zkzy.njzhpt.bo.LunHuanGuanLiBO;
+import com.zkzy.njzhpt.bo.ShouchukeshihuaBO;
+import com.zkzy.njzhpt.config.interfaces.ICommond;
+import com.zkzy.njzhpt.validator.LunHuanSQValidator;
+
+public class LunHuanGuanLiController extends Controller {
+@Before(LunHuanSQValidator.class)
+	public void index() {
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) LunHuanGuanLiBO.class.getMethod(method, HashMap.class)
+						.invoke(Duang.duang(LunHuanGuanLiBO.class),
+								ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				render("login.html");
+			}
+		} catch (Exception e) {
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+
+	}
+public void findcompany(){
+	HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+	param.put("xian", getPara("xian"));
+	renderJson(Duang.duang(LunHuanGuanLiBO.class).findcompany(param));
+}
+public void findcckd(){
+	HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+	param.put("qyzzjgdm", getPara("qyzzjgdm"));
+	renderJson(Duang.duang(LunHuanGuanLiBO.class).findcckd(param));
+}
+public void queryLunHuanShenQing() throws Exception{
+	HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+	ICommond icommond=CommondBo.getCommond();
+	renderJson(icommond.queryLunHuanShenQing(param));
+	
+}
+public void selectlunhuanHZ() throws Exception{
+	HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+	ICommond icommond=CommondBo.getCommond();
+	renderJson(icommond.selectlunhuanHZ(param));
+}
+	
+}
+

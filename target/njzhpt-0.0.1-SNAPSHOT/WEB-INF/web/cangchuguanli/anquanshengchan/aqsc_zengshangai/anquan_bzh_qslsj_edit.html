@@ -1,0 +1,81 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addanquantj",title="新增企业安全标准信息";
+	if (isNotEmpty(parameter.id)) {
+		var qyaq = @com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,"page":"1","rows":"100"});
+		obj = qyaq.list[0];
+		url = ctxPath+"/cangchugl/upanquantj";
+		title = "编辑企业安全标准信息";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="shibie">市别</label>
+							<input type="text" class="form-control" name="shibie" id="shibie" placeholder="市别" value="${obj.shibie}" >
+						</div>
+						<div class="form-group">	
+							<label for="dabiaodanwei">达标单位</label>
+							<input type="text" class="form-control" name="dabiaodanwei" id="dabiaodanwei" placeholder="达标单位" value="${obj.dabiaodanwei}" >
+						</div>
+						 <div class="form-group">	
+							<label for="dengji">等级</label>
+							<input type="text" class="form-control" name="dengji" id="dengji" placeholder="等级" value="${obj.dengji}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="zhengshuhao">证书号</label>
+							<input type="text" class="form-control" name="zhengshuhao" id="zhengshuhao" placeholder="证书号" value="${obj.zhengshuhao}"  >
+						</div>
+						<div class="form-group">	
+							<label for="pingdingdanwei">评定单位</label>
+							<input type="text" class="form-control" name="pingdingdanwei" id="pingdingdanwei" placeholder="评定单位" value="${obj.pingdingdanwei}" >
+						</div>
+						<div class="form-group">	
+							<label for="beizhu">备注</label>
+							<input type="text" class="form-control" name="beizhu" id="beizhu" placeholder="备注" value="${obj.beizhu}" >
+						</div>
+						
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_bzh_qslsj.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/anquanshengchan/anquan_bzh_qslsj.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

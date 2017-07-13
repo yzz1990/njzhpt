@@ -1,0 +1,14 @@
+<aside class="aside">
+	<div class="aside-inner">
+		<nav data-sidebar-anyclick-close="" class="sidebar">
+   			<ul class="nav">
+				<li class="nav-heading">
+                     <span></span>
+                 </li>
+				<li><a href="${ctxPath}/remote/shipin/yingpan.html" class="pjax ${strutil.contain(requestURI,'yingpan.html')?" active":""}" title="硬盘录像机维护"><div class="pull-right"><img src="${ctxPath}/newimg/jiantouhover.png"></div><em class="icon-trophy"></em><span>硬盘录像机维护</span></a></li>
+				<li><a href="${ctxPath}/remote/shipin/shexiangtou.html" class="pjax ${strutil.contain(requestURI,'shexiangtou.html')?" active":""}" title="摄像头维护"><div class="pull-right"><img src="${ctxPath}/newimg/jiantouhover.png"></div><em class="icon-crop"></em><span>摄像头维护</span></a></li>
+				<li><a href="${ctxPath}/remote/shipin/shipin.html" class="pjax ${strutil.contain(requestURI,'shipin.html')?" active":""}" title="实时视频"><div class="pull-right"><img src="${ctxPath}/newimg/jiantouhover.png"></div><em class="icon-cursor"></em><span>实时视频</span></a></li>	
+			</ul>
+		</nav>
+   </div>
+</aside>

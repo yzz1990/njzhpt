@@ -1,0 +1,1943 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia{
+	height:480px;
+	overflow-y:auto;
+
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+.jglxls{
+	display:none;
+}
+</style>
+<script type="text/javascript">
+var mydate = new Date();
+var year = mydate.getFullYear();
+var iyear;
+var iweek;
+
+$(window).load(function() {
+	$(".select2").select2();
+	//加载年度下拉框
+	for(var i = 0; i < 3 ; i++){
+		var op;
+		if(i == 0){
+			op = '<option selected value="'+(year-i)+'">'+(year-i)+'</option>';
+		}else{
+			op = '<option value="'+(year-i)+'">'+(year-i)+'</option>';
+		}
+		$("#niandu").append(op);
+	}
+	//初始化采价点下拉框
+	//$("#niandu").val(year);
+    //$("#niandu-div").find(".select2-selection__rendered").text(year);
+	//$("#niandu-div").find(".select2-selection__rendered").attr("title",year);
+});
+
+$(function(){
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":year,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#nianzs").empty();
+			var selected="";
+			for(var i = 0; i <data.list.length ; i++){
+				if(year==new Date().getFullYear())
+				{
+					if(i<getYearWeek(new Date())-1)
+					{
+						if(i == (getYearWeek(new Date())-2)){
+							var op = '<option selected value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+							$("#nianzs").append(op);
+						}else{
+							var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+							$("#nianzs").append(op);
+						}
+					}
+				}else{
+					var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+					$("#nianzs").append(op);
+				}
+			}
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+	
+		
+});
+
+//获取当前周数
+function getYearWeek(date){
+	var date2=new Date(date.getFullYear(), 0, 1);
+	var day1=date.getDay();
+	if(day1==0) day1=7;
+	var day2=date2.getDay();
+	if(day2==0) day2=7;
+	d = Math.round((date.getTime() - date2.getTime()+(day2-day1)*(24*60*60*1000)) / 86400000);
+	return Math.ceil(d /7)+1;
+}
+//select改变事件
+function Change(){
+	//清楚下拉框
+	$("#nianzs").empty();
+	//获取年度
+	var niandu = $("#niandu option:selected").text();
+	//生成星期数据
+	$.ajax({
+		url:'${ctxPath}/jiage/findweek',
+		type:'post',
+		data:{"niandu":niandu},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+		    $(".nianzs-div").find(".select2-selection__rendered").text("请选择");
+			$(".nianzs-div").find(".select2-selection__rendered").attr("title","请选择");
+			$("#nianzs").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.length; i++){	
+				//var op = '<option value="'+(i+1)+'">'+data[i]+'</option>';
+				//$("#nianzs").append(op);
+				
+				if(niandu==new Date().getFullYear())
+				{
+					if(i<getYearWeek(new Date())-1)
+					{
+						var op = '<option value="'+(i+1)+'">'+data[i]+'</option>';
+						$("#nianzs").append(op);
+					}
+				}else{
+					var op = '<option value="'+(i+1)+'">'+data[i]+'</option>';
+					$("#nianzs").append(op);
+				}
+				
+				
+			}
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+}
+//查询国内报价
+function doSearch(){
+	
+	$("input").val("");
+	
+	var year = $("#niandu option:selected").val();
+	var week = $("#nianzs option:selected").val();
+	iyear = year;
+	iweek = week;
+	if(year == null || year == "" || year == "请选择"){
+		alert("请选择年度");
+	}else{
+		if(week == null || week == "" || week == "请选择"){
+			alert("请选择周数");
+		}else{
+			//获取当前周数的价格
+			$.ajax({
+				url:'${ctxPath}/jiage/findguonei.do',
+				type:'post',
+				data:{"year":year,"week":week},
+				dataType:'json',
+				success:function(data){
+					
+					for(var i = 0; i < data.list.length; i++){
+						var pzname = data.list[i].pzname;
+						var jglx = data.list[i].jglx;
+						var lslx = data.list[i].lslx;
+						var price = data.list[i].price;
+						var tprice = data.list[i].tprice;
+						var hprice = data.list[i].hprice;
+						
+						if(lslx == "yl" && pzname == "xiaomai" && jglx == "001"){
+							$("#ylxmsg").text(price);
+						}
+						if(lslx == "yl" && pzname == "xiaomai" && jglx == "002"){
+							$("#ylxmck").text(price);
+						}
+						if(lslx == "yl" && pzname == "yumi" && jglx == "001"){
+							$("#ylymsg").text(price);
+						}
+						if(lslx == "yl" && pzname == "yumi" && jglx == "002"){
+							$("#ylymck").text(price);
+						}
+						if(lslx == "yl" && pzname == "daogu" && jglx == "001"){
+							$("#yldgsg").text(price);
+						}
+						if(lslx == "yl" && pzname == "daogu" && jglx == "002"){
+							$("#yldgck").text(price);
+						}
+						if(lslx == "yl" && pzname == "youcaizi" && jglx == "001"){
+							$("#ylyczsg").text(price);
+						}
+						if(lslx == "yl" && pzname == "youcaizi" && jglx == "002"){
+							$("#ylyczck").text(price);
+						}
+						if(lslx == "yl" && pzname == "huashengren" && jglx == "001"){
+							$("#ylhsrsg").text(price);
+						}
+						if(lslx == "yl" && pzname == "huashengren" && jglx == "002"){
+							$("#ylhsrck").text(price);
+						}
+						if(lslx == "yl" && pzname == "dadou" && jglx == "001"){
+							$("#ylddsg").text(price);
+						}
+						if(lslx == "yl" && pzname == "dadou" && jglx == "002"){
+							$("#ylddck").text(price);
+						}
+						if(lslx == "cpl" && pzname == "mianfen" && jglx == "004"){
+							$("#cplmfbcck").text(price);
+						}
+						if(lslx == "cpl" && pzname == "xianmi" && jglx == "004"){
+							$("#cplxmbcck").text(price);
+						}
+						if(lslx == "cpl" && pzname == "daomi" && jglx == "004"){
+							$("#cpldmbcck").text(price);
+						}
+						if(lslx == "cpl" && pzname == "douyou" && jglx == "004"){
+							$("#cpldybcck").text(price);
+						}
+						if(lslx == "cpl" && pzname == "caiziyou" && jglx == "004"){
+							$("#cplczybcck").text(price);
+						}
+						if(lslx == "cpl" && pzname == "huashengyou" && jglx == "004"){
+							$("#cplhsybcck").text(price);
+						}
+						if(lslx == "zl" && pzname == "lvdou" && jglx == "001"){
+							$("#zlldsg").text(price);
+						}
+						if(lslx == "zl" && pzname == "lvdou" && jglx == "002"){
+							$("#zlldck").text(price);
+						}
+						if(lslx == "zl" && pzname == "xiaomi" && jglx == "001"){
+							$("#zlxmsg").text(price);
+						}
+						if(lslx == "zl" && pzname == "xiaomi" && jglx == "002"){
+							$("#zlxmck").text(price);
+						}
+						if(lslx == "zl" && pzname == "gaoliang" && jglx == "001"){
+							$("#zlglsg").text(price);
+						}
+						if(lslx == "zl" && pzname == "gaoliang" && jglx == "002"){
+							$("#zlglck").text(price);
+						}
+						if(lslx == "zl" && pzname == "shulei" && jglx == "001"){
+							$("#zlslsg").text(price);
+						}
+						if(lslx == "zl" && pzname == "shulei" && jglx == "002"){
+							$("#zlslck").text(price);
+						}
+						if(lslx == "yp" && pzname == "douyou" && jglx == "003"){
+							$("#ypdyls").text(price);
+						}
+						if(lslx == "yp" && pzname == "douyou" && jglx == "007"){
+							$("#ypdycc").text(price);
+						}
+						if(lslx == "yp" && pzname == "caiziyou" && jglx == "003"){
+							$("#ypczyls").text(price);
+						}
+						if(lslx == "yp" && pzname == "caiziyou" && jglx == "007"){
+							$("#ypczycc").text(price);
+						}
+						if(lslx == "yp" && pzname == "huashengyou" && jglx == "003"){
+							$("#yphsyls").text(price);
+						}
+						if(lslx == "yp" && pzname == "huashengyou" && jglx == "007"){
+							$("#yphsycc").text(price);
+						}
+						if(lslx == "yp" && pzname == "doupo" && jglx == "003"){
+							$("#ypdpls").text(price);
+						}
+						if(lslx == "yp" && pzname == "doupo" && jglx == "007"){
+							$("#ypdpcc").text(price);
+						}
+						if(lslx == "yp" && pzname == "caipo" && jglx == "003"){
+							$("#ypcpls").text(price);
+						}
+						if(lslx == "yp" && pzname == "caipo" && jglx == "007"){
+							$("#ypcpcc").text(price);
+						}
+						if(lslx == "yp" && pzname == "mianzipo" && jglx == "003"){
+							$("#ypmzpls").text(price);
+						}
+						if(lslx == "yp" && pzname == "mianzipo" && jglx == "007"){
+							$("#ypmzpcc").text(price);
+						}
+						if(lslx == "gk" && pzname == "yumi" && jglx == "006"){
+							$("#gkymdg").text(price);
+						}
+						if(lslx == "gk" && pzname == "yumi" && jglx == "007"){
+							$("#gkymcc").text(price);
+						}
+						if(lslx == "gk" && pzname == "dadou" && jglx == "006"){
+							$("#gkdddg").text(price);
+						}
+						if(lslx == "gk" && pzname == "dadou" && jglx == "007"){
+							$("#gkddcc").text(price);
+						}
+						if(lslx == "gk" && pzname == "zonglvyou" && jglx == "006"){
+							$("#gkzlydg").text(price);
+						}
+						if(lslx == "gk" && pzname == "zonglvyou" && jglx == "007"){
+							$("#gkzlycc").text(price);
+						}
+						if(lslx == "gk" && pzname == "douyou" && jglx == "006"){
+							$("#gkdydg").text(price);
+						}
+						if(lslx == "gk" && pzname == "douyou" && jglx == "007"){
+							$("#gkdycc").text(price);
+						}
+						if(lslx == "gk" && pzname == "caizi" && jglx == "006"){
+							$("#gkczdg").text(price);
+						}
+						if(lslx == "gk" && pzname == "caizi" && jglx == "007"){
+							$("#gkczcc").text(price);
+						}
+						if(lslx == "gk" && pzname == "xiaomai" && jglx == "006"){
+							$("#gkxmdg").text(price);
+						}
+						if(lslx == "gk" && pzname == "xiaomai" && jglx == "007"){
+							$("#gkxmcc").text(price);
+						}
+						if(lslx == "yz" && pzname == "xiaomai" && jglx == "001"){
+							$("#yzxmsg").text(price);
+						}
+						if(lslx == "yz" && pzname == "xiaomai" && jglx == "002"){
+							$("#yzxmck").text(price);
+						}
+						if(lslx == "yz" && pzname == "daogu" && jglx == "001"){
+							$("#yzdgsg").text(price);
+						}
+						if(lslx == "yz" && pzname == "daogu" && jglx == "002"){
+							$("#yzdgck").text(price);
+						}
+					}
+				},
+				error:function(){
+					alert("查询国内现货价格失败");
+				}
+				
+			});
+			
+			//获取价格同比和环比
+			$.ajax({
+				url:'${ctxPath}/jiage/findgnht',
+				type:'post',
+				data:{"year":year,"week":week},
+				dataType:'json',
+				success:function(data){
+					
+					
+					for(var i = 0; i < data.length; i++){
+						var pzname = data[i].pzname;
+						var lslx = data[i].lslx;
+						var price = data[i].price;
+						var tprice = data[i].tprice;
+						var hprice = data[i].hprice;
+						
+						if(lslx == "yl" && pzname == "xiaomai"){
+							$("#ylxmtbze").text(price - tprice);
+							$("#ylxmhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ylxmtbzf").text("%");
+							}else{
+								$("#ylxmtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ylxmhbzf").text("%");
+							}else{
+								$("#ylxmhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+							
+						}
+						if(lslx == "yl" && pzname == "yumi"){
+							$("#ylymtbze").text(price - tprice);
+							$("#ylymhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ylymtbzf").text("%");
+							}else{
+								$("#ylymtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ylymhbzf").text("%");
+							}else{
+								$("#ylymhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						
+						if(lslx == "yl" && pzname == "daogu"){
+							$("#yldgtbze").text(price - tprice);
+							$("#yldghbze").text(price - hprice);
+							if(tprice == 0){
+								$("#yldgtbzf").text("%");
+							}else{
+								$("#yldgtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#yldghbzf").text("%");
+							}else{
+								$("#yldghbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						
+						if(lslx == "yl" && pzname == "youcaizi"){
+							$("#ylycztbze").text(price - tprice);
+							$("#ylyczhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ylycztbzf").text("%");
+							}else{
+								$("#ylycztbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ylyczhbzf").text("%");
+							}else{
+								$("#ylyczhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "yl" && pzname == "huashengren"){
+							$("#ylhsrtbze").text(price - tprice);
+							$("#ylhsrhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ylhsrtbzf").text("%");
+							}else{
+								$("#ylhsrtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ylhsrhbzf").text("%");
+							}else{
+								$("#ylhsrhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+
+						if(lslx == "yl" && pzname == "dadou"){
+							$("#ylddtbze").text(price - tprice);
+							$("#ylddhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ylddtbzf").text("%");
+							}else{
+								$("#ylddtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ylddhbzf").text("%");
+							}else{
+								$("#ylddhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "cpl" && pzname == "mianfen"){
+							$("#cplmftbze").text(price - tprice);
+							$("#cplmfhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#cplmftbzf").text("%");
+							}else{
+								$("#cplmftbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#cplmfhbzf").text("%");
+							}else{
+								$("#cplmfhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						if(lslx == "cpl" && pzname == "xianmi"){
+							$("#cplxmtbze").text(price - tprice);
+							$("#cplxmhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#cplxmtbzf").text("%");
+							}else{
+								$("#cplxmtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#cplxmhbzf").text("%");
+							}else{
+								$("#cplxmhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						if(lslx == "cpl" && pzname == "daomi"){
+							$("#cpldmtbze").text(price - tprice);
+							$("#cpldmhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#cpldmtbzf").text("%");
+							}else{
+								$("#cpldmtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#cpldmhbzf").text("%");
+							}else{
+								$("#cpldmhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						if(lslx == "cpl" && pzname == "douyou"){
+							$("#cpldytbze").text(price - tprice);
+							$("#cpldyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#cpldytbzf").text("%");
+							}else{
+								$("#cpldytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#cpldyhbzf").text("%");
+							}else{
+								$("#cpldyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						if(lslx == "cpl" && pzname == "caiziyou"){
+							$("#cplczytbze").text(price - tprice);
+							$("#cplczyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#cplczytbzf").text("%");
+							}else{
+								$("#cplczytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#cplczyhbzf").text("%");
+							}else{
+								$("#cplczyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						if(lslx == "cpl" && pzname == "huashengyou"){
+							$("#cplhsytbze").text(price - tprice);
+							$("#cplhsyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#cplhsytbzf").text("%");
+							}else{
+								$("#cplhsytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#cplhsyhbzf").text("%");
+							}else{
+								$("#cplhsyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						if(lslx == "zl" && pzname == "lvdou"){
+							$("#zlldtbze").text(price - tprice);
+							$("#zlldhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#zlldtbzf").text("%");
+							}else{
+								$("#zlldtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#zlldhbzf").text("%");
+							}else{
+								$("#zlldhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+				
+						if(lslx == "zl" && pzname == "xiaomi"){
+							$("#zlxmtbze").text(price - tprice);
+							$("#zlxmhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#zlxmtbzf").text("%");
+							}else{
+								$("#zlxmtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#zlxmhbzf").text("%");
+							}else{
+								$("#zlxmhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "zl" && pzname == "gaoliang"){
+							$("#zlgltbze").text(price - tprice);
+							$("#zlglhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#zlgltbzf").text("%");
+							}else{
+								$("#zlgltbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#zlglhbzf").text("%");
+							}else{
+								$("#zlglhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+				
+						if(lslx == "zl" && pzname == "shulei"){
+							$("#zlsltbze").text(price - tprice);
+							$("#zlslhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#zlsltbzf").text("%");
+							}else{
+								$("#zlsltbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#zlslhbzf").text("%");
+							}else{
+								$("#zlslhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "yp" && pzname == "douyou"){
+							$("#ypdytbze").text(price - tprice);
+							$("#ypdyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ypdytbzf").text("%");
+							}else{
+								$("#ypdytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ypdyhbzf").text("%");
+							}else{
+								$("#ypdyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "yp" && pzname == "caiziyou"){
+							$("#ypczytbze").text(price - tprice);
+							$("#ypczyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ypczytbzf").text("%");
+							}else{
+								$("#ypczytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ypczyhbzf").text("%");
+							}else{
+								$("#ypczyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+				
+						if(lslx == "yp" && pzname == "huashengyou"){
+							$("#yphsytbze").text(price - tprice);
+							$("#yphsyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#yphsytbzf").text("%");
+							}else{
+								$("#yphsytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#yphsyhbzf").text("%");
+							}else{
+								$("#yphsyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+				
+						if(lslx == "yp" && pzname == "doupo"){
+							$("#ypdptbze").text(price - tprice);
+							$("#ypdphbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ypdptbzf").text("%");
+							}else{
+								$("#ypdptbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ypdphbzf").text("%");
+							}else{
+								$("#ypdphbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+				
+						if(lslx == "yp" && pzname == "caipo"){
+							$("#ypcpls").text(price);
+							$("#ypcptbze").text(price - tprice);
+							$("#ypcphbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ypcptbzf").text("%");
+							}else{
+								$("#ypcptbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ypcphbzf").text("%");
+							}else{
+								$("#ypcphbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						
+						if(lslx == "yp" && pzname == "mianzipo"){
+							$("#ypmzptbze").text(price - tprice);
+							$("#ypmzphbze").text(price - hprice);
+							if(tprice == 0){
+								$("#ypmzptbzf").text("%");
+							}else{
+								$("#ypmzptbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#ypmzphbzf").text("%");
+							}else{
+								$("#ypmzphbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "gk" && pzname == "yumi"){
+							$("#gkymtbze").text(price - tprice);
+							$("#gkymhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#gkymtbzf").text("%");
+							}else{
+								$("#gkymtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#gkymhbzf").text("%");
+							}else{
+								$("#gkymhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						
+						if(lslx == "gk" && pzname == "dadou"){
+							$("#gkddtbze").text(price - tprice);
+							$("#gkddhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#gkddtbzf").text("%");
+							}else{
+								$("#gkddtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#gkddhbzf").text("%");
+							}else{
+								$("#gkddhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "gk" && pzname == "zonglvyou"){
+							$("#gkzlytbze").text(price - tprice);
+							$("#gkzlyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#gkzlytbzf").text("%");
+							}else{
+								$("#gkzlytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#gkzlyhbzf").text("%");
+							}else{
+								$("#gkzlyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						
+						if(lslx == "gk" && pzname == "douyou"){
+							$("#gkdytbze").text(price - tprice);
+							$("#gkdyhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#gkdytbzf").text("%");
+							}else{
+								$("#gkdytbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#gkdyhbzf").text("%");
+							}else{
+								$("#gkdyhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+				
+						if(lslx == "gk" && pzname == "caizi"){
+							$("#gkcztbze").text(price - tprice);
+							$("#gkczhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#gkcztbzf").text("%");
+							}else{
+								$("#gkcztbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#gkczhbzf").text("%");
+							}else{
+								$("#gkczhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "gk" && pzname == "xiaomai"){
+							$("#gkxmtbze").text(price - tprice);
+							$("#gkxmhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#gkxmtbzf").text("%");
+							}else{
+								$("#gkxmtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#gkxmhbzf").text("%");
+							}else{
+								$("#gkxmhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+						if(lslx == "yz" && pzname == "xiaomai"){
+							$("#yzxmtbze").text(price - tprice);
+							$("#yzxmhbze").text(price - hprice);
+							if(tprice == 0){
+								$("#yzxmtbzf").text("%");
+							}else{
+								$("#yzxmtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#yzxmhbzf").text("%");
+							}else{
+								$("#yzxmhbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+						
+						if(lslx == "yz" && pzname == "daogu"){
+							$("#yzdgsg").text(price);
+							$("#yzdgtbze").text(price - tprice);
+							$("#yzdghbze").text(price - hprice);
+							if(tprice == 0){
+								$("#yzdgtbzf").text("%");
+							}else{
+								$("#yzdgtbzf").text(((price - tprice)/tprice*100).toFixed(2)+"%");
+							}
+							if(hprice == 0){
+								$("#yzdghbzf").text("%");
+							}else{
+								$("#yzdghbzf").text(((price - hprice)/hprice*100).toFixed(2)+"%");
+							}
+						}
+					
+					}
+					
+					
+				},
+				error:function(){
+					
+				}
+			})
+			
+		}
+	}
+	
+	
+	
+	/*
+	//获取查询条件
+	var year = $("#niandu option:selected").val();
+	iweek = $("#nianzs option:selected").val();
+	iyear = year;
+	$.ajax({
+		url:'${ctxPath}/jiage/findguonei',
+		type:'post',
+		data:{"year":year,"iweek":iweek},
+		dataType:'json',
+		success:function(data){
+			//本期价格
+			var jdsg;
+			var jdch;
+			var xdsg;
+			var xdch;
+			var xmsg;
+			var xmch;
+			var pfjm;
+			var lsjm;
+			var jgjm;
+			var pfxianm;
+			var lsxianm;
+			var pfmf;
+			var lsmf;
+			var jgmf;
+			var jgyz;
+			//同比去年价格
+			var tjdsg;
+			var tjdch;
+			var txdsg;
+			var txdch;
+			var txmsg;
+			var txmch;
+			var tpfjm;
+			var tlsjm;
+			var tjgjm;
+			var tpfxianm;
+			var tlsxianm;
+			var tpfmf;
+			var tlsmf;
+			var tjgmf;
+			var tjgyz;
+			//环比上期价格
+			var hjdsg;
+			var hjdch;
+			var hxdsg;
+			var hxdch;
+			var hxmsg;
+			var hxmch;
+			var hpfjm;
+			var hlsjm;
+			var hjgjm;
+			var hpfxianm;
+			var hlsxianm;
+			var hpfmf;
+			var hlsmf;
+			var hjgmf;
+			var hjgyz;
+			for(var i = 0; i < data.list.length; i++){
+				var pz = data.list[i].pzcode;
+				var jglx = data.list[i].jglxcode;
+				var price = (data.list[i].avprice != null && data.list[i].avprice != "") ? data.list[i].avprice : 0;
+				var tprice = (data.list[i].tprice != null && data.list[i].tprice != "") ? data.list[i].tprice : 0;
+				var hprice = (data.list[i].hprice != null && data.list[i].hprice != "") ? data.list[i].hprice : 0;
+				
+				//粳稻
+				if(pz == "1132"){
+					if(jglx == "001"){
+						$("#sg_jd").text(price.toFixed(2));	
+						jdsg = price;
+						tjdsg = tprice;
+						hjdsg = hprice;
+					}
+					if(jglx == "002"){
+						$("#ch_jd").text(price.toFixed(2));
+						jdch = price;
+						tjdch = price;
+						hjdch = price;
+					}
+				}
+				//籼稻
+				if(pz == "1131"){
+					if(jglx == "001"){
+						$("#sg_xd").text(price.toFixed(2));
+						xdsg = price;
+						txdsg = tprice;
+						hxdsg = hprice;
+					}
+					if(jglx == "002"){
+						$("#ch_xd").text(price.toFixed(2));
+						xdch = price;
+						txdch = tprice;
+						hxdch = hprice;
+					}
+				}
+				//小麦
+				if(pz.substring(0,3) == "111"){
+					if(jglx == "001"){
+						$("#sg_xm").text(price.toFixed(2));
+						xmsg = price;
+						txmsg = tprice;
+						hxmsg = hprice;
+					}
+					if(jglx == "002"){
+						$("#ch_xm").text(price.toFixed(2));
+						xmch = price;
+						txmch = tprice;
+						hxmch = hprice;
+					}
+				}
+				//粳米
+				if(pz == "2362"){
+					if(jglx == "005"){
+						$("#pf_jm").text(price.toFixed(2));
+						pfjm = price;
+						tpfjm = tprice;
+						hpfjm = hprice;
+					}
+					if(jglx == "006"){
+						$("#ls_jm").text(price.toFixed(2));
+						lsjm = price;
+						tlsjm = tprice;
+						hlsjm = hprice;
+					}
+					if(jglx == "004"){
+						$("#jg_jm").text(price.toFixed(2));
+						jgjm = price;
+						tjgjm = tprice;
+						hjgjm = hprice;
+					}
+				}
+				//籼米
+				if(pz == "2361"){
+					if(jglx == "005"){
+						$("#pf_xianm").text(price.toFixed(2));
+						pfxianm = price;
+						tpfxianm = tprice;
+						hpfxianm = hprice;
+					}
+					if(jglx == "006"){
+						$("#ls_xianm").text(price.toFixed(2));
+						lsxianm = price;
+						tlsxianm = tprice;
+						hlsxianm = hprice;
+					}
+				}
+				//面粉
+				if(pz.substring(0,3) == "231"){
+					if(jglx == "005"){
+						$("#pf_mf").text(price.toFixed(2));
+						pfmf = price;
+						tpfmf = tprice;
+						hpfmf = hprice;
+					}
+					if(jglx == "006"){
+						$("#ls_mf").text(price.toFixed(2));
+						lsmf = price;
+						tlsmf = tprice;
+						hlsmf = hprice;
+					}
+					if(jglx == "004"){
+						$("#jg_mf").text(price.toFixed(2));
+						jgmf = price;
+						tjgmf = tprice;
+						hjgmf = hprice;
+					}
+				}
+				//油脂
+				if(pz.substring(0,3) == "141"){
+					if(jglx == "004"){
+						$("#jg_yz").text(price.toFixed(2));
+						jgyz = price;
+						tjgyz = tprice;
+						hjgyz = hprice;
+					}
+				}
+				
+			}
+			//=========================计算同比和环比=================================
+			var tbzze;
+			var tbzf;
+			var hbzze;
+			var hbzf;
+			var t = 0;
+			if(jdsg != null && jdch != null){
+				//粳稻
+				tbzze = (jdsg + jdch - tjdsg - tjdch) / 2;
+				tbzf = ((jdsg + jdch)/(tjdsg + tjdch) - 1) * 100;
+				hbzze = (jdsg + jdch - hjdsg - hjdch) / 2;
+				hbzf = ((jdsg + jdch)/(hjdsg + hjdch) - 1) * 100;
+				$("#jd_tb_zze").text(tbzze.toFixed(2));
+				$("#jd_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#jd_hb_zze").text(hbzze.toFixed(2));
+				$("#jd_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((jdsg - hjdsg) > 0){
+					$("#sg_jd").html(jdsg.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((jdsg - hjdsg) < 0){
+					$("#sg_jd").html(jdsg.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				if((jdch -hjdch) > 0){
+					$("#ch_jd").html(jdch.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((jdch - hjdch) < 0){
+					$("#ch_jd").html(jdch.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}	
+				
+				
+				t++;
+			}
+			if(xdsg != null && xdch != null){
+				//籼稻
+				tbzze = (xdsg + xdch - txdsg - txdch) / 2;
+				tbzf = ((xdsg + xdch)/(txdsg + txdch) - 1) * 100;
+				hbzze = (xdsg + xdch - hxdsg - hxdch) / 2;
+				hbzf = ((xdsg + xdch)/(hxdsg + hxdch) - 1) * 100;
+				$("#xd_tb_zze").text(tbzze.toFixed(2));
+				$("#xd_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#xd_hb_zze").text(hbzze.toFixed(2));
+				$("#xd_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((xdsg - hxdsg) > 0){
+					$("#sg_xd").html(xdsg.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((xdsg - hxdsg) < 0){
+					$("#sg_xd").html(xdsg.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				if((xdch - hxdch) > 0){
+					$("#ch_xd").html(xdch.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((xdch - hxdch) < 0){
+					$("#ch_xd").html(xdch.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				
+				t++;
+			}
+			if(xmsg != null && xmch != null){
+				//小麦
+				tbzze = (xmsg + xmch - txmsg - txmch) / 2;
+				tbzf = ((xmsg + xmch)/(txmsg + txmch) - 1) * 100;
+				hbzze = (xmsg + xmch - hxmsg - hxmch) / 2;
+				hbzf = ((xmsg + xmch)/(hxmsg + hxmch) - 1) * 100;
+				$("#xm_tb_zze").text(tbzze.toFixed(2));
+				$("#xm_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#xm_hb_zze").text(hbzze.toFixed(2));
+				$("#xm_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((xmsg - hxmsg) > 0){
+					$("#sg_xm").html(xmsg.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((xmsg - hxmsg) < 0){
+					$("#sg_xm").html(xmsg.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				if((xmch - hxmch) > 0){
+					$("#ch_xm").html(xmch.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((xmch - hxmch) < 0){
+					$("#ch_xm").html(xmch.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				
+				t++;
+			}
+			if(pfjm != null && lsjm != null){
+				//粳米
+				tbzze = (pfjm + lsjm - tpfjm - tlsjm) / 2;
+				tbzf = ((pfjm + lsjm)/(tpfjm + tlsjm) - 1) * 100;
+				hbzze = (pfjm + lsjm - hpfjm - hlsjm) / 2;
+				hbzf = ((pfjm + lsjm)/(hpfjm + hlsjm) - 1) * 100;
+				$("#jm_tb_zze").text(tbzze.toFixed(2));
+				$("#jm_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#jm_hb_zze").text(hbzze.toFixed(2));
+				$("#jm_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((pfjm - hpfjm) > 0){
+					$("#pf_jm").html(pfjm.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((pfjm - hpfjm) < 0){
+					$("#pf_jm").html(pfjm.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				
+				if((lsjm - hlsjm) > 0){
+					$("#ls_jm").html(lsjm.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((lsjm - hlsjm) < 0){
+					$("#ls_jm").html(lsjm.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">')
+				}
+				
+				t++;
+			}
+			if(jgjm != null){
+				tbzze = jgjm - tjgjm;
+				tbzf = (jgjm / tjgjm - 1) * 100;
+				hbzze = jgjm - hjgjm;
+				hbzf = (jgjm / hjgjm - 1) * 100;
+				$("#jmjg_tb_zze").text(tbzze.toFixed(2));
+				$("#jmjg_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#jmjg_hb_zze").text(hbzze.toFixed(2));
+				$("#jmjg_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((jgjm - hjgjm) > 0){
+					$("#jg_jm").html(lsjm.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((jgjm - hjgjm) < 0){
+					$("#jg_jm").html(lsjm.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				
+				t++;
+			}
+			if(pfxianm != null && lsxianm != null){
+				//籼米
+				tbzze = (pfxianm + lsxianm - tpfxianm - tlsxianm) / 2;
+				tbzf = ((pfxianm + lsxianm)/(tpfxianm + tlsxianm) - 1) * 100;
+				hbzze = (pfxianm + lsxianm - hpfxianm - hlsxianm) / 2;
+				hbzf = ((pfxianm + lsxianm)/(hpfxianm + hlsxianm) - 1) * 100;
+				$("#xianm_tb_zze").text(tbzze.toFixed(2));
+				$("#xianm_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#xianm_hb_zze").text(hbzze.toFixed(2));
+				$("#xianm_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((pfxianm - hpfxianm) > 0){
+					$("#pf_xianm").html(pfxianm.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((pfxianm - hpfxianm) < 0){
+					$("#pf_xianm").html(pfxianm.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				
+				if((lsxianm - hlsxianm) > 0){
+					$("#ls_xianm").html(lsxianm.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((lsxianm - hlsxianm) < 0){
+					$("#ls_xianm").html(lsxianm.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">')
+				}
+				
+				t++;
+			}
+			if(pfmf != null && lsmf != null){
+				//面粉
+				tbzze = (pfmf + lsmf - tpfmf - tlsmf) / 2;
+				tbzf = ((pfmf + lsmf)/(tpfmf + tlsmf) - 1) * 100;
+				hbzze = (pfmf + lsmf - hpfmf - hlsmf) / 2;
+				hbzf = ((pfmf + lsmf)/(hpfmf + hlsmf) - 1) * 100;
+				$("#mf_tb_zze").text(tbzze.toFixed(2));
+				$("#mf_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#mf_hb_zze").text(hbzze.toFixed(2));
+				$("#mf_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((pfmf - hpfmf) > 0){
+					$("#pf_mf").html(pfmf.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((pfmf - hpfmf) < 0){
+					$("#pf_mf").html(pfmf.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">')
+				}
+				
+				if((lsmf - hlsmf) > 0){
+					$("#ls_mf").html(lsmf.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((lsmf - hlsmf) < 0){
+					$("#ls_mf").html(lsmf.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">')
+				}
+				
+				t++;
+			}
+			if(jgmf != null){
+				tbzze = jgmf - tjgmf;
+				tbzf = (jgmf / tjgmf - 1) * 100;
+				hbzze = jgmf - hjgmf;
+				hbzf = (jgmf / hjgmf - 1) * 100;
+				$("#mfjg_tb_zze").text(tbzze.toFixed(2));
+				$("#mfjg_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#mfjg_hb_zze").text(hbzze.toFixed(2));
+				$("#mfjg_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((jgmf - hjgmf) > 0){
+					$("#jg_mf").html(jgmf.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((jgmf - hjgmf) < 0){
+					$("#jg_mf").html(jgmf.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				
+				t++;
+			}
+			if(jgyz != null){
+				//油脂
+				tbzze = jgyz - tjgyz;
+				tbzf = (jgyz / tjgyz - 1) * 100;
+				hbzze = jgyz - hjgyz;
+				hbzf = (jgyz / hjgyz - 1) * 100;
+				$("#yz_tb_zze").text(tbzze.toFixed(2));
+				$("#yz_tb_zf").text(tbzf.toFixed(2)+"%");
+				$("#yz_hb_zze").text(hbzze.toFixed(2));
+				$("#yz_hb_zf").text(hbzf.toFixed(2)+"%");
+				
+				if((jgyz - hjgyz) > 0){
+					$("#jg_yz").html(jgyz.toFixed(2) + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+				}else if((jgyz - hjgyz) < 0){
+					$("#jg_yz").html(jgyz.toFixed(2) + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+				}
+				
+				t++;
+			}
+			if(t == 0){
+				alert("没有数据");
+			}
+			
+		},
+		error:function(){
+			alert("查询国内报价失败");
+		}
+	});	
+	*/
+}
+
+//新增国内现货价格
+function addGnbj(){
+	dialog1=BootstrapDialog.show({
+	    title: '国内价格填报',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/xianhuobaobiao/guoneitb.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons: [{
+	        label: '关闭',
+	        cssClass: 'btn-xs btn-danger',
+	        action: function(dialog) {
+	        	dialog.close();
+	        }
+	    }]
+	});
+}
+
+function readyl(){
+	if(iyear != null && iyear != "" && iweek != null && iweek != ""){
+		//var flag = 0;
+		var url = '${ctxPath}/jiage/xianhuobaobiao/guoneijgqs.html?pz=yl&year='+iyear+'&week='+iweek;
+		dialog1=BootstrapDialog.show({
+		    title: '原粮价格趋势',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src='+url+'/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+	       buttons: [{
+		        label: '关闭',
+		        cssClass: 'btn-xs btn-danger',
+		        action: function(dialog) {
+		        	dialog.close();
+		        }
+		    }]
+		});
+	}else{
+		alert("请选择年度和周数，并查询结果");
+	}
+}
+
+function readcpl(){
+	if(iyear != null && iyear != "" && iweek != null && iweek != ""){
+		dialog1=BootstrapDialog.show({
+		    title: '成品粮价格趋势',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/xianhuobaobiao/guoneijgqs.html?year='+iyear+'&week='+iweek+'&pz=cpl"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+	       buttons: [{
+		        label: '关闭',
+		        cssClass: 'btn-xs btn-danger',
+		        action: function(dialog) {
+		        	dialog.close();
+		        }
+		    }]
+		});
+	}else{
+		alert("请选择年度和周数，并查询结果");
+	}
+}
+
+function readzl(){
+	if(iyear != null && iyear != "" && iweek != null && iweek != ""){
+		dialog1=BootstrapDialog.show({
+		    title: '杂粮价格趋势',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/xianhuobaobiao/guoneijgqs.html?year='+iyear+'&week='+iweek+'&pz=zl"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+	       buttons: [{
+		        label: '关闭',
+		        cssClass: 'btn-xs btn-danger',
+		        action: function(dialog) {
+		        	dialog.close();
+		        }
+		    }]
+		});
+	}else{
+		alert("请选择年度和周数，并查询结果");
+	}
+}
+
+function readyp(){
+	if(iyear != null && iyear != "" && iweek != null && iweek != ""){
+		dialog1=BootstrapDialog.show({
+		    title: '油粕价格趋势',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/xianhuobaobiao/guoneijgqs.html?year='+iyear+'&week='+iweek+'&pz=yp"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+	       buttons: [{
+		        label: '关闭',
+		        cssClass: 'btn-xs btn-danger',
+		        action: function(dialog) {
+		        	dialog.close();
+		        }
+		    }]
+		});
+	}else{
+		alert("请选择年度和周数，并查询结果");
+	}
+}
+
+function readgk(){
+	if(iyear != null && iyear != "" && iweek != null && iweek != ""){
+		dialog1=BootstrapDialog.show({
+		    title: '港口报价价格趋势',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/xianhuobaobiao/guoneijgqs.html?year='+iyear+'&week='+iweek+'&pz=gk"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+	       buttons: [{
+		        label: '关闭',
+		        cssClass: 'btn-xs btn-danger',
+		        action: function(dialog) {
+		        	dialog.close();
+		        }
+		    }]
+		});
+	}else{
+		alert("请选择年度和周数，并查询结果");
+	}
+}
+
+function readyz(){
+	if(iyear != null && iyear != "" && iweek != null && iweek != ""){
+		dialog1=BootstrapDialog.show({
+		    title: '优质品种价格趋势',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/xianhuobaobiao/guoneijgqs.html?year='+iyear+'&week='+iweek+'&pz=yz"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+	       buttons: [{
+		        label: '关闭',
+		        cssClass: 'btn-xs btn-danger',
+		        action: function(dialog) {
+		        	dialog.close();
+		        }
+		    }]
+		});
+	}else{
+		alert("请选择年度和周数，并查询结果");
+	}
+}
+
+
+
+
+function jglxChange(){
+	$(".jglxls").hide();
+	var jglx = $("#jglx").val();
+	//var jglx = $("#jglx option:selected").val();
+	if($.inArray("yuanliang",jglx)>-1){
+		$(".yuanliang").show();
+	}
+	if($.inArray("chengpinliang",jglx)>-1){
+		$(".chengpinliang").show();
+	}
+	if($.inArray("zaliang",jglx)>-1){
+		$(".zaliang").show();
+	}
+	if($.inArray("youpo",jglx)>-1){
+		$(".youpo").show();
+	}
+	if($.inArray("gangkou",jglx)>-1){
+		$(".gangkou").show();
+	}
+	if($.inArray("youzhi",jglx)>-1){
+		$(".youzhi").show();
+	}
+}
+
+</script>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>国内价格</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+	<div class="caozuo" style="">
+		<div class="cjd-div niandu-div">
+			<label class="cjd-label">年度:</label>
+			<select id="niandu"  class="form-control cjd-select" onchange = "Change()" style="width: 100px;" >
+			</select>
+		</div>
+		<div class="cjd-div nianzs-div" style="margin-left:20px">
+			<label class="cjd-label">年周数:</label>
+			<select id="nianzs" class="form-control cjd-select" style="width: 200px;">
+			</select>
+		</div>
+		<div class="cjd-div" style="margin-left:20px">
+			<label class="cjd-label">价格类型:</label>
+			<select id="jglx" class="form-control cjd-select select2"  multiple="multiple" onchange = "jglxChange()" style="width: 200px;">
+				<option value = "yuanliang">原粮</option>
+				<option value = "chengpinliang">成品粮</option>
+				<option value = "zaliang">杂粮</option>
+				<option value = "youpo">油粕</option>
+				<option value = "gangkou">港口报价</option>
+				<option value = "youzhi">优质品种</option>
+			</select>
+		</div>
+		<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		<a class="btn btn-xs btn-success" type="button" onclick="addGnbj()" style="float:right; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;新增</i></a>
+	</div>
+	<div style="float:right;text-align:right">
+		单位:元/50公斤
+	</div>
+	
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="${ctxPath}/jiage/querycaijia.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">价格类型</th>
+	     			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">产区磅秤收购价</th>
+	     			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">产区磅秤出库价</th>
+	     			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">销区零售价格</th>
+	     			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">销区磅秤出库价</th>
+	     			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">平仓(舱)价</th>
+	     			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">到港价</th>
+	     			<th rowspan="2" colspan="1" id="" style="vertical-align:middle">出厂价</th>
+	     			<th rowspan="1" colspan="2" id="" style="vertical-align:middle">同比</th>
+	     			<th rowspan="1" colspan="2" id="" style="vertical-align:middle">环比</th>
+	 			</tr>
+	 			<tr>
+	     			<th rowspan="1" colspan="1" id="" class="rowtwo" style="vertical-align:middle">增长额</th>
+	     			<th rowspan="1" colspan="1" id="" class="rowtwo" style="vertical-align:middle">增幅</th>
+	     			<th rowspan="1" colspan="1" id="" class="rowtwo" style="vertical-align:middle">增长额</th>
+	     			<th rowspan="1" colspan="1" id="" class="rowtwo" style="vertical-align:middle">增幅</th>
+	 			</tr>
+			</thead>	
+			<tbody>
+				<tr class="yuanliang jglxls">
+					<td rowspan="" colspan="6" class="leixin" style="vertical-align:left">原粮</td>
+					<td rowspan="" colspan="6" class="leixin" style="text-align:right"><a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="readyl()">价格趋势</a></td>
+				</tr>
+				<tr class="yuanliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">小麦</td>
+					<td rowspan="1" colspan="1" id="ylxmsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylxmck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylxmtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylxmtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylxmhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylxmhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="yuanliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">玉米</td>
+					<td rowspan="1" colspan="1" id="ylymsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylymck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylymtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylymtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylymhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylymhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="yuanliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">大豆</td>
+					<td rowspan="1" colspan="1" id="ylddsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylddck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylddtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylddtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylddhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylddhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="yuanliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">稻谷</td>
+					<td rowspan="1" colspan="1" id="yldgsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yldgck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yldgtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yldgtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yldghbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yldghbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="yuanliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">油菜籽</td>
+					<td rowspan="1" colspan="1" id="ylyczsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylyczck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylycztbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylycztbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylyczhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylyczhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="yuanliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">花生仁</td>
+					<td rowspan="1" colspan="1" id="ylhsrsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylhsrck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylhsrtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylhsrtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylhsrhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ylhsrhbzf" class="pinlei" style=""></td>
+				</tr>
+				
+				<tr class="chengpinliang jglxls">
+					<td rowspan="" colspan="6"  class="leixin" style="vertical-align:left">成品粮</td>
+					<td rowspan="" colspan="6" class="leixin" style="text-align:right"><a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="readcpl()">价格趋势</a></td>
+				</tr>
+				<tr class="chengpinliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">面粉</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplmfbcck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplmftbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplmftbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplmfhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplmfhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="chengpinliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">籼米</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplxmbcck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplxmtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplxmtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplxmhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplxmhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="chengpinliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">稻米</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldmbcck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldmtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldmtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldmhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldmhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="chengpinliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">豆油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldybcck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cpldyhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="chengpinliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">菜籽油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplczybcck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplczytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplczytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplczyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplczyhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="chengpinliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">花生油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplhsybcck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplhsytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplhsytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplhsyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="cplhsyhbzf" class="pinlei" style=""></td>
+				</tr>
+				
+				<tr class="zaliang jglxls">
+					<td rowspan="" colspan="6"  class="leixin"  style="vertical-align:left">杂粮</td>
+					<td rowspan="" colspan="6" class="leixin" style="text-align:right"><a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="readzl()">价格趋势</a></td>
+				</tr>
+				<tr class="zaliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">绿豆</td>
+					<td rowspan="1" colspan="1" id="zlldsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlldck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlldtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlldtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlldhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlldhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="zaliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">小米</td>
+					<td rowspan="1" colspan="1" id="zlxmsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlxmck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlxmtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlxmtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlxmhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlxmhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="zaliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">高粱</td>
+					<td rowspan="1" colspan="1" id="zlglsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlglck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlgltbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlgltbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlglhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlglhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="zaliang jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">薯类</td>
+					<td rowspan="1" colspan="1" id="zlslsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlslck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlsltbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlsltbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlslhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="zlslhbzf" class="pinlei" style=""></td>
+				</tr>
+				
+				<tr class="youpo jglxls">
+					<td rowspan="" colspan="6"  class="leixin"  style="vertical-align:left">油粕</td>
+					<td rowspan="" colspan="6" class="leixin" style="text-align:right"><a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="readyp()">价格趋势</a></td>
+				</tr>
+				<tr class="youpo jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">豆油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdyls" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdycc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdyhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="youpo jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">菜籽油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypczyls" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypczycc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypczytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypczytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypczyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypczyhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="youpo jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">花生油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yphsyls" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yphsycc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yphsytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yphsytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yphsyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yphsyhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="youpo jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">豆粕</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdpls" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdpcc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdptbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdptbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdphbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypdphbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="youpo jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">菜粕</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypcpls" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypcpcc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypcptbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypcptbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypcphbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypcphbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="youpo jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">棉籽粕</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypmzpls" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypmzpcc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypmzptbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypmzptbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypmzphbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="ypmzphbzf" class="pinlei" style=""></td>
+				</tr>
+				
+				<tr class="gangkou jglxls">
+					<td rowspan="" colspan="6"  class="leixin"  style="vertical-align:left">港口报价</td>
+					<td rowspan="" colspan="6" class="leixin" style="text-align:right"><a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="readgk()">价格趋势</a></td>
+				</tr>
+				<tr class="gangkou jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">玉米</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkymdg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkymcc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkymtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkymtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkymhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkymhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="gangkou jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">大豆</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkdddg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkddcc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkddtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkddtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkddhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkddhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="gangkou jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">棕榈油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkzlydg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkzlycc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkzlytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkzlytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkzlyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkzlyhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="gangkou jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">豆油</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkdydg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkdycc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkdytbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkdytbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkdyhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkdyhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="gangkou jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">菜籽</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkczdg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkczcc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkcztbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkcztbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkczhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkczhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="gangkou jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">小麦</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkxmdg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkxmcc" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkxmtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkxmtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkxmhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="gkxmhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="youzhi jglxls">
+					<td rowspan="" colspan="6"  class="leixin"  style="vertical-align:left">优质品种</td>
+					<td rowspan="" colspan="6" class="leixin" style="text-align:right"><a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="readyz()">价格趋势</a></td>
+				</tr>
+				<tr class="youzhi jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">小麦</td>
+					<td rowspan="1" colspan="1" id="yzxmsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzxmck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzxmtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzxmtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzxmhbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzxmhbzf" class="pinlei" style=""></td>
+				</tr>
+				<tr class="youzhi jglxls">
+					<td rowspan="1" colspan="1" class="pinlein" style="">稻谷</td>
+					<td rowspan="1" colspan="1" id="yzdgsg" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzdgck" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzdgtbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzdgtbzf" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzdghbze" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" id="yzdghbzf" class="pinlei" style=""></td>
+				</tr>
+			</tbody>
+		</table>
+   </div>
+</div>
+
+<%}%>

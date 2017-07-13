@@ -1,0 +1,28 @@
+<%
+ layout(gisCityHtml){
+%>
+<style>
+	.container-fluid {
+	     padding-right: 0px; 
+	     padding-left: 0px; 
+	     margin-right: 0px; 
+	     margin-left: 0px; 
+	}
+	.panel.panel-default {
+    	border-top-width: 3px;
+   	 	margin-top: 0px; 
+	}
+
+	
+</style>
+<div class="panel panel-default">	
+	<div class="panel-body" >
+		<div class="container-fluid">
+				<iframe src="${gisurl}idxKeshihua.jsp?type=2" width="98%" height="750px" style="position: absolute;margin-top: 0px;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+		</div>
+	</div>
+</div>
+
+	<%
+		}
+	%>

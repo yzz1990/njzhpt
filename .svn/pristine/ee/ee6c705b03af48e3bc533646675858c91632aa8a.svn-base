@@ -1,0 +1,468 @@
+<% layout("/WEB-INF/web/ui/globalStyle.html"){ %>
+<script type="text/javascript" src="${ctxPath}/web/echarts.js"></script>
+
+<title>SimpleTree</title>
+<link rel="stylesheet" type="text/css"
+	href="${ctxPath}/resource/SimpleTree.css" />
+<script type="text/javascript" src="${ctxPath}/resource/SimpleTree.js"></script>
+
+<style>
+.active {
+	background-color: #B0C4DE;
+}
+
+.conttext {
+	border: 1px solid;
+	width: 300px;
+	height: 300px;
+	float: left;
+}
+
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+
+.panel-info {
+	float: left;
+	width: 300px;
+	height: 600px;
+}
+
+.panel-success {
+	margin-left: 30px;
+	float: left;
+	width: 400px;
+	height: 350px;
+}
+#panelDemo10,#panelDemo11{
+	 background-color: rgba(217, 237, 247, 0.3);
+}
+
+#panelDemo11{
+	margin-left: 10px;
+}
+.panel{
+	   
+	    margin-top: 10px;
+}
+</style>
+
+<script type="text/javascript">
+	var vid;
+	//标志新增还是修改
+	var flag = 0;
+
+	//加载各下拉列表
+	$(window).load(
+			function() {
+				//加载区县
+				$.ajax({
+					url : '${ctxPath}/shouchukeshihua/findquxian',
+					type : 'post',
+					dataType : 'json',
+					success : function(data) {
+						$.each(data, function(i, n) {
+							$("#ssqycode").append(
+									'<option value ="'+n.id+'">' + n.name
+											+ '</option>');
+						});
+					},
+					error : function() {
+						alert("加载区县失败");
+					}
+				});
+				//加载职员类型
+				$.ajax({
+					url : '${ctxPath}/jiage/queryzylx.do',
+					type : 'post',
+					data : {
+						"page" : 1,
+						"rows" : 100
+					},
+					dataType : 'json',
+					success : function(data) {
+						$.each(data.list, function(i, n) {
+							$("#zylxcode").append(
+									'<option value ="'+n.zylxbh+'">' + n.zylxmc
+											+ '</option>');
+						});
+					},
+					error : function() {
+						alert("加载职员类型失败");
+					}
+				});
+				//加载职员类别
+				$.ajax({
+					url : '${ctxPath}/jiage/queryzylb.do',
+					type : 'post',
+					data : {
+						"page" : 1,
+						"rows" : 100
+					},
+					dataType : 'json',
+					success : function(data) {
+						$.each(data.list, function(i, n) {
+							$("#zylbcode").append(
+									'<option value ="'+n.zylbbh+'">' + n.zylbmc
+											+ '</option>');
+						});
+					},
+					error : function() {
+						alert("加载职员类别失败");
+					}
+				});
+
+			});
+
+	$(function() {
+		gettree();
+	});
+	
+	function gettree(){
+		$("#suoyzy").empty();
+		$
+		.ajax({
+			url : '${ctxPath}/jiage/queryzhiyuan.do',
+			type : 'post',
+			data : {
+				"page" : 1,
+				"rows" : 1000
+			},
+			dataType : 'json',
+			success : function(data) {
+				//=======================================动态加载tree=================================
+				for (var j = 0; j < data.list.length; j++) {
+					var li = '<li id="'+data.list[j].id+'"><a href="#" ref="">&nbsp;'
+							+ data.list[j].zymc + '</a></li>';
+					$("#syzy").next().append(li);
+				}
+				//=====================================a的单击事件===================================
+				$(".st_tree")
+						.SimpleTree(
+								{
+									click : function(a) {
+										if (!$(a).attr("hasChild")) {
+											alert($(a).attr("ref"));
+										}
+										var zymc = $(a).text().trim();
+
+										//$(this).addClass("selected").siblings().removeClass("selected");
+
+										$("a").removeClass("active");
+										$(a).addClass("active")
+												.siblings()
+												.removeClass("active");
+										vid = $(a).parent().attr("id");
+										//flag1修改职员
+										flag = 1;
+
+										$
+												.ajax({
+													url : '${ctxPath}/jiage/queryzhiyuan.do',
+													type : 'post',
+													data : {
+														"page" : 1,
+														"rows" : 1,
+														"zymc" : zymc
+													},
+													dataType : 'json',
+													success : function(
+															data) {
+														$("#id")
+																.val(
+																		data.list[0].id);
+														$("#dlmc")
+																.val(
+																		data.list[0].dlmc);
+														$("#zymc")
+																.val(
+																		data.list[0].zymc);
+														$("#yhkl")
+																.val(
+																		data.list[0].yhkl);
+														$("#zylbcode")
+																.val(
+																		data.list[0].zylbcode);
+														$("#zylxcode")
+																.val(
+																		data.list[0].zylxcode);
+														$("#ssqycode")
+																.val(
+																		data.list[0].ssqycode);
+														$("#zw")
+																.val(
+																		data.list[0].zw);
+														$("#gddh")
+																.val(
+																		data.list[0].gddh);
+														$("#yddh")
+																.val(
+																		data.list[0].yddh);
+														$("#yx")
+																.val(
+																		data.list[0].yx);
+													},
+													error : function() {
+														alert("加载职员失败");
+													}
+												});
+									}
+								});
+				//===================================a的单击事件(结束)===================================
+				//=======================================动态加载tree（结束）=================================	
+			},
+			error : function() {
+				alert("读取品种失败");
+			}
+		});
+	}
+
+	function addZy() {
+		//flag2新增职员
+		flag = 2;
+		if (confirm("是否添加新的职员")) {
+			//====================初始化列表====================
+			$("#dlmc").val("");
+			$("#zymc").val("");
+			$("#yhkl").val("");
+			$("#zw").val("");
+			$("#gddh").val("");
+			$("#yddh").val("");
+			$("#yx").val("");
+		}
+	}
+
+	function saveZy() {
+		//新增职员
+		if (flag == 2) {
+			var form = $(".dashboard-wrapper-lg form");
+			if (confirm("是否保存新的职员")) {
+				$.ajax({
+					url : '${ctxPath}/jiage/savezy',
+					type : 'post',
+					data : form.serialize(),
+					dataType : 'json',
+					success : function(msg) {
+						if (!msg.ret) {
+							alert(msg.message);
+						} else {
+							alert("保存成功");
+						}
+						gettree();
+					},
+					error : function() {
+						alert("保存职员失败");
+					}
+				});
+			}
+		}
+		//修改选中的职员
+		if (flag == 1) {
+			var form = $(".dashboard-wrapper-lg form");
+			if (confirm("是否修改该职员")) {
+				$.ajax({
+					url : '${ctxPath}/jiage/updatezy',
+					type : 'post',
+					data : form.serialize(),
+					dataType : 'json',
+					success : function(msg) {
+						if (!msg.ret) {
+							alert(msg.message);
+						} else {
+							alert("修改成功");
+						}
+						gettree();
+					},
+					error : function() {
+						alert("修改职员失败");
+					}
+				});
+			}
+		}
+	}
+
+	function deleteZy() {
+
+		var zymc = $("#zymc").val();
+
+		if (confirm("是否删除职员" + zymc)) {
+			$.ajax({
+				url : '${ctxPath}/jiage/deleteZy',
+				type : 'post',
+				data : {
+					"id" : vid
+				},
+				dataType : 'json',
+				success : function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("删除成功");
+					}
+					gettree();
+
+				},
+				error : function() {
+					alert("删除职员失败");
+				}
+			});
+
+		}
+
+	}
+
+	function updateZy() {
+		location.reload();
+	}
+</script>
+</head>
+<body>
+	<div class="panel panel-default">
+		<div
+			style="border: 1px solid #ADD8E6; width: 100%; background-color: #E8F2F9; border-radius: 3px; margin-top: 5px"
+			align="left">
+			<img alt="" src="${ctxPath}/img/titleico.png"
+				style="padding: 5px; position: absolute;"> <span
+				style="height: 50px; font-size: 20px; color: black; padding: 0px; margin-left: 25px;"><b>职员管理</b></span>
+		</div>
+		<div class="panel-heading">
+			<div class="form-inline">
+				<p class="caozuo">
+					<a class="btn btn-xs btn-success" type="button" onclick="addZy()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-clipboard" aria-hidden="true">&nbsp;新增</i></a> 
+					<a	class="btn btn-xs btn-success" type="button" onclick="saveZy()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-floppy-o" aria-hidden="true">&nbsp;保存</i></a> 
+					<a	class="btn btn-xs btn-success" type="button" onclick="deleteZy()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-times" aria-hidden="true">&nbsp;删除</i></a> 
+				</p>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+
+		<div class="panel-body">
+			<div id="panelDemo10" class="panel panel-info">
+				<div class="panel-heading">职员列表</div>
+				<div class="panel-body">
+					<div class="st_tree">
+						<ul class="st_tree_ul">
+							<li id="syzy"><a style="width: 100px" href="#" ref="sypz">&nbsp;所有职员</a></li>
+							<ul id="suoyzy"></ul>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+
+			<div id="panelDemo11" class="panel panel-info" style="width: 70%;">
+				<div class="panel-heading">职员详细信息</div>
+				<div class="panel-body">
+					<div class="dashboard-wrapper-lg"
+						style="padding: 0; margin-top: -20px;">
+						<br>
+						<br>
+						<form id="contentform" role="form" action="" method="post"
+							style="overflow: hidden;">
+
+
+							<div class="col-lg-12 col-md-12">
+								<div class="widget">
+
+									<div class="widget-body">
+										<div class="row">
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="dlmc">登录名称:</label> <input id="id" name="id"
+														class="form-control" placeholder="id"
+														style="display: none" value=""> <input id="dlmc"
+														name="dlmc" class="form-control" placeholder="登录名称"
+														value="">
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="zymc">职员名称:</label> <input type="text"
+														id="zymc" name="zymc" class="form-control"
+														placeholder="职员名称" value="">
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="yhkl">用户口令:</label> <input type="password"
+														id="yhkl" name="yhkl" class="form-control"
+														placeholder="用户口令" value="">
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="zylxcode">职员类型:</label> <select id="zylxcode"
+														name="zylxcode" class="form-control">
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="zylbcode">职员类别:</label> <select id="zylbcode"
+														name="zylbcode" class="form-control">
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="ssqycode">所属区域:</label> <select id="ssqycode"
+														name="ssqycode" class="form-control">
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="zw">职务:</label> <input id="zw" name="zw"
+														class="form-control" placeholder="职务" value="">
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="gddh">固定电话:</label> <input id="gddh"
+														name="gddh" class="form-control" placeholder="固定电话"
+														value="">
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="yddh">移动电话:</label> <input id="yddh"
+														name="yddh" class="form-control" placeholder="移动电话"
+														value="">
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="yx">邮箱:</label> <input id="yx" name="yx"
+														class="form-control" placeholder="邮箱" value="">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+
+
+
+
+
+
+<script type="text/javascript">
+	
+</script>
+<%}%>

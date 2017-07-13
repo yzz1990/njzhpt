@@ -1,0 +1,787 @@
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<%
+var obj={},title;
+	if(isEmpty(parameter.vSwiftNumber)){
+		title = "新增";
+	}else{
+		title = "编辑";
+		obj = @com.zkzy.njzhpt.dao.ZhiLiangGLDAO.selectfeiksh({"vSwiftNumber":parameter.vSwiftNumber,"qyzzjgdm":parameter.qyzzjgdm,"kdbm":parameter.kdbm,"page":1,"rows":15}).getList().get(0);	 
+	}
+%>
+<style type="text/css">
+#btn{
+float: right;
+}
+div{
+margin-top: 10px;
+}
+table{
+border:none;
+}
+input{
+height:100%;
+width: 100%;
+}
+ td{
+   		    font-size: 14px ! important;
+   			padding: 0px ! important;
+   			line-height: 34px ! important;
+   			text-align: left ! important;
+    	}
+.tt{
+    		text-align: right ! important;
+    	} 
+			body, .wrapper > section {
+			    background-color: #FFFFFF;
+			}
+			.panel-body {
+			    padding: 0px;
+			}
+			div.dataTables_info{
+				padding-top: 4px;
+				padding-left: 4px;
+			}
+			.nav>li>a:focus, .nav>li>a:hover{
+				background-color: transparent;
+			}
+			.sidebar .nav > li > a {
+				color:white;
+				font-family: '微软雅黑';
+			}
+			
+			.nav>li>a>i{
+				width:20px;
+				text-align: center;
+			}
+			.CT-icon1 {
+				margin-right: 10px;
+			}
+			
+			#list-city-area {
+				position: relative;
+				left: -35px;
+			}
+			
+			#CT-exit {
+				width: 70px;
+				height: 70px;
+				background-color: rgba(38, 158, 196, 0);
+				float: right;
+				right: 0px;
+				padding: 21px;
+				padding-top: 15px;
+			}
+			
+			#head {
+				float: right;
+				margin-top: 14px;
+				margin-right: 25px;
+			}
+			
+			.CT-title-text {
+				font-family: 微软雅黑;
+				font-size: 14px;
+				color: #fff;
+			}
+			
+			#userName {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-time {
+				float: right;
+				margin-top: 20px;
+				margin-right: 20px;
+			}
+			
+			#CT-weather {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-date {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-icon-weather {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-ptbt {
+				font-family: 微软雅黑;
+				font-size: 30px;
+				color: #fff;
+				height: 70px;
+				line-height: 70px;
+			}
+			.nav > li.active .nav {
+			    background-color: rgb(60, 115, 148);
+			    color: #FFFFFF;
+			}
+			.table-striped>thead>tr>th{
+				text-align: center;
+			}
+			.table-striped>tbody>tr {
+				font-family: '微软雅黑'
+			}
+			.wrapper > .aside {
+			    padding: 5px;
+    			margin-top: 70px;
+			    border-radius: 20px;
+			    background-color: #FFFFFF;
+			}
+			@media only screen and (min-width: 768px)
+			.wrapper>.aside .aside-inner {
+			    border-radius: 7px;
+			    padding-top: 0px;
+			}
+			.wrapper>.aside .aside-inner {
+			    border-radius: 7px;
+			    padding-top: 0px;
+			    height: 100%;
+			    width: 210px; 
+			    overflow: hidden;
+			}
+			.panel {
+			    margin-bottom: 20px;
+			    background-color: #fff;
+			     border: 0px; 
+			    border-radius: 4px;
+			    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+			     box-shadow: 0 0px 0px rgba(0,0,0,.05); 
+			}
+			table.dataTable {
+			    clear: both;
+			    margin-top: 0px !important;
+			    margin-bottom: 6px !important;
+			    max-width: none !important;
+			}
+			.panel-default>.panel-heading {
+			    color: #333;
+			    background-color: #FFFFFF;
+			    border-color: #ddd;
+			}
+			input,.form-control,.select2-container--default .select2-selection--single {
+			    background-color: #fff;
+			    border: 1px solid #8ABADC;
+			    border-radius: 4px;
+			    box-shadow: darkorange;
+			    -moz-box-shadow: inset 0 0 10px #CCC;
+			    -webkit-box-shadow: inset 0 0 10px #CCC;
+			    box-shadow: inset 0 0 20px #E8F2F9;
+			}
+			table.datatables>thead>tr:nth-of-type(odd){
+				 background-color: #B5DCFF;
+			}
+			.table-striped>tbody>tr:nth-of-type(odd) {
+			    background-color: #E8F2F9;
+			}
+			.table-striped>tbody>tr:nth-of-type(even) {
+			    background-color: #FFFFFF;
+			}
+			.pagination>li>a, .pagination>li>span {
+			    position: relative;
+			    float: left;
+			    padding: 6px 12px;
+			    margin-left: -1px;
+			    line-height: 1.42857143;
+			    color: #337ab7;
+			    text-decoration: none;
+			    background-color: #E8F2F9;
+   				border: 1px solid #BEE2FB;
+			}
+			.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+			    z-index: 3;
+			    color: white;
+			    cursor: default;
+			    background-color: #5CB85C;
+			    border-color: #5CB85C;
+			}
+			.sidebar .nav > li.active .nav {
+			    background-color: rgb(85, 155, 197);
+			    color: #FFFFFF;
+			}
+			.table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+			    border-bottom-width: 1px;
+			}
+			.sidebar:after{
+			  width: 0px;
+			}
+			.panel.panel-default {
+			    border-top-width: 3px;
+			    margin-top: 6px;
+			}
+			.panel-default>.panel-heading{
+				border-left: 1px solid #ADD8E6;
+				border-bottom: 1px solid #ADD8E6;
+				border-right: 1px solid #ADD8E6;
+				border-radius: 3px;
+			}
+			.sidebar .nav > li.active > a {
+			    background-color: #4298B3;
+			    color: #FFFFFF;
+			}
+			.sidebar-subnav {
+			    background-color: rgb(66, 152, 179);
+			}
+		</style>
+
+</style>
+<form id="sc" role="form" action=""  style="overflow: hidden;">
+	<fieldset>
+    <legend>出入库基本信息</legend>
+		<table width="100%">
+			<tr>
+				<td  width="160" class="tt">流水号　:</td>
+         		<td ><input name="vSwiftNumber" id="vSwiftNumber" type="text" value="${obj.vSwiftNumber}" onkeyup="value=value.replace(/[^a-zA-Z0-9]/g,'')" ></td>
+				<td  width="160" class="tt">报港时间　:</td>
+         		<td ><input name="dtRegistrateTime" id="dtRegistrateTime" type="text" value="${obj.dtRegistrateTime}" ></td>
+				<td  width="160" class="tt">出入库标识　:</td>
+         		<td ><select name="vDirection" id="vDirection"  style="width:160px;font-size:14px" class="js-example-basic-single" >
+         				<option value="">请选择</option>
+         				<option value="入库"  ${obj.vDirection=='入库'?" selected"}>入库</option>
+         				<option value="出库"  ${obj.vDirection=='出库'?" selected"}>出库</option>	
+         			</select>
+         		</td>
+			</tr>
+			<tr>
+         		<td width="160" class="tt">地　区　:</td>
+         		<td><select name="xzqhdm" id="xzqhdm"  style="width:160px;font-size:14px" class="js-example-basic-single"  onchange="selectQYMC()">
+         			<option value="">请选择区域名称</option>
+         		</select></td>
+         		<td class="tt" width="160">企　业　:</td>
+         		<td><select name="qyzzjgdm" id="qyzzjgdm" style="width:160px;font-size:14px" class="js-example-basic-single" onchange="selectKDMC()">
+         			<option value="">请选择企业名称</option>
+         		</select></td>
+         		<td class="tt" width="160">库　点　:</td>
+         		<td><select name="kdbm" id="kdbm"  style="width:160px;font-size:14px" class="js-example-basic-single" onchange="selectCH()">
+         			<option value="">请选择库点名称</option>
+         		</select></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">仓　房　:</td>
+         		<td ><select name="vWareHouseCode" id="vWareHouseCode"  style="width:160px;font-size:14px" class="js-example-basic-single">
+         				<option value="">请选择仓房名称</option>
+         		</select></td>
+         		<td  width="160" class="tt">粮食品种　:</td>
+         		<td ><select name="vGrainSubTypeCode" id="vGrainSubTypeCode" style="width:160px;font-size:14px" class="js-example-basic-single" >
+         				<option value="">请选择粮食品种</option>
+         		</select></td>
+         		<td  width="160" class="tt">粮食性质　:</td>
+         		<td ><select name="vGrainPropertyId" id="vGrainPropertyId" style="width:160px;font-size:14px" class="js-example-basic-single" >
+         				<option value="">请选择粮食性质</option>
+         		</select></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">粮食等级　:</td>
+         		<td ><select name="vGrainLevel" id="vGrainLevel" style="width:160px;font-size:14px" class="js-example-basic-single" >
+         				<option value="">请选择粮食等级</option>
+         		</select></td>
+         		<!-- <td ><input name="vGrainLevel" id="vGrainLevel" type="text" value="${obj.vGrainLevel}" ></td>-->
+         		<td  width="160" class="tt">粮食年限　:</td>
+         		<td ><input name="vHarvestPeriod" id="vHarvestPeriod" type="text" value="${obj.vHarvestPeriod}" ></td>
+        	 	<td  width="160" class="tt">包装类型　:</td>
+         		<td ><input name="vPackageTypeCode" id="vPackageTypeCode" type="text" value="${obj.vPackageTypeCode}" ></td>
+        	 </tr>
+        	 <tr>
+        	 	<td  width="160" class="tt">包装数量　:</td>
+         		<td ><input name="dmPackageNumber" id="dmPackageNumber" type="text" value="${obj.dmPackageNumber}" ></td>
+        
+        	 </tr>
+		</table>
+	</fieldset>
+ <fieldset>
+    <legend>收发货方基本信息</legend>
+        <table width="100%" >
+         	<tr>
+         		<td  width="160" class="tt">农户编码　:</td>
+         		<td ><input name="vCustomerCode" id="vCustomerCode" type="text" value="${obj.vCustomerCode}" ></td>
+         		<td  width="160" class="tt">农户身份证号　:</td>
+         		<td ><input name="vCustomerIdentificationId" id="vCustomerIdentificationId" type="text" value="${obj.vCustomerIdentificationId}" onblur="value=(/^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">车　主　:</td>
+         		<td ><input name="vViechleOwner" id="vViechleOwner" type="text" value="${obj.vViechleOwner}" ></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">运送方式　:</td>
+         		<td ><input name="vTrasnportType" id="vTrasnportType" type="text" value="${obj.vTrasnportType}" ></td>
+         		<td  width="160" class="tt">使用车辆的类型　:</td>
+         		<td ><input name="vUseViechle" id="vUseViechle" type="text" value="${obj.vUseViechle}" ></td>
+         		<td  width="160" class="tt">车辆编号　:</td>
+         		<td ><input name="vViechelNumber" id="vViechelNumber" type="text" value="${obj.vViechelNumber}" ></td>
+         	</tr>
+         	<tr>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">是否多车　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsUseMulitViechle" value="true" ${obj.bIsUseMulitViechle==true?" checked"} />是 
+					<input type="radio" style="width: 15px;height: 15px; margin-left: 20px;" name="bIsUseMulitViechle" value="false" ${obj.bIsUseMulitViechle==null?" checked" } ${obj.bIsUseMulitViechle==false?" checked" } />否
+         		</td>
+         		<td  width="160" class="tt">是否多次称重　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsMultiWeight" value="1" ${obj.bIsMultiWeight==true?" checked"} />是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsMultiWeight" value="0" ${obj.bIsMultiWeight==null?" checked"} ${obj.bIsMultiWeight==false?" checked"}  />否
+         		</td> 
+         		<td  width="160" class="tt">是否标准流程　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsStandardProgress" value="1" ${obj.bIsStandardProgress==null?" checked"} ${obj.bIsStandardProgress==true?" checked"} />是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsStandardProgress" value="0" ${obj.bIsStandardProgress==false?" checked"} />否
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">交易类型　:</td>
+         		<td ><input name="vExchangeType" id="vExchangeType" type="text" value="${obj.vExchangeType}" ></td>
+         		<td  width="160" class="tt">计划类型　:</td>
+         		<td ><input name="vPlanType" id="vPlanType" type="text" value="${obj.vPlanType}" ></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">文件号　:</td>
+         		<td ><input name="vFileNumber" id="vFileNumber" type="text" value="${obj.vFileNumber}" ></td>
+         		
+         		<td  width="160" class="tt">报港结束　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" value="1" name="bIsRegistrateFinished" ${obj.bIsRegistrateFinished==true?" checked"} />是 
+					<input type="radio"  style="width: 15px;height: 15px;margin-left: 20px;" value="0" ${obj.bIsRegistrateFinished==null?" checked"} name="bIsRegistrateFinished" ${obj.bIsRegistrateFinished==false?" checked"} />否
+         	</tr>
+         	<tr>
+         		
+         		<td  width="160" class="tt">发货单位　:</td>
+         		<td ><input name="vDispatchCompany" id="vDispatchCompany" type="text" value="${obj.vDispatchCompany}" ></td>
+         		<td  width="160" class="tt">售粮证号　:</td>
+         		<td ><input name="vGrainSaleID" id="vGrainSaleID" type="text" value="${obj.vGrainSaleID}" ></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">保管员ID　:</td>
+         		<td ><input name="vKeeperId" id="vKeeperId" type="text" value="${obj.vKeeperId}" ></td>
+         	</tr>
+        </table>
+  </fieldset>
+   <fieldset>
+    <legend>收发货方检验质量</legend>
+        <table width="100%" >
+        	 <tr>
+         		<td  width="160" class="tt">原始水扣(%):</td>
+         		<td ><input name="dmOriginalMoisture" id="dmOriginalMoisture" type="text" value="${obj.dmOriginalMoisture}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始杂扣(%):</td>
+         		<td ><input name="dmOriginalImpurity" id="dmOriginalImpurity" type="text" value="${obj.dmOriginalImpurity}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始矿物质扣(%):</td>
+         		<td ><input name="dmOriginalMineral" id="dmOriginalMineral" type="text" value="${obj.dmOriginalMineral}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">原始容重(%):</td>
+         		<td ><input name="dmOriginalGamma" id="dmOriginalGamma" type="text" value="${obj.dmOriginalGamma}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始不完善扣(%):</td>
+         		<td ><input name="dmOriginalUnsoundKernel" id="dmOriginalUnsoundKernel" type="text" value="${obj.dmOriginalUnsoundKernel}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始黄米粒扣(%):</td>
+         		<td ><input name="dmOriginalYellowRiceKernel" id="dmOriginalYellowRiceKernel" type="text" value="${obj.dmOriginalYellowRiceKernel}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">原始整粳米率(%):</td>
+         		<td ><input name="dmOriginalMilledRice" id="dmOriginalMilledRice" type="text" value="${obj.dmOriginalMilledRice}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始出糙率(%):</td>
+         		<td ><input name="dmOriginalBRRatio" id="dmOriginalBRRatio" type="text" value="${obj.dmOriginalBRRatio}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始赤霉病粒(%):</td>
+         		<td ><input name="dmOriginalMildew" id="dmOriginalMildew" type="text" value="${obj.dmOriginalMildew}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	   <tr>
+         		<td  width="160" class="tt">原始谷外糙米(%):</td>
+         		<td ><input name="dmOriginalVBRRatio" id="dmOriginalVBRRatio" type="text" value="${obj.dmOriginalVBRRatio}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始色泽气味　:</td>
+         		<td ><input name="dmOriginalOdor" id="dmOriginalOdor" type="text" value="${obj.dmOriginalOdor}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始赤霉病粒(%):</td>
+         		<td ><input name="dmOriginalFr" id="dmOriginalFr" type="text" value="${obj.dmOriginalFr}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	   <tr>
+         		<td  width="160" class="tt">原始面筋吸水率(%):</td>
+         		<td ><input name="dmOriginalWaterAbsorption" id="dmOriginalWaterAbsorption" type="text" value="${obj.dmOriginalWaterAbsorption}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始互混率(%):</td>
+         		<td ><input name="dmOriginalMixingRatio" id="dmOriginalMixingRatio" type="text" value="${obj.dmOriginalMixingRatio}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">原始脂肪酸(%):</td>
+         		<td ><input name="dmOriginalFattyAcid" id="dmOriginalFattyAcid" type="text" value="${obj.dmOriginalFattyAcid}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">水　分(%):</td>
+         		<td ><input name="dmMoisture" id="dmMoisture" type="text" value="${obj.dmMoisture}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">杂　质(%):</td>
+         		<td ><input name="dmImpurity" id="dmImpurity" type="text" value="${obj.dmImpurity}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">容　重(%):</td>
+         		<td ><input name="dmGamma" id="dmGamma" type="text" value="${obj.dmGamma}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">不完善粒(%):</td>
+         		<td ><input name="dmUnsoundKernel" id="dmUnsoundKernel" type="text" value="${obj.dmUnsoundKernel}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">黄粒米(%):</td>
+         		<td ><input name="dmYellowRiceKernel" id="dmYellowRiceKernel" type="text" value="${obj.dmYellowRiceKernel}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">整粳米率(%):</td>
+         		<td ><input name="dmMilledRice" id="dmMilledRice" type="text" value="${obj.dmMilledRice}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">出糙率(%):</td>
+         		<td ><input name="dmBRRatio" id="dmBRRatio" type="text" value="${obj.dmBRRatio}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">霉　变(%):</td>
+         		<td ><input name="dmMildew" id="dmMildew" type="text" value="${obj.dmMildew}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">谷外糙米(%):</td>
+         		<td ><input name="dmVBRRatio" id="dmVBRRatio" type="text" value="${obj.dmVBRRatio}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">色泽气味(%):</td>
+         		<td ><input name="dmOdor" id="dmOdor" type="text" value="${obj.dmOdor}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">赤霉病粒(%):</td>
+         		<td ><input name="dmFr" id="dmFr" type="text" value="${obj.dmFr}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">面筋吸水率(%):</td>
+         		<td ><input name="dmWaterAbsorption" id="dmWaterAbsorption" type="text" value="${obj.dmWaterAbsorption}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">互混率(%):</td>
+         		<td ><input name="dmMixingRatio" id="dmMixingRatio" type="text" value="${obj.dmMixingRatio}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">脂肪酸(%):</td>
+         		<td ><input name="dmFattyAcid" id="dmFattyAcid" type="text" value="${obj.dmFattyAcid}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">质检员ID　:</td>
+         		<td ><input name="vInspector" id="vInspector" type="text" value="${obj.vInspector}" ></td>
+         		<td  width="160" class="tt">单价(元/公斤):</td>
+         		<td ><input name="dmPrice" id="dmPrice" type="text" value="${obj.dmPrice}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">质检时间　:</td>
+         		<td ><input name="dtQualityTime" id="dtQualityTime" type="text" value="${obj.dtQualityTime}" ></td>
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">矿物质(%):</td>
+         		<td ><input name="dmMineral" id="dmMineral" type="text" value="${obj.dmMineral}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">硬　度(%):</td>
+         		<td ><input name="dmHardness" id="dmHardness" type="text" value="${obj.dmHardness}" onblur="value=(/^[0-9]+(.[0-9]{1,2})$/.test(value))?value:''"></td>
+         		<td  width="160" class="tt">是否质检结束　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsQualityFinished" value="1" ${obj.bIsQualityFinished==true?" checked"} />是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsQualityFinished" value="0" ${obj.bIsQualityFinished==null?" checked" } ${obj.bIsQualityFinished==false?" checked" } />否
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">毛　重(公斤):</td>
+         		<td ><input name="dmGW" id="dmGW" type="text" value="${obj.dmGW}" onkeyup="value=value.replace(/[^\d]/g,'')"></td>
+         		<td  width="160" class="tt">皮　重(公斤):</td>
+         		<td ><input name="dmPW" id="dmPW" type="text" value="${obj.dmPW}" onkeyup="value=value.replace(/[^\d]/g,'')"></td>
+         		<td  width="160" class="tt">净　重(公斤):</td>
+         		<td ><input name="dmNW" id="dmNW" type="text" value="${obj.dmNW}" onkeyup="value=value.replace(/[^\d]/g,'')"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算重量(公斤):</td>
+         		<td ><input name="dmCheckWeight" id="dmCheckWeight" type="text" value="${obj.dmCheckWeight}" onkeyup="value=value.replace(/[^\d]/g,'')"></td>
+         		<td  width="160" class="tt">毛重称重时间　:</td>
+         		<td ><input name="dtGWTime" id="dtGWTime" type="text" value="${obj.dtGWTime}" ></td>
+         		<td  width="160" class="tt">皮重称重时间　:</td>
+         		<td ><input name="dtPWTime" id="dtPWTime" type="text" value="${obj.dtPWTime}" ></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">是否称重结束　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsGwFinished" value="1" ${obj.bIsGwFinished==true?" checked"} />是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsGwFinished" value="0" ${obj.bIsGwFinished==null?" checked" } ${obj.bIsGwFinished==false?" checked" } />否
+         		<td  width="160" class="tt">确认入库　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bEnsureStocked" value="1" ${obj.bEnsureStocked==true?" checked"} />是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bEnsureStocked" value="0" ${obj.bEnsureStocked==null?" checked" } ${obj.bEnsureStocked==false?" checked" } />否
+         		<td  width="160" class="tt">结算时间　:</td>
+         		<td ><input name="dtCheckTime" id="dtCheckTime" type="text" value="${obj.dtCheckTime}" ></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算金额　:</td>
+         		<td ><input name="dmCheckNumber" id="dmCheckNumber" type="text" value="${obj.dmCheckNumber}" ></td>
+         		<td  width="160" class="tt">结算者　:</td>
+         		<td ><input name="vCheckerID" id="vCheckerID" type="text" value="${obj.vCheckerID}" ></td>
+         		<td  width="160" class="tt">结算状态　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bCheckState" value="1" ${obj.bCheckState==true?" checked"} />是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bCheckState" value="0" ${obj.bCheckState==null?" checked" } ${obj.bCheckState==false?" checked" } />否
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算类型　:</td>
+         		<td ><input name="vCheckType" id="vCheckType" type="text" value="${obj.vCheckType}" ></td>
+         		<td  width="160" class="tt">结算银行　:</td>
+         		<td ><input name="vCheckBank" id="vCheckBank" type="text" value="${obj.vCheckBank}" ></td>
+         		<td  width="160" class="tt">结算银行帐号　:</td>
+         		<td ><input name="vCheckBankAccount" id="vCheckBankAccount" type="text" value="${obj.vCheckBankAccount}" onkeyup="value=value.replace(/\D/g,'')" ></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算单据打印次数　:</td>
+         		<td ><input name="iVouchPrintTimes" id="iVouchPrintTimes" type="text" value="${obj.iVouchPrintTimes}" ></td>
+         		<td  width="160" class="tt">视频追溯地址　:</td>
+         		<td ><input name="shipinUrl" id="shipinUrl" type="text" value="${obj.shipinUrl}" ></td>
+         	 </tr>
+        	
+        </table>
+  </fieldset>
+  </form>  
+  <script>
+  //时间插件
+  $('#dtRegistrateTime,#dtQualityTime,#dtGWTime,#dtPWTime,#dtCheckTime').datetimepicker({
+	  setStartDate : new Date(),
+		format : 'yyyy-mm-dd hh:ii:ss',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+	});
+  
+  //select2
+  $(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	});
+  //初始化区域
+	 $.ajax({
+		 url:'${ctxPath}/lunhuan/selectQY.do',
+		 type:'post',
+		 //data:{"page":1,"rows":10},
+		 dataType:'json',
+		 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		 success:function(data){
+			$.each(data.list,function(i, n){
+				if(n.xzqhdm == "${obj.xzqhdm}"){
+					$("#xzqhdm").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+				}else{
+					$("#xzqhdm").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				}
+			});
+			 
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+		
+	  });
+  
+	 
+		//初始化企业
+		$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{"xzqhdm":"${obj.xzqhdm}","name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+				,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						if(n.qyzzjgdm == "${obj.qyzzjgdm}"){
+							$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+						}else{
+							$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+						}
+				});
+				
+			}
+		}); 
+  
+	//初始化库点
+		$.ajax({
+				url: "${ctxPath}/zhiliangGL/selectfeikshKDMC.do",
+				dataType: "json",
+				data:{"qyzzjgdm":"${obj.qyzzjgdm}","name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+					,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+						if(n.kdbm == "${obj.kdbm}"){
+							$("#kdbm").append("<option value="+n.kdbm+"  selected>"+n.kdmc+"</option>");
+						}else{
+							$("#kdbm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+						}
+					});
+				}
+			});	
+  
+	//初始化仓房
+		$.ajax({
+				url: "${ctxPath}/lunhuan/selectCH.do",
+				dataType: "json",
+				data:{kdbm:"${obj.kdbm}",qyzzjgdm:"${obj.qyzzjgdm}"},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+							if(n.cfbm == "${obj.vWareHouseCode}"){
+								$("#vWareHouseCode").append("<option value="+n.cfbm+"  selected>"+n.cfmc+"</option>");
+							}else{
+								$("#vWareHouseCode").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+							}
+					});
+				}
+			});
+  
+//初始化粮食品种
+  $.ajax({
+		 url:'${ctxPath}/zhiliangGL/selectallpz.do',
+		 type:'post',
+		 //data:{"page":1,"rows":10},
+		 dataType:'json',
+		 data:{},
+		 success:function(data){
+			$.each(data.list,function(i, n){
+				if(n.vCode == "${obj.vGrainSubTypeCode}"){
+					$("#vGrainSubTypeCode").append("<option value="+n.vCode+" selected>"+n.vName+"</option>");
+				}else{
+					$("#vGrainSubTypeCode").append("<option value="+n.vCode+">"+n.vName+"</option>");
+				}
+			});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+//初始化粮食性质
+  $.ajax({
+		 url:'${ctxPath}/zhiliangGL/selectallxz.do',
+		 type:'post',
+		 //data:{"page":1,"rows":10},
+		 dataType:'json',
+		 data:{},
+		 success:function(data){
+			$.each(data.list,function(i, n){
+				if(n.vCode == "${obj.vGrainPropertyId}"){
+					$("#vGrainPropertyId").append("<option value="+n.vCode+" selected>"+n.vGrainProperties+"</option>");
+				}else{
+					$("#vGrainPropertyId").append("<option value="+n.vCode+">"+n.vGrainProperties+"</option>");
+				}
+			});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+//初始化粮食等级
+  $.ajax({
+		 url:'${ctxPath}/zhiliangGL/selectalldj.do',
+		 type:'post',
+		 //data:{"page":1,"rows":10},
+		 dataType:'json',
+		 data:{},
+		 success:function(data){
+			$.each(data.list,function(i, n){
+				if(n.vCode == "${obj.vGrainLevel}"){
+					$("#vGrainLevel").append("<option value="+n.vCode+" selected>"+n.vLevelName+"</option>");
+				}else{
+					$("#vGrainLevel").append("<option value="+n.vCode+">"+n.vLevelName+"</option>");
+				}
+			});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+  //区域联动查询企业
+  function selectQYMC(){
+	$("#qyzzjgdm").html("");
+	$("#qyzzjgdm+span>span:first>span>span:first").html("请选择企业名称");
+	$("#qyzzjgdm").append("<option value=''>请选择企业名称</option>")
+	$("#kdbm").html("");
+	$("#kdbm+span>span:first>span>span:first").html("请选择库点名称");
+	$("#kdbm").append("<option value=''>请选择库点名称</option>")
+	$("#vWareHouseCode").html("");
+	$("#vWareHouseCode+span>span:first>span>span:first").html("请选择仓房名称");
+	$("#vWareHouseCode").append("<option value=''>请选择仓房名称</option>")
+	var szqy=$("#xzqhdm").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{"xzqhdm":szqy,"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+				,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						if(n.qyzzjgdm == "${obj.qyzzjgdm}"){
+							$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+						}else{
+							$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+						}
+				});
+			}
+		});
+	
+		
+}
+  
+  function selectKDMC(){
+		$("#kdbm").html("");
+		$("#kdbm+span>span:first>span>span:first").html("请选择库点名称");
+		$("#kdbm").append("<option value=''>请选择库点名称</option>")
+		$("#vWareHouseCode").html("");
+		$("#vWareHouseCode+span>span:first>span>span:first").html("请选择仓房名称");
+		$("#vWareHouseCode").append("<option value=''>请选择仓房名称</option>")
+		var qyzzjgdm=$("#qyzzjgdm").val();
+		$.ajax({
+				url: "${ctxPath}/zhiliangGL/selectfeikshKDMC.do",
+				dataType: "json",
+				data:{qyzzjgdm:qyzzjgdm,"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+					,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+						$("#kdbm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+						if(n.kdbm == "${obj.kdbm}"){
+							$("#kdbm").append("<option value="+n.kdbm+"  selected>"+n.kdmc+"</option>");
+						}else{
+							$("#kdbm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+						}
+					});
+				}
+			});
+	}
+	function selectCH(){
+		$("#vWareHouseCode").html("");
+		$("#vWareHouseCode+span>span:first>span>span:first").html("请选择仓房名称");
+		$("#vWareHouseCode").append("<option value=''>请选择仓房名称</option>");
+		var kdbm=$("#kdbm").val();
+		var qyzzjgdm=$("#qyzzjgdm").val();
+		var kudian = $("#kdbm option:selected").text().trim();
+		$.ajax({
+				url: "${ctxPath}/lunhuan/selectCH.do",
+				dataType: "json",
+				data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm,kdmc:kudian},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+							if(n.cfbm == "${obj.vWareHouseCode}"){
+								$("#vWareHouseCode").append("<option value="+n.cfbm+"  selected>"+n.cfmc+"</option>");
+							}else{
+								$("#vWareHouseCode").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+							}
+					});
+				}
+			});
+		
+			
+	} 
+  
+  //提交
+  function tijiao() {
+			$.ajax({
+				type : 'post',
+				url : '${ctxPath}/zhiliangGL/xzfeikshcrksj',
+				data : $("#sc").serialize(),
+				success : function(msg) {
+					if (msg.ret) {
+						alert("保存成功!");
+						parent.window.dialog.close();
+		        		parent.window.datatable.ajax.reload(null,true);
+					} else {
+						alert(msg.msg);
+					}
+				}
+			})
+	}
+  //编辑
+  function bianji() {
+			$.ajax({
+				type : 'post',
+				url : '${ctxPath}/zhiliangGL/bjfeikshcrksj',
+				data : $("#sc").serialize(),
+				success : function(msg) {
+					if (msg.ret) {
+						alert("修改成功!");
+						parent.window.dialog1.close();
+		        		parent.window.datatable.ajax.reload(null,true);
+					} else {
+						alert(msg.msg);
+					}
+				}
+			})
+	}
+  </script>       	

@@ -1,0 +1,97 @@
+<link rel="stylesheet" href="${ctxPath}/js/jquery-easyui-1.4.5/themes/default/easyui.css"/>
+<link rel="stylesheet" href="${ctxPath}/js/jquery-easyui-1.4.5/themes/icon.css"/>
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+<script src="${ctxPath}/resource/jquery.js"></script>
+<script src="${ctxPath}/js/jquery.easyui.min.js" type="text/javascript"></script>
+<!--第一个文件树-->
+<div style="width: 200px;height:200px;border: 1px solid #CCCCCC;">
+<ul id="root" class="easyui-tree" style="margin-top: 10px" url="${ctxPath}/securityedu/getTreeNodes.do">
+</ul>
+ </div>
+<div style="width: 200px;height:200px;border: 1px solid #CCCCCC;margin-top: 10px">
+<!--&lt;!&ndash;第二个文件树-->
+<ul id="appraisal" class="easyui-tree">
+    <li>
+        <span>考核管理</span>
+        <ul>
+            <li><span>安全考核</span></li>
+            <li><span>考试成绩</span></li>
+            <li><span>整体成绩</span></li>
+        </ul>
+    </li>
+</ul>
+ </div>
+<script type="text/javascript">
+    $(function(){
+        //页面加载完毕 获取最近子节点 ///这是easyui的异步树
+        setTimeout(function(){
+           /* $(".tree-title").css("width","150px");
+            $(".tree-title").css("white-space","pre-wrap");*/
+            str="";
+            firstchild=$('#root').tree('getRoot').children[0];
+            str+=$('#root').tree('getRoot').text+">";
+            str+=firstchild.text+">";
+            while(firstchild.children)
+            {
+                firstchild=firstchild.children[0];
+                str+=firstchild.text+">";
+            }
+            str=str.substring(0,str.length-1);
+            parent.leftClick(str,firstchild.id);
+        },100);
+    });
+    //第一个文件树的click事件绑定
+    $('#root').tree({
+        onClick: function (node) {
+            //判断是否有子节点
+            //不存在子节点则触发事件
+            if (!node.children) {
+                //获取父节点遍历
+                title = itrateParent($('#root').tree('getParent', node.target)).split('>');
+                str = "";
+                for (var i = title.length - 2; i >= 0; i--) {
+                    str += title[i];
+                    if (i != 0) {
+                        str += ">";
+                    }
+                }
+                str += ">" + node.text;
+                parent.leftClick(str,node.id);
+            }
+        }
+    });
+    $('#appraisal').tree({
+        onClick: function (node) {
+            //直接调用父页面对应的方法
+            //不存在子节点则触发事件
+            if (!node.children) {
+                //获取父节点遍历
+                title = itrateParent($('#appraisal').tree('getParent', node.target)).split('>');
+                str = "";
+                for (var i = title.length - 2; i >= 0; i--) {
+                    str += title[i];
+                    if (i != 0) {
+                        str += ">";
+                    }
+                }
+                str += ">" + node.text;
+                if(node.text=='安全考核')
+                {
+                    parent.showSafeCheck(str);
+                }else if(node.text=='考试成绩'){
+                    parent.showPaperGrade(str);
+                }else{
+                    parent.showOverAllCheck(str);
+                }
+            }
+        }
+    });
+    function itrateParent(parent) {
+        appendText = parent.text + ">";
+        if (parent.parentId && parent.parentId != 'root') {
+            appendText += itrateParent($('#root').tree('getParent', parent.target));
+        }
+        return appendText;
+    }
+</script>

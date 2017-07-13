@@ -1,0 +1,39 @@
+database= njpt,grainplat
+
+
+njpt = jdbc:jtds:sqlserver://192.168.50.234/njzhpt
+njptuser = sa
+njptpassword =zhiyuan@123
+njptcanuse = true
+
+//njpt = jdbc:jtds:sqlserver://192.168.1.129/njzhpt
+//njptuser = zkzy
+//njptpassword =zkzy
+//njptcanuse = true
+
+grainplat = jdbc:mysql://192.168.50.234:3306/grainplat?useUnicode=true&characterEncoding=utf-8
+grainplatuser = zkzy
+grainplatpassword = zkzy
+grainplatcanuse = true
+
+quartz = tianqi,price,gnprice,news
+
+tianqiclass = com.zkzy.njzhpt.bo.updateTianqi
+tianqimethod = update
+tianqiexpression = 0 0 0/1 * * ? 
+tianqicanuse = true
+
+priceclass = com.zkzy.njzhpt.bo.savePrice
+pricemethod = saveprice
+priceexpression = 0 0 12 1 * ? 
+pricecanuse = true
+
+gnpriceclass = com.zkzy.njzhpt.bo.savegnPrice
+gnpricemethod = savegnprice
+gnpriceexpression = 0 0 12 1  * ? 
+gnpricecanuse = true
+
+newsclass = com.zkzy.njzhpt.bo.saveNews
+newsmethod = savenews
+newsexpression = 0 0 0/1 * * ? 
+newscanuse = true

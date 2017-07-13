@@ -1,0 +1,805 @@
+<%
+layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+    #right-top {
+        height: 30px;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+    #right-title {
+
+    }
+
+    #left-div {
+        margin-left: 10px;
+        float: left;
+        height: 400px;
+        margin-top: 10px;
+        border: 1px solid #CCCCCC;
+    }
+
+    #right-div {
+        width: 75%;
+        height: 100%;
+        float: left;
+        border: 1px solid #CCCCCC;
+        margin-left: 10px;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .folder {
+        color: #000
+    }
+
+    .file {
+        color: #000;
+    }
+
+    .btn {
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    .table-striped > thead > tr > th {
+        text-align: center;
+    }
+
+    .table-striped > tbody > tr {
+        font-family: '微软雅黑'
+    }
+
+    .table-striped > tbody > tr > td {
+        text-align: center;
+    }
+
+    .table-striped > tbody > tr > td:nth-child(9) {
+        width: 140px;
+    }
+</style>
+<div class="panel panel-default">
+    <div style="margin-top: 6px;border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;"
+         align="left">
+        <img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+        <span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>安全教育</b></span>
+    </div>
+    <div id="left-div">
+        <iframe name="treeList" src="${ctxPath}/securityedu/lefttree_datacenter.html" style="width: 200px;border:0px;height: 300px"></iframe>
+    </div>
+    <div id="right-div" style="display: none">
+        <div id="right-top"></div>
+        <!--知识结构部分-->
+        <div class="form-inline" id="knowledgeStructId" style="display: none">
+            <div style="float:right;">
+            <label>名称:</label>
+            <input class="form-control input-sm" name="name" id="name" placeholder="名称" type="text"
+                   style="width:150px;font-size:14px">
+            <label style="margin-left: 20px">文件类型:</label>
+            <select id="type" class="form-control input-sm selects" style="width:200px;font-size:14px">
+                <option value="">全部</option>
+                <option value="图片">图片</option>
+                <option value="视频">视频</option>
+                <option value="文档">文档</option>
+                <option value="幻灯片">幻灯片</option>
+                <option value="工作流">工作流</option>
+            </select>
+            <label style="margin-left: 20px">上传日期:</label>
+            <input class="form-control input-sm" name="uploadTime" id="uploadTime" placeholder="上传日期"
+                   onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text"
+                   style="width:150px;font-size:14px">
+            <a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search"
+                                                                                    aria-hidden="true"></i>&nbsp;查询</a>
+
+            <a class="btn btn-success btn-xs"><input class="upload_file" type="file" name="file"/></a>
+            </div>
+            <div style="margin-top: 50px">
+                <table id="fileList" class="table table-striped table-hover table-bordered datatables"
+                       data-url="${ctxPath}/securityedu/findFile"></table>
+            </div>
+
+        </div>
+        <i id="progress" style="float: right"></i>
+        <input type="hidden" id="nodeId">
+        <!--知识点部分-->
+        <div class="form-inline" id="knowledgePointId" style="display: none">
+            <div style="margin-left: 10px">
+                <label>知识点名称:</label>
+                <input class="form-control input-sm" name="name" id="knowledgePointName" placeholder="知识点名称" type="text"
+                       style="width:150px;font-size:14px">
+                <a class="btn btn-success btn-xs" type="button" onclick="doKnowledgeSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+                <a class="btn btn-success btn-xs" type="button" onclick="addOrUpdateKnowledgePoint()" style="float: right"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;新增</a>
+            <div style="margin-top: 10px">
+                <table id="knowledgePointList" class="table table-striped table-hover table-bordered datatables"
+                       data-url="${ctxPath}/securityedu/findknowledgePoint"></table>
+            </div>
+        </div>
+    </div>
+        <!--题库部分-->
+        <div class="form-inline" id="questionId" style="display: none">
+            <div style="margin-left: 10px">
+                <input type="radio" name="question" class="form-control" value="" checked onclick="refreshDatatable()">全部</input>
+                <input type="radio" name="question" class="form-control" value="single" onclick="refreshDatatable()">单选</input>
+                <input type="radio" name="question" class="form-control" value="multi" onclick="refreshDatatable()">多选</input>
+                <input type="radio" name="question" class="form-control" value="judge" onclick="refreshDatatable()">判断</input>
+                <a class="btn btn-info btn-xs" type="button" onclick="addOrUpdateSubjects()" style="float: right"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;添加题目</a>
+                <a class="btn btn-danger btn-xs" type="button" onclick="deleteSubjects()" style="float: right"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</a>
+            </div>
+            <div style="margin-top: 10px">
+                    <table id="questionList" class="table table-striped table-hover table-bordered datatables"
+                           data-url="${ctxPath}/securityedu/findsubjects"></table>
+                </div>
+            </div>
+        <!--试卷管理-->
+        <div class="form-inline" id="paperTestId" style="display: none">
+            <div style="margin-left: 10px">
+                <label>试卷名称:</label>
+                <input class="form-control input-sm" name="paperName" id="paperName" placeholder="试卷名称" type="text"
+                       style="width:150px;font-size:14px">
+                <label style="margin-left: 20px">出卷人:</label>
+                <input class="form-control input-sm" name="realname" id="realname" placeholder="出卷人" type="text"
+                       style="width:150px;font-size:14px">
+                <label style="margin-left: 20px">试卷日期:</label>
+                <input class="form-control input-sm" name="paperCreateTime" id="paperCreateTime" placeholder="试卷日期"
+                       onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text"
+                       style="width:150px;font-size:14px">
+                <a class="btn btn-success btn-xs" type="button" onclick="doPaperSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+                <a class="btn btn-info btn-xs" type="button" onclick="createPaper()" ><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;组卷</a>
+            </div>
+            <div style="margin-top: 10px">
+                <table id="paperTestList" class="table table-striped table-hover table-bordered datatables"
+                       data-url="${ctxPath}/securityedu/findpaperTest"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var datatable;
+    var datatable1;
+    var datatable2;
+    var datatable3;
+    var needblockdiv=["knowledgeStructId","knowledgePointId","questionId","paperTestId"];
+    $(function () {
+        datatable = $('#fileList').DataTable({
+            "columns": [
+                {
+                    "data": "originName",
+                    "title": "文件名称",
+                    "render": function (data, type, row, meta) {
+                        if (row["type"] == "视频") {
+                            //弹框播放视频
+                            return '<a onclick=loadVedio(\'' + row["uuidName"] + '\')>' + row["originName"] + '</a>';
+                        } else if (row["originName"].indexOf('pdf') > -1) {
+                            //新开页面
+                            return '<a href="#" onclick=isExist(\'' + row["uuidName"] + '\')>' +row["originName"]+'</a>'
+                        } else {
+                            return row["originName"];
+                        }
+
+                    }
+                }, {
+                    "data": "type",
+                    "title": "文件类型"
+                }, {
+                    "data": "size",
+                    "title": "文件大小",
+                    "render": function (data, type, row, meta) {
+                        return (row["size"]/1024/1024).toFixed(2) + "MB";
+                    }
+                }, {
+                    "data": "uploadTime",
+                    "title": "上传时间"
+                },
+                {
+                    "data": "clickNums",
+                    "title": "下载次数"
+                }, {
+                    "title": "操作",
+                    "render": function (data, type, row, meta) {
+                        var control;
+                        $.ajax({
+                            url:'${ctxPath}/securityedu/candelete',
+                            data:{id:row["id"]},
+                            dataType:'json',
+                            async:false,
+                            success: function (data) {
+                                if(data.ret)
+                                {
+                                    control = '<button type="button" class="btn btn-xs btn-danger" onclick=deleteFile(' + row["id"] + ')><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</button>';
+                                }else{
+                                    control = '<button type="button" disabled class="btn btn-xs btn-danger" ><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</button>';
+                                }
+                            }
+                        });
+
+                        return control;
+                    }
+                }]
+        });
+        datatable1=$('#knowledgePointList').DataTable({
+            "columns": [
+                {
+                    "data": "knowledgePointName",
+                    width:100,
+                    "title": "知识点名称"
+                }, {
+                    "data": "creater",
+                    width:100,
+                    "title": "创建者"
+                }, {
+                    "data": "createTime",
+                    width:100,
+                    "title": "创建时间",
+                },{
+                    "title":"操作",
+                    width:100,
+                    "render":function(data, type, row, meta){
+                        deleteKnowledgepoint='<a class="btn btn-danger btn-xs" type="button" onclick="deleteKnowledgePoint('+row["id"]+')" ><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</a>';
+                        editKnowledgepoint= '<a class="btn btn-info btn-xs" type="button" onclick="addOrUpdateKnowledgePoint('+row["id"]+')" ><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                        return editKnowledgepoint+" "+deleteKnowledgepoint;
+                    }
+                }]
+        });
+        datatable2=$('#questionList').DataTable({
+            "columns": [{
+                "title":function(data, type, row, meta){return '<input class="form-control" type="checkbox" id="selectall" onchange="checkallbox()"/>全选'},
+                "render": function ( data, type, row, meta) {
+                    return '<input type="checkbox" class="form-control" value="' + row["id"] + '" name="item" />';},
+                "width":10
+            },{
+                "data":"content",
+                "title":"题目",
+                "render":function(data, type, row, meta){
+                    if(row["content"].length>20)
+                    {
+                        return row["content"].substring(0,20)+'.....';
+                    }
+                    return row["content"];
+                },
+                "width":400
+            },{
+                "data":"answerNums",
+                "title":"答题人数",
+                "width":10
+            },
+                {
+                    "data":"correctNums",
+                    "title":"正确率",
+                    "width":20,
+                    "render":function(data, type, row, meta){
+                        if(row["correctNums"]!=null&&row["correctNums"]!='') {
+                            return (row["correctNums"] / row["answerNums"]).toFixed(2) * 100 + "%";
+                        }
+                        return row["correctNums"];
+                    }
+
+                },
+                {
+                    "title":"操作",
+                    "render":function(data, type, row, meta){
+                        return '<a class="btn btn-success btn-xs" type="button" onclick="showSubject(\''+row["id"]+'\')"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看</a>';
+                    }
+                }],
+        });
+        datatable3=$('#paperTestList').DataTable({
+            "columns": [{
+                "data":"paperName",
+                "title":"试卷名称",
+            },{
+                "data":"realname",
+                "title":"出卷人",
+            },
+            {
+                "data":"paperCreateTime",
+                "title":"试卷日期",
+            },
+            {
+                "title":"操作",
+                "render":function(data, type, row, meta){
+                    var view='<a class="btn btn-info btn-xs" type="button" onclick="showPaperById(\''+row["id"]+'\')"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看</a>';
+                    var release='<a class="btn btn-success btn-xs" type="button" onclick="releasePaper(\''+row["id"]+'\')"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;发布考试</a>';
+                    var releaseDetail='<a class="btn btn-info btn-xs" type="button" onclick="showReleaseInfo(\''+row["id"]+'\')"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;发布详情</a>';
+                    var deleteById='<a class="btn btn-danger btn-xs" type="button" onclick="deletePaperById(\''+row["id"]+'\')"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</a>';
+                    return view+" "+release+" "+releaseDetail+" "+deleteById;
+                },
+                width:200
+            }]
+        });
+    })
+    $("#uploadTime").datetimepicker({
+        setStartDate: new Date(),
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN', //这里需要修改
+        weekStart: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $("#paperCreateTime").datetimepicker({
+        setStartDate: new Date(),
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN', //这里需要修改
+        weekStart: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $('.upload_file').uploadifive({
+        'auto': true, //自动上传
+        'uploadScript': '${ctxPath}/securityedu/uploadFile', //处理上传文件Action路径
+        'buttonClass': 'file_upload',
+        'multi': false,
+        'fileObjName': 'file', //文件对象
+        'queueID': 'progress', //提示信息放置目标
+        'fileSizeLimit': 102400,//文件大小限制
+        'buttonText': '上传文件', //按钮显示文字
+        'fileTypeExts': '*.png', //允许上传文件后缀名
+        'onUploadComplete': function (file, data) { //文件上传成功后执行
+            type = "";
+            //ajax提交文件相关的数据插入数据库
+            console.log(file.type);
+            if (file.type.indexOf("video") > -1) {
+                type = "视频";
+            } else if (file.type.indexOf("msword") > -1 || file.type.indexOf("pdf") > -1) {
+                type = "文档";
+            } else if (file.type.indexOf(".sheet") > -1||file.type.indexOf("ms-excel") > -1) {
+                type = "工作流";
+            } else if (file.type.indexOf(".presentation") > -1) {
+                type = "幻灯片";
+            } else if (file.type.indexOf("image") > -1) {
+                type = "图片";
+            }
+            //拼接json串
+            fileData = {
+                "originName": file.name,
+                "type": type,
+                "uuidName": data,
+                "size": file.size,
+                "knowLedgeStructId": $("#nodeId").val()
+            }
+            $.ajax({
+                url: '${ctxPath}/securityedu/saveFileInfo',
+                data: fileData,
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ret) {
+                        datatable.ajax.reload(null, false);
+                    }
+                }
+            });
+            alert("上传成功");
+            $("#progress").hide();
+        }
+    });
+    function showBatchRenyuan(batchId){
+        if((typeof batchId )!='undefined'){
+            dialogRelease = BootstrapDialog.show({
+                title: "考试人员",
+                closeByBackdrop: true,
+                message: $('<iframe frameborderno="0" name="releasePaperPage" style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/securityedu/releasePaper.html?look=true&batchId='+batchId+'"/>'),
+                onshow: function (dlg) {
+                    dlg.$modalDialog.css("width", "500px");
+                    $(".bootstrap-dialog-message", dlg.$modalContent).css("height", "300px");
+                },
+                buttons: [{
+                    label: '关闭',
+                    action: function (dialog) {
+                        dialogRelease.close();
+                    },
+                    cssClass: 'btn-danger btn-xs'
+                }]
+            });
+        }
+    }
+    function showPaperById(id){
+        if((typeof id )!='undefined'){
+            $.ajax({
+            		url:'${ctxPath}/securityedu/findPaperAndSetSession',
+            		data:{id:id},
+            		dataType:'json',
+                    async:false,
+            		success: function (data) {
+                        if(data.ret) {
+                            dialogPaper = BootstrapDialog.show({
+                                title: "预览试卷",
+                                closeByBackdrop: true,
+                                message: $('<iframe frameborderno="0" name="subject" style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/securityedu/previewPaper.html"/>'),
+                                onshow: function (dlg) {
+                                    dlg.$modalDialog.css("width", "900px");
+                                    $(".bootstrap-dialog-message", dlg.$modalContent).css("height", "600px");
+                                },
+                                buttons: [{
+                                    label: '关闭',
+                                    action: function (dialog) {
+                                        dialogPaper.close();
+                                    },
+                                    cssClass: 'btn-danger btn-xs'
+                                }]
+                            });
+                        }else{
+                            alert(data.message);
+                        }
+                    }
+            });
+        }
+    }
+    function releasePaper(id){
+        if((typeof id )!='undefined'){
+            dialogRelease = BootstrapDialog.show({
+                title: "选择考试人员",
+                closeByBackdrop: true,
+                message: $('<iframe frameborderno="0" name="releasePaperPage" style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/securityedu/releasePaper.html?id='+id+'"/>'),
+                onshow: function (dlg) {
+                    dlg.$modalDialog.css("width", "500px");
+                    $(".bootstrap-dialog-message", dlg.$modalContent).css("height", "300px");
+                },
+                buttons: [{
+                    label: '保存',
+                    action: function(dialog) {
+                        //console.log(releasePaper);
+                        releasePaperPage.saveReleasePaper();
+                    },
+                    cssClass: 'btn-success btn-xs'
+
+                },{
+                    label: '关闭',
+                    action: function (dialog) {
+                        dialogRelease.close();
+                    },
+                    cssClass: 'btn-danger btn-xs'
+                }]
+            });
+        }
+    }
+    function showReleaseInfo(id){
+        //显示发布的信息
+        dialogPaper=BootstrapDialog.show({
+            title: "发布详情",
+            closeByBackdrop: true,
+            message:$('<iframe frameborderno="0" name="releaseDetail" style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/securityedu/releaseDetail.html?id='+id+'"/>'),
+            onshow:function(dlg){
+                dlg.$modalDialog.css("width","900px");//modal-dialog
+                $(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");
+            },
+            buttons: [{
+                label: '关闭',
+                action: function(dialog) {
+                    dialogPaper.close();
+                },
+                cssClass: 'btn-danger btn-xs'
+            }]
+        });
+    }
+    function deletePaperById(id){
+
+    }
+    function paperPreview(){
+        //新开页面展示随机出来的题目
+        dialogPaper=BootstrapDialog.show({
+            title: "预览试卷",
+            closeByBackdrop: true,
+            message:$('<iframe frameborderno="0" name="subject" style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/securityedu/previewPaper.html"/>'),
+            onshow:function(dlg){
+                dlg.$modalDialog.css("width","900px");//modal-dialog
+                $(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");
+            },
+            buttons: [{
+                label: '保存',
+                action: function(dialog) {
+                    //$(window.parent.document).contents().find("iframe")[0].contentWindow.saveKnowledge();
+                    $.ajax({
+                    		url:'${ctxPath}/securityedu/addOrUpdatePaper',
+                    		dataType:'json',
+                    		success: function (data) {
+                                if(data.ret)
+                                {
+                                    alert("保存成功!");
+                                    dialogPaper.close();
+                                    dialog1.close();
+                                    datatable3.ajax.reload(null, false);
+                                }
+                    		}
+                    	});
+                },
+                cssClass: 'btn-success btn-xs'
+
+            },{
+                label: '关闭',
+                action: function(dialog) {
+                    dialogPaper.close();
+                },
+                cssClass: 'btn-danger btn-xs'
+            }]
+        });
+    }
+    function createPaper(){
+        //组卷
+        dialog1=BootstrapDialog.show({
+            title: "创建试卷",
+            closeByBackdrop: true,
+            message:$('<iframe frameborderno="0" name="paper" style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/securityedu/createPaper.html"/>'),
+            onshow:function(dlg){
+                dlg.$modalDialog.css("width","600px");
+                $(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");
+            },
+            buttons: [{
+                label: '预览',
+                action: function(dialog) {
+                    paper.savePaper();
+                },
+                cssClass: 'btn-success btn-xs'
+            },{
+                label: '关闭',
+                action: function(dialog) {
+                    dialog.close();
+                },
+                cssClass: 'btn-danger btn-xs'
+            }]
+        });
+    }
+    function addOrUpdateSubjects(id){
+        if(typeof id=="undefined")
+        {
+            btitle="新增题目"
+            //新增
+            url='<iframe frameborderno="0" name="subject" style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/securityedu/addOrUpdateSubject.html"/>'
+        }else{
+            //编辑
+            btitle="编辑题目"
+            url='<iframe frameborderno="0" name="subject" style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/securityedu/addOrUpdateSubject.html?id='+id+'"/>'
+        }
+        dialog1=BootstrapDialog.show({
+            title: btitle,
+            closeByBackdrop: true,
+            message:$(url),
+            onshow:function(dlg){
+                dlg.$modalDialog.css("width","500px");//modal-dialog
+                $(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");
+            },
+            buttons: [{
+                label: '保存',
+                action: function(dialog) {
+                    //$(window.parent.document).contents().find("iframe")[0].contentWindow.saveKnowledge();
+                    subject.saveSubject();
+                },
+                cssClass: 'btn-success btn-xs'
+
+            },{
+                label: '关闭',
+                action: function(dialog) {
+                    dialog.close();
+                },
+                cssClass: 'btn-danger btn-xs'
+            }]
+        });
+    }
+    function deleteSubjects() {
+        //删除题目
+        if($('input[name="item"]:checked').length==0)
+        {
+            alert("请先选择一条数据");
+        }else{
+            //alert("选择了"+$('input[name="item"]:checked').length)
+            subjectsData=[];
+            $('input[name="item"]:checked').each(function(){
+                subjectsData.push({"id":$(this).val()})
+            });
+            console.log(JSON.stringify(subjectsData));
+            if(confirm("确认删除？")){
+                $.ajax({
+                		url:'${ctxPath}/securityedu/deleteSubjects.do',
+                		data:{ids:JSON.stringify(subjectsData)},
+                		dataType:'json',
+                		success: function (data) {
+                            if(data.ret)
+                            {
+                                alert("删除成功");
+                                datatable2.ajax.reload(null, false);
+                            }
+                		}
+                	});
+            }
+        }
+    }
+    function refreshDatatable(){
+        document.querySelector('#questionList').dataset.queryparam = "&type=" +  $('input[name="question"]:checked').val();
+        datatable2.ajax.reload(null, false);
+    }
+    function doPaperSearch() {
+        paperName = $("#paperName").val();
+        realname = $("#realname").val();
+        paperCreateTime = $("#paperCreateTime").val();
+        document.querySelector('#paperTestList').dataset.queryparam = "&paperName=" + paperName+"&realname="+realname+"&paperCreateTime="+paperCreateTime;
+        datatable3.ajax.reload(null, false);
+    }
+    function doKnowledgeSearch() {
+        var knowledgePointName = $("#knowledgePointName").val();
+        document.querySelector('#knowledgePointList').dataset.queryparam = "&knowledgePointName=" + knowledgePointName;
+        datatable1.ajax.reload(null, false);
+    }
+    function addOrUpdateKnowledgePoint(id) {
+        if(typeof id=="undefined")
+        {
+            console.log('add');
+            btitle="新增知识点"
+            //新增
+            url='<iframe frameborderno="0" name="Knowledge" style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/securityedu/addOrUpdateKnowledgePoint.html"/>'
+        }else{
+            //编辑
+            console.log('update =='+id);
+            btitle="编辑知识点"
+            url='<iframe frameborderno="0" name="Knowledge" style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/securityedu/addOrUpdateKnowledgePoint.html?id='+id+'"/>'
+        }
+        dialog1=BootstrapDialog.show({
+            title: btitle,
+            closeByBackdrop: true,
+            message:$(url),
+            onshow:function(dlg){
+                dlg.$modalDialog.css("width","500px");//modal-dialog
+                $(".bootstrap-dialog-message", dlg.$modalContent).css("height","200px");
+            },
+            buttons: [{
+                label: '保存',
+                action: function(dialog) {
+                    //$(window.parent.document).contents().find("iframe")[0].contentWindow.saveKnowledge();
+                    Knowledge.saveKnowledge();
+                },
+                cssClass: 'btn-success btn-xs'
+
+            },{
+                label: '关闭',
+                action: function(dialog) {
+                    dialog.close();
+                },
+                cssClass: 'btn-danger btn-xs'
+            }]
+        });
+    }
+    function deleteKnowledgePoint(id) {
+        if(confirm("确认删除？")) {
+            //删除知识点
+            $.ajax({
+                url: '${ctxPath}/securityedu/deleteKnowledge.do',
+                data: {id: id},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ret) {
+                        datatable1.ajax.reload(null, false);
+                    }
+                }
+            });
+        }
+    }
+    function loadVedio(url) {
+        dialog1 = BootstrapDialog.show({
+            title: '视频',
+            closeByBackdrop: true,
+            message: $('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/securityedu/loadvideo?url=' + url + '"/>'),
+            onshow: function (dlg) {
+                dlg.$modalDialog.css("width", "800px");//modal-dialog
+                $(".bootstrap-dialog-message", dlg.$modalContent).css("height", "400px");//modal-dialog
+            },
+            buttons: [
+                {
+                    label: '关闭',
+                    action: function (dialog) {
+                        dialog.close();
+                    },
+                    cssClass: 'btn-danger btn-xs'
+                }]
+        });
+    }
+    function showSubject(id){
+        if(typeof id!="undefined"){
+            dialog1=BootstrapDialog.show({
+                title: "详情",
+                closeByBackdrop: true,
+                message:$('<iframe frameborderno="0" name="subject" style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/securityedu/showSubject.html?id='+id+'"/>'),
+                onshow:function(dlg){
+                    dlg.$modalDialog.css("width","500px");
+                    $(".bootstrap-dialog-message", dlg.$modalContent).css("height","400px");
+                },
+                buttons: [{
+                    label: '关闭',
+                    action: function(dialog) {
+                        dialog.close();
+                    },
+                    cssClass: 'btn-danger btn-xs'
+                }]
+            });
+        }
+    }
+    function checkallbox(){
+        //选择所有的checkbox
+        if($("#selectall").is(':checked')){
+            console.log($("[name='item']:checkbox").is(':checked'));
+            $("input[type=checkbox][name='item']").prop('checked', true);
+        }else{
+            $("[name='item']").removeAttr('checked');
+        }
+    }
+    function leftClick(text, id) {
+        document.querySelector('#fileList').dataset.queryparam = "&knowLedgeStructId=" + id;
+        datatable.ajax.reload(null, false);
+        removeRightDiv(text,"knowledgeStructId");
+        $("#nodeId").val(id);
+        $("#right-div").css("display","block");
+    }
+    function doSearch() {
+        var nodeId = $("#nodeId").val();
+        var name = $("#name").val();
+        var type = $("#type option:selected").val();
+        console.log(type);
+        var uploadTime = $("#uploadTime").val();
+        document.querySelector('#fileList').dataset.queryparam = "&knowLedgeStructId=" + nodeId + "&originName=" + name + "&type=" + type + "&uploadTime=" + uploadTime;
+        datatable.ajax.reload(null, false);
+    }
+    function deleteFile(id){
+        if(confirm('确实要删除吗?')) {
+            $.ajax({
+                url: '${ctxPath}/securityedu/deleteFile.do',
+                data: {"id": id},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ret) {
+                        datatable.ajax.reload(null, false);
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+    }
+    function isExist(url){
+        //判断文件是否存在
+        $.ajax({
+        		url:'${ctxPath}/securityedu/fileIsExist',
+        		data:{url:url},
+                async:false,
+        		success: function (data) {
+                    if(data=="false")
+                    {
+                        alert("文件不存在");
+                    }else{
+                        window.open("${ctxPath}/securityedu/downloadFile?filename="+url);
+                    }
+        		}
+        	});
+    }
+    function removeRightDiv(text,expectDiv){
+        //右侧div上方标题
+        $("#right-top").html("");
+        $("#right-top").append(text);
+        //右侧div主体部分隐藏
+        for(var temp in needblockdiv)
+        {
+            if(needblockdiv[temp]!=expectDiv)
+            {
+                $("#"+needblockdiv[temp]).css("display","none");
+            }
+        }
+        $("#"+expectDiv).css("display","block");
+    }
+    function showKnowledgePoint(str) {
+        //右侧div显示知识点管理页面
+        removeRightDiv(str,"knowledgePointId");
+        datatable1.ajax.reload(null, false);
+    }
+    function showQuestionBank(str) {
+        removeRightDiv(str,"questionId");
+        datatable2.ajax.reload(null, false);
+    }
+    function showTestPaper(str) {
+        removeRightDiv(str,"paperTestId");
+        datatable3.ajax.reload(null, false);
+    }
+</script>
+<%
+}
+%>

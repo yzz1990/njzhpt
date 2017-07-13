@@ -1,0 +1,50 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var obj={};
+	  obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.querykudian({"qyzzjgdm":parameter.qyzzjgdm,page:1,rows:1}).getList();
+	  if(obj.~size>0){
+	  		obj=obj[0];
+	  }
+%>
+ <style type="text/css">
+ 	.datatables td{
+ 	height:35px;
+ 	}
+ 	.table-striped>tbody>tr>td{
+		background-color: #FFFFFF;
+	}
+ </style>
+<div class="panel-body">
+		<table  class="table table-striped table-hover table-bordered datatables">
+			<tbody>
+       			<tr>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center;width:35%;">设备名称</td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center;width:35%;">型号规格</td>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center;width:15%;">数量</td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center;width:15%;">备注</td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>	
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center"> </td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+     		</tbody>
+		</table>
+</div>
+
+
+
+<script type="text/javascript">
+
+
+</script>
+<%
+	}
+%>

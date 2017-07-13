@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药剂库存信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addYjkucun",title="新增药剂库存信息";
+	if (isNotEmpty(parameter.id)) {
+		var zzbg = @com.zkzy.njzhpt.dao.CangchuglDao.findYjkucun({"id":parameter.id,"page":"1","rows":"100"});
+		obj = zzbg.list[0];
+		url = ctxPath+"/cangchugl/upYjkucun";
+		title = "编辑药剂库存信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	药剂库存信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+			       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+				       <input type="hidden" name="id" value="${obj.id}">
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="xzqydm">行政区划代码:</label>
+									<select id="xzqydm" name="xzqydm" class="form-control" onchange="changeXzqy()">
+										<option value="">请选择</option>
+									</select>
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="kdbm">药库名称:</label>
+									<select id="kdbm" name="kdbm" class="form-control">
+										<option value="">请选择</option>
+									</select>
+								</div>	
+							</div>
+							
+						</div>
+						<div class="row">
+							
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="scrq">生产日期:</label>
+									<input id="scrq" name="scrq" class="form-control" placeholder="生产日期" value="${obj.scrq}">
+								</div>
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="gjsj">购进时间:</label>
+									<input id="gjsj" name="gjsj" class="form-control" placeholder="备注" value="${obj.gjsj}">
+								</div>	
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="yjmc">药剂名称:</label>
+									<input id="yjmc" name="yjmc" class="form-control" placeholder="药剂名称" value="${obj.yjmc}">
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="pp">品牌:</label>
+									<input id="pp" name="pp" class="form-control" placeholder="品牌" value="${obj.pp}">
+								</div>	
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="danwei">单位:</label>
+									<select id="danwei" name="danwei" class="form-control">
+										<option value="克(g)">克(g)</option>
+										<option value="毫升(ml)">毫升(ml)</option>
+									</select>
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="">规格:</label>
+									<input id="gg" name="gg" class="form-control" placeholder="规格" value="${obj.gg}">
+								</div>	
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="kcsl">库存数量:</label>
+									<input id="kcsl" name="kcsl" class="form-control" placeholder="库存数量" value="${obj.kcsl}">
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="cj">厂家:</label>
+									<input id="cj" name="cj" class="form-control" placeholder="厂家" value="${obj.cj}">
+								</div>	
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="cjdz">厂家地址:</label>
+									<input id="cjdz" name="cjdz" class="form-control" placeholder="厂家地址" value="${obj.cjdz}">
+								</div>	
+							</div>
+							
+						</div>
+					</form>
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+$(function(){
+$("#scrq").datetimepicker({
+		format : 'yyyy-mm-dd',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+});
+$("#gjsj").datetimepicker({
+	format : 'yyyy-mm-dd',
+	language : 'zh-CN', //这里需要修改
+	weekStart : 1,
+	autoclose : 1,
+	todayHighlight : 1,
+	startView : 2,
+	minView : 2,
+	forceParse : 0
+});
+$.ajax({
+	 url:'${ctxPath}/shouchukeshihua/findquxian',
+	 type:'post',
+	 dataType:'json',
+	 data:{"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'ssqiye',session.userinfo.area.name,'ykgly',session.userinfo.area.name,'')}"},
+	 success:function(data){
+		 $.each(data,function(i, n){
+			 	if("${obj.xzqydm}"==n.xzqhdm){
+			 		$("#xzqydm").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+			 	}else{
+			 		$("#xzqydm").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+			 	}
+				
+			});
+	 },
+	 error:function(){
+		 alert("error");
+	 }
+ });
+ 
+$.ajax({
+	url:'${ctxPath}/cangchugl/findYaoku',
+	type:'post',
+	dataType:'json',
+	success:function(data){
+		$.each(data.list,function(i, n){
+			var op = '<option value="'+n.cfkudian+'">'+n.cfkudian+'</option>';
+		     $("#kdbm").append(op);
+		});
+	},
+	error:function(){
+		alert("error");
+	}
+});
+ 
+ 
+});
+function saveyjkc() {
+	var xzqydm = $("#xzqydm option:selected").val();
+	var kdbm = $("#kdbm option:selected").val();
+	
+	if(xzqydm == "请选择" || xzqydm == "" || xzqydm == null){
+		alert("请选择行政区域代码");
+	}else{
+		if(kdbm == "请选择" || kdbm == "" || kdbm == null){
+			alert("请选择药库名称");
+		}else{
+			var form = $(".widget-body form");
+			$.ajax({
+				url: form.attr("action"),
+				dataType: "json",
+				data: form.serialize(),
+				success: function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("保存成功");
+					}
+				},
+				error:function(){
+					alert("保存药剂库存失败");
+				}
+			});
+		}
+	}
+	
+	
+}
+
+function changeXzqy(){
+	var xzqydm = $("#xzqydm option:selected").val();
+	if(xzqydm != "请选择"){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/findYaoku',
+			type:'post',
+			data:{"quyu":xzqydm},
+			dataType:'json',
+			success:function(data){
+				$("#kdbm").empty();
+				$("#kdbm").append('<option value="请选择">请选择</option>');
+				$.each(data.list,function(i, n){
+					var op = '<option value="'+n.cfkudian+'">'+n.cfkudian+'</option>';
+				     $("#kdbm").append(op);
+				});
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+}
+
+
+</script>
+
+</body>
+</html>

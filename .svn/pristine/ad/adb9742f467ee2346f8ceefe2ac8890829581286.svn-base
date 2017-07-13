@@ -1,0 +1,62 @@
+package com.zkzy.njzhpt.bo;
+
+import java.util.HashMap;
+
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.ZhiLiangGLDAO;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class ZhiLiangGLBO {
+	@Before(AutoPageInterceptor.class)
+	public Ret selectZLXQ(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> PageRecord = ZhiLiangGLDAO.selectZLXQ(map);
+		Ret ret = Ret.create("list", PageRecord);
+		return ret;
+	}
+	@Before(AutoPageInterceptor.class)
+	public Ret selectfeikshKDMC(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> list= ZhiLiangGLDAO.selectfeikshKDMC(map);
+		Ret ret = Ret.create("list", list);
+		return ret;
+	}
+	/**
+	 * 查询所有品种
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret selectallpz(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> list= ZhiLiangGLDAO.selectallpz(map);
+		Ret ret = Ret.create("list", list);
+		return ret;
+	}
+	/**
+	 * 查询所有性质
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret selectallxz(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> list= ZhiLiangGLDAO.selectallxz(map);
+		Ret ret = Ret.create("list", list);
+		return ret;
+	}
+	/**
+	 * 新增非可视化出入库数据
+	 * @param param
+	 * @return
+	 */
+	public Ret xzfeikshcrksj(HashMap<String, Object> param) {
+		return ZhiLiangGLDAO.cbljhrwbianji(param);
+	}
+
+}

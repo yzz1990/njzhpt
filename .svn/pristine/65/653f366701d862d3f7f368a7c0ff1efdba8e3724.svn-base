@@ -1,0 +1,91 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+.leixingxz{
+	margin-left:400px;
+}
+
+</style>
+
+
+<script type="text/javascript">
+
+var imgurl;
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+});
+
+(function ($) {
+     $.getUrlParam = function (name) {
+           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if (r != null) return unescape(r[2]); return null;
+       }
+   })(jQuery);
+   
+$(function() {
+	imgurl = $.getUrlParam("imgurl");
+	$(".panel-body").find("img").attr("src","${ctxPath}"+imgurl);
+	
+});
+</script>
+
+<div class="panel panel-default">
+
+<div class="panel-heading">
+	<div class="form-inline">
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div class="panel-body">
+	<img src="" alt="aaaa" style="width:100%; height:100%" >
+
+</div>
+
+<%}%>

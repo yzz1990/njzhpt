@@ -1,0 +1,156 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+	$.ajax({
+	url:'${ctxPath}/zonghe/findcflyl',
+	type:'post',
+	dataType:'json',
+	success:function(data){
+		$("#zcr").html("仓房总仓容："+(data.zcr).toFixed(2)+"万吨");
+		option = {
+		    tooltip : {
+		        formatter: "{b} : {c}%"
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    series : [
+		        {
+		            name:'仓房利用率',
+		            type:'gauge',
+		            center: ['70%', '50%'],
+		            detail : {formatter:'{value}%'},
+		            data:[{value:(data.lyl).toFixed(1), name: '仓房利用率'}]
+		        }
+		    ]
+		};
+		 echarts.init(document.getElementById('container')).setOption(option);   
+		}
+	});
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findcfcrzb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+	option = {
+		    title : {
+		        text: '全市仓房总仓容统计',
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}万吨 ({d}%)"
+		    },
+		    legend: {
+		    	 orient : 'vertical',
+			        y:'center',
+			        x:'left',
+		        data:data.quyu
+		    },
+		    color:['#A2E3EA','#0580b9','#28c6b9','#84e6f1','#A7E9F1','EAC3E9'],
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '25%',
+		                        width: '50%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    calculable : true,
+		    series : [
+              {
+                  name:'总仓容占比',
+                  type:'pie',
+                  radius : '55%',
+                  center: ['60%', '50%'],
+                  itemStyle:{
+                	  normal:{
+                		  label:{
+                			  show: false 
+                		  },
+                		  labelLine:{
+                			  show: false
+                		  }
+                	  }
+                  },
+                  data:[
+                      {value:data.list[0].toFixed(2), name:data.quyu[0].name,
+                    	  itemStyle : {
+		                	  normal : {
+		                		  color:'#D4E6AA',
+		                	  }
+		                  }
+                      },
+                      {value:data.list[1].toFixed(2), name:data.quyu[1].name,
+                    	  itemStyle : {
+		                	  normal : {
+		                		  color:'#F7D2CF',
+		                	  }
+		                  }},
+                      {value:data.list[2].toFixed(2), name:data.quyu[2].name},
+                      {value:data.list[3].toFixed(2), name:data.quyu[3].name,
+                    	  itemStyle : {
+		                	  normal : {
+		                		  color:'#CDCCE6',
+		                	  }
+		                  }},
+                      {value:data.list[4].toFixed(2), name:data.quyu[4].name,
+	                    	  itemStyle : {
+			                	  normal : {
+			                		  color:'#E6C5A9',
+			                	  }
+			                  }},
+                      {value:data.list[5].toFixed(2), name:data.quyu[5].name,
+                    	  itemStyle : {
+		                	  normal : {
+		                		  color:'#A3CDEA',
+		                	  }
+		                  }}
+                  ]
+              }
+          ]
+		};
+	echarts.init(document.getElementById('container1')).setOption(option);
+		}
+	});
+});	
+</script>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 350px;">
+		  <h4 id="zcr" ></h4>
+          <div id="container" style="min-width: 380px; max-width: 700px; height: 300px; margin: 0 auto;margin-left: 10px;float: left;"></div>
+          <div id="container1" style="min-width: 450px; max-width: 700px; height: 300px; margin: 0 auto;float: left;margin-left: 100px;margin-top:0px;"></div>
+        </div>
+	</div>		
+</div>  

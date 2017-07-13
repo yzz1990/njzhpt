@@ -1,0 +1,230 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style>
+	.panel-body {
+	    margin-bottom: 20px;
+	    background-color: rgba(170, 170, 170, 0.11);
+	    border: 1px solid lightblue;
+	    border-radius: 4px;
+	    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+	    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+	}
+	.divclick{
+		border:2px solid #0000FF;
+	}
+	.sp{
+		border:1px solid #B0C4DE;
+		z-index:1;
+		background:#333333;
+	}
+	.xp{
+		background-color:green;
+		z-index:9999;
+	} 
+
+</style>
+<script>
+var maxwidth;
+var maxheight;
+
+$(function(){
+	$('.sp').bind("click",function(){
+		$(".sp").removeClass("divclick");
+		$(this).addClass("divclick");
+		$(".sp").css("border","1px solid #B0C4DE");
+		$(this).css("border","2px solid #0000FF");
+	});
+	
+	$('.xp').bind("click",function(){
+		$(".sp").removeClass("divclick");
+		var id = $(this).attr("name");
+		alert(id);
+		$("#"+id).addClass("divclick");
+		$(".sp").css("border","1px solid #B0C4DE");
+		$("#"+id).css("border","2px solid #0000FF");
+	});
+	
+	$('.isp').click(function(){
+		alert("isp");
+		$(".sp").removeClass("divclick");
+		$(this).parent().addClass("divclick");
+		$(".sp").css("border","1px solid #B0C4DE");
+		$(this).parent().css("border","2px solid #0000FF");
+	});
+	/*
+	jQuery(document, '.isp').ready(function(){
+		jQuery(".isp").contents().find("body").attr("onclick", "parent.show_body_click(this)");
+	});
+	*/
+	
+	$(".framevalue").bind('input propertychange',function(){
+		alert($(".framevalue").val());
+	});
+	
+	$(".framevalue").trigger('input propertychange');
+
+	
+});
+/*
+function f1() {    
+	alert("clicked!");
+   }
+ad.onclick=f1;
+for(var i=0;i<document.all.length;i++)
+   {
+    if(document.all.item(i).tagName=="IFRAME" && document.all.item(i).parentNode.id=="ad") {
+ document.all.item(i).onfocus=f1;
+    }
+}
+
+function show_body_click(obj){
+	var $obj = $(obj);
+	alert($obj);
+}
+*/
+
+function getisp(){
+	alert("isp");
+}
+
+function getone(){
+	$(".onesp").css('display','block'); 
+	$(".foursp").css('display','none'); 
+	$(".ninesp").css('display','none'); 
+	$(".sixteensp").css('display','none'); 
+	$(".sp").html("");
+	
+}
+
+function getfour(){
+	$(".onesp").css('display','none'); 
+	$(".foursp").css('display','block'); 
+	$(".ninesp").css('display','none'); 
+	$(".sixteensp").css('display','none'); 
+	$(".sp").html("");
+}
+
+function getnine(){
+	$(".onesp").css('display','none'); 
+	$(".foursp").css('display','none'); 
+	$(".ninesp").css('display','block'); 
+	$(".sixteensp").css('display','none'); 
+	$(".sp").html("");
+}
+
+function getsixteen(){
+	$(".onesp").css('display','none'); 
+	$(".foursp").css('display','none'); 
+	$(".ninesp").css('display','none'); 
+	$(".sixteensp").css('display','block');
+	$(".sp").html("");
+}
+
+</script>
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>视频监控</b>
+		</span>
+	</div>
+	<div class="panel-body">
+		<div class="row" style="margin-left: 70px;margin-top: 3px;">		
+			<div class="col-xs-3" style="padding-left: 0px;margin-top: 4px;">
+				<iframe frameborderno="0" frameborder="0"  src="${ctxPath}/cangchugl/showshipin" height="600px"></iframe>
+			</div>			
+			<input class="framevalue" type="text" style="display:none">
+			<div id="" tabindex="-1" class="col-xs-8" style="margin-left: 5px"width:70%>
+				<input type="button" value="1画" onclick="getone()" style="float:left">
+				<input type="button" value="4画" onclick="getfour()" style="float:left">
+				<input type="button" value="9画" onclick="getnine()" style="float:left">
+				<input type="button" value="16画" onclick="getsixteen()" style="float:left">
+				<a  href="${ctxPath}/cangchuguanli/shiping/qpshipin.html" target="_blank"><input type="button" style="" value="全屏" onclick=""></a>
+		       <button type="button" style="margin-right: -30px;" class="btn btn-sm btn-primary pull-right saveJiaoseCaidan" onclick="javascript:window.open('http://49.65.0.27:8080/components/vlc-2.2.4-win32.exe')" ><i class="fa fa-cloud-download"></i> 大华视频插件下载</button>
+		       <button type="button" style="margin-right: 10px;" class="btn btn-sm btn-primary pull-right saveJiaoseCaidan" onclick="javascript:window.open('http://49.65.0.27:8080/components/WebComponents.exe')" ><i class="fa fa-cloud-download"></i> 海康视频插件下载</button>
+			</div>
+	
+			<div class="onesp">
+				<div id="sp1" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px;height:600px">
+					<!--  
+					<iframe id="if1" class="isp" frameborderno="0" width="700px" height="600px" onclick="getisp()" style="border-width: 0px; width: 98%; background-color:#aaaaaa;" src=""></iframe>
+					-->
+				</div>
+			</div>
+			<div class="foursp" style="display:none;">
+				<div id="sp2" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:35%;height:300px;">
+			
+				</div>
+				<div id="sp3" tabindex="-1" class="col-xs-8 sp" style="float:left; width:35%;height:300px;">
+			
+				</div>
+				<div id="sp4" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:35%;height:300px;">
+				
+				</div>
+				<div id="sp5" tabindex="-1" class="col-xs-8 sp" style="float:left; width:35%;height:300px;">
+				
+				</div>
+			</div>
+			
+			<div class="ninesp" style="display:none">
+				<div id="sp6" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp7" tabindex="-1" class="col-xs-8 sp" style="float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp8" tabindex="-1" class="col-xs-8 sp" style="float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp9" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp10" tabindex="-1" class="col-xs-8 sp" style="float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp11" tabindex="-1" class="col-xs-8 sp" style="float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp12" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp13" tabindex="-1" class="col-xs-8 sp" style="float:left; width:24%;height:200px;">
+				</div>
+				<div id="sp14" tabindex="-1" class="col-xs-8 sp" style="float:left; width:24%;height:200px;">
+				</div>
+			</div>
+			
+			<div class="sixteensp" style="display:none">
+				<div id="sp15" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp16" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp17" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp18" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp19" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp20" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp21" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp22" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp23" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp24" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp25" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp26" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp27" tabindex="-1" class="col-xs-8 sp" style="margin-left: 20px; float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp28" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp29" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+				<div id="sp30" tabindex="-1" class="col-xs-8 sp" style="float:left; width:18%;height:150px;">
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+<%}%>

@@ -1,0 +1,162 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+//var ecConfig = require('echarts/config');
+	$.ajax({
+		url:'${ctxPath}/zonghe/findpzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+		
+			option2 = {
+				    title : {
+				        text: '全市粮食分品种库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}万吨({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.pzlist
+				    },
+				    color:['#A2E3EA','#0580b9','#28c6b9','#84e6f1'],
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},	
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    series : [{
+				                  name:'粮食品种占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '50%'],
+				                  itemStyle:{
+				                	  normal:{			                		  
+						                    label : {
+						                        position : 'inner'
+						                    },
+						                    labelLine : {
+						                        show : false
+						                    }
+				                	  }
+				                  },
+				                  data:data.pzzck
+				              }
+				          ]
+				};
+			myChart=echarts.init(document.getElementById('container2')).setOption(option2);
+			//myChart.on(ecConfig.EVENT.CLICK, eConsole1);
+		}
+	});
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findxzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			option4 ={
+					title : {
+				        text: '全市粮食分性质库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} 万吨({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        x : 'left',
+				        y : 'center',
+				        data:['央储','省储','市储','区储','临储','商品粮']
+				    },
+				    color:[ '#99DEAB', '#3799C7', '#28C6B9', '#40e0d0', 
+				            '#84E6F1', '#A8D3DC'],
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel']
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    series : [{
+				            name:'分性质占比',
+				            type:'pie',
+				            radius : [100, 150],
+				            itemStyle : {
+				                normal : {
+				                    label : {
+				                        position : 'inner'
+				                    },
+				                    labelLine : {
+				                        show : false
+				                    }
+				                }
+				            },
+				            data:[
+				                {value:0.62, name:'央储'},
+				                {value:0.59, name:'省储'},
+				                {value:3.67, name:'市储'},
+				                {value:1.60, name:'区储'},
+				                {value:4.48, name:'临储'},
+				                {value:0.28, name:'商品粮'}
+				            ]
+				        }
+				    ]
+				};                
+			
+			myChart=echarts.init(document.getElementById('container3')).setOption(option4);	
+			//myChart.on(ecConfig.EVENT.CLICK, eConsole3);
+		}
+	});
+	
+	
+	
+	
+	
+});	
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%;width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="container2" style="width: 50%;height:100%; margin: 0 auto;margin-left: 0px;float: left;"></div>
+          <div id="container3" style="width: 50%;height:100%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;"></div>
+        </div>
+	</div>		
+</div>  

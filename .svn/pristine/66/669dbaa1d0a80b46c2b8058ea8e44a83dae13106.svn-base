@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药剂库存信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+  <body>
+     <div class="panel-body" style="padding: 0">
+		<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYjkucun" >
+		</table>
+	</div>
+<script type="text/javascript">
+(function ($) {
+    $.getUrlParam = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+})(jQuery);
+var xzqydm = $.getUrlParam("id");
+
+$(function(){
+	$(".datatables").attr("data-queryparam","&xzqydm="+xzqydm);
+	datatable = $('.datatables').DataTable({
+		"columns": [
+			{
+				"data" : "yjmc",
+				"title" : "药剂名称"
+			},{
+				"data" : "pp",
+				"title" : "品牌"
+			},{
+				"data" : "gg",
+				"title" : "规格"
+			},{
+				"data" : "cj",
+				"title" : "厂家"
+			},{
+				"data" : "kcsl",
+				"title" : "库存数量"
+			},{
+				"data" : "weight",
+				"title" : "库存重量"
+	        }
+		]
+	});
+	
+	
+});
+
+</script>
+
+</body>
+</html>

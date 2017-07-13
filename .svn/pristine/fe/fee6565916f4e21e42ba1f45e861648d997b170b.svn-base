@@ -1,0 +1,110 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline pull-left">
+						<a class="btn btn-success btn-sm" type="button" onclick="exportExcel()"><em class="fa fa-upload fa-1x"></em> 导出</a>
+				</div>
+				<div class="form-inline" style="float: right;">
+					<label>所属辖区:</label>
+					<input class="form-control input-sm" name="ssxq" id="ssxq" placeholder="所属辖区" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>企业名称:</label>
+					<input class="form-control input-sm" name="qymc" id="qymc" placeholder="企业名称" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>库点:</label>
+					<input class="form-control input-sm" name="kudian" id="kudian" placeholder="库点" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>粮食性质:</label>
+					<input class="form-control input-sm" name="lsxz" id="lsxz" placeholder="粮食性质" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findLiangshizl" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "ssxq",
+				"title" : "所属辖区"
+			},{
+				"data" : "qymc",
+				"title" : "企业名称"
+			},{
+				"data" : "kudian",
+				"title" : "库点"
+			},{
+				"data" : "cangfang",
+				"title" : "仓房",
+			},{
+				"data" : "lspz",
+				"title" : "粮食品种",
+			},{
+				"data" : "lsxz",
+				"title" : "粮食性质"
+			},{
+				"data" : "shuifen",
+				"title" : "水分(%)"
+			},{
+				"data" : "zazhi",
+				"title" : "杂质(%)",
+			},{
+				"data" : "chucao",
+				"title" : "出糙(%)",
+			},{
+				"title" : "汇总",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="lszlqushi(\''+row["id"]+'\')" class="btn btn-sm btn-info pjax">粮食质量汇总</a>';								
+					return chakan;	
+					}
+				}
+			]
+	});
+});
+
+	
+function doSearch(){
+	var ssxq = $("#ssxq").val();
+	var qymc = $("#qymc").val();
+	var kudian = $("#kudian").val();
+	var lsxz = $("#lsxz").val();
+	document.querySelector('.datatables').dataset.queryparam="&ssxq="+ssxq+"&qymc="+qymc+"&kudian="+kudian+"&lsxz="+lsxz;
+	datatable.ajax.reload(null,false);
+}
+	
+	
+function lszlqushi(id){
+	dialog1=BootstrapDialog.show({
+	    title: '粮食质量汇总',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/cangchuguanli/shishixinxi/lszlhuizong.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+	});
+}
+
+
+</script>
+<%
+	}
+%>

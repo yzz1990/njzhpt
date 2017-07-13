@@ -1,0 +1,85 @@
+<%
+ layout(gisCityHtml){
+%>
+
+<style>
+.BootstrapDialog{margin-top:20%;}  
+ #myModal-help
+    {
+        top:120px;
+    }
+    
+     	.container-fluid {
+	     padding-right: 0px; 
+	     padding-left: 0px; 
+	     margin-right: 0px; 
+	     margin-left: 0px; 
+	}
+	.panel.panel-default {
+    	border-top-width: 3px;
+   	 	margin-top: 0px; 
+	}
+</style>
+
+<script type="text/javascript">
+
+	$(function(){
+		dialog1=BootstrapDialog.show({
+			id:"myModal-help",
+		    title: '全市粮食情况',
+			closeByBackdrop: true,
+			type: BootstrapDialog.TYPE_DEFAULT,
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/remote/chubei/chubeixiangqing.html"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","750");//modal-dialog
+	       	dlg.$modalDialog.css("margin-top","450");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","350px");//modal-dialog
+	       },
+	       buttons: [{
+		        label: '关闭',
+		        cssClass: 'btn-xs btn-danger',
+		        action: function(dialog) {
+		        	dialog.close();
+		        }
+		    }]
+		});
+		
+		if("${session.userinfo.role.code}"=="systemuser"||"${session.userinfo.role.code}"=="njslsj"){
+			$("#cblgl").attr("src","${gisurl}idxKeshihua.jsp?type=2&role=${session.userinfo.role.code}&code=''");
+		 }else if("${session.userinfo.role.code}"=="qxlsj"){
+			 $.ajax({
+				 url:'${ctxPath}/shouchukeshihua/findquxian',
+				 type:'post',
+				 data:{"name":"${session.userinfo.area.name}"},
+				 dataType:'json',
+				 success:function(data){					 
+					 $("#cblgl").attr("src","${gisurl}idxKeshihua.jsp?type=2&role=${session.userinfo.role.code}&code="+data[0].xzqhdm);				 
+				 } 
+			 });
+		 }else if("${session.userinfo.role.code}"=="qiye"){		 
+			 $.ajax({
+				 url:'${ctxPath}/jibenxinxi/findQiyexinxi',
+				 type:'post',
+				 dataType:'json',
+				 success:function(data){
+					 //alert(data.list[0].qyzzjgdm);
+		     		$("#cblgl").attr("src","${gisurl}idxKeshihua.jsp?type=2&role=${session.userinfo.role.code}&code="+data.list[0].qyzzjgdm);			 
+				 }
+					 
+			 });
+		 }	
+	});
+
+</script>
+
+<div class="panel panel-default">	
+	<div class="panel-body" >
+		<div class="container-fluid">
+				<iframe id="cblgl" src="" style="position: absolute;margin-top: 0px;" width="98%" height="750px" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+		</div>
+	</div>
+</div>
+
+<%
+}
+%>

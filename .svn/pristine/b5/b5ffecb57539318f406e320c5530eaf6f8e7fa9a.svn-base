@@ -1,0 +1,191 @@
+<html>
+	<head>
+	<link id="bootstrap_221" rel="stylesheet" type="text/css" class="library" href="http://static.zuidaima.com/resource/css/bootstrap.min.css?v=20140118">
+	<script id="jquery_172" type="text/javascript" class="library" src="http://static.zuidaima.com/resource/js/jquery.min.js"></script>
+	<script id="bootstrap_221" type="text/javascript" class="library" src="http://static.zuidaima.com/resource/js/bootstrap.min.js"></script>
+	<style>
+		.tree {
+	    min-height:20px;
+	    padding:5px;
+	    margin-bottom:20px;
+	    background-color:#fbfbfb;
+	    border:0px;
+	    -webkit-border-radius:4px;
+	    -moz-border-radius:4px;
+	    border-radius:4px;
+	    -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	    -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	    box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+	}
+	.tree li {
+	    list-style-type:none;
+	    padding:10px 5px 0 5px;
+	    position:relative
+	}
+	.tree li::before, .tree li::after {
+	    content:'';
+	    left:-20px;
+	    position:absolute;
+	    right:auto
+	}
+	.tree li::before {
+	    border-left:1px solid #999;
+	    bottom:50px;
+	    height:100%;
+	    top:0;
+	    width:1px
+	}
+	.tree li::after {
+	    border-top:1px solid #999;
+	    height:20px;
+	    top:25px;
+	    width:25px
+	}
+	.tree li span {
+	    -moz-border-radius:5px;
+	    -webkit-border-radius:5px;
+	    border:1px solid #999;
+	    border-radius:5px;
+	    display:inline-block;
+	    padding:3px 8px;
+	    text-decoration:none
+	}
+	.tree li.parent_li>span {
+	    cursor:pointer
+	}
+	.tree>ul>li::before, .tree>ul>li::after {
+	    border:0
+	}
+	.tree li:last-child::before {
+	    height:30px
+	}
+	.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+	    background:#eee;
+	    border:1px solid #94a0b4;
+	    color:#000
+	}
+	</style>
+	</head>
+<body>
+	<div class="tree well">
+    <ul style="margin:10px;">
+    <li id="nanjingshi" class="parent_li">
+		<span><i class="icon-folder-close"></i>南京市</span>
+        </li>
+    </ul>
+</div>
+</body>
+<script type="text/javascript">
+/*动态加载市下面的区*/
+$(function () {
+	$.post("${ctxPath}/cangchugl/finddiqu",function(data){
+		/* var code = data[0].AreaCode; */
+		$.each(data,function(i, n){
+			var xzqhdm = n.xzqhdm;
+			/* alert(code); */
+			$("#nanjingshi").append("<ul><li class='parent_li' id='"+xzqhdm+"' style='display: none;'><span onclick='show("+xzqhdm+")'><i class='icon-folder-close'></i>"+n.quyu+"</span></li></ul>");
+			//getSp方法的参数为地区的xzqhdm
+			getKudian(xzqhdm);
+			
+			
+		});
+	},'json');
+	
+    $('.tree .parent_li > span').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+            $(this).find(' > i').addClass('icon-folder-close').removeClass('icon-folder-open');
+        } else {
+            children.show('fast');
+            $(this).find(' > i').addClass('icon-folder-open').removeClass('icon-folder-close');
+        }
+        e.stopPropagation();
+    });
+    
+});
+
+//根据点击改变图标的样式
+function show(xzqhdm){
+	var node = $("#"+xzqhdm);
+	var sp= node.find(' > ul > li');
+    if (sp.is(":visible")) {
+    	sp.hide('fast');
+    	node.find(' > span > i').addClass('icon-folder-close').removeClass('icon-folder-open');
+    } else {
+    	sp.show('fast');
+    	node.find(' > span > i').addClass('icon-folder-open').removeClass('icon-folder-close');
+    }
+}
+
+
+function showkd(ID){
+	var node = $("#"+ID);
+	var sp= node.find(' > ul > li');
+    if (sp.is(":visible")) {
+    	sp.hide('fast');
+    	node.find(' > span > i').addClass('icon-folder-close').removeClass('icon-folder-open');
+    } else {
+    	sp.show('fast');
+    	node.find(' > span > i').addClass('icon-folder-open').removeClass('icon-folder-close');
+    }
+}
+
+
+//根据ip，index播放相应的视频
+function showSp (outterip,channel,username,password) {
+	var outterip = outterip;
+	var channel = channel;
+	var username = username;
+	var password = password;
+	$(window.parent.document).find("#sp").html("");
+	//替换shipin.html当中加载视频的<iframe>
+	$(window.parent.document).find("#sp").html("<iframe id='if1' frameborderno='0' width='700px' height='500px' style='border-width:0px;' src= '${ctxPath}/cangchuguanli/shiping/newjiankong.html?outterip="+outterip+"&channel="+channel+"&username="+username+"&password="+password+"'>");
+}
+
+/* 
+    老式的vlc视频
+ 	function showSp (outterUrl,ipandport,channel) {
+	$(window.parent.document).find("#sp").html("");
+	$(window.parent.document).find("#sp").html("<iframe id='if1' frameborderno='0' width='700px' height='500px' style='border-width:0px;' src= '${ctxPath}/remote/shipin/jiankong.html?url="+outterUrl+"/'>");
+	$(window.parent.document).find("#sp").append("<iframe width='80px' height='500px' style='border:0px;position: absolute;right:5px;' scrolling='no' src='${ctxPath}/remote/shipin/kz_jiankong.html?ipandport="+ ipandport +"&channel="+ channel +"'/></iframe>");
+	//+"<iframe src='${ctxPath}/remote/shipin/kz_jiankong.html?ipandport="+ ipandport +"&channel="+ channel + " width='80px' height='300px' style='border:0px;position: absolute;top: 15px;right:5px;' scrolling='no'></iframe>"
+} */
+
+
+function getKudian(xzqhdm){
+	$.post("${ctxPath}/cangchugl/findkudian",{xzqhdm:xzqhdm},function(data){
+		$.each(data,function(i, n){
+			var quyubm = n.xzqhdm;
+			
+			var qyzzjgdm = n.qyzzjgdm;
+			var name = n.kdmc;
+			var ID = n.ID;
+			 $("#"+xzqhdm).append("<ul><li class='parent_li' id='"+ID+"' style='display: none;'><span onclick='showkd("+ID+")')><i class='icon-folder-close'></i>"+name+"</span></li></ul>");
+			 getSp(quyubm,qyzzjgdm,ID);
+		});
+	},'json');
+}
+
+//根据库点的code查视频的数据，动态加载视频点
+function getSp(quyubm,qyzzjgdm,ID){
+		$.post("${ctxPath}/cangchugl/findshipin",{xzqhdm:quyubm,qyzzjgdm:qyzzjgdm},function(data){
+			/* alert(data[1].name); */
+		$.each(data,function(i, n){
+			//把视频表中相应的ip和index放到showSp方法中当参数
+			var ip = n.ip;
+			var outterip = n.outterip;
+			var channel = n.channel;
+			var username = n.username;
+			var password = n.password;
+			/*contro为能否播放的判断，1为能播放，0为不能播放；要修改只需在数据库中更改*/
+			var contro = n.contro;
+			if (contro == 0) {
+			$("#"+ID).append("<ul><li class='parent_li' id='"+n.id+"' style='display: none;'><span onclick=showSp(\""+outterip+"\",\""+channel+"\",\""+username+"\",\""+password+"\")><i class='icon-facetime-video'></i>"+n.name+"</span></li></ul>");
+			/* $("#320115").append("<ul><li class='parent_li' id='"+n.id+"' style='display: none;'><span onclick=showSp(\""+outterip+"\",\""+channel+"\",\""+username+"\",\""+password+"\")><i class='icon-facetime-video'></i>"+n.name+"</span></li></ul>"); */
+			}
+		});
+	},'json');
+}
+</script>
+</html>

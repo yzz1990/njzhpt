@@ -1,0 +1,128 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+				<label>地区:</label>
+				<select class="form-control input-sm" style="width:150px">
+					<option>${县[0]}</option>
+					<option>${县[1]}</option>
+					<option>${县[2]}</option>
+					<option>${县[3]}</option>
+					<option>${县[4]}</option>
+					<option>${县[5]}</option>
+					
+				</select>
+				
+					<label>达标单位:</label>
+					<input class="form-control input-sm" name="dabiaodanwei" id="dabiaodanwei" placeholder="达标单位" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>证书号:</label>
+					<input class="form-control input-sm" name="zhengshuhao" id="zhengshuhao" placeholder="证书号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+					<a class="btn btn-primary btn-sm pull-right" type="button"
+							href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_bzh_qslsj_edit.html">新增企业安全信息</a>
+				</div>
+				
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findanquantj" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "id",
+				"title" : "序号"
+			},{
+				"data" : "shibie",
+				"title" : "市别"
+			},{
+				"data" : "dabiaodanwei",
+				"title" : "达标单位"
+			},{
+				"data" : "dengji",
+				"title" : "等级",
+			},{
+				"data" : "zhengshuhao",
+				"title" : "证书号",
+			},{
+				"data" : "pingdingdanwei",
+				"title" : "评定单位"
+			},{
+				"data" : "beizhu",
+				"title" : "备注",
+			},{
+				"title" : "详情",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="beianxq()" class="btn btn-sm btn-info pjax">企业安全生产化详情</a>';								
+					return chakan;	
+					}
+				},
+				 {"title":"操作",
+                	"render": function (data,type,row,meta) {
+	                   	var bianji = '<a href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_bzh_qslsj_edit.html?id='+row["id"]+'" class="btn btn-sm btn-info pjax"><em class="fa fa-pencil"></em></a>';
+	                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delanquantj(\''+row["id"]+'\')"><em class="fa fa-trash"></em></button>';
+	               		return bianji + " " + shanchu;
+                	}
+                }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var dabiaodanwei = $("#dabiaodanwei").val();
+	var zhengshuhao = $("#zhengshuhao").val();
+	document.querySelector('.datatables').dataset.queryparam="dabiaodanwei="+dabiaodanwei+"&zhengshuhao="+zhengshuhao;
+	datatable.ajax.reload(null,false);
+}
+	
+function delanquantj(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delanquantj',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+function beianxq(){
+	dialog1=BootstrapDialog.show({
+	    title: '企业备案详情',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeianxq.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+	});
+}
+	
+</script>
+<%
+	}
+%>

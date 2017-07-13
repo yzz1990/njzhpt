@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入库记录</title>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/css/icon.css">
+    <script type="text/javascript" src="${ctxPath}/js/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/easyui-lang-zh_CN.js"></script>
+	<style type="text/css">
+		#table_id{
+			border: 1px solid #999;
+			text-align: center;
+			background-color: white;
+			margin: 20px;
+		}
+		#nbk{
+			text-align: center;
+		}
+	</style>
+    <script type="text/javascript">
+    	$.fn.datagrid.defaults.fit=true;
+    	$.fn.datagrid.defaults.pagination=true;
+    	$.fn.datagrid.defaults.rownumbers=true;
+    	$.fn.datagrid.defaults.singleSelect=true;
+    	$.fn.datagrid.defaults.pageSize=15;
+    	$.fn.datagrid.defaults.pageList=[15,50,100];
+    	$.fn.combobox.defaults.panelHeight='auto';
+    </script>
+</head>
+
+<body class="easyui-layout" id="table_id">
+<div data-options="region:'center',noheader:true, border:false,fit:true" style="padding: 30px;">
+	<div class="easyui-layout" fit="true">
+		<div data-options="region:'north',border:false"
+		 style="padding: 5px 10px; height: 100px;">
+			<div id="nbk">
+			<h3><font size="5px">报港记录</font></h3>
+		</div>
+		<div style="float: right; margin-right: 25px;" id="cha">
+			<span id="hideline"><label id="bianhao" style="margin-top:5px">身份证号:</label>
+			<input type="text" id="input_card"  class="easyui-textbox" style="width: 200px;margin-top:5px" name="" />
+			</span>
+			<a href="javascript:void(0);" class="easyui-linkbutton" onclick="doSearch()" iconCls="icon-search" id="idchaxun">查询</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" onclick="qingk()" id="qingk">清空</a>
+		</div>
+	</div>
+    <div data-options="region:'center',noheader:true, border:false"id="id4">
+	    <table class="easyui-datagrid" fitcolumns="true" id="szlk"
+	            data-options="url:'${ctxPath}/app/searchlscrk',method:'get'">
+	       <thead>
+	            <tr>
+	            <!-- 
+			<th data-options="field:'ck',checkbox:true"></th> -->
+	                <th data-options="field:'vSwiftNumber',width:80">流水号</th>
+	                <th data-options="field:'vViechleOwner',width:80">登记人 </th>
+	                <th data-options="field:'vCustomerIdentificationId',width:120">身份证号 </th>
+	                <th data-options="field:'dtRegistrateTime',width:120">报港时间</th>
+	                <th data-options="field:'vViechelNumber',width:80">车牌号 </th>
+	                <th data-options="field:'vGrainProperties',width:100">粮食性质</th>
+	                <th data-options="field:'SubTypeName',width:100">粮食品种</th>
+	                <th data-options="field:'vDefine3',width:100">收获年度</th>
+	                <th data-options="field:'vProvinceCode',width:100">产地</th>
+	                <th data-options="field:'PackageName',width:100">包装方式</th>
+	                <th data-options="field:'vExchangeName',width:100">入库原由</th>
+	            </tr>
+	        </thead>
+	    </table>
+    </div>
+    <script type="text/javascript">
+	    function doSearch(){
+			var input_card=$("#input_card").val();
+			var param = {'vCustomerIdentificationId':input_card};
+			$("#szlk").datagrid("load",param);
+		}
+		function qingk(){
+			$('#input_card').textbox({
+				value:''
+			});
+			doSearch();
+		}
+    </script>
+</div>
+	</div>
+</body>
+</html>

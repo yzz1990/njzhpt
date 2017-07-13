@@ -1,0 +1,212 @@
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<style>
+.fawen tr td {
+	height: 30px;
+	padding: 0 10px;
+	border: 1px solid #cccccc;
+	border-collapse: collapse;
+}
+
+.fawen,.fawen tr td {
+	height: 30px;
+	padding: 0 10px;
+	border: 1px solid #cccccc;
+	border-collapse: collapse;
+}
+
+.fawen tr td {
+	background-color: #E6F0FA;
+	text-align: right;
+}
+
+.fawen tr td+td {
+	text-align: left;
+	background-color: white;
+}
+
+.fawen tr td+td+td {
+	background-color: #E4E4E4;
+	text-align: right;
+}
+
+.fawen tr td+td+td+td {
+	text-align: left;
+	background-color: white;
+}
+
+.jjjjjjaa222 {
+	display: inline;
+}
+
+a:HOVER {
+	text-decoration: underline;
+}
+</style>
+	<script type="text/javascript">
+	/* jQuery.noConflict();
+	(function($) {  */
+		$(function(){
+			$('.file_upload').uploadifive({
+				'auto' : true,   //自动上传 
+		        'uploadScript' : '${ctxPath}/excel/uploadlhpzxwFile',  //处理上传文件Action路径
+		        'buttonClass' : 'file_upload',
+		        'fileObjName' : 'file',        //文件对象
+		  	    'buttonText'   : '上传附件',   //按钮显示文字 
+		  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+//		  		'fileTypeExts'     : '*.xlsx;*.xls;*.png',   //允许上传文件后缀名
+		  	    'onUploadComplete' : function(file, data) { //文件上传成功后执行
+			    	var obj = JSON.parse(data);
+			    	//alert(obj.scfilename);
+		  	  		$("#scfilename").html(obj.scfilename);
+			    	$("#fujianname").val(obj.scfilename);
+			    	$("#scfilename").attr("href","${ctxPath}"+obj.filepath);
+			    	$("#scfilename").attr("download",obj.scfilename);
+			    	$("#fujianpath").val(obj.filepath);
+		    	}
+			});
+		});  
+	/* })(jQuery); */
+		function myformatter(date) {
+				var y = date.getFullYear();
+				var m = date.getMonth() + 1;
+				var d = date.getDate();
+				var h = date.getHours();
+				var M = date.getMinutes();
+				var s = date.getSeconds();
+				return y + '-' + (m < 10 ? ('0' + m) : m) + '-'
+						+ (d < 10 ? ('0' + d) : d) + ' '
+						+ (h < 10 ? ('0' + h) : h) + ':'
+						+ (M < 10 ? ('0' + M) : M) + ':'
+						+ (s < 10 ? ('0' + s) : s);
+			}	
+	
+		function clearperson() {
+			$("#shoujianren").val("");
+			$("input[name='mailInfo.sjrid']").val("");
+		}
+		var dialog1 = "";
+		function chooseperson() {
+			dialog1=top.BootstrapDialog.show({
+			    title: '选择人员',
+				closeByBackdrop: true,
+			    message:$('<iframe frameborderno="0" id="if2" name="if2" style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/nbyj/chooseperson.html"/>'),
+			    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","700px");//modal-dialog
+		       		$(".bootstrap-dialog-message", dlg.$modalContent).css("height","400px");//modal-dialog
+		       },
+		       buttons: [
+		            /*      {
+		             label: '保存',
+				     action: function(dialog) {
+							 dialog.close();
+				     },
+				      cssClass: 'btn-xs btn-success'
+		        }, */
+          		{
+		           label: '关闭',
+		           action: function(dialog) {
+		               dialog.close();
+		           },
+		          cssClass: 'btn-xs btn-danger'
+		       }]
+			});
+			
+			
+		} 
+		function edit(){
+			dialog1.close();
+		}
+	</script>
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<form action="${ctxPath}/shoujian/sendemail" method="post">
+			<table class="fawen" bordercolor="#C6C6C6" width="100%">
+			<tr>
+				<td width="25%">发件人：</td>
+				<td width="75%">
+				 <input type="text" style="border:none" readonly="readonly" id="fajianren" value="${session.userinfo.user.realname}" />
+				</td>
+			</tr>
+			<tr>
+				<td>收件人：</td>
+				<td>
+					<div style="float: left; padding-right: 10px;">
+						<input style="width: 380px;" id="shoujianren"  readonly="readonly" class="form-control input-sm"
+							required="required">
+						
+					</div>
+					<div style="padding-top: 10px;">
+						<a href="javascript:void(0)" class="btn btn-success  btn-xs"
+							onclick="chooseperson()">添加</a>
+						<a href="javascript:void(0)"class="btn btn-danger  btn-xs"
+							onclick="clearperson()">清空</a>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>主题：</td>
+				<td>
+					<div style="float: left; padding-right: 2px">
+						<input type="text" style="width: 380px;" name="mailInfo.title" id="mailInfo.title" class="form-control input-sm"
+						  required="required"> 
+					</div>
+					
+					<select style="width: 100px;" name="mailInfo.level" class="form-control input-sm">
+						<option value="一般">一般</option>
+						<option value="重要">重要</option>
+					</select>
+					 
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="height: 380px; padding: 0;">
+					<input type="hidden" name="mailInfo.fjrid" /> 
+					<input type="hidden" name="mailInfo.content" /> 
+					<input type="hidden" name="mailInfo.sjrid" /> 
+					<input type="hidden" name="mailInfo.sjrname" /> 
+					<input type="hidden" name="mailInfo.hassend" value="" /> 
+					<input type="hidden" name="mailInfo.createtime" value="">
+					<input type="hidden" name="mailInfo.sendtime" value="">
+					<iframe frameborder="0" allowTransparency="true" src="editor.html" style="width: 100%; height: 100%;"></iframe></td>
+			</tr>
+			<tr>
+				<td>附件：</td>
+				<td style="height: 89px; padding: 0px;">
+					
+									
+					<a class="btn btn-info  btn-sm"  style="font-size:1px; margin-left: 5px" >
+						<input  class="file_upload"  type="file"  />
+					</a>
+					<input id="fujianpath" name="fujianpath" type="hidden">
+					<input id="fujianname" name="fujianname" type="hidden">
+					<a id="scfilename" style="width: 200px;margin-top:4px; " ></a>
+					<a id="tip-queue"  style="float:right;width:125px;display:none;"></a> 
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script>
+function saveyoujian() {
+	var form = $(".dashboard-wrapper-lg form");
+	$("input[name='mailInfo.content']").val($("iframe[src*='editor']")[0].contentWindow.getContent());
+	$("input[name='mailInfo.hassend']").val('1');
+	$("input[name='mailInfo.fjrid']").val('${session.userinfo.user.id}');
+	$("input[name='mailInfo.sendtime']").val(myformatter(new Date()));
+	$.ajax({
+		url : form.attr("action"),
+		type : 'post',
+		dataType : "json",
+		data : form.serialize(),
+		success : function(msg) {
+			if (msg.ret){
+				alert("保存成功！");
+				parent.window.dialogAdd.close();
+	        	parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert(msg.message);
+			}
+		}
+	});
+}
+</script>
+

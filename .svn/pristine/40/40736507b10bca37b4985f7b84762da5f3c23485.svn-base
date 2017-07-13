@@ -1,0 +1,86 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+    </style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline pull-right">
+						<a href="${ctxPath}/cangchuguanli/yewuguanli/churuku.html" class="btn btn-primary btn-sm" type="button">出入库</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/tongfengxinxi.html" class="btn btn-primary btn-sm" type="button">通风作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/lengquexinxi.html" class="btn btn-primary btn-sm" type="button">冷却作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/xunzhengxinxi.html" class="btn btn-primary btn-sm" type="button">熏蒸作业</a>
+				</div>
+				<div class="form-inline" style="float: left;">
+					<label>仓号:</label>
+					<input class="form-control input-sm" name="ch" id="ch" placeholder="仓号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>粮食品种:</label>
+					<input class="form-control input-sm" name="pz" id="pz" placeholder="粮食品种" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>熏蒸类型:</label>
+					<input class="form-control input-sm" name="xzlx" id="xzlx" placeholder="熏蒸类型" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()">查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findXunzheng" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "ch",
+				"title" : "仓号"
+			},{
+				"data" : "xzlx",
+				"title" : "熏蒸类型"
+			},{
+				"data" : "pz",
+				"title" : "粮食品种"
+			},{
+				"data" : "sl",
+				"title" : "数量）"
+			},{
+				"data" : "qw",
+				"title" : "气温",
+			},{
+				"data" : "cw",
+				"title" : "仓温",
+			},{
+				"data" : "jlr",
+				"title" : "记录人",
+			},{
+				"data" : "jlsj",
+				"title" : "记录时间",
+			}
+			]
+	});
+});
+
+	
+function doSearch(){
+	var ch = $("#ch").val();
+	var pz = $("#pz").val();
+	var xzlx = $("#xzlx").val();
+	document.querySelector('.datatables').dataset.queryparam="&ch="+ch+"&pz="+pz+"&xzlx="+xzlx;
+	datatable.ajax.reload(null,false);
+}
+
+</script>
+<%
+	}
+%>

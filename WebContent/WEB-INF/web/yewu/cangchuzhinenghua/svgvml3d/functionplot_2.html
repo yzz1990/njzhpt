@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<head>
+<title>SVG-VML-3D-Example - Function Plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<META HTTP-EQUIV="expires" CONTENT="Wed,26 Feb 1997 08:21:57 GMT">
+<style>
+v\:* {
+	behavior: url(#default#VML);
+}
+
+* {
+	maigin: 0px;
+	padding: 0px;
+	font-size: 14px;
+}
+
+p {
+	margin: 5px 0;
+}
+</style>
+<script type="text/javascript" src="../../cssjs/jsControl/jsManager.js"></script>
+<script>
+function returnsql(time){
+	var c=getQueryString("orderno");
+	if(c==12||c==13){
+		$('#fx_b').attr('src','down.png');
+	}
+	var str_time="";
+	if(time!=""){
+		str_time=" and CONVERT(varchar(100), cast(WX_LSH_WS_TIME as datetime), 20) like '"+time+"%' ";
+	}
+	var	sql = "select top 1 WX_LSH_WS_WT,WX_LSH_WS_WS,WX_LSH_WS_NT,WX_LSH_WS_NS,WX_LSH_WS_ROADNUM,WX_LSH_WS_COLUMNNUM,WX_LSH_WS_ROWNUM,WX_LSH_WS_TIME,id from wx_lsh_ws_main where Replace(wx_lsh_ws_kuhao,'仓','') = '1' "+str_time+" order by id desc";
+	if (getQueryString("orderno") != null) {
+		sql = "select top 1 WX_LSH_WS_WT,WX_LSH_WS_WS,WX_LSH_WS_NT,WX_LSH_WS_NS,WX_LSH_WS_ROADNUM,WX_LSH_WS_COLUMNNUM,WX_LSH_WS_ROWNUM,WX_LSH_WS_TIME,id from wx_lsh_ws_main where Replace(wx_lsh_ws_kuhao,'仓','') = '"
+				+ 	("orderno") + "' "+str_time+" order by id desc";
+	} else if (getQueryString("id") != null) {
+		sql = "select WX_LSH_WS_WT,WX_LSH_WS_WS,WX_LSH_WS_NT,WX_LSH_WS_NS,WX_LSH_WS_ROADNUM,WX_LSH_WS_COLUMNNUM,WX_LSH_WS_ROWNUM,WX_LSH_WS_TIME,id from wx_lsh_ws_main where id = '"
+				+ getQueryString("id") + "' "+str_time;
+	}
+	$.ajax({
+		type:"post",
+		url:_rooturl + "/base!ajaxfindBySql",
+		data:{param : sql},
+		dataType:"json",
+		async:false,
+		success:function(data){
+			if (data.ret && data.rows.length > 0) {
+				$("#wt").html(data.rows[0][0].toString().substr(0, 5));
+				$("#ws").html(data.rows[0][1].toString().substr(0, 5));
+				$("#nt").html(data.rows[0][2].toString().substr(0, 5));
+				$("#ns").html(data.rows[0][3].toString().substr(0, 5));
+				$("#cwrq").html(data.rows[0][7].toString());
+				var xmax = data.rows[0][5];
+				var ymax = data.rows[0][4];
+				var zmax = data.rows[0][6] + 1;
+				//alert('show3D.html?id='+data.rows[0][8].toString()+'&tvalue='+xmax+'t'+ymax+'t'+zmax);
+				$('#show3D').attr('src','show3D.html?id='+data.rows[0][8].toString()+'&tvalue='+xmax+'t'+ymax+'t'+zmax);
+			}else{
+				alert("无时间点无粮情数据，请重新选择！"); 
+			}
+		},
+		error:function(){
+			alert('加载出错！');
+		}
+	})
+}
+$(function() {
+	returnsql("");
+});
+function searchtime(){
+	var time=$('#shijian').val();
+	returnsql(time);
+}
+function getQueryString(name) {
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+	var r = window.location.search.substr(1).match(reg);
+	if (r != null)
+		return decodeURI(r[2]);
+	return null;
+}
+function checkshow(id) {
+	show3D.window.checkshow(id);
+
+}
+function ZoomPicture(vv) {
+	show3D.window.ZoomPicture(vv);
+}
+function ChangeViewer(ttheta, ffi) {
+	show3D.window.ChangeViewer(ttheta, ffi);
+}
+function clickxuanzhuan() {
+	show3D.window.clickxuanzhuan();
+}	
+</script>
+</head>
+<body bgcolor=#ffffff>
+<div style="width:30px;height:22px;top:75px;left:437px;position:absolute;">
+     <img alt="" src="up.png" style="border:none;" id="fx_b">北</div>
+<table style="text-align:center;">
+				<tr>
+					<td style="width:80px;">测温日期：</td>
+					<td><input id="shijian"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+							class="Wdate" /></td>
+					<td style="width:80px;"><a href="javascript:void(0);"
+					   class="easyui-linkbutton" data-options="iconCls:'icon-search'"
+						onclick="searchtime()" >查询</a></td>
+						</tr>
+	</table>
+	<table noborder>
+		<tr>
+			<td><iframe src="show3D.html?id=4478" id="show3D"  name="show3D" style="width:550px;height:505px;border:none;"></iframe></td>
+			<td valign="top">
+				<table border=0>
+					<tr>
+						<td style="width:200px;"><b>粮情信息</b>
+							<p>
+								仓内温度: <span id="nt">0</span>℃
+							</p>
+							<p>
+								仓内湿度: <span id="ns">0</span>%
+							</p>
+							<p>
+								仓外温度: <span id="wt">0</span>℃
+							</p>
+							<p>
+								仓外湿度: <span id="ws">0</span>%
+							</p>
+							<p>
+								测温日期: <span id="cwrq"></span>
+							</p></td>
+					</tr>
+					<tr>
+						<td><a href="javascript:void(0);" onclick="ZoomPicture(1)">放大</a> <a href="javascript:void(0);" onclick="ZoomPicture(-1)">缩小</a> <a href="javascript:void(0);" onclick="ChangeViewer(0,5)">&lt;</a> <a href="javascript:void(0);" onClick="ChangeViewer(-10,0)">∧</a> <a href="javascript:void(0);" onClick="ChangeViewer(10,0)">∨</a> <a href="javascript:void(0);" onClick="ChangeViewer(0,-5)">&gt;</a> <a href="javascript:void(0);" id="xuanzhuan" onClick="clickxuanzhuan()">旋转</a></td>
+					</tr>
+					<tr>
+						<td><br /> <b>显示控制</b>
+							<p>
+								<input type="checkbox" checked="checked" id="show4" style="width: 20px;" onclick="checkshow(this.id);" />第1层 传感器
+							</p>
+							<p>
+								<input type="checkbox" checked="checked" id="show3" style="width: 20px;" onclick="checkshow(this.id);" />第2层 传感器
+							</p>
+							<p>
+								<input type="checkbox" checked="checked" id="show2" style="width: 20px;" onclick="checkshow(this.id);" />第3层 传感器
+							</p>
+							<p>
+								<input type="checkbox" checked="checked" id="show1" style="width: 20px;" onclick="checkshow(this.id);" />第4层 传感器
+							</p></td>
+					</tr>
+					<tr>
+						<td><br /> <b>温度范围</b>
+							<p>
+								<span style="width: 80px; height: 20px; background-color: #FF3300; float: right;"></span><span>30℃以上 </span>
+							</p>
+							<p>
+								<span style="width: 80px; height: 20px; background-color: #FF9900; float: right;"></span><span>20℃~30℃ </span>
+							</p>
+							<p>
+								<span style="width: 80px; height: 20px; background-color: #FFFF66; float: right;"></span><span>10℃~20℃ </span>
+							</p>
+							<p>
+								<span style="width: 80px; height: 20px; background-color: #00FF99; float: right;"></span><span>00℃~10℃ </span>
+							</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

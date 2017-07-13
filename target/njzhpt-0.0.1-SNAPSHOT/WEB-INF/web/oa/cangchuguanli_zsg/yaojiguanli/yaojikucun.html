@@ -1,0 +1,204 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(8){
+		width: 120px;
+	}
+    </style>
+<div class="panel panel-default">
+		<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>药剂库存</b></span>
+		</div>
+			<div class="panel-heading">
+				<a class="btn btn-success btn-xs pull-right" type="button" onclick="addyjkc()"><i class="fa fa-plus-circle" aria-hidden="true" style="margin-top: 5px"></i>&nbsp;新增</a>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body" style="padding: 0">
+				<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findyjkc" >
+					
+				</table>
+			</div>
+		</div>
+<script type="text/javascript">
+
+(function ($) {
+	
+     $.getUrlParam = function (name) {
+           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if (r != null) return unescape(r[2]); return null;
+       }
+    })(jQuery);
+
+var kdbm = $.getUrlParam("kdbm");
+var xzqydm = $.getUrlParam("xzqydm");
+
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	})
+
+var datatable;
+$(function(){
+	
+	datatable = $('.datatables').DataTable({
+		"columns": [
+			{
+				"data" : "orderno",
+				"title" : "序号"
+			},{
+				"data" : "kdbm",
+				"title" : "药库名称"
+			},{
+				"data" : "weight",
+				"title" : "库存重量(g)"
+			},{
+				"title":"操作",width:80,
+	           	"render": function (data,type,row,meta) {
+	           		var url = 'javascript:void(0)';
+	          			var chakan = '<a href='+url+' onclick="showYjkc(\''+row["xzqydm"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;查看</a>';
+	             		return chakan;
+	           	}
+	          }
+		]
+	});
+	
+});
+
+
+
+	
+function doSearch(){
+	var xh = $("#xh").val();
+	var pp = $("#pp").val();
+	var yjmc = $("#yjmc").val();
+	document.querySelector('.datatables').dataset.queryparam="&xh="+xh+"&pp="+pp+"&yjmc="+yjmc;
+	datatable.ajax.reload(null,false);
+}
+
+
+
+
+$('.datatables').on( 'draw.dt', function () {
+	Changepp();
+} );
+
+function Changepp(){
+	/* $("#yjpp").html(""); */
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findyjmcpp',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option>'+data[i].yjpp+'</option>';
+			     $("#pp").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+
+$('.datatables').on( 'draw.dt', function () {
+	Changeyjmc();
+} );
+
+function Changeyjmc(){
+	/* $("#yjmc").html(""); */
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findyjmcpp',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option>'+data[i].yjmc+'</option>';
+			     $("#yjmc").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+
+function addyjkc(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增药剂库存信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yjkc_zsg.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","700px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveyjkc(); 
+        	   
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+function showYjkc(id){
+	dialog1=BootstrapDialog.show({
+	    title: '显示库存详细信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojikucunmx.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       
+	});
+}
+
+function delyjkc(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delYjkucun',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+</script>
+<%
+	}
+%>

@@ -1,0 +1,84 @@
+<%
+layout("/WEB-INF/web/ui/globalStyle.html"){
+	var baseinfo = {
+		tablename:"table_sqlmm",
+		title:"摄像头维护",
+		editurl:"sqlmm_edit.html"
+	};
+	var tableparam={};
+%>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline pull-left">
+					<label>镜头类型:</label>
+					<input class="form-control input-sm" name="gongdi" id="gongdi" placeholder="镜头类型" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+				<table class="table table-striped table-bordered" cellspacing="0" width="100%" id="${baseinfo.tablename}"></table>
+			</div>
+		</div>
+
+<script type="text/javascript">
+	var ${baseinfo.tablename};
+	var ${baseinfo.tablename}_param=${tableparam};
+	function contentinit(){
+		${baseinfo.tablename}=$('#${baseinfo.tablename}').DataTable({
+	        "ajax":function (data, callback, settings) {
+	        	$(".content-wrapper .panel").addClass("whirl standard");
+	        	${baseinfo.tablename}_param.page=(data.start/data.length)+1
+	        	${baseinfo.tablename}_param.rows=data.length;
+				
+				var ret={data:
+						  [{"leixing":"球面镜头","chicun":"25mm 1/2","guangquan":"自动光圈","bianjiao":"电动变焦","jiaoju":"长焦距镜头"},
+			               {"leixing":"非球面镜头","chicun":"3mm 1/3","guangquan":"手动光圈","bianjiao":"手动变焦","jiaoju":"标准镜头"},
+			               {"leixing":"针孔镜头","chicun":"8.5mm 2/3","guangquan":"固定光圈","bianjiao":"固定焦距","jiaoju":"广角镜头"},
+			               {"leixing":"鱼眼镜头","chicun":"17mm","guangquan":"手动光圈","bianjiao":"手动变焦","jiaoju":"标准镜头"}
+			               
+			               ]
+						,recordsFiltered:1,recordsTotal:1};
+				callback(ret);
+				$(".content-wrapper .panel").removeClass("whirl standard");
+				 
+			},
+	        "columns": [
+                {"data":"leixing","title":"类型"},
+                {"data":"chicun","title":"尺寸"},
+                {"data":"guangquan","title":"光圈类型"},
+                {"data":"bianjiao","title":"变焦类型"},
+                {"data":"jiaoju","title":"焦距类型"}
+            ]
+	    });
+	}
+	
+	//预览
+	function yulan(index) {
+		var rowdata=table_sqlmm.row(index).data();
+		window.open("${ctxPath}/query?execute=" + rowdata.code + "&conf_id=" + rowdata.conf_id2);
+	}
+	
+	function delete${baseinfo.tablename}(id){
+		$.post("${ctxPath}/deleteById",{conf_id:"SessionFactory_default",tableName:"sqlmm",id:id},function(data){
+			showResponsedelete(data);
+		},'json');
+	}
+	
+	function showResponsedelete(data){
+		if(data.ret){
+			${baseinfo.tablename}.ajax.reload(null,true);
+		}else{
+			alert("提交失败!");
+		}
+	}
+	
+	function doSearch(){
+		${baseinfo.tablename}_param.code=$("#code").val();
+		${baseinfo.tablename}_param.state=$("#state").val();
+		${baseinfo.tablename}.ajax.reload(null,false);
+	}
+</script>
+<%}%>

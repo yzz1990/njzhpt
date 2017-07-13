@@ -1,0 +1,66 @@
+﻿<html>
+<head>
+<script src="${ctxPath}/resource/jquery.js"></script>
+<script type="text/javascript">
+	var tongdao = parent.location.search.split('=')[1];
+	tongdao = tongdao.substr(0, tongdao.length - 2);
+	if (!tongdao) {
+		alert("没有通道号");
+	}
+	$(function() {
+		$("#ssss").click(function() {
+				if($('#kongzhiframe',window.parent.document).width()==70){
+				$('#kongzhiframe',window.parent.document).animate({
+					width : '200px',
+					height : '200px'
+				});
+				}else{
+				$('#kongzhiframe',window.parent.document).animate({
+					width : '70px',
+					height : '20px'
+				}, 500);
+			}
+		});
+	});
+
+	function kongzhi(pan, tilt) {
+		$.post("_SzlkShipin!ajaxcaozuo", {
+			content : "<pan>" + pan + "</pan><tilt>" + tilt + "</tilt>",
+			ipandport : '58.215.3.210:16888',
+			channel : tongdao
+		});
+	}
+
+	function zoom(zoom) {
+		$.post("_SzlkShipin!ajaxcaozuo", {
+			content : "<zoom>" + zoom + "</zoom>",
+			ipandport : '58.215.3.210:16888',
+			channel : tongdao
+		});
+	}
+</script>
+</head>
+<body style="margin: 0px; padding: 0px; position: relative;">
+	<span href="#" style="color: #08C;" id="ssss">视频控制</span>
+	<table style="margin-left: 10px;">
+		<tr>
+			<td style="width: 50px; height: 50px;"></td>
+			<td style="width: 50px;"><img alt="" style="cursor: pointer;" src="../../img/upin.png" onmousedown="kongzhi('0','60')" onmouseup="kongzhi('0','0')"></td>
+			<td style="width: 50px;"></td>
+			<td style="width: 50px;"></td>
+		</tr>
+		<tr>
+			<td style="width: 50px; height: 50px;"><img alt="" style="cursor: pointer;" src="../../img/leftin.png" onmousedown="kongzhi('-60','0')" onmouseup="kongzhi('0','0')"></td>
+			<td style="width: 50px;"></td>
+			<td style="width: 50px;"><img alt="" style="cursor: pointer;" src="../../img/rightin.png" onmousedown="kongzhi('60','0')" onmouseup="kongzhi('0','0')"></td>
+			<td style="width: 50px;"><img alt="" style="cursor: pointer;" src="../../img/zoom-outin.png" onmousedown="zoom('60')" onmouseup="zoom('0')"></td>
+		</tr>
+		<tr>
+			<td style="width: 50px; height: 50px;"></td>
+			<td style="width: 50px;"><img alt="" style="cursor: pointer;" src="../../img/downin.png" onmousedown="kongzhi('0','-60')" onmouseup="kongzhi('0','0')"></td>
+			<td style="width: 50px;"></td>
+			<td style="width: 50px;"><img alt="" style="cursor: pointer;" src="../../img/zoom-inin.png" onmousedown="zoom('-60')" onmouseup="zoom('0')"></td>
+		</tr>
+	</table>
+</body>
+</html>

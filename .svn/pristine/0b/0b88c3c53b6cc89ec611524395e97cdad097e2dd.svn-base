@@ -1,0 +1,208 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+	//================================仓房类型===================================
+	var cflxmc = ["平房仓","浅圆仓","立筒仓","楼房仓","储粮罩棚","仓间罩棚","铁路罩棚","其他简易仓"];
+	var qscflx = [0,0,0,0,0,0,0,0];
+	$.ajax({
+		url:'${ctxPath}/zonghe/findcflxzcrzb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i ++){
+				if("合计" == data.list[i].name){
+					qscflx[0] = (data.list[i].pfc/1000000).toFixed(4);
+					qscflx[1] = (data.list[i].qyc/1000000).toFixed(4);
+					qscflx[2] = (data.list[i].ltc/1000000).toFixed(4);
+					qscflx[3] = (data.list[i].lfc/1000000).toFixed(4);
+					qscflx[4] = (data.list[i].clzp/1000000).toFixed(4);
+					qscflx[5] = (data.list[i].cjzp/1000000).toFixed(4);
+					qscflx[6] = (data.list[i].tlzp/1000000).toFixed(4);
+					qscflx[7] = (data.list[i].qtjyc/1000000).toFixed(4);
+				}
+			}
+			
+			var qscf = [{name:"平房仓",value:qscflx[0]},{name:"浅圆仓",value:qscflx[1]},{name:"立筒仓",value:qscflx[2]},
+			            {name:"楼房仓",value:qscflx[3]},{name:"储粮罩棚",value:qscflx[4]},{name:"仓间罩棚",value:qscflx[5]},
+			            {name:"铁路罩棚",value:qscflx[6]},{name:"其他简易仓",value:qscflx[7]}];
+			//仓房状态饼状图
+			option2 = {
+				    title : {
+				        text: '全市仓房类型统计',
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}万吨({d}%)"
+				    },
+				    legend: {
+				    	 orient : 'vertical',
+					        y:'center',
+					        x:'left',
+				        data:cflxmc
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    
+				    calculable : true,
+				    series : [
+				              {
+				                  name:'仓房类型占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '60%'],
+				                  itemStyle:{
+				                	  normal:{
+				                		  label:{
+				                			  show: false 
+				                		  },
+				                		  labelLine:{
+				                			  show: false
+				                		  }
+				                	  }
+				                  },
+				                  data:qscf
+				              }
+				          ]
+				};
+			echarts.init(document.getElementById('container2')).setOption(option2);	
+			
+			
+		},
+		error:function(){
+			
+		}
+	});
+	
+	//===================================保粮类型======================================
+	var cfclmc = ["计算机测温","机械通风","环流熏蒸","低温储藏","气调储粮","其他技术"];
+	var qscfcl = [0,0,0,0,0,0];
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/cfcljs',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i ++){
+				if("合计" == data.list[i].name){
+					qscfcl[0] = (data.list[i].jsjcw/1000000).toFixed(4);
+					qscfcl[1] = (data.list[i].jxtf/1000000).toFixed(4);
+					qscfcl[2] = (data.list[i].hlxz/1000000).toFixed(4);
+					qscfcl[3] = (data.list[i].dwcl/1000000).toFixed(4);
+					qscfcl[4] = (data.list[i].qtcl/1000000).toFixed(4);
+					qscfcl[5] = (data.list[i].qtjs/1000000).toFixed(4);
+					
+				}
+			}
+			
+			var qscf = [{name:"计算机测温",value:qscfcl[0]},{name:"机械通风",value:qscfcl[1]},{name:"环流熏蒸",value:qscfcl[2]},
+			            {name:"低温储藏",value:qscfcl[3]},{name:"气调储粮",value:qscfcl[4]},{name:"其他技术",value:qscfcl[5]}];
+			//仓房保粮类型饼状图
+			option3 = {
+				    title : {
+				        text: '全市仓房保粮类型统计',
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}万吨({d}%)"
+				    },
+				    legend: {
+				    	 orient : 'vertical',
+					        y:'center',
+					        x:'left',
+				        data:cfclmc
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    
+				    calculable : true,
+				    series : [
+			              {
+			                  name:'仓房类型占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscf
+			              }
+			          ]
+				};
+			echarts.init(document.getElementById('container3')).setOption(option3);	
+			
+			
+		},
+		error:function(){
+			
+		}
+	});
+});	
+</script>
+
+<meta name="viewport"content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 100%;width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="container2" style="width: 48%;height:100%; margin: 0 auto;margin-left: 10px;float: left;"></div>
+          <div id="container3" style="width: 48%;height:100%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;"></div>
+        </div>
+	</div>		
+</div>  

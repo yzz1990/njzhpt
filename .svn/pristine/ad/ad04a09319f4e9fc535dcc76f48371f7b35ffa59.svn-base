@@ -1,0 +1,65 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+ var kdbm = parameter.kdbm;
+%>
+<style>
+	.hideminxi{
+		display:none;
+	}
+	.pingfen{
+	 	width:20%
+	}
+	
+</style>
+
+<body>
+<div>
+	<ul role="tablist" class="nav nav-tabs " style="width:100%">
+                  <li role="presentation" class="active pingfen" >
+                  <a href="#jj"  aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"  style="text-align: center;">
+                        简介</a>
+                  </li>
+                  <li role="presentation" class="hideminxi pingfen" >
+                     <a href="#jbqk" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"  style="text-align: center;">
+                       基本情况</a>
+                  </li>
+                  <li role="presentation" class="hideminxi pingfen"  >
+                     <a href="#cfxx" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"  style="text-align: center;">
+                       仓房信息</a>
+                  </li>
+                   <li role="presentation" class="hideminxi pingfen" >
+                     <a href="#kcxx" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"  style="text-align: center;">
+                       库存信息</a>
+                  </li>
+                   <li role="presentation" class="hideminxi pingfen" >
+                     <a href="#spxx" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"  style="text-align: center;">
+                       视频信息</a>
+                  </li>
+               </ul>
+	
+</div>
+<div id="myTabContent" class="tab-content" style="padding:0;width:100%;margin-top: 3px;height: 500px">
+	<div class="tab-pane fade in active" id="jj">
+		<iframe id="if1" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/kudianjianjie?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="jbqk">
+		<iframe id="if2" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/jibenqk?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="cfxx">
+		<iframe id="if3" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/quxian/cangfangxx1?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}&cfbm=001"></iframe>
+	</div>
+	<div class="tab-pane fade" id="kcxx">
+		<iframe id="if4" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/kucunxinxi?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}"></iframe>
+	</div>
+	
+	<div class="tab-pane fade" id="spxx">
+		<iframe id="if5" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/quxian/shipinxx?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}&flag=${flag}"></iframe>
+	</div>
+
+</div>
+<script type="text/javascript">
+</script>
+<%
+	}
+%>

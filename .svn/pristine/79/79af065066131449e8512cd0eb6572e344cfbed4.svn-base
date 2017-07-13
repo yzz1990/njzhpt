@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewpart"
+	content="width=device-width, initial-scale=1, maxium-scale=1, user-scalable=no">
+<title>粮食平台</title>
+
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<script src="${ctxPath}/js/bootstrap.min.js"></script>
+<script src="${ctxPath}/js/jquery.weather.js"></script>
+<link
+	href="${ctxPath}/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link href="${ctxPath}/css/julying-weather.css"
+	rel="stylesheet" type="text/css">
+<script type="text/javascript"
+	src="${ctxPath}/js/scroll.js"></script>
+<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: ${fontsize
+}
+
+;
+}
+.a {
+	height: 174px;
+	font-family: 微软雅黑;
+	font-size: ${fontsize
+}
+
+;
+color
+:
+#ffffff
+;
+
+            
+text-align
+:center
+;
+
+            
+vertical-align
+:middle
+;
+
+			
+padding
+:
+5px;
+
+        
+}
+.b {
+	height: 174px;
+	font-family: 微软雅黑;
+	font-size: ${fontsize
+}
+
+;
+color
+:
+#ffffff
+;
+
+            
+text-align
+:center
+;
+
+            
+vertical-align
+:middle
+;
+
+			
+padding
+:
+5px;
+
+        
+}
+.span11 {
+	float: left;
+}
+
+.a:hover {
+	text-decoration: underline;
+	font-weight: bold;
+	box-shadow: 0.5px 0.5px 2px 3px #ffffff;
+}
+
+.b:hover {
+	text-decoration: underline;
+	font-weight: bold;
+	box-shadow: 0.5px 0.5px 2px 3px #ffffff;
+}
+
+.d:hover {
+	text-decoration: underline;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+li:hover {
+	text-decoration: underline;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+span {
+	text—decoration: none
+}
+
+span:hover {
+	text—decoration: underline
+}
+
+.c {
+	margin-top: 30px;
+}
+
+.close {
+	
+}
+
+.day_weather {
+	width: 50px;
+}
+
+.time {
+	margin-top: 27px ! important;
+	margin-left: 32px ! important;
+}
+
+.modal-content {
+	width: 700px;
+	height: 500px;
+}
+</style>
+
+
+</head>
+<body style="background-image: url('${ctxPath}/image/background.png');">
+	<div
+		style="height: 80px; width: 100%; background: url('${ctxPath}/image/topbg.png');">
+		<!--<div style="margin-left:35px;height:70px;width:442px;background:url('image/logo.png') no-repeat;float:left;"></div>-->
+		<img src="${ctxPath}/image/logoy21.png" style="margin-left: 35px;">
+		<div style="float: right;">
+			<a
+				style="text-decoration: none; display: block; background-color: #42a139; width: 70px; height: 70px; float: right; text-align: center;"
+				href="${ctxPath}/login/logout"> <img
+				src="${ctxPath}/image/exit.png"
+				style="vertical-align: bottom; margin-top: 10px;">
+				<p id="exit"
+					style="line-height: 30px; font-family: 微软雅黑; font-size: 14px; color: #ffffff;">退出系统</p>
+			</a>
+			<div
+				style="line-height: 70px; height: 70px; vertical-align: center; float: right;">
+				<span
+					style="margin-right: 20px; font-family: 微软雅黑; font-size: 14px; color: #ffffff">您好，${session.userinfo.user.realname}</span>
+				<img src="" style="margin-right: 10px; vertical-align: middle;" />
+			</div>
+		</div>
+	</div>
+	<div class="box-right">
+		<!-- <div id="setting"
+			style="background: url('${ctxPath}/image/setting.png') no-repeat right 10px; display: block; width: 70px; height: 70px; float: right; cursor: pointer">
+
+		</div> -->
+		<div>
+			<div
+				style="background: url('${ctxPath}/image/1.png') no-repeat 130px; height: 258px; margin-top: 32px">
+
+				<!--<img  src="image/2.png" style="clear: both; display: block; margin:auto; ">-->
+			</div>
+			<!--<div style="background:url('image/2.png') no-repeat center;width:258px;height:258px;margin-top:-292px;margin-left:">
+		</div>-->
+			<!--<div style="float:left;margin-left:25px;margin-top:-150px;margin-left:180px">
+		<span style="font-family:微软雅黑;font-size: 58px;color:#ffffff;">12</span>
+	</div>
+	<div style="margin-top:-133px;margin-left:270px">
+		<div style="font-family:微软雅黑;font-size: 12px;color:#ffffff;">多云</div>
+		<div style="font-family:Arial;font-size: 20px;margin-top: 10px;color:#ffffff;">18-12</div>
+	</div>-->
+			<div id="debug"></div>
+			<!--<div style="font-family: Arial;font-size: 10px;margin-top:-235px;margin-left:250px;width:200px;color:#ffffff;">12/07  10:29</div>-->
+		</div>
+		<div id="reflus"
+			style="position: absolute; background: url('${ctxPath}/image/reflus.png') no-repeat center 25px; width: 258px; height: 108px; margin-top: 30px; margin-left: 80px; cursor: pointer"></div>
+		<div style="margin-top: 151px">
+			<div
+				style="font-family: 微软雅黑; font-size: 18px; font-weight: bold; color: #ffffff; margin-left: 38px; margin-bottom: 15px">我的关注</div>
+			<div class="span11"
+				style="background: url('${ctxPath}/image/col.png'); width: 230px; height: 212px; margin-left: 20px; cursor: pointer">
+				<div class="d"
+					style="font-family: 微软雅黑; fongt-size: 18px; color: #ffffff; margin-top: 22px; margin-left: 22px">江苏省连云港市粮食局</div>
+				
+				<div style="margin-left: 45px; margin-top: 38px;">
+					<img src="image/data.png">
+				</div>
+				<div
+					style="font-family: 微软雅黑; fongt-size: 18px; color: #ffffff; margin-top: -19px; margin-left: 88px">数据交换共享</div>
+			</div>
+		</div>
+		<div style="margin-top: -40px">
+			<div
+				style="font-family: 微软雅黑; font-size: 18px; font-weight: bold; color: #ffffff; margin-left: 271px; margin-bottom: 40px">通知公告</div>
+			<!-- <div id="" class="span11" style="background:url('image/adv.png');width:230px;height:212px;margin-top:-25px;margin-left:5px">
+			<ui id="" style="width: 100%;height:400px;font-family:'微软雅黑';font-size: 12px;">
+				
+			</ui>
+		</div> -->
+			<div id="scrollDiv" class="span11"
+				style="height: 212px; background: url('${ctxPath}/image/adv.png'); width: 230px; margin-top: -25px; margin-left: 5px">
+				<ul
+					style="width: 100%; height: 500px; font-family: 微软雅黑; font-size: 12px; "
+					id="table_id">
+					<li
+						style="list-style-type: none; margin-top: 10px; margin-left: 12px"><div>
+							<a href="#"
+								style="font-family: 微软雅黑; fongt-size: 12px; color: #ffffff; text-overflow: ellipsis; overflow: hidden;"
+								onclick="openGongGao('4028815c44cf54d70144dd8aee80163b')">[重要通知]
+								江苏省连云港市粮食局市级平台上线通知<br>2016-11-20
+							</a>
+						</div></li>
+					
+				</ul>
+			</div>
+		</div>
+
+		<div id="set"
+			style="display: none; margin-top: -576px; float: right; background: url('${ctxPath}/image/tanchu.png'); height: 300px;">
+
+			<div id="close"
+				style="margin-left: 5px; margin-top: 10px; cursor: pointer">
+				<img src="${ctxPath}/image/close.png">
+			</div>
+			<ul
+				style="list-style: none; margin-right: 10px; margin-left: 81px; margin-top: -30px;">
+				<li><h4 style="color: white;">公文处理</h4></li>
+				<li><h4 style="color: white;">信息发布</h4></li>
+				<li><h4 style="color: white;">文件流程管理</h4></li>
+				<li><h4 style="color: white;">资料交换</h4></li>
+				<li><h4 style="color: white;">个人办公</h4></li>
+				<li><h4 style="color: white;">视频会议</h4></li>
+
+			</ul>
+		</div>
+	</div>
+	<div class="box-left">
+		<div class="row">
+			<div class="col-md-4" style="padding: 5px">
+				<a href="${ctxPath}/gis/gis.html?id=3b3e46eafdca4ee4ab413795f81d712e"
+					style="text-decoration: none; color: white;">
+					<div class="a" style="background-color: #f29500;">
+						<img class="c" src="${ctxPath}/image/gis.png" /><br />
+						<br/>
+						<div style="cursor: pointer">地理信息系统</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-4" style="padding: 5px">
+				<a href="${ctxPath}/remote/chuliang/bgzhang.html"
+					style="text-decoration: none; color: white;">
+					<div class="b" style="background-color: #0097aa;">
+						<img class="c" src="${ctxPath}/image/3.png" /><br />
+						<br />
+						<div style="cursor: pointer;">
+							储备粮远程<br />监管系统
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-4" style="padding: 5px">
+				<a href="${ctxPath}/shouchukeshihua/gis.html"
+					style="text-decoration: none; color: white;">
+					<div class="b" style="background-color: #3c7780;">
+						<img class="c" src="${ctxPath}/image/7.png" /><br />
+						<br />
+						<div style="cursor: pointer">
+							粮食收储可视化<br />管理系统
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-4" style="padding: 5px">
+				<a href="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeian.html"
+					style="text-decoration: none; color: white;">
+					<div class="b" style="background-color: #be213e;">
+						<img class="c" src="${ctxPath}/image/8.png" /><br />
+						<br />
+						<div style="cursor: pointer">仓储管理</div>
+					</div>
+				</a>
+			</div>
+
+			<!-- <div class="col-md-2" style="padding:5px">
+			<a href="${ctxPath}/remote/cangku/qiye.html" style="text-decoration: none;color: white;">
+				<div class="b" style="background-color:#0097aa;">
+					<img class="c" src="image/3.png"/><br/><br/>
+					<div style="cursor: pointer;">储备粮远程<br/>监管系统</div>
+				</div>
+			</a>
+		</div> -->
+		</div>
+
+		<div class="row">
+			<!-- <div class="col-md-4" style="padding:5px">
+			<a href="${ctxPath}/pricemonitoring/jibenxinxi/pinzhong.html" style="text-decoration: none;color: white;">
+				<div class="a" style="background-color:#ac4cd9;">
+					<img class="c" src="image/price.png"/><br/><br/>
+					<div style="cursor: pointer">价格监测与分析系统</div>
+				</div>
+			</a>
+		</div> -->
+
+			
+			
+			<!-- <div class="col-md-4" style="padding:5px">
+			<a href="${ctxPath}/yuanliangzhuishu/shibiedaima/shibiedaima.html" style="text-decoration: none;color: white;">
+				<div class="a" style="background-color:#177cb0;">
+					<img class="c" src="image/0.png"/><br/><br/>
+					<div style="cursor: pointer">原粮质量安全追溯系统</div>
+				</div>
+			</a>
+		</div> -->
+		</div>
+		<div class="row">
+			<!-- <div class="col-md-2" style="padding:5px">
+			<a href="${ctxPath}/supervisioncheck/basicinfo/operator.html" style="text-decoration: none;color: white;">
+				<div class="b" style="background-color:#3b2e7e;">
+					<img class="c" src="image/4.png"/><br/><br/>
+					<div style="cursor: pointer">监督检查执法系统</div>
+				</div>
+			</a>
+		</div> -->
+		<div class="col-md-4" style="padding: 5px">
+				<a href="http://58.214.246.30:1000/jiangyan" target="_blank"
+					style="text-decoration: none; color: white;">
+					<div class="b" style="background-color: #b36d61;">
+						<img class="c" src="${ctxPath}/image/5.png" /><br />
+						<br />
+						<div style="cursor: pointer">粮库三维可视化系统</div>
+					</div>
+				</a>
+			</div>
+			
+			<div class="col-md-4" style="padding: 5px">
+				<a href="${ctxPath}/renyuan/renyuanguanli/renyuanguanli.html"
+					style="text-decoration: none; color: white;">
+					<div class="a" style="background-color: #3c7780;">
+						<img class="c" src="${ctxPath}/image/10.png" /><br />
+						<br />
+						<div style="cursor: pointer">智慧办公系统</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-4" style="padding: 5px">
+				<a href="http://58.222.128.189:8005/y_szlk/" target="_blank"
+					style="text-decoration: none; color: white;">
+					<div class="a" style="background-color: #c23916;">
+						<img class="c" src="${ctxPath}/image/9.png" /><br />
+						<br />
+						<div style="cursor: pointer">直属库业务管理系统</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-4" style="padding: 5px">
+				<a href="http://58.222.100.10:8081/y_szlk/" target="_blank"
+					style="text-decoration: none; color: white;">
+					<div class="b" style="background-color: #c23916;">
+						<img class="c" src="${ctxPath}/image/service.png" /><br />
+						<br />
+						<div style="cursor: pointer">兴泰库业务管理系统</div>
+					</div>
+				</a>
+			</div>
+			
+			
+			
+			<div class="col-md-4" style="padding: 5px">
+				<a href="${ctxPath}/oa/jibenxinxi/qiyexinxi.html"
+					style="text-decoration: none; color: white;">
+					<div class="a" style="background-color: #91009b;">
+						<img class="c" src="${ctxPath}/image/6.png" /><br />
+						<br />
+						<div style="cursor: pointer">粮食海量实时数据中心</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+
+
+	<style type="text/css">
+.box-left {
+	margin: 35px;
+	margin-top: 20px;
+	margin-right: 520px;
+}
+
+.box-right {
+	width: 500px;
+	float: right;
+}
+
+.row:after {
+	clear: none
+}
+</style>
+
+	<!--<div id="set" style="display: none;margin-top:-578px;float:right" >
+    <img src="image/tanchu.png">
+	<div id="close" style="margin-left:10px;margin-top:-20px;cursor:pointer">
+	<img src="image/close.png">
+	</div>
+</div>-->
+	<!-- <div style="font-family:微软雅黑;font-size:14px;color:#333333;width:350px;margin-top:-20px;margin-left: 40%"><a href="${ctxPath}/_Page!beetl?url=indexframework.html">@</a>版权信息  无锡中科智远科技有限公司</div> -->
+</body>
+<!-- <script src="http://blog.faultylabs.com/files/md5.js"></script> -->
+<script src="${ctxPath}/js/socket.io.js"></script>
+<script src='${ctxPath}/js/fingerprint.js'></script>
+<script src="${ctxPath}/js/tts.min.js"></script>
+<!----------dialog-------------->
+<link
+	href="${ctxPath}/css/bootstrap-dialog.min.css"
+	rel="stylesheet">
+<script
+	src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+<!----------dialog-------------->
+
+<script type="text/javascript">
+	/**
+	 * 初始化Session对象
+	 */
+	var session = new IFlyTtsSession({
+		'url' : 'http://webapi.openspeech.cn/',
+		'reconnection' : true,
+		'reconnectionDelay' : 30000
+	});
+	var audio = null;
+
+	/**
+	 * 输入文本，输出语音播放链接 
+	 * @content 待合成文本(不超过4096字节)
+	 */
+	function play(content) {
+		/***********************************************************以下签名过程需根据实际应用信息填入***************************************************/
+
+		var appid = "54c88b8d"; //应用APPID，在open.voicecloud.cn上申请即可获得
+		var timestamp = new Date().toLocaleTimeString(); //当前时间戳，例new Date().toLocaleTimeString()
+		var expires = 60000; //签名失效时间，单位:ms，例60000		
+		var vcn = 'xiaoyan';
+		var vol = 10;
+		//!!!为避免secretkey泄露，签名函数调用代码建议在服务器上完成
+		var signature = faultylabs.MD5(appid + '&' + timestamp + '&' + expires
+				+ '&' + "6a97bfd7fa4531f7");
+		/************************************************************以上签名过程需根据实际应用信息填入**************************************************/
+
+		var params = {
+			"params" : "aue = speex-wb;7, ent = intp65, spd = 65, vol = " + vol
+					+ ", tte = utf8, caller.appid=" + appid + ",timestamp="
+					+ timestamp + ", expires=" + expires + ", vcn=" + vcn,
+			"signature" : signature,
+			"gat" : "mp3"
+		};
+		session.start(params, content, function(err, obj) {
+			if (err) {
+				alert("语音合成发生错误，错误代码 ：" + err);
+			} else {
+				if (audio != null) {
+					audio.pause();
+				}
+				audio = new Audio();
+				audio.src = '';
+				audio.play();
+				audio.src = "http://webapi.openspeech.cn/" + obj.audio_url;
+				audio.play();
+			}
+		});
+	};
+</script>
+
+<script type="text/javascript">
+	$("#setting").bind("click", function() {
+		$("#set").animate({
+			left : 50,
+			opacity : 'show'
+		}, 500);
+	});
+	$("#close").click(function() {
+		$("#set").hide();
+	});
+
+	$("#reflus").click(function() {
+		location.reload([ true ]);
+	})
+	var jQueryWeatherConfig = {
+		lang : {
+			day : '白天',
+			night : '夜晚',
+			temp : '°',
+			wind : '级风',
+			wangzimo : '王子墨'
+		},
+		convert : function(sky) {
+			var weatherInfo = {
+				cloudy : [ '多云', '多云转阴', '晴转多云', '阴转多云' ],
+				overcast : [ '阴', '雾', '沙尘暴', '浮尘', '扬沙', '强沙尘暴' ],
+				rainy : [ '多云转小雨', '小雨转多云', '小雨', '中雨', '大雨', '暴雨', '大暴雨',
+						'特大暴雨', '冻雨', '小雨转中雨', '中雨转大雨', '大雨转暴雨', '暴雨转大暴雨',
+						'大暴雨转特大暴雨', '阵雨', '雷阵', '雷阵雨伴有冰雹' ],
+				sleet : [ '雨夹雪' ],
+				snow : [ '阵雪', '小雪', '中雪', '大雪', '暴雪', '小雪转中雪', '中雪转大雪',
+						'大雪转暴雪', '中雪转小雪', '大雪转中雪', '暴雪转大雪' ],
+				sunshine : [ '晴' ]
+			}, weather = '', state = '';
+			for (state in weatherInfo) {
+				if ($.inArray(sky, weatherInfo[state]) > -1) {
+					weather = state;
+					break;
+				}
+			}
+			return weather || state || 'sunshine';
+		}
+	};
+
+	$(function() {
+		$
+				.getScript(
+						'http://php.weather.sina.com.cn/iframe/index/w_cl.php?code=js&day=0&city=连云港&charset=utf-8',
+						function() {
+							//window.SWther 这是返回的天气情况
+							var city, dataInfo = window.SWther.w;
+							for ( var city in dataInfo)
+								; //获取 天气
+							dataInfo = dataInfo[city][0];
+							var date = SWther.add.now.replace(/-/g, "/");
+							if (date.length == 18)
+								date = date.substring(0, 15);
+							if (date.length == 19)
+								date = date.substring(0, 16);
+							//jQueryWeatherConfig
+							var weatherData = {
+								city : city,
+								date : date,
+								day_weather : dataInfo.s1,
+								night_weather : dataInfo.s2,
+								day_temp : dataInfo.t1,
+								night_temp : dataInfo.t2,
+								day_wind : dataInfo.p1,
+								night_wind : dataInfo.p2
+							};
+
+							var hour = (new Date(SWther.add.now)).getHours();
+							var sky = hour > 18 ? weatherData.day_weather
+									: weatherData.night_weather;
+							var weatherBox = $('#debug').weather({
+								sky : jQueryWeatherConfig.convert(sky),
+								weatherData : weatherData,
+								config : jQueryWeatherConfig
+							});
+
+							//weatherBox 是 整个天气图标的跟节点的 jQuery ，所以可以直接操作，可以自己随意扩展效果。
+							/*setTimeout(function(){
+								weatherBox.hide( );
+							}, 1000 );*/
+
+							setTimeout(function() {
+								weatherBox.show();
+							}, 2000);
+
+							play("当前天气：阴，气温：" + dataInfo.t1
+									+ "℃，湿度：70%，东风1级，PM2.5：55。今日不适合通风，熏蒸，烘晒。");
+						});
+
+	});
+</script>
+<style type="text/css">
+.renav {
+	width: 100%;
+	line-height: 21px;
+	overflow: hidden;
+	background: #FFFFFF;
+}
+
+.renav li {
+	height: 21px;
+}
+
+#scrollDiv {
+	width: 100%;
+	height: 200px;
+	overflow: hidden;
+}
+</style>
+
+</html>

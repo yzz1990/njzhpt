@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>人口信息增删</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+</head>
+<%
+	var obj={},url=ctxPath+"/gonggong/addgonggao";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.GonggongDAO.querygonggao({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/gonggong/upgonggao";
+	};
+%>
+
+
+<script type="text/javascript">
+
+
+
+$(window).load(function() { 
+
+});
+
+</script>
+
+
+<body>
+	 <div class="dashboard-wrapper-lg" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+	 		<input type="hidden"  name="id" class="form-control" placeholder="id" value="${obj.id}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	基本信息                                  
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="wenhao">文号:</label>
+									<input id="wenhao" name="wenhao" class="form-control" placeholder="文号" value="${obj.wenhao}">	
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="title">标题:</label>
+									<input id="title" name="title" class="form-control" placeholder="标题" value="${obj.title}">	
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="leixin">类型:</label>
+									<input id="leixin" name="leixin" class="form-control" placeholder="类型" value="${obj.leixin}">
+						
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="hegaoren">核稿人:</label>
+									<input id="hegaoren" name="hegaoren" class="form-control" placeholder="区域" value="${obj.hegaoren}">
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="zhuangtai">状态:</label>
+									<input id="zhuangtai" name="zhuangtai" class="form-control" placeholder="状态" value="${obj.zhuangtai}">
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="createtime">创建时间:</label>
+									<input id="createtime" name="createtime" class="form-control" placeholder="创建时间" value="${obj.createtime}">
+								</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	</div>
+            <!-- Row End -->
+            
+    <script type="text/javascript">
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+
+    function savegonggao() {
+    	var form = $("#contentform");
+    	$.ajax({
+    		url: form.attr("action"),
+    		type:"post",
+    		dataType:"json",
+    		data: form.serialize(),
+    		success: function(msg) {
+    			if (!msg.ret) {
+    				alert(msg.message);
+    			} else {
+    				alert("保存成功");
+    			}
+    		},
+    		error:function(){
+    			alert("保存失败,请检查内容是否重复");
+    		}
+    	});
+    }
+    
+    </script>
+            
+</body>
+
+
+</html>

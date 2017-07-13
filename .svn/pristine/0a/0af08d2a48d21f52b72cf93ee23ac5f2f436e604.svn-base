@@ -1,0 +1,236 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+
+</style>
+
+
+<script type="text/javascript">
+
+var qyzzjgdm;
+var kdbm;
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+});
+
+(function ($) {
+     $.getUrlParam = function (name) {
+           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if (r != null) return unescape(r[2]); return null;
+       }
+   })(jQuery);
+   
+$(function() {
+	
+	$.ajax({
+		url:'${ctxPath}/zhiliangzs/querychukudj.do',
+		type:'post',
+		data:{"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			var qz = [];
+			var op = '<option value="请选择">请选择</option>';
+			
+			$("#hwbm").append(op);
+			$("#hwmc").append(op);
+			$("#kdmc").append(op);
+			
+			for(var i = 0; i < data.list.length; i++){
+				if(!qz.in_array(data.list[i].kudianmc) && (data.list[i].kudianmc != null)){
+					qz.push(data.list[i].kudianmc);
+				}
+				var ophwbm = '<option value = "'+data.list[i].huoweibm+'">'+data.list[i].huoweibm+'</option>';
+				var ophwmc = '<option value = "'+data.list[i].qyzzjgdm+'">'+data.list[i].huoweimc+'</option>'
+				$("#hwbm").append(ophwbm);
+				$("#hwmc").append(ophwmc);
+			}
+			
+			for(var j = 0 ; j < qz.length; j++){
+				var opqz = '<option value = "'+qz[j]+'">'+qz[j]+'</option>';
+				$("#kdmc").append(opqz);
+			}
+		},
+		error:function(){
+			alert("加载下拉框失败");
+		}
+	});
+
+	
+	
+	//加载出库登记
+	datatable = $('.table-qiye').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huoweibm"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["kudianmc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["cangfangmc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["aojianmc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huoweimc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chukudata"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["dmstock"]+'</div>';
+					return div;								
+				}
+			}
+			
+			]
+	});
+});
+
+
+
+
+//条件查询
+function doSearch(){
+	
+	var hwbm = $("#hwbm option:selected").text();
+	var hwmc = $("#hwmc option:selected").text();
+	var	kdmc = $("#kdmc option:selected").text();
+
+	
+	var querystr = "";
+	if(hwbm != null && hwbm != "" && hwbm != "请选择"){
+		querystr += '&huoweibm='+hwbm;
+	}
+	if(hwmc != null && hwmc != "" && hwmc != "请选择"){
+		querystr += '&huoweimc='+hwmc;
+	}
+	if(kdmc != null && kdmc != "" && kdmc != "请选择"){
+		querystr += '&kudianmc='+kdmc;
+	}
+	
+	$(".table-qiye").attr("data-queryparam",querystr);
+	datatable.ajax.reload(null,true);
+	
+}
+</script>
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>出库信息登记</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+		<div class="chaxuntiaojian" style="float:left;">
+			<label class="cjd-label">货位编码:</label>
+			<select id="hwbm" class="form-control cjd-select" style="width:150px;">
+			</select>	
+			<label style="margin-left:20px">货位名称:</label>
+			<select id="hwmc" class="form-control cjd-select" style="width:150px;">
+			</select>
+			<label style="margin-left:20px">库点名称</label>
+			<select id="kdmc" class="form-control cjd-select" style="width:150px;">
+			</select>
+			<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px">
+   <!-- 入库质量信息 -->
+   <div class="panel-body">
+   	<div id="div-ruku" >
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover table-bordered datatables table-qiye" data-url="${ctxPath}/zhiliangzs/querychukudj.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" style="vertical-align:middle">货位编码</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">库点名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">仓房名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">廒间名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">货位名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">出库时间</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">出库数量(公斤)</th>
+	 			</tr>
+			</thead>	
+		</table>
+   	</div>
+</div>
+</div>
+</div>
+</div>
+
+<%}%>

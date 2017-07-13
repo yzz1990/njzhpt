@@ -1,0 +1,390 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style type="text/css">
+.cjd-select{
+	width:150px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+	margin-right:20px;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia, #div-baojia{
+	height:500px;
+	overflow-y:auto;
+}
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+.table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #FFFFFF;
+}
+.cj-td{
+	border:1px solid #ddd;
+}	
+.cjd-input{
+	text-align:center;
+	width:150px;
+	height:28px;
+	
+}
+.inprice{
+	width:100px;
+}
+</style>
+    
+<script type="text/javascript">
+
+var mydate = new Date();
+var tyear = mydate.getFullYear();
+var p = 0;
+var week;
+
+(function ($) {
+    $.getUrlParam = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+})(jQuery);
+
+var bj = $.getUrlParam("bj");
+
+$(function(){
+	$(".cjd-select").select2();
+	//加载有商品对照的采价点
+	$.ajax({
+		url:'${ctxPath}/jiage/querydzcjdsp.do',
+		type:'post',
+		data:{"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option value="'+n.cjdid+'">'+n.cjdname+'</option>';
+				$("#cjdmc").append(op);
+			});
+			$("#cjdmc").val("");
+		},
+		error:function(){
+			alert("获取有商品对照的采价点失败");
+		}
+	});
+	if(bj == 1){
+		//加载年度
+		$("#cjnd").val(tyear);
+		$.ajax({
+			url:'${ctxPath}/jiage/findzhous.do',
+			data:{"page":1,"rows":10000,"year":tyear,"bj":1},
+			dataType:'json',
+			success:function(data){
+				week = data.list[0].iweek;
+				$("#cjzs").val("第"+data.list[0].iweek+"周");
+				$("#cjzs").attr("week",week);
+			},
+			error:function(){
+				alert("查询周数失败");
+			}
+		})	
+	}
+	//未填报查询
+	if(bj == 2){
+		$('#cjdmc').attr("disabled",true); 
+		$("#cjnd").attr("disabled",true); 
+		$("#cjzs").attr("disabled",true); 
+		$("#addprice").hide(); 
+		var cjdid = $.getUrlParam("cjdid");
+		var year = $.getUrlParam("year");
+		week = $.getUrlParam("week");
+		$("#cjnd").val(year);
+		$("#cjzs").val(week);
+		
+		
+		addcjdtb(cjdid);
+		/*
+		$.ajax({
+			url:'${ctxPath}/jiage/findjgpz.do',
+			type:'get',
+			data:{"page":1,"rows":10000,"conflixid":conflixid},
+			dataType:'json',
+			success:function(data){
+					var pzid = data.list[0].pzid;
+					var jglx = data.list[0].jglxname;
+					var cjdname = data.list[0].cjdname;
+					var pzname = data.list[0].pzname;
+					var level = data.list[0].level;
+					var cfid = data.list[0].id;
+					$(".cjdmc-div").find(".select2-selection__rendered").text(cjdname);
+					$(".cjdmc-div").find(".select2-selection__rendered").attr("title",cjdname);
+					p++;
+					var tr = '<tr id="tr0" cfid="'+cfid+'"  style="border:1px solid:black;font-weight:bold;">';
+					tr+= '<td id="cjdmc0" class="cj-td " style="text-align:center;">'+cjdname+'</td>';
+					tr+= '<td id="pz0" class="cj-td" style="text-align:center;">'+pzname+'</td>';
+					tr+= '<td id="dj0" class="cj-td" style="text-align:center;padding-right:5px">'+level+'</td>';
+					tr+= '<td id="jcj0" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+					tr+= '<td id="ccj0" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+					tr+= '<td id="pfj0" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+					tr+= '<td id="nmscj0" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+					tr+= '<td id="cslsj0" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+					tr+= '</tr>';
+					$("#exctable-caijia").find("tbody").append(tr);
+					var vv = "";
+					if(jglx == "进厂价"){
+						$("#jcj0").css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#jcj0").html(inp);
+					}
+					if(jglx == "出厂价"){
+						$("#ccj0").css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#ccj0").html(inp);
+					}
+					if(jglx == "批发价"){
+						$("#pfj0").css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#pfj0").html(inp);
+					}
+					if(jglx == "农贸市场价"){
+						$("#nmscj0").css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#nmscj0").html(inp);
+					}
+					if(jglx == "超市零售价"){
+						$("#cslsj0").css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#cslsj0").html(inp);
+					}
+				
+			},
+			error:function(){
+				alert("生成报价失败");
+			}
+		});
+		*/
+	}
+});
+
+function  addcjdtb(cjdid){
+	if(cjdid != null && cjdid != ""){
+		$.ajax({
+			url:'${ctxPath}/jiage/findjgpz.do',
+			type:'get',
+			data:{"page":1,"rows":10000,"cjdid":cjdid},
+			dataType:'json',
+			success:function(data){
+				//生成填报表
+				var vpzid = "55555";
+				p = 0;
+				for(var i = 0; i < data.list.length; i++){
+					var pzid = data.list[i].pzid;
+					var jglx = data.list[i].jglxname;
+					//if(pzid != vpzid){
+						var cjdname = data.list[i].cjdname;
+						var pzname = data.list[i].pzname;
+						var level = data.list[i].level;
+						var cfid = data.list[i].id;
+						p++;
+						var tr = '<tr id="tr'+p+'" cfid="'+cfid+'"  style="border:1px solid:black;font-weight:bold;">';
+						tr+= '<td id="cjdmc'+p+'" class="cj-td " style="text-align:center;">'+cjdname+'</td>';
+						tr+= '<td id="pz'+p+'" class="cj-td" style="text-align:center;">'+pzname+'</td>';
+						tr+= '<td id="dj'+p+'" class="cj-td" style="text-align:center;padding-right:5px">'+level+'</td>';
+						tr+= '<td id="jcj'+p+'" class="cj-td" style="text-align:center;padding-right:5px">- -</td>';
+						tr+= '<td id="ccj'+p+'" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+						tr+= '<td id="pfj'+p+'" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+						tr+= '<td id="nmscj'+p+'" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+						tr+= '<td id="cslsj'+p+'" class="cj-td" style="text-align:center;padding-right:5px">--</td>';
+						tr+= '</tr>';
+						$("#exctable-caijia").find("tbody").append(tr);
+						vpzid = pzid;
+					//}
+					if(jglx == "进厂价"){
+						$("#jcj"+p).css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#jcj"+p).html(inp);
+					}
+					if(jglx == "出厂价"){
+						$("#ccj"+p).css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#ccj"+p).html(inp);
+					}
+					if(jglx == "批发价"){
+						$("#pfj"+p).css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#pfj"+p).html(inp);
+					}
+					if(jglx == "农贸市场价"){
+						$("#nmscj"+p).css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#nmscj"+p).html(inp);
+					}
+					if(jglx == "超市零售价"){
+						$("#cslsj"+p).css("background-color","#FFFFFF");
+						var inp = "<input onKeyPress='if (event.keyCode!=46 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false' class='inprice' type='text'/>";
+						$("#cslsj"+p).html(inp);
+					}
+				}
+			},
+			error:function(){
+				alert("生成报价失败");
+			}
+		});
+	}else{
+		alert("请选择采价点");
+	}
+}
+
+//增加价格
+function addprice(){
+	$("#exctable-caijia").find("tbody").empty();
+	var cjdid = $("#cjdmc option:selected").val();
+	addcjdtb(cjdid);
+}
+
+//保存报价
+function saveprice(){
+	var flag = 0;
+	$(".inprice").each(function(i,obj){	
+		if (isNaN($(obj).val()) || $(obj).val() == "" || $(obj).val() == null) { 
+	　		flag++;
+	　　} 
+	});
+	if(flag == 0){
+		//if(bj == 1){
+			var year = $("#cjnd").val();
+			var count = 0;
+			var countw = 0;
+			var conflixids = "";
+			var prices = "";
+			for(var i = 1; i <= p; i++){
+				var conflixid = $("#tr"+i).attr("cfid");
+				var price = $("#tr"+i).find(".inprice").val();
+				if(i == 1){
+					conflixids += conflixid;
+					prices += price;
+				}else{
+					conflixids += (","+conflixid);
+					prices += (","+price);
+				}
+				
+				
+				/*
+				$.ajax({
+					url:"${ctxPath}/jiage/saveprice",
+					type:'post',
+					data:{"year":year,"week":week,"conflixid":conflixid,"price":price},
+					dataType:'json',
+					success:function(data){	
+						count++;
+						if(count == p){
+							alert("保存成功");
+							window.parent.doSearch();
+							window.parent.closedialog();
+						}
+					},
+					error:function(){
+						if(countw == 0){
+							alert("保存失败，检查是否重复保存");
+						}
+						countw++;
+					}
+				});
+				*/
+				
+				
+			}
+			$.ajax({
+				url:"${ctxPath}/jiage/saveprice",
+				type:'post',
+				data:{"year":year,"week":week,"conflixids":conflixids,"prices":prices},
+				dataType:'json',
+				success:function(data){	
+					if(data){
+						alert("保存成功");
+						window.parent.doSearch();
+						window.parent.closedialog();
+					}
+				},
+				error:function(){
+					if(countw == 0){
+						alert("保存失败，检查是否重复保存");
+					}
+					countw++;
+				}
+			});
+			
+		//}
+		
+	}else{
+		alert("请正确填写全部价格");
+	}
+}
+
+
+
+</script>
+    <div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="form-inline">
+			<div class="cjd-div cjdmc-div">
+				<label class="cjd-label">采价点名称:</label>
+				<select id="cjdmc" class="cjd-select" onchange="addprice()">
+					<option value="请选择" selected="selected">请选择</option>
+				</select>
+			</div>
+			<div class="cjd-div year-div">
+				<label class="cjd-label">采价年度:</label>
+				<input id="cjnd" class="cjd-input" disabled="disabled" type="text" class="" />
+			</div>
+			<div class="cjd-div week-div">
+				<label class="cjd-label">采价周数:</label>
+				<input id="cjzs"  class="cjd-input" disabled="disabled" type="text" class="" />
+			</div>
+			<!--<a id="addprice" class="btn btn-success btn-xs" type="button" onclick="addprice()" style="margin-left:5px;margin-top: 2px;">新增报价</a>-->
+			单位:元/50公斤
+			<a class="btn btn-success btn-xs" type="button" onclick="saveprice()" style="margin-left:5px;margin-top: 2px;float:right">保存报价</a>
+		</div>
+		
+		<div class="clearfix"></div>
+	</div>
+<div class="panel-body">
+  	<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="${ctxPath}/jiage/findjgpz.do?isedit=2" >	 
+		<thead>
+			<tr>
+    			<th rowspan="1" colspan="1" style="vertical-align:middle">采价点名称</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">品种</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">等级</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">进厂价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">出厂价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">批发价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">农贸市场零售价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">超市零售价</th>
+ 			</tr>
+		</thead>	
+		<tbody>
+		</tbody>
+	</table>
+  </div>
+</div>
+<%
+	}
+%>
+  

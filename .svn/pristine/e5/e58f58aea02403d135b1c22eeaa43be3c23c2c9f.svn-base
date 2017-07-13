@@ -1,0 +1,29 @@
+<%
+layout("/WEB-INF/web/ui/globalStyle.html"){
+	var baseinfo = {
+		tablename:"table_sqlmm",
+		title:"实时视频",
+		editurl:"sqlmm_edit.html"
+	};
+	var tableparam={};
+%>
+
+
+	<div class="row" style="margin-left: 20px">
+		<div class="col-xs-3">
+			<iframe src="${ctxPath}/remote/shipin/ShowShipin.html" height="500px"></iframe>
+		</div>
+		
+		<div id="sp" class="col-xs-8" style="margin-left: 40px">
+			<iframe id="if1" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 98%;" src="${ctxPath}/remote/shipin/jiankong.html?url=rtsp://admin:abcde@112.2.13.26:554/PSIA/streaming/channels/301/"></iframe>
+			<iframe id="kongzhiframe" width="80px" height="500px" style="border:0px;position: absolute;right:5px;" scrolling="no" src="${ctxPath}/remote/shipin/kz_jiankong.html?ipandport=112.2.13.26:81&amp;channel=3"></iframe>
+		</div>
+	</div>
+
+
+<script type="text/javascript">
+	
+	
+	
+</script>
+<%}%>

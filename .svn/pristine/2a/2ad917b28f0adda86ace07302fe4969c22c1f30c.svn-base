@@ -1,0 +1,74 @@
+<%
+	include("/WEB-INF/web/ui/cssjs.html"){}
+		var list=object;
+		var title = "驳回理由"; 
+
+%>
+<%
+	for(obj in list){
+%>
+   <div class="dashboard-wrapper-lg" style="padding: 0;min-height: 150px;">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">${obj.type=='1'?'审核意见':'驳回理由'}</div>
+					</div>
+					<div class="widget-body">
+						<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="shenpiren">审核人:</label> 
+										<input class="form-control" placeholder="审核人" value="${obj.realname}" readonly="readonly">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="liyou">审核结果:</label> 
+										<input class="form-control" placeholder="审核结果" value="${obj.type=='1'?'通过':'不通过'}" readonly="readonly">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="liyou">${obj.type=='1'?'审核意见':'驳回理由'}</label> 
+										<input class="form-control" placeholder="审批意见" value="${obj.liyou}" readonly="readonly">
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+<%
+}
+%>
+<div class="widget-body"  style="height: 132px;">
+		<div id="liuchengtu" style="margin-top: 0px">
+		</div>
+</div>
+<script>
+$(function(){
+	if("${list[0].id}"!=""){
+		var ri="${list[0].beianriqi}";
+		var riqi=ri.split(" ");
+		$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtulunhuan?liuchenghao=${list[0].liuchenghao}&qiyeid=${list[0].qyzzjgdm}&lhid=${list[0].lhid}");
+	}
+})
+ function bohui(){
+	 var form = $(".widget-body form");
+	 $.ajax({
+			url:'${ctxPath}/renyuan/saveBohuixz',
+			type:'post',
+			dataType:'json',
+			data : form.serialize(),
+			success:function(data){
+				
+			}
+		});
+	 
+ }
+
+
+</script>
+					

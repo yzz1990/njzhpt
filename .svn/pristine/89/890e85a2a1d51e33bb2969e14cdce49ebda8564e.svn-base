@@ -1,0 +1,309 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+   
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(9){
+		width: 140px;
+	}
+	.table-striped>tbody>tr>td:nth-child(4){
+		text-align: left;
+	}
+	.table-striped>tbody>tr>td:nth-child(5){
+		text-align: left;
+	}
+	
+</style>
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>企业信息</b></span>
+	</div>
+	<div class="panel-heading">
+		<div class="form-inline" >
+			<div class = "div-diqu pull-left" >
+				<label>地区:</label>
+				<select id="quxian" class="form-control input-sm" style="width:150px; font-size:14px" onchange="Change()">
+					<option value="" >请选择</option>
+				</select>
+			</div>
+			<div class = "div-qiye pull-left" style="margin-left: 10px">
+				<label>企业:</label>
+				<select id="qiye" class="form-control input-sm" style="width:150px; font-size:14px">
+					<option value="" >请选择</option>
+				</select>
+			</div>
+			<div class = "div-xingzhi pull-left" style="margin-left: 10px">
+				<label>企业性质:</label>
+					<select id="xingzhi" class="form-control input-sm" style="width:150px;font-size:14px">
+						<option value="" >请选择</option>
+					</select>
+			</div>
+			<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left:5px"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+			<!-- 一个页面导入对应一个liucid -->
+			<input type="hidden" id="liucid" name="liucid" value="035d3f332e3d4885af6d83f74adbc407">
+			<a class="btn btn-success btn-xs pull-right" type="button" style="margin-right: 10px" onclick="daoru()"><i class="fa fa-cloud-upload" aria-hidden="true"></i>&nbsp;导入</a>
+			<a class="btn btn-success btn-xs pull-right" type="button" style="margin-right:5px" onclick="upqiyexx()" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+			
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="panel-body" >
+			<table id="quxianxixni"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/jibenxinxi/findQiyexinxi" ></table>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+		
+        "columns": [
+			{
+				"data" : "sheng",
+				"title" : "省",width:30
+			},{
+				"data" : "shi",
+				"title" : "市",width:30
+			},{
+				"data" : "xian",
+				"title" : "县",width:30
+			},{
+				"data" : "qymc",
+				"title" : "企业名称",width:120
+			},{
+				"data" : "xxdz",
+				"title" : "地址",width:160
+			},{
+				"data" : "qyxzmc",
+				"title" : "企业性质"
+			},{
+				"data" : "jyywlxmc",
+				"title" : "业务类型"
+			},{
+				"data" : "fddbr",
+				"title" : "法定代表人",width:80
+			},{
+				"title":"操作",
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upqiyexx(\''+row["qyzzjgdm"]+'\',\''+row["ID"]+'\',\''+row["sheng"]+'\',\''+row["shi"]+'\',\''+row["xian"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delqiyexx(\''+row["ID"]+'\',\''+row["qyzzjgdm"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }]
+	});
+});
+
+$(document).ready(function() {
+	$("#quxian").select2();
+	$("#qiye").select2();
+	$("#xingzhi").select2();
+	
+	/* 加载区县 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				$("#quxian").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+			});
+		 }
+	});
+	
+	/*企业性质初始化  */
+	$.ajax({
+		url: "${ctxPath}/cangchugl/queryQiyeXZ",
+		dataType: "json",
+		success: function(data) {
+			$.each(data,function(i, n){
+					$("#xingzhi").append("<option value="+n.qyxzmc+">"+n.qyxzmc+"</option>");
+			});
+		}
+	});
+
+});
+
+
+function Change(){
+	$("#qiye").empty();
+	$("#qiye").append('<option value="请选择">请选择</option>');
+	var xian = $("#quxian").val();
+
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"quyu":xian},
+		dataType:'json',
+		success:function(data){
+			
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+		}
+	});
+	
+}
+
+
+
+
+function doSearch(){
+	var xian=$("#quxian").find("option:selected").text();  
+	var qymc=	$("#qiye").find("option:selected").text();
+	var qyxzmc=	$("#xingzhi").find("option:selected").text();
+	if(xian=="请选择"){
+		xian="";
+	}
+	if(qymc=="请选择"){
+		qymc="";
+	}
+	if(qyxzmc=="请选择"){
+		qyxzmc="";
+	}
+	document.querySelector('#quxianxixni').dataset.queryparam="&xian="+xian+"&qymc="+qymc+"&qyxzmc="+qyxzmc;
+	datatable.ajax.reload(null,true);
+}
+
+
+var dialog1;
+function addqiyexx(){
+	
+	dialog1=BootstrapDialog.show({
+	    title: '新增企业信息',
+		closeByBackdrop: true,
+	    message:$('<iframe id="a" name="a" frameborderno="0"  style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/jibenxinxi/biaoqianye_qiye_bj.html?qyzzjgdm=&id="/>'),
+	    onshow:function(dlg){
+	    	
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+
+
+function upqiyexx(qyzzjgdm,id,sheng,shi,xian){
+	var name="";
+	if(id!=null){
+		name="编辑企业信息";
+	}else{
+		name="新增企业信息";
+	}
+	dialog1=BootstrapDialog.show({
+	    title: name,
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0" id="ab"  name="ab" style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="no" src="${ctxPath}/oa/jibenxinxi/biaoqianye_qiye_bj.html?qyzzjgdm='+qyzzjgdm+'&id='+id+'"/>'),
+	    onshow:function(dlg){
+	    	
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+	
+	if(id=="undefined"){
+		window.frames['a'].$(".part").hide(); 	    		
+	}
+}
+
+
+function delqiyexx(ID,qyzzjgdm){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/jibenxinxi/delQiyexinxi',
+			type:'post',
+			data:{'ID':ID,'qyzzjgdm':qyzzjgdm},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+function daoru(){
+	var liucid = $("#liucid").val();
+	dialog1=BootstrapDialog.show({
+	    title: '导入',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/oa/daoru/biaoqianye_qiye.html?liucid='+liucid+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+
+function ditujwd(){
+	var liucid = $("#liucid").val();
+	dialog1=BootstrapDialog.show({
+	    title: '获取经纬度',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="${gisurl}idxLocate.jsp?x=118.79169361&y=31.90677465#userconsent#"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   var ifmObj=obj.document.getElementByIdx_x("iframe中控件的ID");
+        	   window.frames["iframe"].document.getElementByIdx_x("元素id");
+           },
+          cssClass: 'btn-success btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+</script>
+<%
+	}
+%>

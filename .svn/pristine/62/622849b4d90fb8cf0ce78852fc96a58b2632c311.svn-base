@@ -1,0 +1,184 @@
+<html><head>
+    <title>审批结果</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- =============== VENDOR STYLES ===============-->
+<!-- FONT AWESOME-->
+<link rel="stylesheet"
+	href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/fontawesome/css/font-awesome.min.css">
+
+<link href='${resourcePath}/jquery/css/jquery.dataTables.min.css'
+	rel='stylesheet'>
+<!-- SIMPLE LINE ICONS-->
+<link rel="stylesheet"
+	href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/simple-line-icons/css/simple-line-icons.css">
+<!-- ANIMATE.CSS-->
+<link rel="stylesheet"
+	href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/animate.css/animate.min.css">
+<!-- WHIRL (spinners)-->
+<link rel="stylesheet"
+	href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/whirl/dist/whirl.css">
+<!-- =============== PAGE VENDOR STYLES ===============-->
+<!-- =============== BOOTSTRAP STYLES ===============-->
+<link rel="stylesheet"
+	href="${resourcePath}/theme/angle/v3.2/backend-jquery/app/css/bootstrap.css"
+	id="bscss">
+<!-- =============== APP STYLES ===============-->
+<link rel="stylesheet"
+	href="${resourcePath}/theme/angle/v3.2/backend-jquery/app/css/app.css"
+	id="maincss">
+<link rel="stylesheet"
+	href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css">
+<script src="${resourcePath}/jquery/js/jquery.min.js"></script>
+<!----------select-------------->
+<link rel="stylesheet"
+	href="${resourcePath}/vendor/select2/dist/css/select2.css">
+<link rel="stylesheet"
+	href="${resourcePath}/vendor/select2-bootstrap-theme/dist/select2-bootstrap.css">
+<script src="${resourcePath}/vendor/select2/dist/js/select2.js"></script>
+<script src="${resourcePath}/echarts/js/echarts.min.js"></script>
+
+<script src="${resourcePath}/bootstrap/js/bootstrap.min.js"></script>
+<link href="${resourcePath}/bootstrap-dialog/bootstrap-dialog.min.css" rel="stylesheet">
+<script src="${resourcePath}/bootstrap-dialog/bootstrap-dialog.min.js"></script>
+<!----------select-------------->
+<!---------kindeditor--------->
+	<script src='${resourcePath}/kindeditor-4.1.11/kindeditor/kindeditor-all-min.js'></script>
+	<script src='${resourcePath}/kindeditor-4.1.11/kindeditor/lang/zh-CN.js'></script>
+	<link rel="stylesheet" href='${resourcePath}/kindeditor-4.1.11/kindeditor/themes/default/default.css'>
+	<link rel="stylesheet" href='${resourcePath}/kindeditor-4.1.11/kindeditor/themes/default/default.css'>
+	<link rel="stylesheet" href='${resourcePath}/kindeditor-4.1.11/kindeditor/plugins/code/prettify.css'>
+	<script src='${ctxPath}/js/modal.js'></script>
+	<script src='${ctxPath}/js/transition.js'></script>
+	
+	<link rel="stylesheet" href='${resourcePath}/animate/animate.css'>
+<!------ datetimepicker ------>
+<link rel="stylesheet" href="${resourcePath}/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+<script src="${resourcePath}/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+<script src="//cdn.bootcss.com/smalot-bootstrap-datetimepicker/2.3.4/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="${resourcePath}/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.fr.js"></script>
+<!------ datetimepicker ------>
+<!-- =============== VENDOR SCRIPTS ===============-->
+	<!-- MODERNIZR-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/modernizr/modernizr.custom.js"></script>
+	<!-- MATCHMEDIA POLYFILL-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/matchMedia/matchMedia.js"></script>
+	<!-- JQUERY-->
+	<!-- <script src="${resourcePath}/jquery/js/jquery.min.js"></script> -->
+	<!-- BOOTSTRAP-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/bootstrap/dist/js/bootstrap.js"></script>
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+	<!--highchart  -->
+	<script src="${resourcePath}/highchart/js/highcharts.js"></script>
+	<!--echart -->
+	<script src="${resourcePath}/echarts/js/echarts.min.js"></script>
+	<!--flot  -->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/Flot/jquery.flot.js"></script>
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/Flot/jquery.flot.resize.js"></script>
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/Flot/jquery.flot.pie.js"></script>
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/Flot/jquery.flot.time.js"></script>
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/Flot/jquery.flot.categories.js"></script>
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/flot-spline/js/jquery.flot.spline.min.js"></script>
+
+	<!-- STORAGE API-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/jQuery-Storage-API/jquery.storageapi.js"></script>
+	<!-- JQUERY EASING-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/jquery.easing/js/jquery.easing.js"></script>
+	<!-- ANIMO-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/animo.js/animo.js"></script>
+	<!-- SLIMSCROLL-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/slimScroll/jquery.slimscroll.min.js"></script>
+	<!-- SCREENFULL-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/screenfull/dist/screenfull.js"></script>
+	<!-- LOCALIZE-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/jquery-localize-i18n/dist/jquery.localize.js"></script>
+	<!-- RTL demo-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/app/js/demo/demo-rtl.js"></script>
+	<!-- =============== PAGE VENDOR SCRIPTS ===============-->
+	<!-- =============== APP SCRIPTS ===============-->
+	<script
+		src="${resourcePath}/theme/angle/v3.2/backend-jquery/app/js/app.js"></script>
+
+	<!----------dataTables-------------->
+	<script src="${resourcePath}/jquery/js/jquery.dataTables.min.js"></script>
+	<script src='${resourcePath}/bootstrap/js/dataTables.bootstrap.min.js'></script>
+	<!----------dataTables-------------->
+	<script src='${ctxPath}/web/datagrid.js'></script>
+	
+	<!----------dialog-------------->
+	<link href="//cdn.bootcss.com/bootstrap3-dialog/1.34.9/css/bootstrap-dialog.min.css" rel="stylesheet">
+	<script src="//cdn.bootcss.com/bootstrap3-dialog/1.34.9/js/bootstrap-dialog.min.js"></script>
+	<!----------dialog-------------->
+	
+	
+	 <style type="text/css">
+    	div{
+    		
+    		float:left;
+    	}
+    	.shiping{
+   
+    		width:300px;
+    		height:300px;
+    	}
+    	.biaoge{
+    		width:980px;
+    		height:200px;
+    	}
+    	#base{
+    	 	width:1000px;
+    	 	height:600px;
+    	 	overflow :auto;
+    	 	overflow :yes;
+    	 	overflow-y :yes
+    	}
+    	#mingxixinxi{
+    		height:30px;
+			background:green;
+			color:white;
+			vertical-align:middle;
+			font-size:18px;
+			width:960px;
+			padding-left:10px;
+			margin-top:20px;
+    	}
+    
+    </style>
+    </head>
+  <body>
+    <div id="base" class="">
+
+	<div style="width:600px;">
+      <!-- Unnamed (图片) -->
+      <div id="shenpijg" class="shenpijg">
+        <img id="shenpijg_img" class="" src="${ctxPath}/img/shenpi/shenpijg.png" style="width:654px;height:366px">
+        <!-- Unnamed () -->
+        <div id="u1126" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+      </div>
+    </div>
+  
+	</body>
+</html>

@@ -1,0 +1,142 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style>
+
+
+#div-caijia, #div-baojia{
+	height:800px;
+	overflow-y:auto;
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein , .pinleiqs{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+</style>
+<script type="text/javascript">
+
+
+$(window).load(function() {
+	
+	
+});
+
+$(function(){
+	
+	datatable = $('.table-news').DataTable({
+		"processing" : true,
+		"serverSide" : true,
+		"paging" : false,
+		"info" : false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div style="text-align:left"><input name="news" class="check_news" type="checkbox" value="'+row["id"]+'"/>'+row["name"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div style="text-align:center">'+row["url"]+'</div>';
+					return div;								
+				}
+			}
+		]
+	});
+	
+	$('.table-news').on( 'draw.dt', function () {
+		//添加价格类型复选框单击事件
+		$(".check_news").each(function(){
+		    $(this).click(function(){
+		    	var newsid ="";
+		    	$('input:checkbox[name=news]:checked').each(function(i){
+			    	//sumjglx.push($(this).val());
+			    	if(i==0){
+			    		newsid += $(this).val()
+			    	}else{
+			    		newsid += ","+$(this).val();
+			    	}
+			    });
+		    	$.ajax({
+		    		url:'${ctxPath}/renyuan/uplsnews',
+		    		type:'post',
+		    		data:{"newsid":newsid},
+		    		dataType:'json',
+		    		success:function(data){
+		    		},
+		    		error:function(){
+		    			alert("更新临时采价点商品表失败");
+		    		}
+		    		
+		    	});
+		    	
+		    });
+		});
+		
+	});
+	
+	
+	
+});
+
+
+
+//保存用户新闻网站对照
+function saveconflict(){
+	var userid = '${session.userinfo.user.id}';
+	$.ajax({
+		url:'${ctxPath}/renyuan/upconews',
+		type:'post',
+		data:{'userid':userid},
+		dataType:'json',
+		success:function(data){
+			alert("成功保存"+data+"条关联数据");
+		},
+		error:function(){
+			alert("保存新闻网站绑定失败");
+		}
+	});
+	
+}
+
+
+</script>
+<div class="panel panel-default">
+<div class="panel-heading">
+	<div class="form-inline">
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px; width:100%; float:left;">
+	<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped  table-bordered table-hover  datatables table-news" data-url="${ctxPath}/emergency/querynews.do" >	 
+		<thead>
+			<tr>
+    			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">网站名称</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">网站地址</th>
+ 			</tr>
+		</thead>	
+	</table>
+	
+</div>
+
+</div>
+</div>
+
+<%}%>

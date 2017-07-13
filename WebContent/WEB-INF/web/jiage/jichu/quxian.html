@@ -1,0 +1,210 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+<title>SimpleTree</title>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/resource/SimpleTree.css"/>
+<script type="text/javascript" src="${ctxPath}/resource/SimpleTree.js"></script>
+
+<style>
+.active{
+	background-color:yellow;
+}
+.conttext{
+	border:1px solid;
+	width:300px;
+	height:300px;
+	float:left;
+}
+.caozuo{
+	margin-top:10px;
+	width:100%;
+	height:40px;
+}
+.panel-info{
+	float:left;
+	width:250px;
+	height:600px;
+}
+.panel-success{
+	margin-left:30px;
+	float:left;
+	width:400px;
+	height:350px;
+}
+</style>
+
+<script type="text/javascript">
+var fjiedian;
+var fuceng;
+var fchild;
+
+$(function(){
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findquxian',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			//=======================================动态加载tree=================================
+			
+			$.each(data,function(i, n){
+				var li = '<li id=""><a href="#" ref="">&nbsp;'+n.name+'</a></li>';
+				$("#njs").next().append(li);
+			});
+			//=======================================动态加载tree（结束）=================================
+			
+				
+				
+			//=====================================a的单击事件===================================
+			$(".st_tree").SimpleTree({
+				
+		        click:function(a){
+		            if(!$(a).attr("hasChild")){
+		            	alert($(a).attr("ref"));
+		            	
+		            }
+		            var xian =  $(a).text().trim();
+		            $("#vname").val(xian);
+		            /*
+		            $.ajax({
+		            	url:'${ctxPath}/jiage/querypinzhong.do',
+		            	type:'post',
+		            	data:{"page":1,"rows":1,"pinzhong":pinzhong},
+		            	dataType:'json',
+		            	success:function(data){
+		            		//初始化品种和等级
+		            		$("#vname").val("");
+		            		$("#vgrade option").each(function(i,n){
+		            			$(n).attr("selected",false);
+		            		});
+		            		
+		            		$("#vname").val(pinzhong);
+		            		var grade;
+		            		if(data.list[0].grade == null || data.list[0].grade == ""){
+		            			grade = "请选择";
+		            		}else{
+		            			grade = data.list[0].grade
+		            		}
+		            		$("#vgrade option").each(function(i,n){
+		            		if($(n).text()==grade){
+		            			$(n).attr("selected",true);
+		            		}	
+		            		});
+		            	},
+		            	error:function(){
+		            		alert("加载品种错误");
+		            	}
+		            });
+		            */
+		        }
+		    });    
+			//===================================a的单击事件(结束)===================================
+			
+			
+			
+		},
+		error:function(){
+			alert("读取品种失败");
+		}
+	});
+    
+});
+/*
+function addPz(){
+	var pinzhong = $("#vname").val().trim();
+	 if(confirm("是否在"+pinzhong+"下添加新的粮食品种")){
+	    $("#vname").val("");
+	}
+}
+
+function savePz(){
+	var pinzhong = $("#vname").val().trim();
+	var vgrade = $("#vgrade option:selected").text();
+	var ceng = parseInt(fuceng)+1;
+	if(confirm("是否保存新粮食品种"+pinzhong)){
+	    $.ajax({
+	    	url:'${ctxPath}/jiage/savepz',
+	    	type:'post',
+	    	data:{"name":pinzhong,"grade":vgrade,"fujiedian":fjiedian,"ceng":ceng,"haschild":0},
+	    	dataType:'json',
+	    	success:function(msg){	
+	    		if (!msg.ret) {
+					alert(msg.message);
+				} else {
+					alert("保存成功");
+				}
+	    	},
+	    	error:function(){
+	    		alert("保存粮食品种失败");
+	    	}
+	    });
+	    if(ichild == 0){
+	    	$.ajax({
+	    		url:'${ctxPath}/jiage/updatepz',
+	    		type:'post',
+	    		data:{"name":fjiedian,"haschild":1},
+	    		dataType:'json',
+	    		success:function(msg){
+	    			if (msg > 0) {
+						alert("修改成功"+msg+"条");
+					} else {
+						alert("修改失败");
+					}
+	    		},
+	    		error:function(){
+	    			alert("修改粮食品种失败");
+	    		}
+	    	});
+	    }
+	 }
+}
+function updatePz(){
+}
+*/
+
+</script>
+</head>
+<body>
+<p class="caozuo">
+	<a class="btn btn-primary btn-sm" style="" type="button" onclick="addPz()" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+	
+	<input type="button" value="保存"  onclick="savePz()">
+	<input type="button" value="刷新"  onclick="updatePz()">
+</p>
+
+
+<div id="panelDemo10" class="panel panel-info">
+   <div class="panel-heading">区域列表</div>
+	   <div class="panel-body">
+		   	<div class="st_tree">
+				<ul class = "st_tree_ul">
+					<li id="njs"><a href="#" ref="sypz">&nbsp;南京市</a></li>
+					<ul></ul>
+				</ul>
+			</div>
+	   </div>
+</div>
+
+<div id="panelDemo9" class="panel panel-success">
+   <div class="panel-heading">区域详细信息</div>
+   <div class="panel-body">
+   	<p>品种：<input type="text" id="vname"/></p>
+	<p>等级:
+	<select id="vgrade">
+	  <option value ="">请选择</option>
+	  <option value ="">一等</option>
+	  <option value ="">二等</option>
+	  <option value ="">三等</option>
+	  <option value ="">四等</option>
+	  <option value ="">五等</option>
+	  <option value ="">等外级</option>
+	</select>
+	</p>
+   </div>
+</div>
+<script type="text/javascript">
+
+
+</script>
+<%}%>

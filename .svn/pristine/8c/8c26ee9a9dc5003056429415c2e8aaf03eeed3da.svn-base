@@ -1,0 +1,329 @@
+package com.zkzy.njzhpt.bo;
+
+import java.awt.List;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.HashMap;
+
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.ZhiLiangGLDAO;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class ZhiLiangGLBO {
+	@Before(AutoPageInterceptor.class)
+	public Ret selectZLXQ(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> PageRecord = ZhiLiangGLDAO.selectZLXQ(map);
+		Ret ret = Ret.create("list", PageRecord);
+		return ret;
+	}
+	@Before(AutoPageInterceptor.class)
+	public Ret selectfeikshKDMC(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> list= ZhiLiangGLDAO.selectfeikshKDMC(map);
+		Ret ret = Ret.create("list", list);
+		return ret;
+	}
+	/**
+	 * 查询所有品种
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret selectallpz(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> list= ZhiLiangGLDAO.selectallpz(map);
+		Ret ret = Ret.create("list", list);
+		return ret;
+	}
+	/**
+	 * 查询所有性质
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret selectallxz(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> list= ZhiLiangGLDAO.selectallxz(map);
+		Ret ret = Ret.create("list", list);
+		return ret;
+	}
+	/**
+	 * 查询所有等级
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret selectalldj(HashMap<String, Object> map) throws Exception {
+		
+		Page<Record> list= ZhiLiangGLDAO.selectalldj(map);
+		Ret ret = Ret.create("list", list);
+		return ret;
+	}
+	/**
+	 * 新增非可视化出入库数据
+	 * @param param
+	 * @return
+	 */
+	public Ret xzfeikshcrksj(HashMap<String, Object> param) {
+		return ZhiLiangGLDAO.cbljhrwbianji(param);
+	}
+	/**
+	 * 新增库存时验证是否存在该库存
+	 * @param param
+	 * @return
+	 */
+	public Ret vdexist(HashMap<String, Object> param) {
+		Ret ret=new Ret();
+		String qyzzjgdm=(String) param.get("qyzzjgdm");
+		String kdbm=(String) param.get("kdbm");
+		String[] cf=((String) param.get("cfstr")).split(",");
+		String cfbm="";
+				for(int i=0;i<cf.length;i++){
+					cfbm=cf[i];
+					java.util.List<Record> linshi= Db.find("select b.cfmc from kc_CurrentStock a INNER JOIN tz_cangfang b on a.qyzzjgdm=b.qyzzjgdm and a.kdbm=b.kdbm and a.vWareHouseCode=b.cfbm where a.qyzzjgdm=? and a.kdbm=? and a.vWareHouseCode=? ",qyzzjgdm,kdbm,cfbm);
+					if(linshi.size()>0){
+						return ret.put("ret",true).put("cfmc",linshi.get(0).get("cfmc"));
+					}
+				}
+		
+		ret.put("ret",false);
+		return ret;
+	}
+	/**
+	 * 新增非可视化库存数据
+	 * @param param
+	 * @return
+	 */
+	public Ret xzkucun(HashMap<String, Object> param) {
+		String qyzzjgdm=(String) param.get("qyzzjgdm");
+		String kdbm=(String) param.get("kdbm");
+		String[] cf=((String) param.get("cfstr")).split(",");
+		String[] pz=((String) param.get("pzstr")).split(",");
+		String[] xz=((String) param.get("xzstr")).split(",");
+		String[] nd=((String) param.get("ndstr")).split(",");
+		String[] dj=((String) param.get("djstr")).split(",");
+		String[] rksj=((String) param.get("rksjstr")).split(",");
+		String[] sl=((String) param.get("slstr")).split(",");
+		boolean bool= Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				boolean linshi=false;
+				for(int i=0;i<cf.length;i++){
+					Record record=new Record();
+					record.set("qyzzjgdm",qyzzjgdm)
+							.set("kdbm", kdbm)
+							.set("vWareHouseCode", cf[i])
+							.set("vGrainSubTypeCode", pz[i])
+							.set("vGrainPropertyCode", xz[i])
+							.set("year", nd[i])
+							.set("grade", dj[i])
+							.set("inBeginTime", rksj[i])
+							.set("dmStock", sl[i])
+							;
+					linshi=Db.save("kc_CurrentStock", record);
+				}
+				return linshi;
+			}
+		});
+		
+		Ret ret=new Ret();
+		if(bool){
+			ret.put("ret",true);
+		}else{
+			ret.put("ret",false).put("msg","保存失败！");
+		}
+		return ret;
+	}
+	/**
+	 * 编辑非可视化库存数据
+	 * @param param
+	 * @return
+	 */
+	public Ret bjkucun(HashMap<String, Object> param) {
+		String qyzzjgdm=(String) param.get("qyzzjgdm");
+		String kdbm=(String) param.get("kdbm");
+		String[] cf=((String) param.get("cfstr")).split(",");
+		String[] pz=((String) param.get("pzstr")).split(",");
+		String[] xz=((String) param.get("xzstr")).split(",");
+		String[] nd=((String) param.get("ndstr")).split(",");
+		String[] dj=((String) param.get("djstr")).split(",");
+		String[] rksj=((String) param.get("rksjstr")).split(",");
+		String[] sl=((String) param.get("slstr")).split(",");
+		boolean bool= Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				boolean linshi=false;
+				int line= Db.update("delete from kc_CurrentStock where qyzzjgdm=? and kdbm=? ",qyzzjgdm,kdbm);
+				if(line<1){
+					return false;
+				}
+				for(int i=0;i<cf.length;i++){
+					Record record=new Record();
+					record.set("qyzzjgdm",qyzzjgdm)
+							.set("kdbm", kdbm)
+							.set("vWareHouseCode", cf[i])
+							.set("vGrainSubTypeCode", pz[i])
+							.set("vGrainPropertyCode", xz[i])
+							.set("year", nd[i])
+							.set("grade", dj[i])
+							.set("inBeginTime", rksj[i])
+							.set("dmStock", sl[i])
+							;
+					linshi=Db.save("kc_CurrentStock", record);
+				}
+				return linshi;
+			}
+		});
+		
+		Ret ret=new Ret();
+		if(bool){
+			ret.put("ret",true);
+		}else{
+			ret.put("ret",false).put("msg","保存失败！");
+		}
+		return ret;
+	}
+	/**
+	 * 删除非可视化库存数据
+	 * @param param
+	 * @return
+	 */
+	public Ret delkucun(HashMap<String, Object> param) {
+		String qyzzjgdm=(String) param.get("qyzzjgdm");
+		String kdbm=(String) param.get("kdbm");
+		boolean bool= Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				boolean linshi=false;
+				int sl=Db.update("delete from kc_CurrentStock where qyzzjgdm=? and kdbm=? ",qyzzjgdm,kdbm);
+				if(sl>0){
+					linshi=true;
+				}
+				return linshi;
+			}
+		});
+		
+		Ret ret=new Ret().put("ret",bool);
+		return ret;
+	}
+	/**
+	 * 编辑库存时处理仓房
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public static Record kucunbianji(HashMap<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		Page<Record> page=ZhiLiangGLDAO.singlekucun(map);
+		Record lastRecord=new Record();
+		String xzqhdm="";
+		String qyzzjgdm="";
+		String kdbm="";
+		String cfStr="";
+		String pzstr="";
+		String xzstr="";
+		String djstr="";
+		String ndstr="";
+		String rksjstr="";
+		String slstr="";
+		BigDecimal big=new BigDecimal(0);
+		big.setScale(0);
+		for(Record record:page.getList()){
+			xzqhdm=record.getStr("xzqhdm");
+			qyzzjgdm=record.getStr("qyzzjgdm");
+			kdbm=record.getStr("kdbm");
+			cfStr=cfStr+record.getStr("vWareHouseCode")+",";
+			pzstr=pzstr+record.getStr("vGrainSubTypeCode")+",";
+			xzstr=xzstr+record.getStr("vGrainPropertyCode")+",";
+			djstr=djstr+record.getStr("grade")+",";
+			ndstr=ndstr+record.getStr("year")+",";
+			rksjstr=rksjstr+record.getStr("inBeginTime")+",";
+			big=(BigDecimal)record.get("dmStock");
+			slstr=slstr+big.setScale(0).toString()+",";
+		}
+		lastRecord.set("xzqhdm", xzqhdm)
+					.set("qyzzjgdm", qyzzjgdm)
+					.set("kdbm", kdbm)
+					.set("cfstr", cfStr)
+					.set("pzstr", pzstr)
+					.set("xzstr", xzstr)
+					.set("djstr", djstr)
+					.set("ndstr", ndstr)
+					.set("rksjstr", rksjstr)
+					.set("slstr", slstr);
+		return lastRecord;
+	}
+	/**
+	 * 编辑非可视化出入库数据
+	 * @param param
+	 * @return
+	 */
+	public Ret bjfeikshcrksj(HashMap<String, Object> param) {
+		return ZhiLiangGLDAO.cbljhrwbianji(param);
+	}
+	@Before(AutoPageInterceptor.class)
+	public static Page<Record> kucunliebiao(HashMap<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		String[] pz={"111","1132","1131"};//小麦，粳稻，籼稻
+		String[] pzmc={"xm","jd","xd"};//小麦，粳稻，籼稻
+		Page<Record> page=ZhiLiangGLDAO.kucunliebiao(map);
+		HashMap<String, Object> para=new HashMap<>();
+		for(Record record:page.getList()){
+			String qyzzjgdm=record.getStr("qyzzjgdm");
+			String kdbm=record.getStr("kdbm");
+			para.put("qyzzjgdm", qyzzjgdm);
+			para.put("kdbm", kdbm);
+			para.put("page", 1);
+			para.put("rows", 15);
+			record.setColumns(ZhiLiangGLDAO.zongkucun(para));
+			BigDecimal heji=new BigDecimal(0);
+			for(int i=0;i<3;i++){
+				para.put("pinzhong", pz[i]);
+				Page<Record> stock= ZhiLiangGLDAO.kucunbypz(para);
+				if(stock.getList().size()>0){
+					record.set(pzmc[i], stock.getList().get(0).get("stock"));
+					heji=heji.add((BigDecimal)stock.getList().get(0).get("stock"));
+				}else{
+					record.set(pzmc[i], 0);
+				}
+			}
+			record.set("xj", heji);
+		}
+		return page;
+	}
+	@Before(AutoPageInterceptor.class)
+	public static Ret kucunheji(HashMap<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		Ret ret=new Ret();
+		String[] pz={"111","1132","1131"};//小麦，粳稻，籼稻
+		String[] pzmc={"xm","jd","xd"};//小麦，粳稻，籼稻
+		HashMap<String, Object> para=new HashMap<>();
+		Record record=new Record();
+		record.setColumns(ZhiLiangGLDAO.zongkucunheji(map));
+			BigDecimal heji=new BigDecimal(0);
+			for(int i=0;i<3;i++){
+				map.put("pinzhong", pz[i]);
+				Page<Record> stock= ZhiLiangGLDAO.kucunheji(map);
+				if(stock.getList().size()>0){
+					record.set(pzmc[i], stock.getList().get(0).get("stock"));
+					heji=heji.add((BigDecimal)stock.getList().get(0).get("stock"));
+				}else{
+					record.set(pzmc[i], 0);
+				}
+			}
+			record.set("xj", heji);
+			ret.put("heji",record);
+		return ret;
+	}
+
+}

@@ -1,0 +1,46 @@
+package com.zkzy.njzhpt.validator;
+
+import java.util.HashMap;
+
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.validate.Validator;
+import com.zkzy.njzhpt.bo.jibenxinxiBo;
+
+public class addXiaozuValidator extends Validator {
+
+	@Override
+	protected void handleError(Controller arg0) {
+		arg0.keepPara("name");
+		String json = "{\"ret\":false,\"message\":\"" + arg0.getAttr("nameMsg")
+				+ "\"}";
+		arg0.renderJson(json);
+	}
+
+	@Override
+	protected void validate(Controller arg0) {
+		this.setShortCircuit(true);
+		if ("/cangchugl/addxiaozu".equals(this.getActionKey())) {
+			validateRequiredString("jibie", "nameMsg", "请输入级别！");
+			validateRequiredString("fuzeren", "nameMsg", "请输入负责人！");
+			validateRequiredString("danwei_id", "nameMsg", "请输入单位！");
+			validateRequiredString("chenyuan", "nameMsg", "请输入成员！");
+			validateRequiredString("ziwei", "nameMsg", "请输入职位！");
+			validateRequiredString("phone", "nameMsg", "请输入联系方式！");
+			validateRequiredString("address", "nameMsg", "请输入联络地址！");
+			validateRequiredString("yuanziwei", "nameMsg", "请输入所在单位职位！");
+		}else if("/cangchugl/upxiaozu".equals(this.getActionKey())){
+			validateRequiredString("jibie", "nameMsg", "请输入级别！");
+			validateRequiredString("fuzeren", "nameMsg", "请输入负责人！");
+			validateRequiredString("danwei_id", "nameMsg", "请输入单位！");
+			validateRequiredString("chenyuan", "nameMsg", "请输入成员！");
+			validateRequiredString("ziwei", "nameMsg", "请输入职位！");
+			validateRequiredString("phone", "nameMsg", "请输入联系方式！");
+			validateRequiredString("address", "nameMsg", "请输入联络地址！");
+			validateRequiredString("yuanziwei", "nameMsg", "请输入所在单位职位！");
+		}
+	}
+
+}

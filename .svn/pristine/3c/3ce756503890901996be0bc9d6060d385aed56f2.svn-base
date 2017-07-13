@@ -1,0 +1,254 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var xzqhdm = parameter.xzqhdm;
+%>
+<style>
+#gengdi{
+	width:390px;
+	height:300px;
+	margin-left: auto;
+    text-align: center;
+    margin-right: auto;
+}
+
+.quxian-table{
+	border:1px solid;
+	width:420px;
+}
+.quxian-table th,td{
+	border:1px solid;
+	text-align:center;
+}
+.tudi{
+	border:1px solid;
+	text-align:right;
+}
+</style>
+
+
+<body>
+	<div style="text-align:center;">
+		<h2 id="biaoti"></h2>
+		<input type="text" id="xzqh" style="display:none" value="${xzqhdm}"/>
+		<div id="gengdi">
+		</div>
+		<div id="biaoge" align="center">
+			<table class="quxian-table">	 
+				<thead>
+					<tr>
+		    			<th rowspan="1" colspan="1" id="col3" style="vertical-align:middle">面积(亩)</th>
+		     			<th id="year1" rowspan="1" colspan="1" id="col4" style="vertical-align:middle"></th>
+		     			<th id="year2" rowspan="1" colspan="1" id="col5" style="vertical-align:middle"></th>
+		     			<th id="year3" rowspan="1" colspan="1" id="col6" style="vertical-align:middle"></th>
+		 			</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>现有土地</td>
+						<td class="tudi" id="xianyou1"></td>
+						<td class="tudi" id="xianyou2"></td>
+						<td class="tudi" id="xianyou3"></td>
+					</tr>
+					<tr>
+						<td>耕种土地</td>
+						<td class="tudi" id="gengzhong1"></td>
+						<td class="tudi" id="gengzhong2"></td>
+						<td class="tudi" id="gengzhong3"></td>
+					</tr>
+					<tr>
+						<td>播种土地</td>
+						<td class="tudi" id="bozhong1"></td>
+						<td class="tudi" id="bozhong2"></td>
+						<td class="tudi" id="bozhong3"></td>
+					</tr>
+					<tr>
+						<td>作物土地</td>
+						<td class="tudi" id="zuowu1"></td>
+						<td class="tudi" id="zuowu2"></td>
+						<td class="tudi" id="zuowu3"></td>
+					</tr>
+				</tbody>	
+			</table>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+<script type="text/javascript">
+var mydate = new Date();
+var year = mydate.getFullYear();
+
+$(function(){
+	var xzqhdm = $("#xzqh").val();
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryquxianmingxi.do',
+		type:'post',
+		data:{"xzqhdm":xzqhdm,"page":1,"rows":3},
+		dataType:'json',
+		success:function(data){
+			var xytd = [];
+			var gztd = [];
+			var bztd = [];
+			var zwtd = [];
+			var niandu = [];
+			$("#biaoti").text(data.list[0].quyu);
+			for(var i = 0; i < data.list.length; i++){
+				var xianyou = "xianyou"+(i+1);
+				var gengzhong = "gengzhong"+(i+1);
+				var bozhong = "bozhong"+(i+1);
+				var zuowu = "zuowu"+(i+1);
+				var year = "year"+(i+1);
+				$("#"+year).text(data.list[i].niandu+"年度");
+				var xy = data.list[i].mj_xytd != null ? data.list[i].mj_xytd : 0;
+				var gz = data.list[i].mj_gengdi != null ? data.list[i].mj_gengdi : 0;
+				var bz = data.list[i].mj_bozhong != null ? data.list[i].mj_bozhong : 0;
+				var zw = data.list[i].mj_liangshi != null ? data.list[i].mj_liangshi : 0;
+				$("#"+xianyou).text(xy);
+				$("#"+gengzhong).text(gz);
+				$("#"+bozhong).text(bz);
+				$("#"+zuowu).text(zw);
+				xytd.push(xy);
+				gztd.push(gz);
+				bztd.push(bz);
+				zwtd.push(zw);
+				niandu.push(data.list[i].niandu);
+			}
+			xytd.reverse();
+			gztd.reverse();
+			bztd.reverse();
+			zwtd.reverse();
+			niandu.reverse();
+			var myChart = echarts.init(document.getElementById('gengdi'));
+			option = {
+				    title: {
+				        text: '耕地面积'
+				    },
+				    tooltip : {
+				        trigger: 'axis'
+				    },
+				    legend: {
+			
+				        x: 'center',
+				        bottom:0,
+				        data:['现有土地','耕种土地','播种土地','作物土地']
+				    },
+				    toolbox: {
+				        feature: {
+				            saveAsImage: {}
+				        }
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '10%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            data : niandu,
+				        }
+				    ],
+				    yAxis : [
+				        {
+				        	name: '面积（亩）',
+				            type : 'value'
+				        }
+				    ],
+				    
+				    series : [
+			              
+				        
+				        {
+				            name:'现有土地',
+				            type:'line',
+				            //stack: '总量',
+				            data:xytd,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        {
+				            name:'耕种土地',
+				            type:'line',
+				            //stack: '总量',
+				            data:gztd,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        {
+				            name:'播种土地',
+				            type:'line',
+				            //stack: '总量',
+				            data:bztd,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        {
+				            name:'作物土地',
+				            type:'line',
+				            //stack: '总量',
+				            data:zwtd,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        }
+				        
+				    ]
+				};
+
+			myChart.setOption(option);	
+			
+			
+		},
+		error:function(){
+			alert("加载耕地错误");
+		}
+		
+	});
+});
+
+</script>
+<%
+	}
+%>

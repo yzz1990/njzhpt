@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+   
+
+
+<title>紧急状态增删</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+   
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+
+</head>
+
+<%
+	var obj={},url=ctxPath+"/emergency/addemergency";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.EmergencyDAO.queryyingjizt({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/emergency/upemergency";
+	};
+%>
+
+
+<script type="text/javascript">
+
+
+
+$(window).load(function() { 
+
+});
+
+</script>
+
+
+<body>
+	 <div class="dashboard-wrapper-lg" style="min-height: 0px;" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+	 		<input type="hidden"  name="id" class="form-control" placeholder="id" value="${obj.id}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	基本信息                                  
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<div class="col-xs-12">	
+								<div class="form-group">
+									<label for="sname">应急状态名称:</label>
+									<input id="sname" name="sname" class="form-control" placeholder="应急状态名称" value="${obj.sname}">	
+								</div>	
+							</div>
+							<div class="col-xs-12">	
+								<div class="form-group">
+									<label for="slevel">应急状态等级:</label>	
+									<select id="slevel" name="slevel" style="font-size:14px" class="form-control input-sm" >
+										<option val="">请选择</option>
+										 <!-- <option val="I">I</option>
+										<option val="II">II</option>
+										<option val="III">III</option>
+										<option val="IV">IV</option>
+										<option val="V">V</option>
+										<option val="VI">VI</option>   -->
+									</select>
+									<!-- <input id="slevel" name="slevel" class="form-control" placeholder="应急状态等级" value="${obj.slevel}">	 -->
+									
+								</div>	
+							</div>
+							<div class="col-xs-12">	
+								<div class="form-group">
+									<label for="sdescription">应急状态描述:</label>
+									<textarea id="sdescription" name="sdescription" rows="" cols="5" style="height:150px;" class="form-control" placeholder="应急状态描述" value="${obj.sdescription}">${obj.sdescription}</textarea>
+									<!--  
+									<input id="sdescription" type="text" name="sdescription" class="form-control" placeholder="应急状态描述" value="${obj.sdescription}">
+									-->
+								</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</form>
+	</div>
+            <!-- Row End -->
+            
+    <script type="text/javascript">
+     $(function(){
+    	
+		$.ajax({
+			url:'${ctxPath}/renyuan/finddj',
+			type:'post',
+			dataType:'json',
+			success:function(data){
+			
+				$.each(data.list,function(i,n){
+					if("${obj.slevel}"==n.slevel){
+						$("#slevel").append("<option value="+n.slevel+" selected>"+n.slevel+"</option>");
+					}else{
+						$("#slevel").append("<option value="+n.slevel+">"+n.slevel+"</option>");
+					}
+				});
+			}
+		});
+    	
+    }); 
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+
+    function saveemergency() {
+    	var form = $("#contentform");
+    	$.ajax({
+    		url: form.attr("action"),
+    		type:"post",
+    		dataType:"json",
+    		data: form.serialize(),
+    		success: function(msg) {
+    			if (!msg.ret) {
+    				alert(msg.message);
+    			} else {
+    				alert("保存成功");
+    			}
+    		},
+    		error:function(){
+    			alert("保存失败,请检查内容是否重复");
+    		}
+    	});
+    }
+    
+    </script>
+            
+</body>
+
+
+</html>

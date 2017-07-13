@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药库信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addYaoku",title="新增药库信息";
+	if (isNotEmpty(parameter.id)) {
+		var ykgl = @com.zkzy.njzhpt.dao.CangchuglDao.findYaoku({"id":parameter.id,"page":"1","rows":"100"});
+		obj = ykgl.list[0];
+		url = ctxPath+"/cangchugl/upYaoku";
+		title = "编辑药库信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	药库信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+					       <input type="hidden" id="xzqydm" name="xzqydm" value="${obj.xzqydm}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="shiqu"><font color="red" style="font-size:large;">*</font>药库所属辖区:</label>
+										<select id="shiqu" name="shiqu" class="form-control" onchange="Changequyu()">
+											<option value="请选择">请选择</option>
+										</select>
+										<!-- <input id="shiqu" name="shiqu" class="form-control" placeholder="药库所属辖区" value="${obj.shiqu}"> -->
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cfkudian"><font color="red" style="font-size:large;">*</font>药库所属库点名:</label>
+										<input id="cfkudian" name="cfkudian" class="form-control" placeholder="药库所属库点名" value="${obj.cfkudian}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="kdbm">库点编码:</label>
+										<input id="kdbm" name="kdbm" class="form-control" placeholder="库点编码" value="${obj.kdbm}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="dizhi">地址:</label>
+										<input id="dizhi" name="dizhi" class="form-control" placeholder="地址" value="${obj.dizhi}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="jzsj">建造时间:</label>
+										<input id="jzsj" name="jzsj" class="form-control" placeholder="建造时间" value="${obj.jzsj}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="fuzeren">负责人:</label>
+										<input id="fuzeren" name="fuzeren" class="form-control" placeholder="负责人" value="${obj.fuzeren}">
+									</div>	
+								</div>
+								
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="baoguanren">保管员:</label>
+										<input id="baoguanren" name="baoguanren" class="form-control" placeholder="保管员" value="${obj.baoguanren}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="jianguanren">监管员:</label>
+										<input id="jianguanren" name="jianguanren" class="form-control" placeholder="监管员" value="${obj.jianguanren}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="lianxifs">联系方式:</label>
+										<input id="lianxifs" name="lianxifs" class="form-control" placeholder="联系方式" value="${obj.lianxifs}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="beizhu">备注:</label>
+										<input id="beizhu" name="beizhu" class="form-control" placeholder="备注" value="${obj.beizhu}">
+									</div>	
+								</div>
+								
+							</div>
+							
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+$(function(){
+	$("#jzsj").datetimepicker({
+		
+		format : 'yyyy-mm-dd',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		 success:function(data){
+			 $.each(data,function(i, n){
+				 	if("${obj.shiqu}"==n.name){
+				 		$("#shiqu").append("<option value="+n.name+" selected>"+n.name+"</option>");
+				 	}else{
+				 		$("#shiqu").append("<option value="+n.name+">"+n.name+"</option>");
+				 	}
+					
+				});
+		 },
+		 error:function(){
+			 //alert("error");
+		 }
+	  });
+	
+});
+function Changequyu(){
+	var quyu=$("#shiqu").val();
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findyaokuxinxi',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":quyu},
+		 success:function(data){
+			 if(data){
+				 alert("该区域药库点已添加!");
+				 $("#shiqu").empty();
+				 $("#shiqu").append(' <option value="请选择">请选择</option>');
+				 $.ajax({
+					 url:'${ctxPath}/shouchukeshihua/findquxian',
+					 type:'post',
+					 dataType:'json',
+					 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+					 success:function(data){
+						 $.each(data,function(i, n){
+							 	if("${obj.shiqu}"==n.name){
+							 		$("#shiqu").append("<option value="+n.name+" selected>"+n.name+"</option>");
+							 	}else{
+							 		$("#shiqu").append("<option value="+n.name+">"+n.name+"</option>");
+							 	}
+								
+							});
+					 },
+					 error:function(){
+						 //alert("error");
+					 }
+				  });
+			 }else{
+				 $.ajax({
+					 url:'${ctxPath}/shouchukeshihua/findquxian',
+					 type:'post',
+					 dataType:'json',
+					 data:{"name":quyu},
+					 success:function(data){
+						 $.each(data,function(i, n){
+							 $("#xzqydm").val(n.xzqhdm);	
+							});
+					 },
+					 error:function(){
+						 //alert("error");
+					 }
+				  }); 
+			 }
+		 },
+		 error:function(){
+			 //alert("error");
+		 }
+	  });
+	
+} 
+
+function saveykgl() {
+	var shiqu = $("#shiqu option:selected").val();
+	var cfkudian = $("#cfkudian").val();
+	
+	if(shiqu == "请选择" ||  shiqu == "" || shiqu == null){
+		alert("辖区不能为空");
+	}else{
+		if(cfkudian == "" || cfkudian == null){
+			alert("药库名称不能为空");
+		}else{
+				$.ajax({
+					 url:'${ctxPath}/cangchugl/findYaoku',
+					 type:'post',
+					 dataType:'json',
+					 data:{"cfkudian":cfkudian},
+					 success:function(data){
+					 	if(data.list.length>0){
+					 		alert("该药库点已存在!")
+					 	}else{
+					 		var form = $(".widget-body form");
+							$.ajax({
+								url: form.attr("action"),
+								dataType: "json",
+								data: form.serialize(),
+								success: function(msg) {
+									if (!msg.ret) {
+										alert(msg.message);
+									} else {
+										alert("保存成功");
+									}
+									parent.window.dialog1.close();
+									parent.reloadyk();
+						     	    parent.window.datatable.ajax.reload(null,true);
+								}
+							});
+					 	}
+					 },
+					 error:function(){
+						 //alert("error");
+					 }
+				  });
+		}
+	}
+}
+
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+ 
+</script>
+
+</body>
+</html>

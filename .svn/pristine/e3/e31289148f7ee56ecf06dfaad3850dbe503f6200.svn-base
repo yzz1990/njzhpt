@@ -1,0 +1,616 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+<style>
+table.table-bordered tbody th, table.table-bordered tbody td {
+    text-align: center;
+    vertical-align: middle;
+    border-left-width: 1px;
+    border-right-width: 0px;
+    border-bottom-width: 0;
+}
+table.table-bordered.dataTable {
+    border-right-width: 0px;
+    border-left-width: 0px;
+    border-top-width: 0px;
+   
+}
+#shiwukucuntb thead > tr > th {
+    padding-left: 18px;
+    padding-right: 18px;
+    border-bottom-width: 1px;
+}
+#shiwukucuntb tbody>tr{
+	background-color: #FFFFFF;
+}
+</style>
+
+		<div class="panel panel-default">
+			<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>实物库存</b></span>
+				</div>
+			<div class="panel-heading">
+				<div class="form-inline">
+				<label>年份:</label>
+					<select id="year" name="year" style="width:80px" class="js-example-basic-single"  >
+						<option value="">请选择</option>
+					</select>
+				<label>月份:</label>
+				<select id="month" name="month" class="js-example-basic-single" style="width:80px">
+						<option value="">请选择</option>
+						<option id="1" value="1">1</option>
+						<option id="2" value="2">2</option>
+						<option id="3" value="3">3</option>
+						<option id="4" value="4">4</option>
+						<option id="5" value="5">5</option>
+						<option id="6" value="6">6</option>
+						<option id="7" value="7">7</option>
+						<option id="8" value="8">8</option>
+						<option id="9" value="9">9</option>
+						<option id="10" value="10">10</option>
+						<option id="11" value="11">11</option>
+						<option id="12" value="12">12</option>
+						
+				</select>
+				<!-- <label>承储企业:</label>
+				<select id="ccqy" name="ccqy" class="js-example-basic-single" style="width:180px" onchange="Changeqiye()">
+					<option value="" >请选择承储企业</option>
+				</select>
+				<label>品种:</label>
+         			<select  name="pz" id="pz" class="js-example-basic-single" style="width:100px"  >
+         				<option value="">请选择品种</option>
+         			</select>
+				<label>性质:</label>
+         			<select  name="xingzhi" id="xingzhi" class="js-example-basic-single" style="width:130px" >
+         				<option value="">请选择粮食性质</option>
+         				<option value="122">地市级储备粮</option>
+         				<option value="123">县级储备粮</option>
+         			</select> -->
+				<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+				<div class="form-inline" style="float: right;">
+				<!--  
+					<a type="button" class="btn btn-xs btn-success" onclick="baocun()"><i class="fa fa-floppy-o" aria-hidden="true"></i>保存</a>
+				-->
+					<a type="button" class="btn btn-xs btn-success" onclick="dayin()"><i class="fa fa-outdent" aria-hidden="true"></i>导出</a>
+				</div>
+				</div>				
+			</div>
+			<div id="contentmass">
+				<div class="panel-body" >						
+					<div id="panelDemo8" class="panel panel-primary" style="width:100%;border:0px">		       
+			          <div  style="width:100%;">
+				         <table id="shiwukucuntb"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/chubeiliangJH/shiwukucun.do" >
+								 <thead>
+			           				 <tr>
+			                			<th  style="vertical-align:middle;border-bottom-width: 0px;">区域</th>
+			                			<th  style="vertical-align:middle;border-bottom-width: 0px;">承储企业</th>
+			               				<th  style="vertical-align:middle;border-bottom-width: 0px;">品种</th>
+			               				<th  style="vertical-align:middle;border-bottom-width: 0px;">计划数(吨)</th>
+			                			<th  style="vertical-align:middle;border-bottom-width: 0px;">实际库存(吨)</th>
+			                			<th  style="vertical-align:middle;border-bottom-width: 0px;">实际库存占计划数%</th>
+			                			<th  style="vertical-align:middle;border-bottom-width: 0px;">实际粳稻库存占计划数%</th>
+			                			<th  style="vertical-align:middle;border-bottom-width: 0px;">实际籼稻库存占计划数%</th>
+			                			<th  style="vertical-align:middle;border-bottom-width: 0px;">实际小麦库存占计划数%</th>
+			            			</tr>
+			        			 </thead>
+						 </table>					
+		      			</div>	      		
+			       </div>		
+				</div>
+				 <div class="panel-body-right" >
+				
+					<div id="u1123" style="float: right">
+						<div id="u1126" ></div>
+						<div id="u1130"></div>
+					</div>
+				</div> 
+			</div>
+		</div>
+<script type="text/javascript">
+var date=new Date;
+var year=parseInt(date.getFullYear());
+var month = date.getMonth() + 1;
+for(var i = 0; i < 5; i++){
+	$("#year").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+}
+var all_options = document.getElementById("month").options;
+/* for (i=0; i<all_options.length; i++){
+   if (all_options[i].id == month)  // 根据option标签的ID来进行判断  测试的代码这里是两个等号
+   {
+      all_options[i].selected = true;
+   }
+} */
+var datatable;
+
+var xian;
+var qyzzjgdm;
+var kdmc;
+var kdbm;
+$(document).ready(function() {
+	 $(".js-example-basic-single").select2();
+});
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+ 
+
+$(function(){
+	
+	
+	datatable = $('#shiwukucuntb').DataTable({
+		"processing": true,
+        "serverSide": true,
+        "paging": false,
+		"info": false,
+        "columns": [
+            {
+            	 "data": "quming" ,
+            		 "render":function(data,type,row,meta){
+		   				 var result;
+		   				 if(row["quming"] == "南京市属企业" || row["quming"] == "其他"){
+		   					result = '<div class="quclick" style="pointer-events:none">'+row["quming"]+'</div>';
+		   				 }else{
+		   					result = '<div class="quclick">'+row["quming"]+'</div>';
+		   				 }
+		   				 
+		   				 return result;
+		   			 }
+			},{
+				"data": "qymc",
+					 "render":function(data,type,row,meta){
+		   				 var result;
+		   				 result = '<div class="qiyeclick">'+row["qymc"]+'</div>';
+		   				 return result;
+		   			 }
+			},{
+				"data": "pz"
+			},{
+				"data": "cbljh",
+				"render": function (data,type,row,meta) {
+            		if(row["cbljh"]!=null&&row["cbljh"]!=""){
+            			return parseFloat(row["cbljh"]).toFixed(3);
+            		}else{
+            			return 0;
+            		}
+            	}
+			},{
+				"data": "swkc",
+				"render": function (data,type,row,meta) {
+            		if(row["swkc"]!=null&&row["swkc"]!=""){
+            			return parseFloat(row["swkc"]).toFixed(3);
+            		}else{
+            			return 0;
+            		}
+            	}
+			},{
+				"data": "sjkczb",
+					"render":function(data,type,row,meta){
+		   				 var result;
+		   				 if(row["sjkczbbool"]=="0"){
+		   					 result = '<font color="red">'+row["sjkczb"]+'</font>';
+		   				 }else{
+		   					result=row["sjkczb"];
+		   				 }
+		   				 return result;
+		   			 }
+			},{
+				"data": "sjjdzb",
+					"render":function(data,type,row,meta){
+		   				 var result;
+		   				 if(row["sjjdzbbool"]=="0"){
+		   					 result = '<font color="red">'+row["sjjdzb"]+'</font>';
+		   				 }else{
+		   					result=row["sjjdzb"];
+		   				 }
+		   				 return result;
+		   			 }
+			},{
+				"data": "sjxdzb",
+				"render":function(data,type,row,meta){
+	   				 var result;
+	   				 if(row["sjxdzbbool"]=="0"){
+	   					 result = '<font color="red">'+row["sjxdzb"]+'</font>';
+	   				 }else{
+		   					result=row["sjxdzb"];
+	   				 }
+	   				 return result;
+	   			 }
+			},{
+				"data": "sjxmzb",
+				"render":function(data,type,row,meta){
+	   				 var result;
+	   				 if(row["sjxmzbbool"]=="0"){
+	   					 result = '<font color="red">'+row["sjxmzb"]+'</font>';
+	   				 }else{
+		   					result=row["sjxmzb"];
+	   				 }
+	   				 return result;
+	   			 }
+			}
+			]
+	});
+	
+ 	$('#shiwukucuntb').on( 'draw.dt', function () {
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:first").attr("rowspan","4");
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(1)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(2)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(3)").remove();
+	     
+	    $("td:eq(0)","#shiwukucuntb tbody tr:eq(4)").attr("rowspan","11");
+	    $("td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(4)").attr("rowspan","4");
+	    $("td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(8)").attr("rowspan","4");
+	    $("td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(12)").attr("rowspan","3");
+	    $("td:eq(0)","#shiwukucuntb tbody tr:eq(8)").remove();
+	    $("td:eq(0)","#shiwukucuntb tbody tr:eq(12)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(5)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(6)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(7)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(9)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(10)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(11)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(13)").remove(); 
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(14)").remove();
+	    
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(15)").attr("rowspan","4");
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(16)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(17)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(18)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(19)").attr("rowspan","4");
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(20)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(21)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(22)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(23)").attr("rowspan","4");
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(24)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(25)").remove();
+	    $("td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(26)").remove();
+	    $("td:eq(0)","#shiwukucuntb tbody tr:eq(29)").attr("rowspan","2");
+	    $("td:eq(0)","#shiwukucuntb tbody tr:eq(30)").remove();
+	    
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:first").attr("style","font-size:18px");
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(4)").attr("style","font-size:18px");
+	    $("td:eq(4),td:eq(5),td:eq(6),td:eq(7)","#shiwukucuntb tbody tr:eq(8)").attr("style","font-size:18px");
+	    $("td:eq(4),td:eq(5),td:eq(6),td:eq(7)","#shiwukucuntb tbody tr:eq(12)").attr("style","font-size:18px");
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(15)").attr("style","font-size:18px");
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(19)").attr("style","font-size:18px");
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(23)").attr("style","font-size:18px");
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(27)").attr("style","font-size:18px");
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(28)").attr("style","font-size:18px");
+	    $("td:eq(5),td:eq(6),td:eq(7),td:eq(8)","#shiwukucuntb tbody tr:eq(29)").attr("style","font-size:18px");
+	    $("td:eq(4),td:eq(5),td:eq(6),td:eq(7)","#shiwukucuntb tbody tr:eq(30)").attr("style","font-size:18px");
+	    
+	    $(".quclick").click(function(e){
+	    	var qu=$(e.target).text();
+	    	$.ajax({
+				url: "${ctxPath}/lunhuan/selectQY.do",
+				dataType: "json",
+				data:{quyu:qu},
+				success: function(data) {
+					if(data.list[0]==null){
+						var xzqhdm="";
+					}else{
+						var xzqhdm=data.list[0].xzqhdm;
+					}
+					dialog1=BootstrapDialog.show({
+			    	    title: '储备粮库实物统计库存',
+			    	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0";   src="${ctxPath}/remote/tongji/shiwukucun.html?xzqhdm='+xzqhdm+'&qyzzjgdm="/>'),
+			    	    onshow:function(dlg){
+			       	dlg.$modalDialog.css("width","1100px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+			       },
+			    	});
+					
+				}
+			});
+	    	
+	    	
+	    	
+	    })
+	$(".qiyeclick").click(function(e){
+	    	var qiye=$(e.target).text();
+	    	$.ajax({
+				url: "${ctxPath}/lunhuan/selectQYMC.do",
+				dataType: "json",
+				data:{qymc:qiye},
+				success: function(data) {
+					if(data.list[0]==null){
+						
+					}else{
+						var qyzzjgdm=data.list[0].qyzzjgdm;
+						
+					}
+					dialog1=BootstrapDialog.show({
+			    	    title: '储备粮库实物统计库存',
+			    	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0";   src="${ctxPath}/remote/tongji/shiwukucun.html?qyzzjgdm='+qyzzjgdm+'&xzqhdm="/>'),
+			    	    onshow:function(dlg){
+			       	dlg.$modalDialog.css("width","1100px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+			       },
+			    	  
+			    	});
+					
+				}
+			});
+	    	
+	    })
+	   
+	
+	} ); 
+	
+
+});
+
+
+function doSearch(){
+var year=$("#year").val();	
+var month=$("#month").val();
+var q="";
+if(year!=""){
+	q=q+"&year="+year;
+	if(month!=""){
+		q=q+"&month="+month;
+		document.querySelector('#shiwukucuntb').dataset.queryparam=q;
+		datatable.ajax.reload(null,false);
+	}else{
+		alert("请选择月份！");
+	}
+}else{
+	alert("请选择年份！");
+}
+//loadqushuliang(year,month);
+//loadxianshuliang(year,month)
+}
+
+
+function Change(){
+	$("#ccqy").html("");
+	var xian = $("#quming option:selected").text().trim();
+	var op = '<option value="">请选择企业名称</option>';
+    $("#ccqy").append(op);
+	$.ajax({
+		url:'${ctxPath}/lunhuan/findcompany',
+		type:'post',
+		data:{"xian":xian},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = "<option value="+data[i].qyzzjgdm+">"+data[i].qymc+"</option>";
+			     $("#ccqy").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});	
+}
+
+//企业下拉框change事件
+function Changeqiye(){
+	$(".js-example-basic-single").empty();
+	var qyzzjgdm = $("#qiye option:selected").val();
+	
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findkdmc.do',
+		type:'post',
+		data:{"qyzzjgdm":qyzzjgdm,"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			$(".js-example-basic-single").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option>'+data.list[i].kdmc+'</option>';
+			     $(".js-example-basic-single").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+	});	
+}
+
+function loadxianshuliang(year,month){
+	//====================================================(分品种)
+	//垂直柱状图
+	//当天日期
+	
+	var myChart = echarts.init(document.getElementById('u1126'));
+	$.ajax({
+		url:"${ctxPath}/chubeiliangJH/fpzECharts.do",
+		type:"post",
+		data:{"year":year,"month":month,"page":1,"rows":10000},
+		dataType:"json",
+		success:function(data){
+			var jhs = [];
+			var swkc = [];
+			for(var i = 0; i < data.list.length; i++){
+				if(data.list[i]!= null){
+					if(data.list[i].leixing == "jhs"){
+						jhs.push((data.list[i].shuliang).toFixed(2));
+					}
+					if(data.list[i].leixing == "swkc"){
+						swkc.push((data.list[i].shuliang).toFixed(2));
+					}
+				}
+			}
+			option = {
+				    title: {
+				        text: '品种库存量',
+				    },
+				    tooltip: {
+				        trigger: 'axis',
+				        axisPointer: {
+				            type: 'shadow'
+				        }
+				    },
+				    legend: {
+				    	 x: 'right',
+				        data: ['计划数', '实物库存']
+				    },
+				    color : ['#61a0a8', '#d48265'],
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis: {
+				        type: 'value',
+				        boundaryGap: [0, 0.01]
+				    },
+				    yAxis: {
+				        type: 'category',
+				        data: ['总量','籼稻','粳稻','小麦']
+				    },
+				    series: [
+						        {
+						            name: '计划数',
+						            type: 'bar',
+						            stack: '总量',
+						           /*  label: {
+						                normal: {
+						                    show: true,
+						                    position: 'insideRight'
+						                }
+						            }, */
+						            data: jhs
+						        },
+						        {
+						            name: '实物库存',
+						            type: 'bar',
+						            /*   stack: '总量',
+						             label: {
+						                normal: {
+						                    show: true,
+						                    position: 'insideRight'
+						                }
+						            }, */
+						            data: swkc
+						        }
+						    ]
+				};
+			myChart.setOption(option);	
+		},	
+		error:function(){
+			alert("error");
+		}
+	});	
+	
+}
+function loadqushuliang(year,month){
+	//====================================================(区)
+	//垂直柱状图
+	//当天日期
+	var myChart = echarts.init(document.getElementById('u1130'));
+	$.ajax({
+		url:"${ctxPath}/chubeiliangJH/quECharts.do",
+		type:"post",
+		data:{"year":year,"month":month,"page":1,"rows":10000},
+		dataType:"json",
+		success:function(data){
+			var jhs = [];
+			var swkc = [];
+			for(var i = 0; i < data.list.length; i++){
+				if(data.list[i]!= null){
+					if(data.list[i].leixing == "jhs"){
+						jhs.push((data.list[i].shuliang).toFixed(2));
+					}
+					if(data.list[i].leixing == "swkc"){
+						swkc.push((data.list[i].shuliang).toFixed(2));
+					}
+				}
+			}
+			option = {
+				    title: {
+				        text: '各市区库存量',
+				    },
+				    tooltip: {
+				        trigger: 'axis',
+				        axisPointer: {
+				            type: 'shadow'
+				        }
+				    },
+				    legend: {
+				    	x: 'right',
+				        data: ['计划数', '实物库存']
+				    },
+				    color : ['#61a0a8', '#d48265'],
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis: {
+				        type: 'value',
+				        boundaryGap: [0, 0.01]
+				    },
+				    yAxis: {
+				        type: 'category',
+				        data: ['南京市','江宁区','浦口区','六合区','溧水区','高淳区','其他','市属企业']
+				    },
+				    series: [
+						        {
+						            name: '计划数',
+						            type: 'bar',
+						          //  stack: '总量',
+						           
+						            data: jhs
+						        },
+						        {
+						            name: '实物库存',
+						            type: 'bar',
+						         //   stack: '总量',
+						           
+						            data: swkc
+						        }
+						    ]
+				};
+			myChart.setOption(option);	
+		},	
+		error:function(){
+			alert("error");
+		}
+	});	
+	
+}
+function baocun(){
+	$.ajax({
+		url:'${ctxPath}/chubeiliangJH/saveshiwukucun.do',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			if(data.ret){
+				alert("保存成功！");
+			}else{
+				alert("保存失败！");
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+function dayin(){
+	var q="";
+	
+	if($("#year").val()!=""&&$("#year").val()!=null){
+		q =q + "&year="+$("#year").val();
+		if($("#month").val()!=""&&$("#month").val()!=null){
+			q =q + "&month="+$("#month").val();
+			url = 'http://49.65.0.27:8080/WebReport/ReportServer?reportlet=%5B5357%5D%5B4eac%5D%5B5e02%5D%5B5e02%5D%5B7ea7%5D%5B50a8%5D%5B5907%5D%5B7cae%5D%5B5e93%5D%5B5b58%5D%5B7edf%5D%5B8ba1%5D%5B62a5%5D%5B8868%5D.cpt'+q+'&format=excel&extype=simple';
+			//url = 'http://58.214.246.30:1000/WebReport/ReportServer?reportlet=chubeiliangjh_xq.cpt'+q+;
+			window.open(url);
+		}else{
+			alert("请选择月份！");
+		}
+	}else{
+		alert("请选择年份！");
+	}
+}
+</script>
+<%}%>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+   
+
+
+<title>夏粮五日报表增删</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    
+    <link rel="stylesheet" href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/fontawesome/css/font-awesome.min.css">
+ 	<script src="${resourcePath}/jquery/js/jquery.min.js"></script>
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+    
+ 
+ 
+
+</head>
+
+<%
+	var obj={},url=ctxPath+"/shouchukeshihua/addxialiangwuri";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.queryxialiangshougouwuri({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/shouchukeshihua/upxialiangwuri";
+	};
+%>
+
+<body>
+	 <div class="dashboard-wrapper-lg" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+	 		<input type="hidden"  name="id" class="form-control" placeholder="id" value="${obj.id}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                
+                  <div class="widget-header">
+                    <div class="title">
+                        	基本信息                                  
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  <!-- 
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+				      -->
+							<div class="row">
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="dizhi">地区:</label>
+										<input id="dizhi" name="dizhi" class="form-control" placeholder="地区" value="${obj.dizhi}">
+									</div>	
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="year">年度:</label>
+										<input id="year" name="year" class="form-control" placeholder="年度" value="${obj.year}">
+									</div>	
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="qishu">期数:</label>
+										<input id="qishu" name="qishu" class="form-control" placeholder="期数" value="${obj.qishu}">
+									</div>	
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="qiye">企业:</label>
+										<input id="qiye" name="qiye" class="form-control" placeholder="企业" value="${obj.qiye}">
+									</div>	
+								</div>
+							</div>
+							<!-- 
+						</form>
+						 -->
+					</div>
+					
+					
+					
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	累计入库                                  
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  <!-- 
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+				        -->
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="xlsg_hj">本五日合计:</label>
+										<input id="xlsg_hj" name="xlsg_hj" class="form-control" placeholder="累计入库本五日合计" value="${obj.xlsg_hj}">
+									</div>
+								</div>
+								<div class="col-xs-2">	
+									<div class="form-group">
+										<label for="ljrk_shuliang">数量:</label>
+										<input id="ljrk_shuliang" name="ljrk_shuliang" class="form-control" placeholder="累计入库数量" value="${obj.ljrk_shuliang}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="ljrk_hm">红麦:</label>
+										<input id="ljrk_hm" name="ljrk_hm" class="form-control" placeholder="累计入库红麦" value="${obj.ljrk_hm}">
+									</div>
+								</div>
+								<div class="col-xs-2">	
+									<div class="form-group">
+										<label for="ljrk_hhm">混合麦:</label>
+										<input id="ljrk_hhm" name="ljrk_hhm" class="form-control" placeholder="累计入库混合麦" value="${obj.ljrk_hhm}">
+									</div>	
+								</div>
+								<div class="col-xs-2">	
+									<div class="form-group">
+										<label for="ljrk_bm">白麦:</label>
+										<input id="ljrk_bm" name="ljrk_bm" class="form-control" placeholder="累计入库白麦" value="${obj.ljrk_bm}">
+									</div>	
+								</div>
+							</div>
+						<!-- 
+						</form>
+						 -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	国家最低价收购                                 
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  <!-- 
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+				        -->
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="gjzdjsg_shuliang">数量:</label>
+										<input id="gjzdjsg_shuliang" name="gjzdjsg_shuliang" class="form-control" placeholder="数量" value="${obj.gjzdjsg_shuliang}">
+									</div>
+								</div>
+								<div class="col-xs-2">	
+									<div class="form-group">
+										<label for="gjzdjsg_myqysg">民营企业:</label>
+										<input id="gjzdjsg_myqysg" name="gjzdjsg_myqysg" class="form-control" placeholder="民营企业" value="${obj.gjzdjsg_myqysg}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="gjzdjsg_hm">红麦:</label>
+										<input id="gjzdjsg_hm" name="gjzdjsg_hm" class="form-control" placeholder="红麦" value="${obj.gjzdjsg_hm}">
+									</div>
+								</div>
+								<div class="col-xs-2">	
+									<div class="form-group">
+										<label for="gjzdjsg_hhm">混合麦:</label>
+										<input id="gjzdjsg_hhm" name="gjzdjsg_hhm" class="form-control" placeholder="混合麦" value="${obj.gjzdjsg_hhm}">
+									</div>	
+								</div>
+								<div class="col-xs-2">	
+									<div class="form-group">
+										<label for="gjzdjsg_bm">白麦:</label>
+										<input id="gjzdjsg_bm" name="gjzdjsg_bm" class="form-control" placeholder="白麦" value="${obj.gjzdjsg_bm}">
+									</div>	
+								</div>
+							</div>
+							<!-- 
+						</form>
+						 -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	地方国有粮食企业商品粮收购                                 
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  <!-- 
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+				        -->
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dfsplsg_shuliang">数量:</label>
+										<input id="dfsplsg_shuliang" name="dfsplsg_shuliang" class="form-control" placeholder="数量" value="${obj.dfsplsg_shuliang}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="dfsplsg_hm">红麦:</label>
+										<input id="dfsplsg_hm" name="dfsplsg_hm" class="form-control" placeholder="民营企业" value="${obj.dfsplsg_hm}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dfsplsg_hhm">混合麦:</label>
+										<input id="dfsplsg_hhm" name="dfsplsg_hhm" class="form-control" placeholder="红麦" value="${obj.dfsplsg_hhm}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="dfsplsg_bm">白麦:</label>
+										<input id="dfsplsg_bm" name="dfsplsg_bm" class="form-control" placeholder="混合麦" value="${obj.dfsplsg_bm}">
+									</div>	
+								</div>	
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dfsplsg_dg_shuliang">代购数量:</label>
+										<input id="dfsplsg_dg_shuliang" name="dfsplsg_dg_shuliang" class="form-control" placeholder="数量" value="${obj.dfsplsg_dg_shuliang}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="dfsplsg_dg_lhsg">代储中央及地方储备轮换收购:</label>
+										<input id="dfsplsg_dg_lhsg" name="dfsplsg_dg_lhsg" class="form-control" placeholder="民营企业" value="${obj.dfsplsg_dg_lhsg}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dfsplsg_dg_dyqsg">地方企业代央企收购:</label>
+										<input id="dfsplsg_dg_dyqsg" name="dfsplsg_dg_dyqsg" class="form-control" placeholder="红麦" value="${obj.dfsplsg_dg_dyqsg}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="dfsplsg_dg_dwzsg">地方企业代外资收购:</label>
+										<input id="dfsplsg_dg_dwzsg" name="dfsplsg_dg_dwzsg" class="form-control" placeholder="混合麦" value="${obj.dfsplsg_dg_dwzsg}">
+									</div>	
+								</div>	
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="dfsplsg_dg_dswqysg">地方企业代省外企业收购:</label>
+										<input id="dfsplsg_dg_dswqysg" name="dfsplsg_dg_dswqysg" class="form-control" placeholder="混合麦" value="${obj.dfsplsg_dg_dswqysg}">
+									</div>	
+								</div>	
+							</div>
+						<!-- 
+						</form>
+						 -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	其他社会主体收购                          
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  <!-- 
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+				        -->
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qtshztsg_shuliang">数量:</label>
+										<input id="qtshztsg_shuliang" name="qtshztsg_shuliang" class="form-control" placeholder="数量" value="${obj.qtshztsg_shuliang}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="qtshztsg_hm">红麦:</label>
+										<input id="qtshztsg_hm" name="qtshztsg_hm" class="form-control" placeholder="民营企业" value="${obj.qtshztsg_hm}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qtshztsg_hhm">混合麦:</label>
+										<input id="qtshztsg_hhm" name="qtshztsg_hhm" class="form-control" placeholder="红麦" value="${obj.qtshztsg_hhm}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="qtshztsg_bm">白麦:</label>
+										<input id="qtshztsg_bm" name="qtshztsg_bm" class="form-control" placeholder="混合麦" value="${obj.qtshztsg_bm}">
+									</div>	
+								</div>
+							</div>
+						<!-- 
+						</form>
+						 -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	小麦订单收购                          
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  <!-- 
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+				        -->
+							<div class="row">
+								
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="xmddsg_ddhtsl">订单合同数量:</label>
+										<input id="xmddsg_ddhtsl" name="xmddsg_ddhtsl" class="form-control" placeholder="数量" value="${obj.xmddsg_ddhtsl}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="xmddsg_ljrk">累计入库:</label>
+										<input id="xmddsg_ljrk" name="xmddsg_ljrk" class="form-control" placeholder="民营企业" value="${obj.xmddsg_ljrk}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="xmxwsg_shuliang">县外收购数量:</label>
+										<input id="xmxwsg_shuliang" name="xmxwsg_shuliang" class="form-control" placeholder="红麦" value="${obj.xmxwsg_shuliang}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="xmxwsg_swsg">省外收购数量:</label>
+										<input id="xmxwsg_swsg" name="xmxwsg_swsg" class="form-control" placeholder="混合麦" value="${obj.xmxwsg_swsg}">
+									</div>	
+								</div>	
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<label for="yzxmsg">优质小麦收购:</label>
+										<input id="yzxmsg" name="yzxmsg" class="form-control" placeholder="自评日期" value="${obj.yzxmsg}">
+									</div>
+								</div>
+							</div>
+						<!-- 
+						</form>
+						 -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	商品油菜籽收购                         
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  <!-- 
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+				        -->
+							<div class="row">
+							
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="spyczsg_hj">本五日合计:</label>
+										<input id="spyczsg_hj" name="spyczsg_hj" class="form-control" placeholder="数量" value="${obj.spyczsg_hj}">
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="spyczsg_shuliang">数量:</label>
+										<input id="spyczsg_shuliang" name="spyczsg_shuliang" class="form-control" placeholder="民营企业" value="${obj.spyczsg_shuliang}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="spyczsg_gyqyljsg">国有企业累计:</label>
+										<input id="spyczsg_gyqyljsg" name="spyczsg_gyqyljsg" class="form-control" placeholder="红麦" value="${obj.spyczsg_gyqyljsg}">
+									</div>
+								</div>
+							</div>
+						<!-- 
+						</form>
+						 -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title" style="float:right">
+                        	<a class="btn btn-success btn-sm" type="button" onclick="savexlwr()"><i class="fa fa-floppy-o" aria-hidden="true">&nbsp;保存</i></a>                        
+                    </div>
+                  </div>
+				</div>
+			</div>
+		</div>
+	</form>
+	</div>
+            <!-- Row End -->
+            
+    <script type="text/javascript">
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+    
+    $(document).ready(function() {
+    	var flag = $.getUrlParam("flag");
+    	if(flag == 1){
+    		$("#dizhi").attr("readonly",true);
+    		$("#year").attr("readonly",true);
+    		$("#qishu").attr("readonly",true);
+    		$("#qiye").attr("readonly",true);
+    	}
+    });
+    
+    function savexlwr() {
+    	var form = $("#contentform");
+    	$.ajax({
+    		url: form.attr("action"),
+    		dataType: "json",
+    		data: form.serialize(),
+    		success: function(msg) {
+    			if (!msg.ret) {
+    				alert(msg.message);
+    			} else {
+    				alert("保存成功");
+    			}
+    		}
+    	});
+    }
+    
+    </script>
+            
+</body>
+
+
+</html>

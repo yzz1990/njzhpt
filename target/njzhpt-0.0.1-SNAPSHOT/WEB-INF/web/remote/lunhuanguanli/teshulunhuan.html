@@ -1,0 +1,105 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+#btn{
+float: right;
+}
+div{
+margin-top: 10px;
+}
+table{
+border:none;
+}
+input{
+height:100%;
+width: 100%;
+}
+ td{
+   		    font-size: 14px ! important;
+   			padding: 0px ! important;
+   			line-height: 34px ! important;
+   			text-align: left ! important;
+    	}
+.tt{
+    		text-align: right ! important;
+    	} 
+
+</style>
+<div class="container">
+  <ul class="nav nav-pills" role="tablist">
+    <li ><a href="${ctxPath}/remote/lunhuanguanli/lunhuanshenqing.html">轮换申请</a></li>
+    <li><a href="${ctxPath}/remote/lunhuanguanli/lunhuanpizhun.html">轮换批准</a></li>
+    <li class="active"><a href="${ctxPath}/remote/lunhuanguanli/teshulunhuan.html">特殊轮换</a></li>
+    <li ><a href="${ctxPath}/remote/lunhuanguanli/querenshenqing.html">确认申请</a></li>
+    <li ><a href="${ctxPath}/remote/lunhuanguanli/querentongzhi.html">确认通知</a></li>
+    <li><a href="${ctxPath}/remote/lunhuanguanli/lunhuanhuizong.html">轮换汇总</a></li>
+  </ul>
+</div>
+<div>
+		<form action="" id="sc">
+		<table width="100%" border="1">
+         	<tr>
+         		<td  width="160" class="tt">所在区域:</td>
+         		<td width="281"><input name="szqy" id="szqy" type="text"></td>
+         		<td width="160" class="tt">企业名称:</td>
+         		<td width="280"><input name="qymc" id="qymc" type="text"></td>
+         		<td width="160">原轮换报告文号:</td>
+         		<td width="280"><input name="ylhbgwh" id="ylhbgwh" type="text"></td>
+         	</tr>
+
+         </table>
+		<div class="bm_title">
+                <strong>轮换延期申请</strong>
+        </div>
+        <table width="100%" border="1">
+         	<tr>
+         		<td  width="160" class="tt">申请文号:</td>
+         		<td ><input name="sqwh" id="sqwh" type="text"></td>
+         	</tr>
+         	<tr>
+         		<td width="160" class="tt">库点名称:</td>
+         		<td><input name="kdmc" id="kdmc" type="text"></td>
+         		<td class="tt" width="160">仓号:</td>
+         		<td><input name="ch" id="ch" type="text"></td>
+         		<td class="tt" width="160">品种:</td>
+         		<td><input name="pz" id="pz" type="text"></td>
+         	</tr>
+         	<tr>
+         		<td width="160" class="tt">数量:</td>
+         		<td><input name="sl" id="sl" type="text"></td>
+         		<td class="tt" width="160">原轮入 期限:</td>
+         		<td><input name="y_lrqx" id="y_lrqx" type="text"></td>
+         		<td class="tt" width="160">延期轮入期限:</td>
+         		<td><input name="yq_lrqx" id="yq_lrqx" type="text"></td>
+         	</tr>
+        </table>
+         </form>
+    <div class="panel-footer">
+		<button type="button" class="btn btn-primary" id="btn" onclick="shangchuan()" ><em class="fa fa-check fa-fw"></em> 提交</button>
+	</div>
+</div>
+<script type="text/javascript">
+	function shangchuan(){
+	   		 $.ajax({
+	   				url: "${ctxPath}/lunhuan/saveLunHuanYanQiB.do",
+	   				dataType: "json",
+	   				data:$("#sc").serialize(),
+	   				success: function(msg) {
+	   					if (msg.ret) {
+	   						alert("轮换申请表提交成功");
+	   						
+	   					}else{
+	   						alert("提交失败");
+	   					}
+	   				}
+	   			});
+		
+	}
+	
+	
+	</script>
+
+<%
+	}
+%>

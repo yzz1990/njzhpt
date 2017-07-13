@@ -1,0 +1,48 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+
+<script>
+$(function(){
+	$(".kudian").select2();
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				if(i == 0){
+					$(".kudian").append("<option value="+n.qyzzjgdm+" kdbm="+n.kdbm+" selected='selected'>"+n.kdmc+"</option>");
+				}else{
+					$(".kudian").append("<option value="+n.qyzzjgdm+" kdbm="+n.kdbm+">"+n.kdmc+"</option>");
+				}
+			});
+			var qyzzjgdm = $(".kudian option:selected").val();
+			var kdbm = $(".kudian option:selected").attr("kdbm");
+			$("#if").attr("src","${ctxPath}/yewu/pingmiantu?qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm);
+			
+		},
+		error:function(){
+			alert("加载库点失败");
+		}
+	});
+});
+
+function Change(){
+	var qyzzjgdm = $(".kudian option:selected").val();
+	var kdbm = $(".kudian option:selected").attr("kdbm");
+	$("#if").attr("src","${ctxPath}/yewu/pingmiantu?qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm);
+}
+</script>
+
+<div class="panel-body">
+	<div class = ""  style="text-align:center; background-color: #CFDCB1">
+		<label>库点:</label>
+		<select class="kudian" style="width:200px;" name="gongdi" style="width:100px;" onchange="Change()">
+		</select>
+	</div>
+	<iframe id="if" frameborderno="0" width="100%" height="100%" style="border-width: 0px; width: 100%;" src="${ctxPath}/yewu/pingmiantu?qyzzjgdm=783835724&kdbm=001">
+		
+	</iframe>
+	
+</div>

@@ -1,0 +1,131 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+					<label>流水号:</label>
+					<input class="form-control input-sm" name="vSwiftNumber" id="vSwiftNumber" placeholder="流水号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>库点:</label>
+					<input class="form-control input-sm" name="kdbm" id="kdbm" placeholder="库点" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+					<a class="btn btn-primary btn-sm pull-right" type="button"
+							href="${ctxPath}/cangchuguanli/yewuguanli/churuku_edit.html">新增出入库管理</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findChuruku" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "vSwiftNumber",
+				"title" : "流水号"
+			},{
+				"data" : "vDispatchCompany",
+				"title" : "发货单位"
+			},{
+				"data" : "kdbm",
+				"title" : "库点"
+			},{
+				"data" : "vWareHouseCode",
+				"title" : "仓房",
+			},{
+				"data" : "vProvinceCode",
+				"title" : "省份",
+			},{
+				"data" : "vPackageTypeCode",
+				"title" : "包装类型"
+			},{
+				"data" : "vGrainPropertyId",
+				"title" : "粮食性质",
+			},{
+				"data" : "vExchangeType",
+				"title" : "交易类型",
+			},{
+				"data" : "dmPackageNumber",
+				"title" : "包装数量"
+			},{
+				"data" : "vInspector",
+				"title" : "质检员",
+			},{
+				"data" : "dmGW",
+				"title" : "毛重"
+			},{
+				"data" : "dmCheckWeight",
+				"title" : "结算重量",
+			},{
+				"title" : "查看",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="churukuqushi()" class="btn btn-sm btn-info pjax">查看明细</a>';								
+					return chakan;	
+					}
+				},
+				 {"title":"操作",
+                	"render": function (data,type,row,meta) {
+	                   	var bianji = '<a href="${ctxPath}/cangchuguanli/yewuguanli/churuku_edit.html?id='+row["id"]+'" class="btn btn-sm btn-info pjax"><em class="fa fa-pencil"></em></a>';
+	                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delChuruku(\''+row["id"]+'\')"><em class="fa fa-trash"></em></button>';
+	               		return bianji + " " + shanchu;
+                	}
+                }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var vSwiftNumber = $("#vSwiftNumber").val();
+	var kdbm = $("#kdbm").val();
+	document.querySelector('.datatables').dataset.queryparam="vSwiftNumber="+vSwiftNumber+"&kdbm="+kdbm;
+	datatable.ajax.reload(null,false);
+}
+	
+function delChuruku(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delChuruku',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+	
+	
+function churukuqushi(){
+	dialog1=BootstrapDialog.show({
+	    title: '出入库趋势',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/yewuguanli/churukuqushi.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+	});
+}	
+	
+</script>
+<%
+	}
+%>

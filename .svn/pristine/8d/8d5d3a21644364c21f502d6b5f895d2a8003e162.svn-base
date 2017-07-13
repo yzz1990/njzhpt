@@ -1,0 +1,281 @@
+package com.zkzy.njzhpt.dao;
+
+import java.util.HashMap;
+import java.util.List;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+public class ZongHeDao {
+
+	
+	
+	/**
+	 * 仓房利用率
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	public static Page<Record> findcflyl(HashMap<String, Object> param) throws Exception {
+		
+		Param p = new Param();
+		p.put("and c.ID = ?", "ID");
+		p.put("and c.qyzzjgdm = ?", "qyzzjgdm");
+		p.put("and c.kdbm = ?", "kdbm");
+		p.put("and c.cfbm = ?", "cfbm");
+		p.put("and a.xzqhdm = ?", "xzqhdm");	
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"sum(CAST(c.sjcr as FLOAT))/sum(CAST(c.shjcr as FLOAT))*100 as lyl, sum(CAST(c.shjcr as FLOAT))/10000 as zcr ",
+				"from tz_qiye a LEFT join tz_kudian b on  a.qyzzjgdm=b.qyzzjgdm LEFT join tz_cangfang c on  a.qyzzjgdm=c.qyzzjgdm and b.qyzzjgdm=c.qyzzjgdm and b.kdbm=c.kdbm where c.sjcr is not null and c.shjcr is not null " + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+		
+	}
+
+
+	/**
+	 * 仓房利用率
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	public static Page<Record>  findcfInfo(HashMap<String, Object> param) throws Exception {
+		Param p = new Param();
+		p.put("and c.ID = ?", "ID");
+		p.put("and c.qyzzjgdm = ?", "qyzzjgdm");
+		p.put("and c.kdbm = ?", "kdbm");
+		p.put("and c.cfbm = ?", "cfbm");
+		p.put("and a.xzqhdm = ?", "xzqhdm");	
+		p.put("and c.cflxbh = ?", "cflxbh");	
+		p.put("and c.jxtf = ?", "jxtf");	
+		p.put("and c.jsjcw = ?", "jsjcw");	
+		p.put("and c.hlxz = ?", "hlxz");	
+		p.put("and c.dwcl = ?", "dwcl");	
+		p.put("and c.qtcl = ?", "qtcl");	
+		p.put("and c.qtjs = ?", "qtjs");	
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select c.* ",
+				"from tz_qiye a LEFT join tz_kudian b on a.qyzzjgdm=b.qyzzjgdm LEFT join tz_cangfang c on  a.qyzzjgdm=c.qyzzjgdm and b.qyzzjgdm=c.qyzzjgdm and b.kdbm=c.kdbm where c.sjcr is not null and c.shjcr is not null " + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	
+	
+	
+	/**
+	 * 获取地区
+	 */
+	public static  List<Record> findQuyu(HashMap<String, Object> param) {
+		return Db.find("select a.*,b.xzqhdm as xzqhdm from fw_area a,njpt_diqu b where  a.id=b.areaid and parentid!='root' ORDER BY a.orderno");
+		
+	}
+
+	/**
+	 * 获取仓房
+	 * @param param
+	 * @throws Exception 
+	 */
+	public static Page<Record> finCf(HashMap<String, Object> param) throws Exception {
+		Param p = new Param();
+		p.put("and ID = ?", "ID");
+		p.put("and qyzzjgdm = ?", "qyzzjgdm");
+		p.put("and kdbm = ?", "kdbm");
+		p.put("and cfbm = ?", "cfbm");
+		p.put("and xian = ?", "xian");
+		p.put("and xzqhdm = ?", "xzqhdm");
+		p.put("and cflxbh = ?", "cflxbh");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select * ",
+				"from tz_cangfang where 1=1 " + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+		
+	}
+	
+	/**
+	 * 获取烘干能力值
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public static Record finHgnlV(HashMap<String, Object> param) throws Exception {
+		Record record=Db.findFirst("select  SUM(cast(hgnl as FLOAT)) as hgnl  from tz_kudian  where xian=?",param.get("xian"));
+		return record;
+	}
+	
+
+	/**
+	 * 获取仓房类型
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	public static Page<Record> finCflx(HashMap<String, Object> param) throws Exception {
+		Param p = new Param();
+		p.put("and BH = ?", "code");
+		p.put("and MC = ?", "name");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select * ",
+				"from dm_cflx where 1=1 " + s.getSql()+" order by TAB",
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	
+	
+	
+	/**
+	 * 保粮技术
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public static Page<Record> findBljs(HashMap<String, Object> param) throws Exception {
+		Param p = new Param();
+		p.put("and id = ?", "id");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select * ",
+				"from dm_bljs where 1=1 " + s.getSql()+" order by code",
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+
+	/**
+	 * 库存占比
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	public static Page<Record> findcrk(HashMap<String, Object> param) throws Exception {
+		
+		Param p = new Param();
+		p.put("and a.id = ?", "id");
+		p.put("and a.vWareHouseCode = ?", "vWareHouseCode");
+		p.put("and a.vGrainSubTypeCode = ?", "vGrainSubTypeCode");
+		p.put("and a.vGrainPropertyCode = ?", "vGrainPropertyCode");
+		p.put("and a.kdbm = ?", "kdbm");
+		p.put("and a.qyzzjgdm = ?", "qyzzjgdm");	
+		p.put("and b.xzqhdm = ?", "xzqhdm");
+		p.put("and b.xian = ?", "xian");
+		p.put("and c.vCode = ?", "vCode");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select a.*,c.vName as vName,c.vCode as vCode  ",
+				"from  kc_CurrentStock a,tz_qiye b,tz_GrainType c where a.qyzzjgdm=b.qyzzjgdm  and a.vGrainSubTypeCode=c.vCode " + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	
+
+	/**
+	 * 库存总计
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	public static Page<Record> findzcrk(HashMap<String, Object> param) throws Exception {
+		
+		Param p = new Param();
+		p.put("and a.id = ?", "id");
+		p.put("and a.vWareHouseCode = ?", "vWareHouseCode");
+		p.put("and a.vGrainSubTypeCode = ?", "vGrainSubTypeCode");
+		p.put("and a.vGrainPropertyCode = ?", "vGrainPropertyCode");
+		p.put("and a.kdbm = ?", "kdbm");
+		p.put("and b.xzqhdm = ?", "xzqhdm");
+		p.put("and a.qyzzjgdm = ?", "qyzzjgdm");
+		p.put("and b.xian = ?", "xian");
+		p.put("and c.vCode = ?", "vCode");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select SUM(a.dmStock) as dmStock ",
+				"from kc_CurrentStock a,tz_qiye b,tz_GrainType c  where a.qyzzjgdm=b.qyzzjgdm  and a.vGrainSubTypeCode=c.vCode " + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+
+
+	/**
+	 * 分区品种统计库存
+	 * @throws Exception
+	 */
+	public static List<Record>  findlspz() {
+		return	Db.find("select c.vName as name,c.vCode as code from  kc_CurrentStock a,tz_qiye b,tz_GrainType c where a.qyzzjgdm=b.qyzzjgdm  and a.vGrainSubTypeCode=c.vCode  GROUP BY c.vName ,c.vCode ");	
+	}
+	
+	/**
+	 * 分区品种统计库存
+	 * @throws Exception
+	 */
+	
+	
+	public static List<Record>  findlsxz() {
+		return	Db.find("select c.vGrainProperties as name,c.vCode as code  from  kc_CurrentStock a,tz_qiye b,tz_GrainProperties c where a.qyzzjgdm=b.qyzzjgdm  and a.vGrainPropertyCode =c.vCode  GROUP BY c.vGrainProperties ,c.vCode ORDER BY c.vCode ");	
+	}
+
+	/**
+	 * 分等级粮食库存统计
+	 * @return
+	 * @throws Exception 
+	 */
+	public static Page<Record> findlsdj(HashMap<String, Object> param) throws Exception {
+
+		Param p = new Param();
+		p.put("and id = ?", "id");
+		p.put("and vLevelName = ?", "vLevelName");
+		p.put("and vCode = ?", "vCode");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select * ",
+				"from  tz_GrainLevel  " + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+	/**
+	 * 分区粮食等级库存统计
+	 * @throws Exception
+	 */
+	public static Page<Record> finddjck(HashMap<String, Object> queryParam) throws Exception {
+
+		Param p = new Param();
+		p.put("and a.vWareHouseCode = ?", "vWareHouseCode");
+		p.put("and a.qyzzjgdm = ?", "qyzzjgdm");
+		p.put("and a.kdbm = ?", "kdbm");
+		p.put("and a.vGrainLevel = ?", "vGrainLevel");
+		p.put("and a.vGrainSubTypeCode = ?", "vGrainSubTypeCode");
+		p.put("and c.vCode = ?", "vCode");//等级编码
+		p.put("and c.vLevelName = ?", "vLevelName");
+		p.put("and d.xian = ?", "xian");//地区
+		SqlAndParam s = SqlUtil.buildSql(p, queryParam);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(queryParam.get("page"))),
+				Integer.valueOf(String.valueOf(queryParam.get("rows"))),
+				"select a.vWareHouseCode as cfbm,a.qyzzjgdm as  qyzzjgdm,a.kdbm as kdbm,a.vGrainLevel as vGrainLevel,a.vGrainSubTypeCode as vGrainSubTypeCode,b.dmStock as dmStock,c.vCode as vCode,c.vLevelName as vLevelName,d.xian as xian ",
+				"from crk_Purchase a, kc_CurrentStock b ,tz_GrainLevel c,tz_qiye d where c.vLevelId=a.vGrainLevel and a.qyzzjgdm=b.qyzzjgdm and a.kdbm=b.kdbm and a.vWareHouseCode=b.vWareHouseCode  and d.qyzzjgdm =a.qyzzjgdm and a.vGrainLevel is not null and a.vGrainLevel>0 and  LEN(a.vGrainLevel) <2  " + s.getSql()+" GROUP BY a.qyzzjgdm,a.kdbm,a.vWareHouseCode,a.vGrainLevel,a.vGrainSubTypeCode,b.dmStock,c.vCode,c.vLevelName,d.xian  ORDER BY a.qyzzjgdm, a.kdbm,a.vWareHouseCode ",
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	
+}

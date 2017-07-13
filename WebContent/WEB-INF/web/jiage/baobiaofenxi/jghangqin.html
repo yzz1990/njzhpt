@@ -1,0 +1,135 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:150px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia, #div-baojia{
+	height:500px;
+	overflow-y:auto;
+}
+
+</style>
+<script type="text/javascript">
+var day = new Date().toLocaleDateString();
+
+//判断是新增还是修改falg为1时新增，为2时修改
+var flag = 0;
+
+$(window).load(function() {
+	
+});
+
+$(function(){
+		
+});
+
+</script>
+
+<div id="panelDemo10" class="panel panel-info">
+    <div class="panel-heading">
+    	<a class="btn btn-xs" type="button" onclick="addTb()" style="margin-left:5px; margin-top:2px; font-size:18px"><i class="fa fa-clipboard" aria-hidden="true">&nbsp;增加</i></a>
+    	<!--  
+    	<a class="btn btn-xs" type="button" onclick="" style="margin-left:5px; margin-top:2px; font-size:18px"><i class="fa fa-floppy-o" aria-hidden="true">&nbsp;暂存</i></a>
+    	-->
+    	<a class="btn btn-xs" type="button" onclick="" style="margin-left:5px; margin-top:2px; font-size:18px"><i class="fa fa-times" aria-hidden="true">&nbsp;删除</i></a>
+    	<a class="btn btn-xs" type="button" onclick="tijiaoTb()" style="margin-left:5px; margin-top:2px; font-size:18px"><i class="fa fa-external-link" aria-hidden="true">&nbsp;提交</i></a>
+    	<a class="btn btn-xs" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; font-size:18px"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+    	<a class="btn btn-xs" type="button" onclick="" style="margin-left:5px; margin-top:2px; font-size:18px"><i class="fa fa-sort-amount-desc" aria-hidden="true">&nbsp;价格继承</i></a>
+    </div>
+</div>
+
+<div id="panelDemo7" class="panel panel-info">
+   <div class="panel-heading">采价基础信息</div>
+   <div class="panel-body">
+   		<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th >
+	    				<div class="cjd-div cjdmc-div">
+							<label class="cjd-label">采价点名称:</label>
+							<select id="cjdmc" class="form-control cjd-select" onchange="">
+							</select>
+						</div>
+	    			</th>
+	     			<th>
+	     				<div class="cjd-div">
+							<label class="cjd-label">采价日期:</label>
+							<input id="cjrq" class="cjd-text"  type="text">
+						</div>
+	     			</th>
+	     			<th>
+	     				<div class="cjd-div">
+							<label class="cjd-label">采价员名称:</label>
+							<input id="cjymc" class="cjd-text" type="text">
+						</div>
+	     			</th>
+	     			<th >
+	     				<div class="cjd-div djzt-div">
+							<label class="cjd-label">单据状态:</label>
+							<select id="djzt"  class="form-control cjd-select" >
+								<option value="未提交">未提交</option>
+								<option value="已提交">已提交</option>
+								<option value="已审批">已审批</option>
+								<option value="驳回">驳回</option>
+								<option value="所有状态">所有状态</option>
+							</select>
+						</div>
+	     			</th>
+	     			<th >
+	     				<div class="cjd-div jldw-div">
+							<label class="cjd-label">计量单位:</label>
+							<select id="jldw" class="form-control cjd-select">
+							</select>
+						</div>
+	     			</th>
+	 			</tr>
+			</thead>	
+		</table>
+   </div>
+</div>
+
+<div id="panelDemo55" class="panel panel-info" style="margin-top:-20px">
+   <div class="panel-heading">采价商品信息</div>
+   <div id="div-caijia" class="panel-body">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="${ctxPath}/jiage/querycaijia.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" id="col3" class="tworow" style="vertical-align:middle">品种</th>
+	     			<th rowspan="1" colspan="1" id="col4" class="tworow" style="vertical-align:middle">等级</th>
+	     			<th rowspan="1" colspan="1" id="col5" style="vertical-align:middle">收购单价</th>
+	     			<th rowspan="1" colspan="1" id="col6" style="vertical-align:middle">出库单价</th>
+	     			<th rowspan="1" colspan="1" id="col7" style="vertical-align:middle">港口单价</th>
+	     			<th rowspan="1" colspan="1" id="col8" style="vertical-align:middle">进厂单价</th>
+	     			<th rowspan="1" colspan="1" id="col9" style="vertical-align:middle">出厂单价</th>
+	     			<th rowspan="1" colspan="1" id="col10" style="vertical-align:middle">批发单价</th>
+	     			<th rowspan="1" colspan="1" id="col11" style="vertical-align:middle">零售单价</th>
+	 			</tr>
+			</thead>	
+		</table>
+   </div>
+</div>
+
+<%}%>

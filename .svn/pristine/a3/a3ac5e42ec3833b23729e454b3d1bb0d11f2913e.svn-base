@@ -1,0 +1,169 @@
+<script type="text/javascript" src="${ctxPath}/web/echarts.js"></script>
+
+<title>SimpleTree</title>
+<link rel="stylesheet" type="text/css"
+	href="${ctxPath}/resource/SimpleTree.css" />
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/resource/SimpleTree.js"></script>
+
+<style>
+.active {
+	background-color: #B0C4DE;
+}
+
+.conttext {
+	border: 1px solid;
+	width: 300px;
+	height: 300px;
+	float: left;
+}
+
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+
+.panel-info {
+	float: left;
+	width: 250px;
+	height: 580px;
+}
+
+.panel-success {
+	margin-left: 30px;
+	float: left;
+
+}
+.panel{
+	   
+	    margin-top: 0px;
+}
+
+#panelDemo10,#panelDemo9{
+	 background-color: #FFFFF;
+}
+
+</style>
+
+<script type="text/javascript">
+	var vfid;
+	var vcengshu;
+	var visend;
+	var vname;
+	var xiugai = 0;
+	$(function() {
+		gettree();
+	});
+	
+	
+	function gettree(){
+		$("#sysp").empty();
+		//树形结构方式加载粮食品种
+		$.ajax({
+					url : '${ctxPath}/emergency/querytree.do',
+					type : 'post',
+					data : {
+						"page" : 1,
+						"rows" : 100
+					},
+					dataType : 'json',
+					success : function(data) {
+						//=======================================动态加载tree=================================
+						var num = data.list.length;
+						var ceng;
+
+						for (var j = 0; j < num; j++) {
+							var li;
+							//处理根节点
+							if(data.list[j].cengshu == 1){
+								
+								
+								if(data.list[j].isend == 0){
+									li =
+									'<li id="'+data.list[j].id+'" ceng="1" isend="0"><input type="checkbox" onclick=show() /><a href="#" ref="sypz">&nbsp;'
+									+ data.list[j].name
+									+ '</a></li><ul></ul>';
+									$("#sysp").append(li);
+								}else{
+									li = 
+									'<li id="'+data.list[j].id+'" ceng="1" isend="1"><input type="checkbox" onclick=show() /><a href="#" ref="sypz">&nbsp;'
+									+ data.list[j].name
+									+ '</a></li>';
+									$("#sysp").append(li);
+								}
+								
+					
+							}else{
+								if(data.list[j].isend == 0){
+									var fujiedian = data.list[j].shangji;
+									var ceng = data.list[j].cengshu;
+									var zhanghao=data.list[j].zhanghao;
+									li = '<li id="'+data.list[j].id+'" ceng="'+ceng+'" isend="0" zhanghao="'+zhanghao+'"><input type="checkbox" onclick=show() /><a href="#" ref="sypz">&nbsp;'
+											+ data.list[j].name + '</a></li><ul></ul>';
+									$("#" + fujiedian).next().append(li);
+								}else{
+									var fujiedian = data.list[j].shangji;
+									var ceng = data.list[j].cengshu;
+									var zhanghao=data.list[j].zhanghao;
+									li = '<li id="'+data.list[j].id+'" ceng="'+ceng+'" isend="1" zhanghao="'+zhanghao+'"><input type="checkbox" onclick=show() /><a href="#" ref="sypz">&nbsp;'
+											+ data.list[j].name + '</a></li>';
+									$("#" + fujiedian).next().append(li);
+								}
+								
+							}
+		
+						}
+						//=======================================动态加载tree（结束）=================================
+						//=====================================a的单击事件===================================
+
+						$(".st_tree").SimpleTree(
+								{
+									click : function(a) {
+										if (!$(a).attr("hasChild")) {
+											alert($(a).attr("ref"));
+										}
+										//增加和删除a的选中状态
+										$("a").removeClass("active");
+										$(a).addClass("active")
+												.siblings()
+												.removeClass("active");
+										var fid = $(a).parent().attr("id");
+										var isend = $(a).parent().attr("isend");
+										vfid = fid;
+										vcengshu = $(a).parent().attr("ceng");
+										visend = $(a).parent().attr("isend");
+										vname = $(a).parent().attr("zhanghao");
+										if(vname!=undefined&&vname!="null"){
+											alert(vname);
+										}
+									}
+								});
+					},
+					error : function() {
+						//alert("读取品种失败");
+					}
+				});
+	}
+	//刷新树形结构
+	function updatePz() {
+		gettree();
+	}
+</script>
+</head>
+<body>
+	<div class="panel panel-default">
+		<div class="panel-body" >
+			<div id="panelDemo10" class="panel panel-info">
+				<div class="panel-heading" style="background-color: #E6F0FA;height: 30px;line-height: 2;">通讯录</div>
+				<div class="panel-body">
+					<div class="st_tree">
+						<ul class="st_tree_ul">
+							<li id="" ceng="0" ><a href="#" ref="sypz">&nbsp;南京市人员通讯录</a></li>
+							<ul id="sysp"></ul>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

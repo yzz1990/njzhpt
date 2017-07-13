@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药剂损耗信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addYjsh",title="新增药剂损耗信息";
+	if (isNotEmpty(parameter.id)) {
+		var yjsh = @com.zkzy.njzhpt.dao.CangchuglDao.findYjsh({"id":parameter.id,"page":"1","rows":"100"});
+		obj = yjsh.list[0];
+		url = ctxPath+"/cangchugl/upYjsh";
+		title = "编辑药剂损耗信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	药剂损耗信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xzqydm">行政区域代码:</label>
+										<!--  
+										<input id="xzqydm" name="xzqydm" class="form-control" placeholder="行政区域代码" value="${obj.xzqydm}">
+										-->
+										<select id="xzqydm" name="xzqydm" class="form-control" onchange="getxzqhdm()">	
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<!--  
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${obj.qyzzjgdm}">
+										-->
+										<select id="qyzzjgdm" name="qyzzjgdm" class="form-control" onchange="getqiye()">
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="kdbm">库点编码:</label>
+										<!--  
+										<input id="kdbm" name="kdbm" class="form-control" placeholder="库点编码" value="${obj.kdbm}">
+										-->
+										<select id="kdbm" name="kdbm" class="form-control" onchange="">
+										</select>
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="yjmc">药剂名称:</label>
+										<input id="yjmc" name="yjmc" class="form-control" placeholder="药剂名称" value="${obj.yjmc}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="ch">仓号:</label>
+										<input id="ch" name="ch" class="form-control" placeholder="仓号" value="${obj.ch}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="xzsj">熏蒸时间:</label>
+										<!--  
+										<input id="xzsj" name="xzsj" class="form-control" placeholder="熏蒸时间" value="${obj.xzsj}">
+										-->
+										<input id="xzsj" name="xzsj"  class="form-control form_xzsj" value="${obj.xzsj}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="kqsj">开启时间:</label>
+										<!--  
+										<input id="kqsj" name="kqsj" class="form-control" placeholder="开启时间" value="${obj.kqsj}">
+										-->
+										<input id="kqsj" name="kqsj"  class="form-control form_kqsj" value="${obj.kqsj}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="kpsl">空瓶数量:</label>
+										<input id="kpsl" name="kpsl" class="form-control" placeholder="空瓶数量" value="${obj.kpsl}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="cyry">参与人员:</label>
+										<input id="cyry" name="cyry" class="form-control" placeholder="参与人员" value="${obj.cyry}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<label for="clfs">处理方式:</label>
+										<input id="clfs" name="clfs" class="form-control" placeholder="处理方式" value="${obj.clfs}">
+									</div>
+								</div>
+							</div>
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+$.fn.datetimepicker.dates['zh'] = {  
+        days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],  
+        daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],  
+        daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],  
+        months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],  
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],  
+        meridiem:    ["上午", "下午"],  
+        //suffix:      ["st", "nd", "rd", "th"],  
+        today:       "今天"  
+};  
+
+function saveYjsh() {
+	var form = $(".widget-body form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		}
+	});
+}
+
+//行政区划代码下拉框选择事件
+function getxzqhdm(){
+	$("#qyzzjgdm").empty();
+	var xzqhdm = $("#xzqydm option:selected").val();
+	/* 企业组织机构代码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		 type:'post',
+		 data:{"quyu":xzqhdm},
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data.list,function(i, n){
+				$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+			});
+		 }
+	});
+}
+//企业编码下拉框选择事件
+function getqiye(){
+	$("#kdbm").empty();
+	var qyzzjgdm = $("#qyzzjgdm option:selected").val();
+	/*库点编码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		 type:'post',
+		 data:{"qyzzjgdm":qyzzjgdm},
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data.list,function(i, n){
+				$("#kdbm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+			});
+		 }
+	});
+}
+
+$(function(){
+	$("#xzqydm").select2();
+	$("#qyzzjgdm").select2();
+	$("#kdbm").select2();
+	
+	/* 行政区划代码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data,function(i, n){
+					if(n.xzqhdm=="${obj.xzqydm}"){
+						$("#xzqydm").append("<option value="+n.xzqhdm+"  selected>"+n.name+"</option>");
+					}else{
+						$("#xzqydm").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+					}
+				});
+		 }
+	});
+	
+	/* 企业组织机构代码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		 type:'post',
+		 data:{"xzqhdm":"${obj.xzqydm}"},
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data.list,function(i, n){
+					if(n.qyzzjgdm=="${obj.qyzzjgdm}"){
+						$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+					}else{
+						$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+					}
+				});
+		 }
+	});
+	
+	/* 库点编码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		 type:'post',
+		 data:{"xzqhdm":"${obj.xzqydm}","qyzzjgdm":"${obj.qyzzjgdm}"},
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data.list,function(i, n){
+					if(n.kdbm=="${obj.kdbm}"){
+						$("#kdbm").append("<option value="+n.kdbm+"  selected>"+n.kdmc+"</option>");
+					}else{
+						$("#kdbm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+					}
+				});
+		 }
+	});
+	
+	$('.form_xzsj').datetimepicker({  
+        language:  'zh',  
+        weekStart: 1,  
+        todayBtn:  1,  
+        autoclose: 1,  
+        todayHighlight: 1,  
+        startView: 2,  
+        forceParse: 0,  
+        showMeridian: 1  
+    }).on('changeDate', function (ev) {  
+        $(this).datetimepicker('hide');  
+    });  
+	
+	$('.form_kqsj').datetimepicker({  
+        language:  'zh',  
+        weekStart: 1,  
+        todayBtn:  1,  
+        autoclose: 1,  
+        todayHighlight: 1,  
+        startView: 2,  
+        forceParse: 0,  
+        showMeridian: 1  
+    }).on('changeDate', function (ev) {  
+        $(this).datetimepicker('hide');  
+    });  
+	
+	 $(".form_xzsj").datetimepicker({format: 'yyyy-mm-dd'});
+	 $(".form_kqsj").datetimepicker({format: 'yyyy-mm-dd'});
+	
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,272 @@
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.4/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.4/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.4/demo/demo.css">
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.3.4/jquery.min.js"></script>
+
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.3.4/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/js/teshuzifu.js"></script>
+ 
+<div class="content-body easyui-layout" fit="true">
+	<div data-options="border:false,region:'center'">
+		<script type="text/javascript">
+		var param = "";		
+		function searchparam() {
+				var p = "";
+				
+				if ($.trim($('#type option:selected').text()) != "全部"
+						&& $.trim($("#searchtext").val()) != "") {
+					if ($('#type option:selected').val() == "0") {
+						p += " and a.title like '%" + $("#searchtext").val()
+								+ "%'";
+					} else if ($('#type option:selected').val() == "1") {
+						p += " and b.realname like '%" + $("#searchtext").val()
+								+ "%'";
+					} else if ($('#type option:selected').val() == "2") {
+						p += " and a.content like '%"
+								+ $("#searchtext").val() + "%'";
+					}
+				}
+				if ($('#d1').datebox("getText") != "") {
+					p += " and a.sendtime > '" + $('#d1').datebox("getText")
+							+ "'";
+				}
+				if ($('#d2').datebox("getText") != "") {
+					p += " and a.sendtime < '" + $('#d2').datebox("getText")
+							+ "'";
+				}
+				$("#szlk").datagrid("options").queryParams.param = p;
+				$("#szlk").datagrid("reload");
+			}
+
+			$(".c1").addClass("active");
+			var szlk = {
+				"showaction" : "${ctxPath}/shoujian/findcaogaoxiang",
+				"columns" : [
+						{
+							field : "ck",
+							checkbox : true,
+							align : 'center'
+						},
+						
+						{
+							field : "hasattach",
+							title : "<img src='${ctxPath}/js/jquery-easyui-1.3.4/themes/icons/attach.png' style='margin-left:4px;'/>",
+							width : 20,
+							align : 'center',
+							formatter : function(value, row, index) {
+										return value == "1" ? "<img src='${ctxPath}/js/jquery-easyui-1.3.4/themes/icons/attach.png' style='width:16px;height:16px;'/>"
+												: "<img style='width:16px;'/>";
+							}
+						}, {
+							field : "realname",
+							title : "发件人",
+							width : 100
+						}, {
+							field : "title",
+							title : "主题",
+							align : 'center',
+							width : 300
+						}, {
+							field : "createtime",
+							title : "时间",
+							width : 100
+						}
+						, {
+							field : "level",
+							title : "紧急程度",
+							align : 'center',
+							width : 60
+						}
+						],
+						onDblClickRow : function(rowIndex, rowData) {
+							showmessage();
+						}
+			};
+			function loadsuccess(data){
+			     $($('.datagrid-header-row')[1]).find('.datagrid-cell:eq(1)').css("text-align","center");
+		    }
+			function showmessage() {
+				
+				 var row = $("#szlk").datagrid("getSelected");
+				if (row == null) {
+					alert("请选择要查看的邮件！");
+				} else {
+					var obj = new popdiv();
+						obj.wintitle = '查看邮件';
+						obj.winwidth = 750;
+						obj.winheight = 480;
+						//obj.sync = row;
+						obj.winurl = "${ctxPath}/nbyj/showemail.html";
+						obj.sync = row;
+						obj.buttons = [ 
+						{
+							text : '发送',
+							plain : false,
+							iconCls : 'icon-ok',
+							handler : function() {
+								var arr = {
+									id : row.id,
+									hassend : 1
+								};
+								$.post("${ctxPath}/shoujian/upemail",arr,function(data) {
+									if (data.ret) {
+										//formClose();
+										$("#szlk").datagrid("reload");
+										parent.window.location.reload();
+									} else {
+										$.messager.alert('系统提示',faildText,'error');
+									}
+								})
+							}
+						},
+						{
+							text : '关闭',
+							plain : false,
+							iconCls : 'icon-cancel',
+							handler : function() {
+								$(this).closest(".panel-body").dialog("close");
+							}
+						} ];
+						popupdiv(obj);
+						$('.panel-body').data("obj", obj.sync);
+				} 
+			}
+			
+			//写信 窗口
+			function xiexin() {
+				var obj = new popdiv();
+				obj.wintitle = "写邮件";
+				obj.winwidth = 800;
+				obj.winheight = 650;
+				obj.winurl = "xyj.html";
+				obj.buttons = [
+						{
+							text : '保存草稿箱',
+							iconCls : 'icon-save',
+							handler : function() {
+							var a = $(this);
+							a.closest(".panel-body").find("form").form('submit',
+							{
+								url : "${ctxPath}/shoujian/addemail",
+								onSubmit : function() {
+									$("input[name='mailInfo.content']")
+									.val($("iframe[src*='editor']")[0].contentWindow.getContent());
+														//$("input[name='mailInfo.attachments']").val("");
+									$("input[name='mailInfo.hassend']").val('0');
+									$("input[name='mailInfo.fjrid']").val('${session.userinfo.user.id}');
+									$("input[name='mailInfo.createtime']").val(myformatter(new Date()));
+									var attachcount = $(".jjjjjjaa222").length;
+									for (var i = 0; i < attachcount; i++) {
+										$("input[name='mailInfo.attachments']")
+										.val($("input[name='mailInfo.attachments']").val()+ $(".jjjjjjaa222").eq(i).attr("id")+ ",");
+									}
+									return a.closest(".panel-body").find("form").form('validate');
+								},
+									success : function(data) {
+										 parent.window.location.reload();
+										/* window.location.href = "${ctxPath}/nbyj/cgx.html"; */
+									}
+								});
+							},
+							plain : false
+						},
+						{
+							text : '发送',
+							iconCls : 'icon-add',
+							handler : function() {
+								var a = $(this);
+								a.closest(".panel-body").find("form").form('submit',
+								{
+									url : "${ctxPath}/shoujian/sendemail",
+									onSubmit : function() {
+									$("input[name='mailInfo.content']").val($("iframe[src*='editor']")[0].contentWindow.getContent());
+									//$("input[name='mailInfo.attachments']").val("");
+									$("input[name='mailInfo.hassend']").val('1');
+									$("input[name='mailInfo.fjrid']").val('${session.userinfo.user.id}');
+									$("input[name='mailInfo.sendtime']").val(myformatter(new Date()));
+									/* var attachcount = $(".jjjjjjaa222").length;
+									for (var i = 0; i < attachcount; i++) {
+										$("input[name='mailInfo.attachments']").val(
+										$("input[name='mailInfo.attachments']").val()
+										+ $(".jjjjjjaa222").eq(i).attr("id")+ ",");
+									} */
+									return a.closest(".panel-body").find("form").form('validate');
+									},
+									success : function(data) {
+										parent.window.location.reload();
+										/* window.location.href = "${ctxPath}/nbyj/sjx.html"; */
+									}
+								});
+							},
+							plain : false
+						}, {
+							text : '关闭',
+							iconCls : 'icon-cancel',
+							handler : function() {
+								$(this).closest(".panel-body").dialog("close");
+							},
+							plain : false
+						} ];
+				popupdiv(obj);
+			}
+			function deletemail5() {
+				var row = $("#szlk").datagrid("getSelected");
+				if (row == null) {
+					alert("请选择要删除的邮件！");
+				} else {
+					var arr = {
+						id : row.id,
+					};
+					$.messager.confirm('系统提示', "确定删除吗？", function(r) {
+						if (r) {
+							$.post("${ctxPath}/shoujian/delemail", arr, function(
+									result) {
+								if (result.ret) {
+									$("#szlk").datagrid("reload");
+								} else {
+									topwindow.$.messager
+											.alert('系统提示', "删除失败！", 'error');
+								}
+							}, 'json');
+						}
+					});
+				}
+			}
+			
+		</script>
+		<div id="tb" style="padding: 5px; height: auto;">
+			<div style="padding: 5px; border: 1px solid #ddd;">
+				<div style="float: left;">
+				    <a href="javascript:void(0);" class="easyui-linkbutton"
+						data-options="plain:true,iconCls:'icon-add'" onclick="xiexin()">写信</a>
+					
+					<a href="javascript:void(0);" class="easyui-linkbutton"
+						data-options="plain:true,iconCls:'icon-remove'"
+						onclick="deletemail5()">彻底删除</a>
+					<!-- <a 	href="javascript:void(0)" onclick="zhuanfa();"
+					class="easyui-linkbutton" 	data-options="iconCls:'icon-redo',plain:true">转发</a> -->
+				</div>
+				<div style="clear: both;"></div>
+			</div>
+			<div style="vertical-align: middle;">
+				 <select style="width: 100px;" id="type">
+					<option value="0">主题</option>
+					<option value="1">发件人</option>
+					<!-- <option value="2">全文</option> -->
+				</select> <input type="text" id="searchtext" name="name"
+					class="easyui-validatebox" style="width: 200px;" />发件时间：<input
+					id="d1" type="text" class="easyui-datetimebox">到：<input id="d2"
+					type="text" class="easyui-datetimebox"> <a
+					href="javascript:void(0)" class="easyui-linkbutton"
+					iconCls="icon-search" onclick="searchparam();">搜索</a>
+			</div>
+		 </div>
+		<table id="szlk" class="easyui-datagrid"
+			data-options="checkOnSelect:true,selectOnCheck:true,fit:true,toolbar:'#tb',fitColumns:true,idField:'id',rownumbers:true,showFooter:true,singleSelect:true,pagination:true,pageSize:20,columns:[szlk.columns],url:szlk.showaction,onDblClickRow:szlk.onDblClickRow,queryParams:{param:param}"></table>
+	</div> 
+</div>
+<script type="text/javascript">
+$(function(){
+  $($('.datagrid-header-row')[1]).find('.datagrid-cell:eq(3)').css("text-align","center");
+})
+</script>

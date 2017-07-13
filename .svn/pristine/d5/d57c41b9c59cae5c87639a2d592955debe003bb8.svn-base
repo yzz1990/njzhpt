@@ -1,0 +1,8 @@
+<%
+var vedioUrl=ctxPath+"/upload/safeEducation/"+parameter.url;
+%>
+<video id="media"src="${vedioUrl}" width="100%" height="100%" controls="controls">您的浏览器不支持 video 标签。</video>
+<script type="text/javascript">
+    Media = document.getElementById("media");
+    console.log("ss"+Media.canPlayType("vedio/mp4"));
+</script>

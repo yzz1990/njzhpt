@@ -1,0 +1,24 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>视频监控</b>
+		</span>
+		<button type="button" style="margin-right: 0px;height: 28px;" class="btn btn-sm btn-warning pull-right saveJiaoseCaidan" onclick="javascript:window.open('http://49.65.0.27:8080/components/WebControl_V4.2.2_102682_B20170401_B.exe')" ><i class="fa fa-cloud-download"></i> 海康视频插件下载</button>
+		<button type="button" style="margin-right: 10px;height: 28px;" class="btn btn-sm btn-success pull-right saveJiaoseCaidan" onclick="javascript:reloadCrame()" ><i class="fa fa-refresh"></i> 同步</button>
+	</div>
+	<div class="panel-body">
+		<iframe id="aa"  src="http://49.65.0.27:8080/ShiPin/1/spjk/9800-4.2.2/spjk_main_9800.html" frameborderno="0" frameborder="0"  height="660px" width="100%"></iframe>
+	</div>
+</div>
+
+<script>
+  function reloadCrame(){
+	  
+  }
+</script>
+<%}%>

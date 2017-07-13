@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药剂库存信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addkongping",title="新增药剂空瓶信息";
+	if (isNotEmpty(parameter.id)) {
+		var zzbg = @com.zkzy.njzhpt.dao.CangchuglDao.findkongping({"id":parameter.id,"page":"1","rows":"100"});
+		obj = zzbg.list[0];
+		url = ctxPath+"/cangchugl/upkongping";
+		title = "编辑药剂空瓶信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	药剂库存信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="qiye">*备案企业:</label>
+										<select id="qiye" name="qiye" class="form-control" onchange="changeQiye()">
+											<option value="请选择">请选择</option>
+										</select>
+										<!-- <input id="xzqydm" name="xzqydm" class="form-control" placeholder="行政区域代码" value="${obj.xzqydm}"> -->
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="xzbabh">*熏蒸备案号:</label>
+										<select id="xzbabh" name="xzbabh" class="form-control" onchange="changeXzba()">
+											<option value="请选择">请选择</option>
+										</select>
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="kudian">*熏蒸库点:</label>
+										<input id="kudian" name="kudian" class="form-control" placeholder="熏蒸库点" value="${obj.kudian}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="dealtime">处理时间:</label>
+										<input id="dealtime" name="dealtime" class="form-control" placeholder="处理时间" value="${obj.dealtime}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="yjmc">药剂名称:</label>
+										<input id="yjmc" name="yjmc" class="form-control" placeholder="药剂名称" value="${obj.yjmc}">
+									</div>	
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="shuliang">空瓶数量:</label>
+										<input id="shuliang" name="shuliang" class="form-control" placeholder="空瓶数量" value="${obj.shuliang}"  onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="canyurenyuan">参与人员:</label>
+										<input id="canyurenyuan" name="canyurenyuan" class="form-control" placeholder="参与人员" value="${obj.canyurenyuan}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="deal">处理方式:</label>
+										<input id="deal" name="deal" class="form-control" placeholder="处理方式" value="${obj.deal}">
+									</div>	
+								</div>
+							</div>
+					</form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+<script type="text/javascript">
+$(function(){
+	
+$("#dealtime").datetimepicker({
+	format : 'yyyy-mm-dd',
+	language : 'zh-CN', //这里需要修改
+	weekStart : 1,
+	autoclose : 1,
+	todayHighlight : 1,
+	startView : 2,
+	minView : 2,
+	forceParse : 0
+});
+
+$.ajax({
+	url: "${ctxPath}/lunhuan/selectQYMC.do",
+	dataType: "json",
+	data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+		,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+	success: function(data) {
+		$.each(data.list,function(i, n){
+				//$("#qiye").append("<option value="+n.id+">"+n.qymc+"</option>");
+				if("${obj.qiye}"==n.qymc){
+					$("#qiye").append("<option qyid="+n.id+" value="+n.qymc+" selected>"+n.qymc+"</option>");
+			 	}else{
+			 		$("#qiye").append("<option qyid="+n.id+" value="+n.qymc+">"+n.qymc+"</option>");
+			 	}
+				
+		});
+	}
+});
+
+//加载备案企业名称
+/*
+$.ajax({
+	url: "${ctxPath}/cangchugl/querybaqy",
+	dataType: "json",
+	success: function(data) {
+		$.each(data,function(i, n){
+			if("${obj.qiye}"==n.qymc){
+				$("#qiye").append("<option qyid="+n.qiyeid+" value="+n.qymc+" selected>"+n.qymc+"</option>");
+		 	}else{
+		 		$("#qiye").append("<option qyid="+n.qiyeid+" value="+n.qymc+">"+n.qymc+"</option>");
+		 	}
+			
+		});
+	}
+});
+*/
+
+//加载备案编号
+$.ajax({
+	url: '${ctxPath}/cangchugl/querybeian',
+	type:'get',
+	dataType: "json",
+	success: function(data) {
+		$.each(data.list,function(i, n){
+			if("${obj.xzbabh}"==n.beianbianhao){
+				$("#xzbabh").append("<option value="+n.beianbianhao+" selected>"+n.beianbianhao+"</option>");
+		 	}else{
+		 		$("#xzbabh").append("<option value="+n.beianbianhao+">"+n.beianbianhao+"</option>");
+		 	}
+		});
+	}
+});
+
+ 
+});
+
+function changeQiye(){
+	var qiyeid = $("#qiye option:selected").attr("qyid");
+	
+	//加载备案编号
+	$.ajax({
+		url: '${ctxPath}/cangchugl/querybeian',
+		type:'get',
+		data:{"qiyeid":qiyeid},
+		dataType: "json",
+		success: function(data) {
+			$("#xzbabh").empty();
+			$("#xzbabh").append("<option value='请选择'>请选择</option>");
+			$.each(data.list,function(i, n){
+				$("#xzbabh").append("<option value="+n.beianbianhao+">"+n.beianbianhao+"</option>");
+			});
+		}
+	});
+}
+
+function changeXzba(){
+	var xzbabh = $("#xzbabh option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/cangchugl/queryxzkd',
+		type:'post',
+		data:{"beianbianhao":xzbabh},
+		dataType:'json',
+		success:function(data){
+			$("#kudian").val(data.list[0].kdmc);
+		},
+		error:function(){
+			alert("获取熏蒸备案详细信息失败");
+		}
+	});
+}
+
+function saveyjkp() {
+	var qiye = $("#qiye option:selected").val();
+	var xzbabh = $("#xzbabh option:selected").val();
+	var kudian = $("#kudian").val();
+	if(qiye == "请选择"){
+		alert("备案企业不能为空");
+	}else{
+		if(xzbabh == "请选择"){
+			alert("熏蒸备案编号不能为空");
+		}else{
+			if(kudian == "" || kudian == null){
+				alert("库点不能为空");
+			}else{
+				var form = $(".widget-body form");
+				$.ajax({
+					url: form.attr("action"),
+					dataType: "json",
+					data: form.serialize(),
+					success: function(msg) {
+						if (!msg.ret) {
+							alert(msg.message);
+						} else {
+							alert("保存成功");
+						}
+						parent.window.dialog.close();
+			        	parent.window.datatable.ajax.reload(null,true);
+					}
+				});
+			}
+		}
+	}
+}
+
+
+/* 
+function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+ 
+</script>
+
+</body>
+</html>

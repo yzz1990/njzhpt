@@ -1,0 +1,102 @@
+
+<div class="easyui-layout" fit="true" id="uploaddialog">
+<script type="text/javascript" src="${ctxPath}/js/swfupload/swfupload.js"></script>
+<script type="text/javascript" src="${ctxPath}/js/swfupload/handlers.js"></script>
+<script type="text/javascript">
+		var data = {
+			ret : true,
+			rows : [],
+			total : 0
+		};
+		var report = {
+			columns : [ 
+			{
+				field : "ck",
+				checkbox : true,
+				align:'center'
+			},{
+				field : "name",
+				title : "文件名",
+				width : 150
+			}, {
+				field : "size",
+				title : "大小",
+				width : 50
+			}, {
+				field : "state",
+				title : "状态",
+				width : 50
+			} ],
+			callback : function() {
+				gridRefresh();
+				formClose();
+			},
+			formDelete : function() {
+				var row = $("#report").datagrid("getSelected");
+				deleteFile(row.id);
+				//删除列队中的文件
+				swfu.cancelUpload(row.id, false);
+			}
+		};
+		//下面是fileupload的内容
+		var swfu;
+		$(function() {
+			swfu = new SWFUpload({
+				upload_url : "_OaNetdisk!ajaxuploadFile",
+				file_post_name : "file",
+				// File Upload Settings
+				file_size_limit : "500MB", // 1000MB
+				file_types : "*.*",//设置可上传的类型
+				file_types_description : "所有文件",
+				//file_upload_limit : "1",//列队数量
+
+				file_queue_error_handler : fileQueueError,//选择文件后出错
+				file_dialog_complete_handler : fileDialogComplete,//选择好文件后提交
+				file_queued_handler : fileQueued,
+				upload_progress_handler : uploadProgress,
+				upload_error_handler : uploadError,
+				upload_success_handler : uploadSuccess,
+				upload_complete_handler : uploadComplete,
+
+				// Button Settings
+				button_placeholder_id : "upload",
+				//button_action: SWFUpload.BUTTON_ACTION.SELECT_FILE, // 单选
+				button_width : 51,
+				button_height : 18,
+				button_text : '选择文件',
+				button_text_style : '',
+				button_window_mode : SWFUpload.WINDOW_MODE.TRANSPARENT,
+				button_cursor : SWFUpload.CURSOR.HAND,
+
+				// Flash Settings
+				flash_url : "${ctxPath}/js/swfupload/swfupload.swf",
+
+				custom_settings : {
+					upload_target : "divFileProgressContainer"
+				},
+				// Debug Settings
+				debug : false
+			//是否显示调试窗口 
+			});
+		});
+
+		$(function() {
+			$('#report').datagrid({
+				data : data
+			});
+
+		});
+	</script>
+	<div data-options="region:'north',border:false" style="padding: 5px 10px;">
+		<div style="float: left;">
+			<a href="javascript:void(0);" class="easyui-linkbutton l-btn" iconcls="icon-edit" group=""><span style="visibility:hidden;">1</span><div style="z-index: 0;float:left;margin-top: -2px;"><span id="upload">上传</div></span></a> <a href="javascript:void(0);" class="easyui-linkbutton" onclick="report.formDelete()" iconCls="icon-cancel">删除</a>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+	<div data-options="region:'center',noheader:true, border:false">
+		<table id="report" class="easyui-datagrid" data-options="pageSize:5000,pagination:false,columns:[report.columns],fitColumns:true"></table>
+	</div>
+	<div data-options="region:'south',noheader:true, border:false">
+		<div id="p" class="easyui-progressbar" data-options="value:0,fit:true,text:'上传进度'"></div>
+	</div>
+</div>

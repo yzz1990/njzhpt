@@ -1,0 +1,151 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+<!--echart样式  -->
+
+<style>
+.table>tbody>tr>td {
+    font-size:15px;
+   text-align:right;
+}
+.div_center{
+	text-align:center;
+}
+</style>
+
+<script type="text/javascript">
+$(function () {
+	
+//仓房类型
+	
+	var cflxmc = ["平房仓","浅圆仓","立筒仓","楼房仓","储粮罩棚","仓间罩棚","铁路罩棚","其他简易仓"];
+	var qscflx = [0,0,0,0,0,0,0,0];
+	
+	datatable = $('#cflx').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				width:35,
+				"render": function (data,type,row,meta) {
+					var name = row["name"];
+					var div = '<div class="div_center">'+name+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var pfc = row["pfc"];
+					if("合计" == row["name"]){
+						qscflx[0] = (pfc/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(pfc/1000000).toFixed(4)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qyc = row["qyc"];
+					if("合计" == row["name"]){
+						qscflx[1] = (qyc/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(qyc/1000000).toFixed(4)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var ltc = row["ltc"];
+					if("合计" == row["name"]){
+						qscflx[2] = (ltc/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(ltc/1000000).toFixed(4)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var lfc = row["lfc"];
+					if("合计" == row["name"]){
+						qscflx[3] = (lfc/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(lfc/1000000).toFixed(4)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var clzp = row["clzp"];
+					if("合计" == row["name"]){
+						qscflx[4] = (clzp/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(clzp/1000000).toFixed(4)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var cjzp = row["cjzp"];
+					if("合计" == row["name"]){
+						qscflx[5] = (cjzp/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(cjzp/1000000).toFixed(4)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var tlzp = row["tlzp"];
+					if("合计" == row["name"]){
+						qscflx[6] = (tlzp/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(tlzp/1000000).toFixed(4)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qtjyc = row["qtjyc"];
+					if("合计" == row["name"]){
+						qscflx[7] = (qtjyc/1000000).toFixed(4);
+					}
+					var div = '<div class="">'+(qtjyc/1000000).toFixed(4)+'</div>';	
+					return div;					
+				}
+			}
+			]
+	});
+});	
+</script>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 420px;">
+			<span style="width: 200px;font-size: 18px;">仓房类型</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/万吨)</span>
+			<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+           	<table id="cflx"  class="table table-striped table-hover table-bordered datatables" style="width: 900px;float: left;"  data-url="${ctxPath}/zonghe/findcflxzcrzb">
+				<thead>
+       				 <tr>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">区域</th>
+           				<th rowspan="1" style="vertical-align:middle;text-align:center;">平房仓</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">浅圆仓</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">立筒仓</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">楼房仓</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">储粮罩棚</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">仓间罩棚</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">铁路罩棚</th>
+            			<th rowspan="1" style="vertical-align:middle;text-align:center;">其他简易仓</th>
+        			</tr>	
+    			</thead>
+			</table>   
+         </div>
+	</div>		
+</div>

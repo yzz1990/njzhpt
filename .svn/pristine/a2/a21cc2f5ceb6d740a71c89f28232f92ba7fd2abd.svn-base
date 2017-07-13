@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>企业安全生产自评</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addanquantj",title="新增企业安全生产标准化自评报告";
+	if (isNotEmpty(parameter.id)) {
+		var qyaq = @com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,"page":"1","rows":"100"});
+		obj = qyaq.list[0];
+		url = ctxPath+"/cangchugl/upanquantj";
+		title = "编辑企业安全生产标准化自评报告";
+	};
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+			<form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+					  <div class="widget-header">
+							<div class="title">
+									企业安全生产标准化自评报告
+							</div>
+					  </div>
+                  <div class="widget-body">
+
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="quyu">区域:</label>
+										<select id="quyu" name="quyu" class="form-control" onchange="getxzqhdm()" readonly="readonly">
+
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qiyeId">企业名称:</label>
+										<select id="qiyeId" name="qiyeId" class="form-control" onchange="" readonly="readonly">
+
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="suoshuhangye">所属行业:</label>
+										<input id="suoshuhangye" name="suoshuhangye" class="form-control" placeholder="所属行业" value="${obj.suoshuhangye}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="zhuanye">专业:</label>
+										<input id="zhuanye" name="zhuanye" class="form-control" placeholder="专业" onchange="getzp()"value="${obj.zhuanye}">
+									</div>
+								</div>
+							</div>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Row End -->
+			<div class="row" style="display: none" id="qyzp">
+				<div class="col-lg-12 col-md-12">
+					<div class="widget">
+						<div class="widget-header">
+							<div class="title">
+								企业自评
+							</div>
+						</div>
+						<div class="widget-body">
+									<div class="row">
+										<div class="col-xs-6">
+											<div class="form-group">
+												<label for="zp_df">自评得分:</label>
+												<input id="zp_df" name="zp_df" class="form-control" placeholder="自评得分" value="${obj.zp_df}">
+											</div>
+										</div>
+										<div class="col-xs-6">
+											<div class="form-group">
+												<label for="zp_dj">自评等级:</label>
+												<select id="zp_dj" name="zp_dj" class="form-control">
+													<option value="1" ${obj.zp_dj=="1"?" selected"}>一级</option>
+													<option value="2" ${obj.zp_dj=="2"?" selected"}>二级</option>
+													<option value="3" ${obj.zp_dj=="3"?" selected"}>三级</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div  class="row">
+										<div class="col-xs-6">
+											<div class="form-group">
+												<label for="zp_date">自评日期:</label>
+												<input id="zp_date" name="zp_date"  class="form-control form_zprq" value="${obj.zp_date}" readonly="readonly">
+											</div>
+										</div>
+									</div>
+
+							<div  class="row">
+								<div class="col-xs-12">
+								<div class="panel-footer"  style="overflow:hidden;" align="center">
+									<a class="btn btn-sm btn-info" href="${ctxPath}/download/安全生产标准化建设自评.doc"><!--<i class="fa fa-download" aria-hidden="true"></i>-->&nbsp;下载自评模板</a>
+									<input id="fujianpath" name="zp_fjpath" type="hidden">
+									<input id="fujianname" name="zp_fujian" type="hidden">
+									<input id="zpzhuangtai" name="zp_zt" type="hidden" value="0">
+									<a class="btn btn-sm btn-info" style="font-size:1px" ><input  class="file_upload"  type="file"/></a>
+									<a id="scfilename" style="margin-left: 10px;width: 270px;margin-top:4px; "></a>
+									<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+								</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" style="display: none" id="dsfps">
+				<div class="col-lg-12 col-md-12">
+					<div class="widget">
+						<div class="widget-header">
+							<div class="title">
+								第三方评审
+							</div>
+						</div>
+						<div class="widget-body">
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="form-group">
+											<label for="dsf_psjg">评审机构:</label>
+											<input id="dsf_psjg" name="dsf_psjg" class="form-control" placeholder="评审机构" value="${obj.dsf_psjg}">
+										</div>
+									</div>
+									<div class="col-xs-6">
+										<div class="form-group">
+											<div class="form-group">
+												<label for="dsf_zsh">证书号:</label>
+												<input id="dsf_zsh" name="dsf_zsh" class="form-control" placeholder="证书号" value="${obj.dsf_zsh}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="form-group">
+											<label for="dsf_psdf">评审得分:</label>
+											<input id="dsf_psdf" name="dsf_psdf" class="form-control" placeholder="评审得分" value="${obj.dsf_psdf}">
+										</div>
+									</div>
+									<div class="col-xs-6">
+										<div class="form-group">
+											<div class="form-group">
+												<label for="dsf_psdj">评审等级:</label>
+												<select id="dsf_psdj" name="dsf_psdj" class="form-control">
+													<option value="1" ${obj.dsf_psdj=="1"?" selected"}>一级</option>
+													<option value="2" ${obj.dsf_psdj=="2"?" selected"}>二级</option>
+													<option value="3" ${obj.dsf_psdj=="3"?" selected"}>三级</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="form-group">
+											<label for="dsf_date">评审日期:</label>
+											<input id="dsf_date" name="dsf_date"  class="form-control form_zprq" value="${obj.dsf_date}" readonly="readonly">
+										</div>
+									</div>
+								</div>
+
+							<div  class="row">
+								<div class="col-xs-12">
+									<div class="panel-footer"  style="overflow:hidden;" align="center">
+										<input id="dsffujianpath" name="dsf_fjpath" type="hidden">
+										<input id="dsffujianname" name="dsf_fujian" type="hidden">
+										<input id="dsfzhuangtai" name="dsf_zt" type="hidden" value="0">
+										<a class="btn btn-sm btn-info" style="font-size:1px" ><input  class="file_upload2"  type="file"/></a>
+										<a id="dsfscfilename" style="margin-left: 10px;width: 270px;margin-top:4px; "></a>
+										<a id="dsftip-queue"  style="float:right;width:125px;display:none;"></a>
+									</div>
+								</div>
+							</div>
+
+
+
+							<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+						</div>
+					</div>
+				</div>
+			</div>
+			</form>
+        </div>
+<script type="text/javascript">
+
+    /*$(function(){
+        var quyu = $("#quyu option:selected").val();
+        var qymc = $("#qymc option:selected").val();
+        var sshy = $("#zp_df").val();
+        var zy = $("#zp_df").val();
+        if ()
+    }*/
+
+$.fn.datetimepicker.dates['zh'] = {  
+        days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],  
+        daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],  
+        daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],  
+        months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],  
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],  
+        meridiem:    ["上午", "下午"],  
+        //suffix:      ["st", "nd", "rd", "th"],  
+        today:       "今天"  
+};
+
+    $(function(){
+
+        var aqid = "${obj.id}";
+        var qwe = "${obj.dsf_psdj}";
+		alert(${obj.dsf_psdj});
+		alert(${obj.zp_dj});
+        if (aqid > 0) {
+            $("#qyzp").toggle();
+            $("#dsfps").toggle();
+		}
+
+        $('.file_upload').uploadifive({
+            'auto' : true,   //自动上传
+            'uploadScript' : '${ctxPath}/excel/uploadlhpzxwFile',  //处理上传文件Action路径
+            'buttonClass' : 'file_upload',
+            'fileObjName' : 'file',        //文件对象
+            'buttonText'   : '上传附件',   //按钮显示文字
+            'queueID'      : 'tip-queue', //提示信息放置目标
+//	  		'fileTypeExts'     : '*.xlsx;*.xls;*.png',   //允许上传文件后缀名
+            'onUploadComplete' : function(file, data) { //文件上传成功后执行
+                var obj = JSON.parse(data);
+                $("#scfilename").html(obj.scfilename);
+                $("#fujianname").val(obj.scfilename);
+                //alert(obj.filepath);
+                $("#scfilename").attr("href","${ctxPath}"+obj.zp_fjpath);
+                $("#scfilename").attr("download",obj.zp_fujian);
+                $("#fujianpath").val(obj.zp_fjpath);
+
+                $(function (){
+                    var zpdf = $("#zp_df").val();
+                    var zpdj = $("#zp_dj").val();
+                    var zprq = $("#zp_date").val();
+                    var tishi = "";
+                    if(zpdf == null || zpdf == "" ){
+                        tishi += "请填写自评得分 ";
+                    }
+                    if(zpdj == null || zpdj == "" ){
+                        tishi += "请选择自评等级 ";
+                    }
+                    if (zprq == null || zprq == "") {
+                        tishi += "请填写自评日期";
+                    }
+                    if(tishi != ""){
+                        $("#zhuanye").val("");
+                        alert(tishi);
+                    }else{
+                        $("#zpzhuangtai").val("1");
+                        $("#dsfps").toggle();
+                    }
+
+                });
+            }
+        });
+
+        $('.file_upload2').uploadifive({
+            'auto' : true,   //自动上传
+            'uploadScript' : '${ctxPath}/excel/uploadlhpzxwFile',  //处理上传文件Action路径
+            'buttonClass' : 'file_upload',
+            'fileObjName' : 'file',        //文件对象
+            'buttonText'   : '上传附件',   //按钮显示文字
+            'queueID'      : 'dsftip-queue', //提示信息放置目标
+//	  		'fileTypeExts'     : '*.xlsx;*.xls;*.png',   //允许上传文件后缀名
+            'onUploadComplete' : function(file, data) { //文件上传成功后执行
+                var obj = JSON.parse(data);
+                $("#dsfscfilename").html(obj.scfilename);
+                $("#dsffujianname").val(obj.scfilename);
+                //alert(obj.filepath);
+                $("#dsfscfilename").attr("href","${ctxPath}"+obj.dsf_fjpath);
+                $("#dsfscfilename").attr("download",obj.dsf_fujian);
+                $("#dsffujianpath").val(obj.dsf_fjpath);
+                $("#dsfzhuangtai").val("1");
+
+            }
+        });
+
+    });
+
+function saveaqsc() {
+	var quyu = $("#quyu").val();
+	var qiyeId = $("#qiyeId").val();
+	var tishi = "";
+	if(quyu == null || quyu == "" || quyu == "请选择"){
+		tishi += "请选择行政区划 ";
+	}
+	if(qiyeId == null || qiyeId == "" || qiyeId == "请选择"){
+		tishi += "请选择企业 ";
+	}
+	if(tishi != ""){
+		alert(tishi);
+	}else{
+		var form = $("#contentform");
+		$.ajax({
+			url: form.attr("action"),
+			dataType: "json",
+			data: form.serialize(),
+			success: function(msg) {
+				if (!msg.ret) {
+					alert(msg.message);
+				} else {
+					alert("保存成功");
+				}
+			}
+		});
+	}
+	
+}
+
+//行政区划代码下拉框选择事件
+/*function getxzqhdm(){
+	$("#qymc").empty();
+	var xzqhdm = $("#quyu option:selected").val();
+	$("#qymc").append("<option value=''>请选择</option>");
+	/!* 企业组织机构代码初始化 *!/
+	$.ajax({
+		 url:'${ctxPath}/lunhuan/selectQYMC.do',
+		 type:'post',
+		 data:{"quyu":xzqhdm,"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'')}"
+				,"qymc":"${decode(session.userinfo.role.code,'qxlsj','','qiye',session.userinfo.dep.name,'')}"},
+		 dataType:'json',
+		 success:function(data){
+			 $.each(data.list,function(i, n){
+					$("#qymc").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+			});
+		 }
+	});
+	
+}*/
+
+    function getzp(){
+        var quyu = $("#quyu").val();
+        var qymc = $("#qiyeId").val();
+        var sshy = $("#suoshuhangye").val();
+        var zy = $("#zhuanye").val();
+        var tishi = "";
+        if(quyu == null || quyu == "" || quyu == "请选择"){
+            tishi += "请选择行政区划 ";
+        }
+        if(qymc == null || qymc == "" || qymc == "请选择"){
+            tishi += "请选择企业 ";
+        }
+        if (sshy == null || sshy == "") {
+            tishi += "请填写所属行业";
+		}
+		if(zy == null || zy == "") {
+			tishi += "请填写专业";
+		}
+        if(tishi != ""){
+            $("#zhuanye").val("");
+            alert(tishi);
+        }else{
+			$("#qyzp").toggle();
+		}
+
+    }
+
+
+
+$(function(){
+	
+	$("#quyu").select2();
+	$("#qiyeId").select2();
+	/* 行政区划代码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'')}"},
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data,function(i, n){
+				if(n.xzqhdm=="${obj.quyu}"){
+					$("#quyu").append("<option value="+n.xzqhdm+"  selected>"+n.name+"</option>");
+				}else{
+					$("#quyu").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+				}
+			});
+		 }
+	});
+	
+	
+	/* 企业组织机构代码初始化 */
+	/* $.ajax({
+		 url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		 type:'post',
+		 data:{"xzqhdm":"${obj.quyu}"},
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data.list,function(i, n){
+				if(n.qyzzjgdm=="${obj.dbdw}"){
+					$("#dbdw").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+				}else{
+					$("#dbdw").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				}
+			});
+		 }
+	}); */
+	 $.ajax({
+			url:'${ctxPath}/renyuan/findQiyexinxi',
+			type:'post',
+			data:{"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'')}"
+				,"qymc":"${decode(session.userinfo.role.code,'qxlsj','','qiye',session.userinfo.dep.name,'')}"},
+			dataType:'json',
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					if(n.ID=="${obj.qiyeId}"){
+						$("#qiyeId").append("<option value="+n.ID+"  selected>"+n.qymc+"</option>");
+					}else{
+						$("#qiyeId").append("<option value="+n.ID+" selected>"+n.qymc+"</option>");
+					}
+						
+				});
+			},
+			error:function(){
+				alert("error");
+			}
+			
+			
+		}); 
+	
+	
+	$('.form_zprq').datetimepicker({  
+        language:  'zh',  
+        weekStart: 1,  
+        todayBtn:  1,  
+        autoclose: 1,  
+        todayHighlight: 1,  
+        startView: 2,  
+        forceParse: 0,  
+        showMeridian: 1  
+    }).on('changeDate', function (ev) {  
+        $(this).datetimepicker('hide');  
+    });  
+	
+	
+	 $(".form_zprq").datetimepicker({format: 'yyyy-mm-dd'});
+	
+});
+
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+</script>
+
+</body>
+</html>

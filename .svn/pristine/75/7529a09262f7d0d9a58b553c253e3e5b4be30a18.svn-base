@@ -1,0 +1,32 @@
+package com.zkzy.njzhpt.bo;
+
+import java.util.HashMap;
+
+import com.jfinal.aop.Duang;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.config.interfaces.AppICommond;
+
+public class AppCommondBo {
+
+	
+	public static AppICommond getCommond(HashMap<String, Object> map) throws Exception {
+		String shenpiren=(String) map.get("shenpiren");
+		Record qymc= Db.findFirst("SELECT a.code from fw_role a LEFT JOIN fw_user_role b ON a.id = b.roleid WHERE b.userid=?",shenpiren);
+		AppICommond icomond = null;
+		String code = qymc.get("code");
+		if(code.equals("systemuser")||code.equals("njslsj")||code.equals("jdjc")||code.equals("cbtk")||code.equals("jzhcky")||code.equals("jldjkscz")||code.equals("cblgl")){//管理员/南京市粮食局//监督检查处科员//储备调控处科员//局综合处科员权限//局领导及局科室处长
+			icomond=Duang.duang(new AppJibenxinxiBo());
+		}else if(code.equals("qxlsj")){//区县粮食局用户
+			icomond=Duang.duang(new QuxuanAppCommondBo());		
+		}else if(code.equals("qiye")||code.equals("ssqiye")){//企业用户
+			icomond=Duang.duang(new QiyeQuxuanAppCommondBo());			
+		}
+		return icomond;
+		
+	}
+	
+	
+	
+}

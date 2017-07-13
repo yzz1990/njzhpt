@@ -1,0 +1,24 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">	
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>轮换统计</b></span>
+	</div>
+	<div class="panel-body" >
+		<div class="container-fluid">
+				<iframe id="cbllhtj" src="http://49.65.0.27:8080/WebReport/ReportServer?reportlet=lh.cpt&op=write" style="position: absolute;margin-top: 0px;margin-left: -15px;" width="98%" height="635px" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+		</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$("#cbllhtj").attr("height",window.parent.$(".aside-inner").height()-28);
+})
+</script>
+
+
+
+<%
+	}
+%>

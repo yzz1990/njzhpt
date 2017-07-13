@@ -1,0 +1,16 @@
+<%
+	for(obj in list){
+	  
+%>
+
+	<div style="float: left; margin-top: 30px" align="center" >
+		<img alt="" src="${ctxPath}/img/liucheng/ren5.png" width="100px" height="100px">
+		<p><b>${obj.xingming}</b></p>
+	</div>
+	<div style="float: left;margin-top: 55px;display: ${objLP.last?'none':'block'};">
+		<img alt="" src="${ctxPath}/img/liucheng/blackjt.png" width="100px" height="50px">
+	</div>	
+	
+<%
+		}
+%>	

@@ -1,0 +1,328 @@
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<%
+	var obj={};var url=ctxPath+'/renyuan/addshenpi';
+	
+	
+%>
+<style>
+	.dashboard-wrapper-lg{
+	    min-height: 100px;
+	}
+	
+	
+</style>
+<body>
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+			<input type="hidden" name="id" id="id" class="form-control" value="${obj.id}"> 
+			<input type="hidden" name="liuchenghao" id="liuchenghao" class="form-control">
+			<input type="hidden" name="nowstatus" id="nowstatus" class="form-control" value="${obj.nowstatus}">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget">
+				  <div class="widget-header">
+                    <div class="title">
+                        	流程信息                                        
+                    </div>
+                  </div>
+					<div class="widget-body body1">
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group" id="liuchengapp">
+									<label for="liuchenghao">
+									<font color="red" style="font-size: large;">*</font>流程名称:</label> 
+										 <input  id="name1" class="form-control" value="${obj.name}" >
+										 <input type="hidden" name="name" id="name" class="form-control" value="${obj.name}" >
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="liuchengtype">
+									<font color="red" style="font-size: large;">*</font>流程类型:</label> 
+									<select id="liuchengtype" class="form-control selects">
+										<option value="">请选择</option>
+										<option value="0">企业备案流程</option>
+										<option value="1">熏蒸备案流程</option>
+										<option value="2">药剂备案流程</option>
+										<option value="3">储备计划备案流程</option>
+									</select>
+									<input type="hidden" name="liuchengtype" id="liuchengtype1" class="form-control" value="${obj.liuchengtype}" >
+								</div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group shenpibumen">
+									<label for="shenpibumen">
+									<font color="red" style="font-size: large;">*</font>审批部门:</label> 
+									<select id="shenpibumen1" name="shenpibumen" class="form-control selects" onchange="getRenyuan()">
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group shenpiren">
+									<label for="shenpiren">
+									<font color="red" style="font-size: large;">*</font>审批人:</label> 
+									<select id="shenpiren1" name="shenpiren" class="form-control selects" value="${obj.shenpiren}">
+										<option value="">请选择</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group isedit">
+									<label for="isedit">
+									<font color="red" style="font-size: large;">*</font>是否可编辑:</label> 
+									<select id="isedit1" name="isedit" class="form-control selects">
+										<option value="">请选择</option>
+										<option value="0" >否</option>
+										<option value="1" >是</option>
+									</select>
+								</div>
+							</div>
+						</div>	
+				
+							
+					</div>
+					<div class="form-group sxwbutton" style="float: right; margin-top: -60px;">
+						<!-- <a id="syb" class="btn btn-success btn-xs " type="button" style="margin-right:5px;" onclick="editliucheng()">&nbsp;上一步</a> -->
+						<a class="btn btn-success btn-xs " type="button" style="margin-right:5px" onclick="saveLiucheng()">&nbsp;下一步</a>
+						<a class="btn btn-success btn-xs " type="button" style="margin-right:5px" onclick="finish()">完成</a>
+						<!-- <a class="btn btn-success btn-xs " type="button" style="margin-right:5px" onclick="">&nbsp;保存</a> -->
+					</div>
+					<div class="widget-body"  style="height: 200px;">
+						 <div id="liuchengtu" style="margin-top:0px">
+						 </div>
+					</div>
+				</div>
+			</div>
+		</form>
+		
+		
+	</div>
+	<script type="text/javascript">
+	//var liuchenghao="";
+	$(function(){
+		
+		$(".selects").select2();
+		
+		/* 加载部门*/
+		$.ajax({
+			 url:'${ctxPath}/renyuan/findDept',
+			 type:'post',
+			 dataType:'json',
+			 data:{"name":"${session.userinfo.dep.name}"},
+			 success:function(data){
+				 $("#shenpibumen1").append("<option value=''>请选择</option>");
+				$.each(data,function(i, n){
+						$("#shenpibumen1").append("<option value="+n.id+">"+n.name+"</option>");
+				});
+			 }
+		});
+		
+	});
+	
+	/*获取人员信息  */
+	function getRenyuan(){
+		$("#shenpiren1").empty();
+		var deptid=	$("#shenpibumen1").find("option:selected").val();
+		$.ajax({
+			 url:'${ctxPath}/renyuan/findUserDep',
+			 type:'post',
+			 data:{deptid:"${session.userinfo.dep.id}"},
+			 dataType:'json',
+			 success:function(data){
+				 $("#shenpiren1").append("<option value=''>请选择</option>"); 
+				$.each(data.list,function(i, n){
+						$("#shenpiren1").append("<option value="+n.id+">"+n.realname+"</option>");
+				});
+			 }
+		});
+	}
+	/*获取人员信息  */
+	function getRenyuan2(index){
+		$("#shenpiren"+index).empty();
+		var deptid=	$("#shenpibumen"+index).find("option:selected").val();
+		$.ajax({
+			 url:'${ctxPath}/renyuan/findUserDep',
+			 type:'post',
+			 data:{deptid:"${session.userinfo.dep.id}"},
+			 dataType:'json',
+			 success:function(data){
+				 $("#shenpiren"+index).append("<option value=''>请选择</option>"); 
+				$.each(data.list,function(i, n){
+						$("#shenpiren"+index).append("<option value="+n.id+">"+n.realname+"</option>");
+				});
+			 }
+		});
+	}
+	
+	var index=1;
+	
+	/*保存流程信息*/
+	function saveLiucheng(){
+		$("#nowstatus").val("0");
+		 if($("#name1").val()==""){
+			alert("请输入流程名称！");
+			return false; 
+		}else if($("#liuchengtype").val()==""){
+			alert("请选择流程类型！");
+			return false;
+		}else if($("#shenpibumen"+index).val()==""){
+			alert("请选择审批部门！");
+			return false;
+		}else if($("#shenpiren"+index).val()==""){
+			alert("请选择审批人！");
+			return false;
+		}else if($("#isedit"+index).val()==""){
+			alert("请选择是否可编辑！");
+			return false;
+		}else{
+			if($("#liuchenghao").val()==""){
+				var liuchenghao=new Date().getTime();//流程号
+				$("#liuchenghao").val(liuchenghao);
+				$("#name").val($("#name1").val());
+				$("#liuchengtype1").val($("#liuchengtype").val())
+				$("#name1").attr("disabled",true);
+				$("#liuchengtype").attr("disabled",true);
+			}
+			var form=$("#contentform");
+			$.ajax({
+				url:'${ctxPath}/renyuan/saveliucheng',
+				type:'post',
+				dataType:'json',
+				data : form.serialize(),
+				success:function(data){
+					$("#id").val("");
+					index++;
+					var text="<div class='widget-header'>"
+							+'<div class="title">流程节点'+index+'</div></div>'
+							+'<div class="row shenpi'+index+'">'
+							+'<div class="col-xs-6">'
+							+'<div class="form-group shenpibumen">'
+							+'<label for="shenpibumen">'
+							+'<font color="red" style="font-size: large;">*</font>审批部门:</label>' 
+							+'<select id="shenpibumen'+index+'" name="shenpibumen'+index+'" disabled="disabled" class="form-control selects" onchange="getRenyuan2('+index+')"></select>'
+							+'</div></div>'
+							+'<div class="col-xs-6">'
+							+'<div class="form-group shenpiren">'
+							+'<label for="shenpiren">'
+							+'<font color="red" style="font-size: large;">*</font>审批人:</label>' 
+							+'<select id="shenpiren'+index+'" name="shenpiren'+index+'" disabled="disabled" class="form-control selects">'
+							+'<option value="">请选择</option></select></div></div></div>'
+							+'<div class="row shenpi'+index+'" >'
+							+'<div class="col-xs-6">'
+							+'<div class="form-group isedit">'
+							+'<label for="isedit">'
+							+'<font color="red" style="font-size: large;">*</font>是否可编辑:</label>' 
+							+'<select id="isedit'+index+'" name="isedit'+index+'" disabled="disabled" class="form-control selects">'
+							+'<option value="">请选择</option><option value="0" >否</option>'
+							+'<option value="1" >是</option></select></div></div></div>'	
+							$(".body1").append(text);
+							$(".selects").select2();
+							$.ajax({
+								 url:'${ctxPath}/renyuan/findDept',
+								 type:'post',
+								 dataType:'json',
+								 data:{"name":"${session.userinfo.dep.name}"},
+								 success:function(data){
+									 $("#shenpibumen"+index).append("<option value=''>请选择</option>");
+									$.each(data,function(i, n){
+											$("#shenpibumen"+index).append("<option value="+n.id+">"+n.name+"</option>");
+									});
+								 }
+							});
+				
+					
+					$("#shenpibumen"+index).attr("disabled",false);
+					$("#shenpiren"+index).attr("disabled",false);
+					$("#isedit"+index).attr("disabled",false);
+					$("#shenpibumen"+(index-1)).attr("disabled",true);
+					$("#shenpiren"+(index-1)).attr("disabled",true);
+					$("#isedit"+(index-1)).attr("disabled",true);
+					
+					
+					$("#shenpibumen"+index).attr("name","shenpibumen");
+					$("#shenpiren"+index).attr("name","shenpiren");
+					$("#isedit"+index).attr("name","isedit");
+					$("#shenpibumen"+(index-1)).attr("name","shenpibumen"+index);
+					$("#shenpiren"+(index-1)).attr("name","shenpiren"+index);
+					$("#isedit"+(index-1)).attr("name","isedit"+index);
+					var liuchengid1=$("#liuchenghao").val();
+					
+					if(liuchengid1!=""){
+						$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtu1?liuchenghao="+liuchengid1);
+					}
+				}
+			});
+		}
+	} 
+	/* function editliucheng(){
+		var liuchengid=$("#liuchenghao").val();
+		$.ajax({
+			url:'${ctxPath}/renyuan/findshenpiliucheng',
+			type:'post',
+			dataType:'json',
+			data : {"liuchenghao":liuchengid},
+			success:function(data){
+				if(data.list.length<=1){
+					alert("无上一节点");
+					return false;
+				}
+				$("#id").val(data.list[data.list.length-2].id);
+				$("#shenpibumen").val(data.list[data.list.length-2].shenpibumen);
+				$(".shenpibumen").find(".select2-selection__rendered").text(data.list[data.list.length-2].dept);
+				$(".shenpibumen").find(".select2-selection__rendered").attr("title",data.list[data.list.length-2].shenpibumen);
+				$(".shenpiren").find(".select2-selection__rendered").text(data.list[data.list.length-2].xingming);
+				$(".shenpiren").find(".select2-selection__rendered").attr("title",data.list[data.list.length-2].shenpiren);
+				$(".shenpiren").find(".select2-selection__rendered").text(data.list[data.list.length-2].xingming);
+				$("#shenpiren").val(data.list[data.list.length-2].shenpiren);
+				$("#isedit").val(data.list[data.list.length-2].isedit);
+			
+			}
+		});
+	} */
+	function guanbidel(){
+		var liuchenghao=$("#liuchenghao").val();
+		if($("#shenpibumen"+index).val()==""||$("#shenpiren"+index).val()==""||$("#isedit"+index).val()==""){
+			$.ajax({
+				url:'${ctxPath}/renyuan/guanbidelLc',
+				type:'post',
+				dataType:'json',
+				data:{"id":liuchenghao},
+				success:function(data){
+					if(data.ret){
+						datatable.ajax.reload(null,true);
+					}
+				}
+			});
+		}
+		
+	}
+	function finish(){
+		 if($("#name1").val()==""){
+				alert("请输入流程名称！");
+				return false; 
+			}else if($("#liuchengtype").val()==""){
+				alert("请选择流程类型！");
+				return false;
+			}else if($("#shenpibumen"+index).val()==""){
+				alert("请选择审批部门！");
+				return false;
+			}else if($("#shenpiren"+index).val()==""){
+				alert("请选择审批人！");
+				return false;
+			}else if($("#isedit"+index).val()==""){
+				alert("请选择是否可编辑！");
+				return false;
+			}
+		alert("保存成功！");
+		saveLiucheng();
+		parent.window.dialogAdd.close();
+		parent.window.datatable.ajax.reload(null,true);
+		
+	}
+	</script>
+	
+</body>

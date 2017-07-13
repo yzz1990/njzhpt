@@ -1,0 +1,37 @@
+/* ==================================================================== */
+/* CHECKBOX TYPE 1 ---------------------------------------------------- */
+/* ==================================================================== */
+
+[id^="checkbox-1-"] + label {
+	background-color: #A8A8A8;
+	border: 1px solid #C1CACA;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+	padding: 7px;
+	border-radius: 0px;
+	display: inline-block;	
+}
+
+[id^="checkbox-1-"] + label:active {
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+[id^="checkbox-1-"]:checked + label {
+	background-color: #0696E9;
+	border: 1px solid #92A1AC;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
+	color: #243441;
+}
+
+[id^="checkbox-1-"]:checked + label:after {
+	content: '\2716';
+	position: absolute;
+	top: 2px;
+	left: 0.5px;
+	color: white;
+	width: 100%;
+	text-align: center;
+	/*font-size: 1.4em;*/
+	padding: 1px 0 0 0;
+	vertical-align: text-top;
+	margin-top:-5
+}

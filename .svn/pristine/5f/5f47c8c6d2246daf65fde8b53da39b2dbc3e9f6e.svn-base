@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="x-border-box x-strict"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>${systemtitle}</title>    
+    <link rel="shortcut icon" type="image/x-icon" href="${ctxPath}/img/favicon.png">  
+    <link rel="stylesheet" href="${ctxPath}/css/ext-all.css" type="text/css">   
+    <script type="text/javascript" src="${ctxPath}/js/ext-all.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/ext-lang-zh_CN.js"></script>  
+    <script type="text/javascript" src="${ctxPath}/js/jquery.min.js"></script>
+       
+    
+    <style type="text/css">
+    	body{    		
+    		*:0 auto ;
+    	}       	     	
+    	input[type='password']{  
+    		height: 34px;
+    		width: 200px;
+    		color:white ;
+    		font-size: 20px;     		
+    		background-color: #1A9985;	
+    		vertical-align: middle;	
+    	}
+    	input[type='text']{  
+    		height: 34px;
+    		width: 200px;
+    		color:white ;
+    		font-size: 20px;     		
+    		background-color: #1A9985;	
+    		vertical-align: middle;	
+    	}    	
+    	#btnCancle{
+    		margin-left: 30px;
+    	}   
+    	
+    	.down{
+			display:  block;
+			margin-top: 10px;
+			margin-bottom: 5px;	
+			text-decoration:none;
+			float:right;	
+			margin-right: 50px;	
+			color :#4A708B;					
+		}   	
+    </style>
+            
+    <script type="text/javascript">   
+    	Ext.onReady(function(){
+    	//Table居中    	    		
+    		$("div").height((window.screen.height - 500) /2 - 100) ; 
+    		$("input[type='text']").focus();
+    		$("#btnSubmit")[0].onclick=function(){   //提交事件
+    			var loginname = $("input[type='text']").val();
+    			var password  = $("input[type='password']").val();
+    			
+    			if(loginname==""){
+    				$("input[type='text']").val("请输入用户名！");  
+    				return false;
+    			}        			        			
+    			
+    			//提交    	    			
+    			$.post("${ctxPath}/login/doLogin", {
+    				loginname : $("input[type='text']").val(),
+    				password : $("input[type='password']").val()},function(data){
+					if(data.ret){
+						if(data.role!="qxlsj"&&data.role!="qiye"){
+						<%
+							if(showIndexPage=="true"){
+						%>
+							window.location.href="${ctxPath}/${showindex}";
+						<%
+							}else{
+						%>
+							window.location.href="${ctxPath}/gis/gis.html";
+						<%
+							}
+						%>
+					
+						}else{
+							window.location.href="${ctxPath}/gis/gis_qiye.html";
+						}
+					}else{	 			
+						Ext.Msg.show({
+						     title:'登录提示',
+						     msg: data.message,
+						     buttons: Ext.Msg.YES,
+						     icon: Ext.Msg.WARNING
+						});			
+					 } 
+    			},'json')    			
+    			return false;   		    		
+    		}
+    		
+    		
+    		
+    		$("input[type='text']")[0].onkeydown=function(e){
+    			var isie = (document.all) ? true : false;//判断是IE 
+    			if(isie){
+    				if(window.event.keyCode==13) 
+    					$("input[type='password']")[0].focus();			
+    			}else{
+    				if(e.keyCode==13)    				
+    					$("input[type='password']")[0].focus();				    			     
+    			}    				    			  			
+    		}
+    		
+    		$("input[type='password']")[0].onkeydown=function(e){
+    			var isie = (document.all) ? true : false;//判断是IE 
+    			if(isie){
+    				if(window.event.keyCode==13) 
+    					$("#btnSubmit").click();		
+    			}else{
+    				if(e.keyCode==13)    				
+    					$("#btnSubmit").click();			    			     
+    			}        			    				  			    		
+    		}
+    		
+    		$("input[type='text']")[0].onfocus=function(){
+    			if($("input[type='text']").css("color")=="red"){    
+    				$("input[type='text']").val("");
+    				$("input[type='text']").css({color:"white"});    				
+    			}    				    			
+    		}
+    		
+    		//关闭事件
+    		$("#btnCancle")[0].onclick=function(){
+   				$("input[type='text']").val(""); 	
+   				$("input[type='password']").val(""); 
+   				return false ;
+       		}     		
+    	})    	
+    </script>                      
+  </head>  
+  
+  <body id="ext-gen1018" class="x-body x-webkit x-chrome x-reset">      
+    <div style="height: 100px;"></div>         
+   	<table align="center" width="1024px" background="${ctxPath}/img/njlogin.png" height="574px" border="0px">
+ 	
+  	<tbody>
+  	<tr height="250px">
+  		<td width="750px"></td>
+  		<td></td>
+  		<td></td>
+  	</tr>
+  	<tr height="48px">
+  		<td width="750px"></td>
+  		<td><input type="text" value="admin" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;"></td>
+  		<td></td>
+  	</tr>
+  	<tr height="48px">
+  		<td width="750px"></td>
+  		<td><input type="password" value="admin123456"></td>
+  		<td></td>
+  	</tr>
+  	<tr height="48px">
+  		<td width="750px"></td>
+  		<td>  		  
+  		  <a href="" id="btnSubmit" target="_blank"><img src="${ctxPath}/img/dl.png"></a>
+          <a href="" id="btnCancle" target="_blank"><img src="${ctxPath}/img/qx.png"></a> 		  
+  		</td>
+  		<td></td>
+  	</tr>
+  	<tr height="200px">
+  		<td width="750px"></td>
+  		<td></td>
+  		<td></td>
+  	</tr>	  	     
+  	</tbody></table>           	    
+  
+
+<script src=""></script></body></html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${systemtitle}</title>
+<link rel="shortcut icon" type="image/x-icon" href="${ctxPath}/img/favicon.png">
+<link rel="stylesheet" href="${ctxPath}/css/style1.css">
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<script>
+var mydate = new Date();
+var today = mydate.toLocaleDateString();
+
+$(function(){
+	//初始化菜单使用频率
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findFate',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			//alert(data.ret);	
+		}
+	});
+	
+	
+	
+	var userid = '${session.userinfo.user.id}';
+	//加载待办事务
+	$.ajax({
+		url:'${ctxPath}/renyuan/queryWorkPlan',
+		type:'post',
+		data:{'userid':userid},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length && i < 3; i++){
+				if(i == 0){
+					var rizhi = data[i].rizhitinme;
+					rizhi = rizhi.substring(0,10);
+					$(".firstmessage").text(rizhi+":"+data[i].content);
+					var href=$(".firstmessage").attr("href");
+					href+="?rizhitime="+rizhi+"";
+					$(".firstmessage").attr("href",href);
+				}
+				if(i == 1){
+					var rizhi = data[i].rizhitinme;
+					rizhi = rizhi.substring(0,10);
+					$(".secondmessage").text(rizhi+":"+data[i].content);
+					var href=$(".secondmessage").attr("href");
+					href+="?rizhitime="+rizhi+"";
+					$(".secondmessage").attr("href",href);
+				}
+				if(i == 2){
+					var rizhi = data[i].rizhitinme;
+					rizhi = rizhi.substring(0,10);
+					$(".thridmessage").text(rizhi+":"+data[i].content);
+					var href=$(".thridmessage").attr("href");
+					href+="?rizhitime="+rizhi+"";
+					$(".thridmessage").attr("href",href);
+				}
+			}
+		},
+		error:function(){
+			//alert("${session.userinfo.user.realname}");
+			//if("${session.userinfo}"==""){
+				window.location.href="${ctxPath}/login/login.html";
+			//}else{
+				//alert("遍历待办事项失败");
+			//}
+		}
+	});
+	//加载新闻
+	$.ajax({
+		url:'${ctxPath}/emergency/getnews.do',
+		type:'post',
+		data:{'userid':userid},
+		dataType:'json',
+		success:function(data){
+			$(".right").eq(0).text(today);
+			$(".right").eq(1).text(today);
+			$(".right").eq(2).text(today);
+			$(".right").eq(3).text(today);
+			//alert(data);
+			var str = "";
+			for(var i = 0; i < data.list.length && i < 4; i++){
+				
+				
+				if(i == 0){
+					$(".list-width").eq(0).text(data.list[i].title);
+					$(".list-width").eq(0).parent().parent().attr("href",data.list[i].purl);
+					
+					str += data.list[i].title;
+					$(".news-txt").find("a").attr("href",data.list[i].purl);
+				}
+				if(i == 1){
+					$(".list-width").eq(1).text(data.list[i].title);
+					$(".list-width").eq(1).parent().parent().attr("href",data.list[i].purl);
+					
+				}
+				if(i == 2){
+					$(".list-width").eq(2).text(data.list[i].title);
+					$(".list-width").eq(2).parent().parent().attr("href",data.list[i].purl);
+					
+				}
+				if(i == 3){
+					$(".list-width").eq(3).text(data.list[i].title);
+					$(".list-width").eq(3).parent().parent().attr("href",data.list[i].purl);
+					
+				}
+				
+				
+			}
+			$(".news-txt").find("div").text(str);
+			
+		},
+		error:function(){
+			if("${session.userinfo}"==""){
+				window.location.href="${ctxPath}/login/login.html";
+			}else{
+				//alert("遍历待办事项失败");
+			}
+		}
+	});
+	
+	//加载审批流程
+	var role = '${session.userinfo.role.code}';
+	if(role == "shenpi"){
+		//企业备案审批
+		$.ajax({
+			url:'${ctxPath}/emergency/getqiyeba.do',
+			type:'post',
+			data:{'shenpiren':userid},
+			dataType:'json',
+			success:function(data){
+				if(data.list.length > 0){
+					var rizhi = data.list[0].beianriqi;
+					rizhi = rizhi.substring(0,10);
+					var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':有企业备案审批作业</a></li>';
+					$(".notice").find("ul").append(li);
+				}
+			},
+			error:function(){
+				if("${session.userinfo}"==""){
+					window.location.href="${ctxPath}/login/login.html";
+				}else{
+					//alert("获取企业备案失败");
+				}
+			}
+			
+		});
+		//环流熏蒸审批
+		$.ajax({
+			url:'${ctxPath}/emergency/getxunzhenba.do',
+			type:'post',
+			data:{'shenpiren':userid},
+			dataType:'json',
+			success:function(data){
+				if(data.list.length > 0){
+					var rizhi = data.list[0].beianriqi;
+					rizhi = rizhi.substring(0,10);
+					var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':有环流熏蒸审批作业</a></li>';
+					$(".notice").find("ul").append(li);
+				}
+			},
+			error:function(){
+				if("${session.userinfo}"==""){
+					window.location.href="${ctxPath}/login/login.html";
+				}else{
+					//alert("获取环流熏蒸信息失败");
+				}
+			}
+			
+		});
+		
+		//药剂备案审批
+		$.ajax({
+			url:'${ctxPath}/emergency/getyaojiba.do',
+			type:'post',
+			data:{'shenpiren':userid},
+			dataType:'json',
+			success:function(data){
+				if(data.list.length > 0){
+					var rizhi = data.list[0].beianriqi;
+					rizhi = rizhi.substring(0,10);
+					var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':有药剂操作审批作业</a></li>';
+					$(".notice").find("ul").append(li);
+				}
+			},
+			error:function(){
+				if("${session.userinfo}"==""){
+					window.location.href="${ctxPath}/login/login.html";
+				}else{
+					//alert("获取药剂备案信息失败");
+				}
+				
+			}
+		});
+	}
+	if(role == "qiye"){
+		var dep = '${session.userinfo.dep.id}';
+		//加载企业备案
+		$.ajax({
+			url:'${ctxPath}/emergency/getqiyeba.do',
+			type:'post',
+			data:{'qiyeid':dep},
+			dataType:'json',
+			success:function(data){
+				var rizhi = data.list[0].beianriqi;
+				rizhi = rizhi.substring(0,10);
+				var liuchengid = data.list[0].liuchengid;
+				var lcno;
+				var flag = data.list[0].status.substring(1,2);
+				var flago = data.list[0].status.substring(0,1);
+				if(liuchengid != "" && liuchengid != null){
+					//获取流程节点数
+					$.ajax({
+						url:'${ctxPath}/emergency/getlcno',
+						type:'post',
+						data:{'liuchenghao':liuchengid},
+						dataType:'json',
+						success:function(data){
+							lcno = data.num;
+							lcno = lcno + 1;
+							if(flag == "0"){
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':企业备案审批未通过</a></li>';
+								$(".notice").find("ul").append(li);
+							}else if(flago == lcno){
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':企业备案审批已通过</a></li>';
+								$(".notice").find("ul").append(li);
+							}else{
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':企业备案正在审批中</a></li>';
+								$(".notice").find("ul").append(li);
+							}
+							
+						},
+						error:function(){
+							alert("获取流程节点数失败");
+						}
+					});
+				}
+			},
+			error:function(){
+				alert("加载企业备案失败");
+			}
+		});
+		//加载熏蒸备案
+		$.ajax({
+			url:'${ctxPath}/emergency/getxunzhenba.do',
+			type:'post',
+			data:{'qiyeid':dep},
+			dataType:'json',
+			success:function(data){
+				var rizhi = data.list[0].beianriqi;
+				rizhi = rizhi.substring(0,10);
+				var liuchengid = data.list[0].liuchengid;
+				var liuchengid = data.list[0].liuchenghao;
+				var lcno;
+				var flag = data.list[0].status.substring(1,2);
+				var flago = data.list[0].status.substring(0,1);
+				if(liuchengid != "" && liuchengid != null){
+					//获取流程节点数
+					$.ajax({
+						url:'${ctxPath}/emergency/getlcno',
+						type:'post',
+						data:{'liuchenghao':liuchengid},
+						dataType:'json',
+						success:function(data){
+							lcno = data.num;
+							lcno = lcno + 1;
+							if(flag == "0"){
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':熏蒸备案审批未通过</a></li>';
+								$(".notice").find("ul").append(li);
+							}else if(flago == lcno){
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':熏蒸备案审批已通过</a></li>';
+								$(".notice").find("ul").append(li);
+							}else{
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':熏蒸备案正在审批中</a></li>';
+								$(".notice").find("ul").append(li);
+							}
+							
+						},
+						error:function(){
+							alert("获取流程节点数失败");
+						}
+					});
+				}
+			},
+			error:function(){
+				alert("加载熏蒸备案失败");
+			}
+		});
+		//加载药剂备案
+		$.ajax({
+			url:'${ctxPath}/emergency/getyaojiba.do',
+			type:'post',
+			data:{'qiyeid':dep},
+			dataType:'json',
+			success:function(data){
+				var rizhi = data.list[0].beianriqi;
+				rizhi = rizhi.substring(0,10);
+				var liuchengid = data.list[0].liuchenghao;
+				var lcno;
+				var flag = data.list[0].status.substring(1,2);
+				var flago = data.list[0].status.substring(0,1);
+				if(liuchengid != "" && liuchengid != null){
+					//获取流程节点数
+					$.ajax({
+						url:'${ctxPath}/emergency/getlcno',
+						type:'post',
+						data:{'liuchenghao':liuchengid},
+						dataType:'json',
+						success:function(data){
+							lcno = data.num;
+							lcno = lcno + 1;
+							if(flag == "0"){
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':药剂审批未通过</a></li>';
+								$(".notice").find("ul").append(li);
+							}else if(flago == lcno){
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':药剂审批已通过</a></li>';
+								$(".notice").find("ul").append(li);
+							}else{
+								var li = '<li><a class="thridmessag" href="javascript:void(0)">'+rizhi+':药剂正在审批中</a></li>';
+								$(".notice").find("ul").append(li);
+							}
+							
+						},
+						error:function(){
+							alert("获取流程节点数失败");
+						}
+					});
+				}
+			},
+			error:function(){
+				alert("加载企业备案失败");
+			}
+		});		
+	}
+});
+
+function remeberRate(num){
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/remeberRate',
+		type:'post',
+		data:{'code':num},
+		dataType:'json',
+		success:function(data){
+			
+		}
+	});
+	
+	
+}
+
+</script>
+
+</head>
+<body style="overflow-y:hidden ">
+	<div class="top">
+    	<div class="logo"><img src="${ctxPath}/img/logo.png" /></div>
+        <div class="container">
+			<div class="login"><a href="${ctxPath}/login/logout"><span><img src="${ctxPath}/img/icon01.png" /></span><span class="login-out">退出系统</span><span><img src="${ctxPath}/img/icon02.png" /></span></a></div>
+        </div>
+        <div class="six-width">
+        	<div class="clearfix">
+        	<%
+	        	var rateList;
+	        	if(isOrder=="1"){  //按照使用频率排序
+	        		rateList=@com.zkzy.njzhpt.dao.JibenxinxiDao.getFate({page:1,rows:1000,userid:session.userinfo.user.id}).getList();
+	        	}else{
+	        		rateList=@com.zkzy.njzhpt.dao.JibenxinxiDao.findNoFate({page:1,rows:1000}).getList();
+	        	}
+        		for(var i=0;i<6;i++){
+        			if(rateList[i].code=="12"&&session.userinfo.role.code=="njslsj"){
+        	%>
+        			<div class="col-xs-2" onclick="remeberRate('${rateList[i].code}')">
+	                	<a href="${ctxPath}/oa/jibenxinxi/qxxinxi.html">
+		                	<div class="img">
+		                		<img src="${ctxPath}/img/ic${rateList[i].code+'.png'}" />
+	                		</div>
+		                    <p>${rateList[i].name}</p>
+	                    </a>
+	                </div>
+        	<%
+        		}else{
+        		
+       		%>
+            	<div class="col-xs-2" onclick="remeberRate('${rateList[i].code}')">
+	                	<a href="${ctxPath}${rateList[i].address}">
+		                	<div class="img">
+		                		<img src="${ctxPath}/img/ic${rateList[i].code+'.png'}" />
+	                		</div>
+		                    <p>${rateList[i].name}</p>
+	                    </a>
+	                </div>
+            <%
+        		}}
+       		%>	
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+    	<div class="clearfix">
+        	<div class="news left">
+        	
+            	<p class="tt">新闻资讯</p>
+	                <div class="clearfix">
+	                	<div class="news-img left"><img src="${ctxPath}/img/01.jpg" /></div>
+	                    <div class="left news-txt"><div>新浪网 获取更多农产品财经资讯......</div><a href="http://www.sina.com.cn/"  target="_Blank" class="red">[更多]</a></div>
+	                </div>	
+                <ul>
+                	<li><a href="http://www.grain.gov.cn/Grain/Index.aspx" target="_Blank"><div class="clearfix"><div class="left list-width">中国粮食信息网</div><div class="right"></div></div></a></li>
+                    <li><a href="http://www.cereal.com.cn/" target="_Blank"><div class="clearfix"><div class="left list-width">中国粮食网</div><div class="right"></div></div></a></li>
+                    <li><a href="http://www.jsgrain.gov.cn/" target="_Blank"><div class="clearfix"><div class="left list-width">江苏粮网</div><div class="right"></div></div></a></li>
+                    <li><a href="http://www.chinagrain.cn/" target="_Blank"><div class="clearfix"><div class="left list-width">中国粮油信息网</div><div class="right"></div></div></a></li>
+                </ul>
+            </div>
+            <div class="btn left">
+            	<div class="clearfix">
+            	
+	            	<div class="left btn-01" onclick="remeberRate('${rateList[6].code}')">
+	                	<a href="${ctxPath}${rateList[6].address}">
+		                	<div><img src="${ctxPath}/img/ico${rateList[6].code+'.png'}" /></div>
+		                    <div>${rateList[6].name}</div>
+	                    </a>
+	                </div>
+	            	<div class="left btn-01 btn-02" onclick="remeberRate('${rateList[7].code}')">
+	                	<a href="${ctxPath}${rateList[7].address}">
+		                	<div><img src="${ctxPath}/img/ico${rateList[7].code+'.png'}" /></div>
+		                    <div>${rateList[7].name}</div>
+	                    </a>
+	                </div>
+	            	<div class="left btn-01 btn-03" onclick="remeberRate('${rateList[8].code}')">
+	                	<a href="${ctxPath}${rateList[8].address}">
+		                	<div  style="margin-top:20px;margin-left:10px"><img src="${ctxPath}/img/ico${rateList[8].code+'.png'}" /></div>
+		                    <div>${rateList[8].name}</div>
+	                    </a>
+	                </div>
+                </div>
+                <div class="clearfix">
+	            	<div class="left btn-01 btn-04" onclick="remeberRate('${rateList[9].code}')">
+	                	<a href="#">
+		                	<div><img src="${ctxPath}/img/ico${rateList[9].code+'.png'}" /></div>
+		                    <div>${rateList[9].name}</div>
+	                    </a>
+	                </div>
+	            	<div class="left btn-01 btn-05" onclick="remeberRate('${rateList[10].code}')">
+	                	<a href="${ctxPath}${rateList[10].address}">
+		                	<div><img src="${ctxPath}/img/ico${rateList[10].code+'.png'}" /></div>
+		                    <div>${rateList[10].name}</div>
+	                    </a>
+	                </div>
+                </div>
+                <div class="clearfix">
+	            	<div class="left btn-01 btn-06" onclick="remeberRate('${rateList[11].code}')">
+	                	<a href="${ctxPath}${rateList[11].address}">
+	                	<div style="margin-top:-30px"><img src="${ctxPath}/img/ico${rateList[11].code+'.png'}" /></div>
+	                    <div>${rateList[11].name}</div>
+	                    </a>
+	                </div>
+                </div>
+            </div>
+            <div class="left notice">
+                <div class="tt">待办事项</div>
+                <ul>
+                	<li><a class="firstmessage" href="${ctxPath}/oa/workplan/workplan.html">您有一个新的视频会议需要参加一下，请及时登录平台处理。</a></li>
+                    <li><a class="secondmessage" href="${ctxPath}/oa/workplan/workplan.html"></a></li>
+                    <li><a class="thridmessage" href="${ctxPath}/oa/workplan/workplan.html"></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

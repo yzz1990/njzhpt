@@ -1,0 +1,188 @@
+<!DOCTYPE html >
+<html >
+<head>
+<meta charset="UTF-8">
+<meta name="viewpart" content="width=device-width, initial-scale=1, maxium-scale=1, user-scalable=no">
+<title>${systemtitle}</title>
+<link rel="shortcut icon" type="image/x-icon" href="${ctxPath}/img/favicon.png">  
+    <link rel="stylesheet" href="${ctxPath}/css/ext-all.css" type="text/css">   
+    <script type="text/javascript" src="${ctxPath}/js/ext-all.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/ext-lang-zh_CN.js"></script>
+
+<script src="${ctxPath}/js/jquery.js"></script>
+<!-- 	<script src="jquery.login.js"></script> -->
+<style type="text/css">
+
+	*{
+		margin:0;
+		padding:0;
+		border:0;
+		font-size: 16PX
+	
+	}
+	#content {
+		margin-top:220px;
+	    position: absolute;
+	    left: 50%;
+	    z-index: 2;
+	    height:390px;
+	    line-height: 1.5em;
+	    color: white;
+	    font-family: sans-serif;
+	    font-size: 14px;
+	    width: 435px;
+	    margin-left: -217px;
+	}
+	#content {
+		margin-top: 220px;
+		-moz-box-shadow: inset 0 0 10px #CCC;
+		box-shadow: darkorange;
+		-webkit-box-shadow: inset 0 0 10px #CCC;
+		box-shadow: inset 0 0 20px #E8F2F9;
+		border-radius: 4px;
+		position: absolute;
+		left: 50%;
+		z-index: 2;
+		height: 390px;
+		line-height: 1.5em;
+		color: white;
+		font-family: sans-serif;
+		font-size: 14px;
+		width: 435px;
+		margin-left: -217px;
+		/* border: groove; */
+		border: 1px solid #CFD9E0;
+		background-color: rgba(138, 198, 224, 0.13);
+	}
+	#logo {
+	    background-repeat: no-repeat;
+		margin-top:120px;
+	    position: absolute;
+	    left: 58%;
+	    z-index: 2;
+	    height:86px;
+	    line-height: 1.5em;
+	    color: white;
+	    font-family: sans-serif;
+	    font-size: 12px;
+	    width: 432px;
+	    margin-left: -292px;
+	}
+	.a:hover{
+		text-decoration:underline;
+	}
+	.button{
+		background:url('image/login.png');
+	}
+	.button:hover{
+		background:url('image/login_hover.png');
+	}
+	#footer{
+		position: absolute;
+		top:95%;
+		width:478px;
+		left: 36%;
+		color:white;		
+	}
+
+</style>
+</head>
+<body style="background-image:url('${ctxPath}/image/66.jpg');" onkeydown="keyLogin();">
+	<div id="logo" style="background-image:url('${ctxPath}/image/logoy3.png');">
+	</div>
+	<div id="content">
+		<form id="loginform" method="post" action="login.action">
+			<!--<div id="divselect" style="background:url('image/input1.png') no-repeat 0px center;margin-top:30px;margin-left:50px;width:328px;height:52px;">
+				<select id="inputselect" class="company" value="" name="company" placeholder="选择企业" id="com" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;background:url('image/row.png') no-repeat 210px center;">
+					<option>${shipinRoot}粮食局</option>
+				</select>
+				&lt;!&ndash; <input id="inputselect" class="company" value="" name="company" placeholder="选择企业" id="com" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;background:url('image/row.png') no-repeat 210px center;"/> &ndash;&gt;
+			</div>-->
+			<div style="background:url('image/input2.png') no-repeat 0px center;margin-top:50px;margin-left:60px;width:328px;height:52px;">
+				<input class="username" name="username" type="text" placeholder="用户名" id="uid" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;";/>
+			</div>
+			<div style="background:url('image/input3.png') no-repeat 0px center;margin-top:50px;margin-left:60px;width:328px;height:52px;">
+				<input class="password" name="password"  type="password" placeholder="密码" id="pwd" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;"/>
+			</div >
+			<p style="margin:0px auto;margin-left:65px;font-family:微软雅黑;font-size: 14px;color:#FF0000"id="error"></p>
+		</form>
+		<div  class="button" style="margin-top:50px;margin-left:62px;width:320px;height:52px;cursor: pointer;" onclick="login()"></div>
+		<div class="a" style="text-align:center;margin:0px auto;margin-top:52;font-family:微软雅黑;font-size: 14px;color:#FF6600;cursor: pointer;">忘记密码</div>
+	</div>
+	<div id="footer">
+		<b>本系统建议使用
+			<a href="http://down.360safe.com/se/360se8.2.1.208.exe" urdata="{pid:'custom_aladdin',resourceid:'11830',fetchkey:'360安全浏览器',type:'software'}" target="_blank" >360安全浏览器</a>、分辨率1440*900
+		</b>
+	</div>
+
+</body>
+<script type="text/javascript">
+	function keyLogin(){
+	 	if (event.keyCode==13)  //回车键的键值为13
+		 	login();
+	}
+	$(function(){
+		$("#com").bind("focus", function(){
+			$(this).parent().css("background","url('image/input1_hover.png') no-repeat 0px center");
+		}).bind("blur",function(){
+			$(this).parent().css("background","url('image/input1.png') no-repeat 0px center");
+		});
+		$("#uid").bind("focus", function(){
+			$(this).parent().css("background","url('image/input2_hover.png') no-repeat 0px center");
+		}).bind("blur",function(){
+			$(this).parent().css("background","url('image/input2.png') no-repeat 0px center");
+		});
+		$("#pwd").bind("focus", function(){
+			$(this).parent().css("background","url('image/input3_hover.png') no-repeat 0px center");
+		}).bind("blur",function(){
+			$(this).parent().css("background","url('image/input3.png') no-repeat 0px center");
+		});
+		$("#button").bind("focus", function(){
+			$(this).parent().css("background","url('image/login_hover.png') no-repeat 0px center")
+		});
+	});
+	function login() {
+
+			var loginname = $("#uid").val();;
+			var password  = $("#pwd").val();;
+			
+			if(loginname==""){
+				$("input[type='text']").val("请输入用户名！");  
+				return false;
+			} 
+			if(password==""){
+				$("#pwd").attr("placeholder","请输入密码！");
+				return false;
+			} 			
+			
+			//提交    	    			
+			$.post("${ctxPath}/login/doLogin", {
+				loginname : $("input[type='text']").val(),
+				password : $("input[type='password']").val()},function(data){
+				if(data.ret){
+					<%
+						if(showIndexPage=="true"){
+					%>
+					window.location.href="${ctxPath}/index.html";
+					<%
+						}else{
+					%>
+					window.location.href="${ctxPath}/gis/gis.html";
+					<%
+						}
+					%>
+				}else{	 			
+					Ext.Msg.show({
+					     title:'登录提示',
+					     msg: data.message,
+					     buttons: Ext.Msg.YES,
+					     icon: Ext.Msg.WARNING
+					});			
+				 } 
+			},'json')    			
+			return false;   		    		
+	
+		
+	}
+</script>
+</html>

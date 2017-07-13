@@ -1,0 +1,1248 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+    <link href="${ctxPath}/resources/css/jquery-ui-themes.css" type="text/css" rel="stylesheet"/>
+    <link href="${ctxPath}/resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="${ctxPath}/data/styles.css" type="text/css" rel="stylesheet"/>
+    <link href="${ctxPath}/files/第二步/styles.css" type="text/css" rel="stylesheet"/>
+    <script src="${ctxPath}/resources/scripts/jquery-1.7.1.min.js"></script>
+    <script src="${ctxPath}/resources/scripts/jquery-ui-1.8.10.custom.min.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/axQuery.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/globals.js"></script>
+    <script src="${ctxPath}/resources/scripts/axutils.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/annotation.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/axQuery.std.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/doc.js"></script>
+    <script src="${ctxPath}/data/document.js"></script>
+    <script src="${ctxPath}/resources/scripts/messagecenter.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/events.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/recording.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/action.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/expr.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/geometry.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/flyout.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/ie.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/model.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/repeater.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/sto.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/utils.temp.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/variables.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/drag.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/move.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/visibility.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/style.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/adaptive.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/tree.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/init.temp.js"></script>
+    <script src="${ctxPath}/files/第二步/data.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/legacy.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/viewer.js"></script>
+    <script src="${ctxPath}/resources/scripts/axure/math.js"></script>
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return '${ctxPath}/resources/${ctxPath}/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return '${ctxPath}/resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return '${ctxPath}/resources/reload.html'; };
+    </script>
+    <style>
+	
+	</style>
+    <div id="base" class="">
+
+      <!-- Unnamed (表格) -->
+      <div id="u363" class="ax_default">
+
+        <!-- Unnamed (单元格) -->
+        <div id="u364" class="ax_default _单元格">
+          <img id="u364_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u365" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u366" class="ax_default _单元格">
+          <img id="u366_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u367" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u368" class="ax_default _单元格">
+          <img id="u368_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u369" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u370" class="ax_default _单元格">
+          <img id="u370_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u371" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u372" class="ax_default _单元格">
+          <img id="u372_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u373" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u374" class="ax_default _单元格">
+          <img id="u374_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u375" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u376" class="ax_default _单元格">
+          <img id="u376_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u377" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u378" class="ax_default _单元格">
+          <img id="u378_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u379" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u380" class="ax_default _单元格">
+          <img id="u380_img" class="img " src="${ctxPath}/images/第二步/u380.png"/>
+          <!-- Unnamed () -->
+          <div id="u381" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u382" class="ax_default _单元格">
+          <img id="u382_img" class="img " src="${ctxPath}/images/第二步/u382.png"/>
+          <!-- Unnamed () -->
+          <div id="u383" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u384" class="ax_default _单元格">
+          <img id="u384_img" class="img " src="${ctxPath}/images/第二步/u382.png"/>
+          <!-- Unnamed () -->
+          <div id="u385" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">小麦</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u386" class="ax_default _单元格">
+          <img id="u386_img" class="img " src="${ctxPath}/images/第二步/u386.png"/>
+          <!-- Unnamed () -->
+          <div id="u387" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">籼稻</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u388" class="ax_default _单元格">
+          <img id="u388_img" class="img " src="${ctxPath}/images/第二步/u382.png"/>
+          <!-- Unnamed () -->
+          <div id="u389" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">粳稻</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u390" class="ax_default _单元格">
+          <img id="u390_img" class="img " src="${ctxPath}/images/第二步/u390.png"/>
+          <!-- Unnamed () -->
+          <div id="u391" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">大米</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u392" class="ax_default _单元格">
+          <img id="u392_img" class="img " src="${ctxPath}/images/第二步/u392.png"/>
+          <!-- Unnamed () -->
+          <div id="u393" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">面粉</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u394" class="ax_default _单元格">
+          <img id="u394_img" class="img " src="${ctxPath}/images/第二步/u394.png"/>
+          <!-- Unnamed () -->
+          <div id="u395" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">油</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u396" class="ax_default _单元格">
+          <img id="u396_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u397" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u398" class="ax_default _单元格">
+          <img id="u398_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u399" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">原有</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u400" class="ax_default _单元格">
+          <img id="u400_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u401" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u402" class="ax_default _单元格">
+          <img id="u402_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u403" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u404" class="ax_default _单元格">
+          <img id="u404_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u405" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u406" class="ax_default _单元格">
+          <img id="u406_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u407" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u408" class="ax_default _单元格">
+          <img id="u408_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u409" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u410" class="ax_default _单元格">
+          <img id="u410_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u411" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u412" class="ax_default _单元格">
+          <img id="u412_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u413" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u414" class="ax_default _单元格">
+          <img id="u414_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u415" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">调拨</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u416" class="ax_default _单元格">
+          <img id="u416_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u417" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u418" class="ax_default _单元格">
+          <img id="u418_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u419" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u420" class="ax_default _单元格">
+          <img id="u420_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u421" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u422" class="ax_default _单元格">
+          <img id="u422_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u423" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u424" class="ax_default _单元格">
+          <img id="u424_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u425" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u426" class="ax_default _单元格">
+          <img id="u426_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u427" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u428" class="ax_default _单元格">
+          <img id="u428_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u429" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u430" class="ax_default _单元格">
+          <img id="u430_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u431" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">原有</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u432" class="ax_default _单元格">
+          <img id="u432_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u433" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u434" class="ax_default _单元格">
+          <img id="u434_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u435" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u436" class="ax_default _单元格">
+          <img id="u436_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u437" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u438" class="ax_default _单元格">
+          <img id="u438_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u439" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u440" class="ax_default _单元格">
+          <img id="u440_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u441" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u442" class="ax_default _单元格">
+          <img id="u442_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u443" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u444" class="ax_default _单元格">
+          <img id="u444_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u445" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u446" class="ax_default _单元格">
+          <img id="u446_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u447" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">调拨</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u448" class="ax_default _单元格">
+          <img id="u448_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u449" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u450" class="ax_default _单元格">
+          <img id="u450_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u451" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u452" class="ax_default _单元格">
+          <img id="u452_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u453" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u454" class="ax_default _单元格">
+          <img id="u454_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u455" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u456" class="ax_default _单元格">
+          <img id="u456_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u457" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u458" class="ax_default _单元格">
+          <img id="u458_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u459" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u460" class="ax_default _单元格">
+          <img id="u460_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u461" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u462" class="ax_default _单元格">
+          <img id="u462_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u463" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">原有</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u464" class="ax_default _单元格">
+          <img id="u464_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u465" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u466" class="ax_default _单元格">
+          <img id="u466_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u467" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u468" class="ax_default _单元格">
+          <img id="u468_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u469" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u470" class="ax_default _单元格">
+          <img id="u470_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u471" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u472" class="ax_default _单元格">
+          <img id="u472_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u473" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u474" class="ax_default _单元格">
+          <img id="u474_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u475" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">40</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u476" class="ax_default _单元格">
+          <img id="u476_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u477" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u478" class="ax_default _单元格">
+          <img id="u478_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u479" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">调拨</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u480" class="ax_default _单元格">
+          <img id="u480_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u481" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u482" class="ax_default _单元格">
+          <img id="u482_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u483" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u484" class="ax_default _单元格">
+          <img id="u484_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u485" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u486" class="ax_default _单元格">
+          <img id="u486_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u487" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u488" class="ax_default _单元格">
+          <img id="u488_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u489" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u490" class="ax_default _单元格">
+          <img id="u490_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u491" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u492" class="ax_default _单元格">
+          <img id="u492_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u493" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u494" class="ax_default _单元格">
+          <img id="u494_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u495" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">原有</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u496" class="ax_default _单元格">
+          <img id="u496_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u497" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u498" class="ax_default _单元格">
+          <img id="u498_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u499" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u500" class="ax_default _单元格">
+          <img id="u500_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u501" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u502" class="ax_default _单元格">
+          <img id="u502_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u503" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u504" class="ax_default _单元格">
+          <img id="u504_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u505" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u506" class="ax_default _单元格">
+          <img id="u506_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u507" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">10</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u508" class="ax_default _单元格">
+          <img id="u508_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u509" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u510" class="ax_default _单元格">
+          <img id="u510_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u511" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">调拨</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u512" class="ax_default _单元格">
+          <img id="u512_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u513" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u514" class="ax_default _单元格">
+          <img id="u514_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u515" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u516" class="ax_default _单元格">
+          <img id="u516_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u517" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u518" class="ax_default _单元格">
+          <img id="u518_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u519" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u520" class="ax_default _单元格">
+          <img id="u520_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u521" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u522" class="ax_default _单元格">
+          <img id="u522_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u523" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u524" class="ax_default _单元格">
+          <img id="u524_img" class="img " src="${ctxPath}/images/第二步/u364.png"/>
+          <!-- Unnamed () -->
+          <div id="u525" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u526" class="ax_default _单元格">
+          <img id="u526_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u527" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">原有</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u528" class="ax_default _单元格">
+          <img id="u528_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u529" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">100</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u530" class="ax_default _单元格">
+          <img id="u530_img" class="img " src="${ctxPath}/images/第二步/u370.png"/>
+          <!-- Unnamed () -->
+          <div id="u531" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">100</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u532" class="ax_default _单元格">
+          <img id="u532_img" class="img " src="${ctxPath}/images/第二步/u366.png"/>
+          <!-- Unnamed () -->
+          <div id="u533" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">100</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u534" class="ax_default _单元格">
+          <img id="u534_img" class="img " src="${ctxPath}/images/第二步/u374.png"/>
+          <!-- Unnamed () -->
+          <div id="u535" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">100</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u536" class="ax_default _单元格">
+          <img id="u536_img" class="img " src="${ctxPath}/images/第二步/u376.png"/>
+          <!-- Unnamed () -->
+          <div id="u537" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">100</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u538" class="ax_default _单元格">
+          <img id="u538_img" class="img " src="${ctxPath}/images/第二步/u378.png"/>
+          <!-- Unnamed () -->
+          <div id="u539" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">100</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u540" class="ax_default _单元格">
+          <img id="u540_img" class="img " src="${ctxPath}/images/第二步/u540.png"/>
+          <!-- Unnamed () -->
+          <div id="u541" class="text" style="display: none; visibility: hidden">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u542" class="ax_default _单元格">
+          <img id="u542_img" class="img " src="${ctxPath}/images/第二步/u542.png"/>
+          <!-- Unnamed () -->
+          <div id="u543" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">调拨</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u544" class="ax_default _单元格">
+          <img id="u544_img" class="img " src="${ctxPath}/images/第二步/u542.png"/>
+          <!-- Unnamed () -->
+          <div id="u545" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">50</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u546" class="ax_default _单元格">
+          <img id="u546_img" class="img " src="${ctxPath}/images/第二步/u546.png"/>
+          <!-- Unnamed () -->
+          <div id="u547" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">50</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u548" class="ax_default _单元格">
+          <img id="u548_img" class="img " src="${ctxPath}/images/第二步/u542.png"/>
+          <!-- Unnamed () -->
+          <div id="u549" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">50</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u550" class="ax_default _单元格">
+          <img id="u550_img" class="img " src="${ctxPath}/images/第二步/u550.png"/>
+          <!-- Unnamed () -->
+          <div id="u551" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">50</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u552" class="ax_default _单元格">
+          <img id="u552_img" class="img " src="${ctxPath}/images/第二步/u552.png"/>
+          <!-- Unnamed () -->
+          <div id="u553" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">50</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u554" class="ax_default _单元格">
+          <img id="u554_img" class="img " src="${ctxPath}/images/第二步/u554.png"/>
+          <!-- Unnamed () -->
+          <div id="u555" class="text" style="visibility: visible;">
+            <p><span style="font-family:'应用字体 Regular', '应用字体';">50</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (提交按钮) -->
+      <div id="u556" class="ax_default html_button">
+        <input id="u556_input" type="submit" value="下一步" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u557" class="ax_default _文本框">
+        <input id="u557_input" type="text" value="单位：吨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u558" style="border: 1px solid #ADD8E6" class="ax_default box_3">
+        <div id="u558_div" class=""></div>
+        <div id="u559" class="text" style="visibility: visible;">
+         <img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+          <p><span style="font-family:'应用字体 Bold', '应用字体';">&nbsp;&nbsp; 应急预案</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u560" class="ax_default _文本框">
+        <input id="u560_input" type="text" value="原粮" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u561" class="ax_default _文本框">
+        <input id="u561_input" type="text" value="成品粮" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u562" class="ax_default _文本框">
+        <input id="u562_input" type="text" value="新浦区浦东储备库" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u563" class="ax_default _文本框">
+        <input id="u563_input" type="text" value="赣榆区赣榆门河" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u564" class="ax_default _文本框">
+        <input id="u564_input" type="text" value="合计" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u565" class="ax_default _文本框">
+        <input id="u565_input" type="text" value="企业名称" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u566" class="ax_default _文本框">
+        <input id="u566_input" type="text" value="类别" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u567" class="ax_default _文本框">
+        <input id="u567_input" type="text" value="原粮" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u568" class="ax_default _文本框">
+        <input id="u568_input" type="text" value="50" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u569" class="ax_default _文本框">
+        <input id="u569_input" type="text" value="吨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u570" class="ax_default _文本框">
+        <input id="u570_input" type="text" value="小麦：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u571" class="ax_default _文本框">
+        <input id="u571_input" type="text" value="50" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u572" class="ax_default _文本框">
+        <input id="u572_input" type="text" value="吨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u573" class="ax_default _文本框">
+        <input id="u573_input" type="text" value="籼稻：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u574" class="ax_default _文本框">
+        <input id="u574_input" type="text" value="50" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u575" class="ax_default _文本框">
+        <input id="u575_input" type="text" value="吨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u576" class="ax_default _文本框">
+        <input id="u576_input" type="text" value="粳稻：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u577" class="ax_default _文本框">
+        <input id="u577_input" type="text" value="成品粮" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u578" class="ax_default _文本框">
+        <input id="u578_input" type="text" value="50" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u579" class="ax_default _文本框">
+        <input id="u579_input" type="text" value="吨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u580" class="ax_default _文本框">
+        <input id="u580_input" type="text" value="大米：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u581" class="ax_default _文本框">
+        <input id="u581_input" type="text" value="50" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u582" class="ax_default _文本框">
+        <input id="u582_input" type="text" value="吨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u583" class="ax_default _文本框">
+        <input id="u583_input" type="text" value="面粉：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u584" class="ax_default _文本框">
+        <input id="u584_input" type="text" value="50" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u585" class="ax_default _文本框">
+        <input id="u585_input" type="text" value="吨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u586" class="ax_default _文本框">
+        <input id="u586_input" type="text" value="油：" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u587" class="ax_default _文本框">
+        <input id="u587_input" type="text" value="调拨总量" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u588" class="ax_default _文本框">
+        <input id="u588_input" type="text" value="东海洪庄" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u589" class="ax_default _文本框">
+        <input id="u589_input" type="text" value="海州区云台粮库" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u590" class="ax_default _文本框">
+        <input id="u590_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u591" class="ax_default _文本框">
+        <input id="u591_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u592" class="ax_default _文本框">
+        <input id="u592_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u593" class="ax_default _文本框">
+        <input id="u593_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u594" class="ax_default _文本框">
+        <input id="u594_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u595" class="ax_default _文本框">
+        <input id="u595_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u596" class="ax_default _文本框">
+        <input id="u596_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u597" class="ax_default _文本框">
+        <input id="u597_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u598" class="ax_default _文本框">
+        <input id="u598_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u599" class="ax_default _文本框">
+        <input id="u599_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u600" class="ax_default _文本框">
+        <input id="u600_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u601" class="ax_default _文本框">
+        <input id="u601_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u602" class="ax_default _文本框">
+        <input id="u602_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u603" class="ax_default _文本框">
+        <input id="u603_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u604" class="ax_default _文本框">
+        <input id="u604_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u605" class="ax_default _文本框">
+        <input id="u605_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u606" class="ax_default _文本框">
+        <input id="u606_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u607" class="ax_default _文本框">
+        <input id="u607_input" type="text" value="0" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u608" class="ax_default _文本框">
+        <input id="u608_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u609" class="ax_default _文本框">
+        <input id="u609_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u610" class="ax_default _文本框">
+        <input id="u610_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u611" class="ax_default _文本框">
+        <input id="u611_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u612" class="ax_default _文本框">
+        <input id="u612_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u613" class="ax_default _文本框">
+        <input id="u613_input" type="text" value="25" class="text_sketch"/>
+      </div>
+
+
+
+
+
+
+      <!-- Unnamed (文本框) -->
+      <div id="u638" class="ax_default _文本框">
+        <input id="u638_input" type="text" value="区域选择" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (水平线) -->
+      <div id="u639" class="compound ax_default line" WidgetHeight="1" WidgetWidth="42" CompoundMode="true">
+        <img id="u639_img" class="singleImg img " src="${ctxPath}/images/第二步/u639.png"/>
+        <div id="u639p000" class="ax_vector_shape" WidgetTopLeftX="-0.477272727272727" WidgetTopLeftY="-0.5" WidgetTopRightX="0.477272727272727" WidgetTopRightY="-0.5" WidgetBottomLeftX="-0.477272727272727" WidgetBottomLeftY="0.5" WidgetBottomRightX="0.477272727272727" WidgetBottomRightY="0.5">
+          <img id="u639p000_img" class="img " src="${ctxPath}/images/第二步/u639p000.png"/>
+        </div>
+        <div id="u639p001" class="ax_vector_shape" WidgetTopLeftX="0" WidgetTopLeftY="-0.5" WidgetTopRightX="21" WidgetTopRightY="-0.5" WidgetBottomLeftX="0" WidgetBottomLeftY="0.5" WidgetBottomRightX="21" WidgetBottomRightY="0.5">
+          <img id="u639p001_img" class="img " src="${ctxPath}/images/第二步/u639p001.png"/>
+        </div>
+        <div id="u639p002" class="ax_vector_shape" WidgetTopLeftX="-1.77272727272727" WidgetTopLeftY="0" WidgetTopRightX="0.136363636363636" WidgetTopRightY="0" WidgetBottomLeftX="-1.77272727272727" WidgetBottomLeftY="0.0454545454545455" WidgetBottomRightX="0.136363636363636" WidgetBottomRightY="0.0454545454545455">
+          <img id="u639p002_img" class="img " src="${ctxPath}/images/第二步/u639p002.png"/>
+        </div>
+        <!-- Unnamed () -->
+        <div id="u640" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u641" class="ax_default _文本框">
+        <input id="u641_input" type="text" value="调拨" class="text_sketch"/>
+      </div>
+
+      <!-- Unnamed (提交按钮) -->
+      <div id="u642" class="ax_default html_button">
+        <input id="u642_input" type="submit" value="返回" class="text_sketch"/>
+      </div>
+    </div>
+<%
+	}
+%>

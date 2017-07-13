@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title>视频</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+	content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Write an awesome description for your new site here.">
+    <link rel="stylesheet" href="${ctxPath}/css/weui.min.css">
+    <link rel="stylesheet" href="${ctxPath}/css/jquery-weui.min.css">
+</head>
+<body style="overflow-y:scroll;">
+
+<script src="${ctxPath}/js/jquery-2.1.4.min.js"></script>
+<script src="${ctxPath}/js/jquery-weui.min.js"></script>
+<script type="text/javascript">
+	var jsonData;
+    function getData() {
+        var tableHtml='';
+    	 $.ajax({
+    		 url:'${ctxPath}/shouchukeshihua/findquxianhk',
+    		 type:'post',
+    		 data:{"level":2},
+    		 dataType:'json',
+    		 success:function(data){
+    			 for (var i = 0; i < data.length; i++) {
+    	                var str='<a class="weui_cell" style="color: inherit" href="javascript:getkudian('+data[i].id+');">'+
+    	                		'<div class="weui_cells weui_cells_access">'+data[i].name+'</div>'+
+    	                		'</a>';
+    	                tableHtml+=str;
+    	            }
+    			 document.body.innerHTML = tableHtml;
+    		 },
+    		 error:function(){
+    			 alert("error");
+    		 }
+    	  });
+    }
+    function getkudian(id){
+    	location.href="kudian.html?id="+id;
+    	
+    }
+    $(function(){
+ 	   getData();
+    })
+  
+</script>
+</body>
+</html>

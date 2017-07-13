@@ -1,0 +1,153 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+   <!-- =============== VENDOR STYLES ===============-->
+   <!-- FONT AWESOME-->
+   <link rel="stylesheet" href="${ctxPath}/Angle - Bootstrap Admin Template_files/font-awesome.min.css">
+   <!-- SIMPLE LINE ICONS-->
+   <link rel="stylesheet" href="${ctxPath}/Angle - Bootstrap Admin Template_files/simple-line-icons.css">
+   <!-- ANIMATE.CSS-->
+   <link rel="stylesheet" href="${ctxPath}/Angle - Bootstrap Admin Template_files/animate.min.css">
+   <!-- WHIRL (spinners)-->
+   <link rel="stylesheet" href="${ctxPath}/Angle - Bootstrap Admin Template_files/whirl.css">
+   <!-- =============== PAGE VENDOR STYLES ===============-->
+   <!-- =============== BOOTSTRAP STYLES ===============-->
+   <link rel="stylesheet" href="${ctxPath}/Angle - Bootstrap Admin Template_files/bootstrap.css" id="bscss">
+   <!-- =============== APP STYLES ===============-->
+   <link rel="stylesheet" href="${ctxPath}/Angle - Bootstrap Admin Template_files/app.css" id="maincss">
+
+        <div class="panel-body" style="padding: 0">
+                  <form id="example-form" action="#">
+                     <div>
+                        <h4>上传Excel
+                        </h4>
+                        <input type="text" id="liucid" name="liucid" value="cd6096c03a9c42258c3d9b16b6a1e49d">
+                        <fieldset>
+								<label class="control-label label-uploadtitle" title="上传文件" style="text-align:left;width:90px;font-weight:normal;margin-top:-5px;">Excel表:</label>
+								<a class="btn btn-xs btn-info"><input class="file_upload " type="file" name="file" /></a>
+								<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+								<div class="entity-container">
+			</div>
+							</br>
+							<span>Excel文件请符合以下标准：</span>
+							<ul>
+								<li>后缀名为xls</li>
+								<li>文件大小请勿超过2MB，导入条数不可超过3000条</li>
+							</ul></br>
+							
+							<span>导入步骤：</span>
+							<ul>
+								<li>第一步，下载<a href="${ctxPath}/download/熏蒸信息详情.xls" style="font-size:30px">客户导入模板</a>。</li>
+								<li>第二步，如果是下载的模板，下载后，填写内容，注意，要填写的内容在下边的说明中有详细的说明。</li>
+								<li>第三步，设置Excel标题字段。</li>
+								<li>第四步，点击下一步执行导入操作，导入结束之后显示导入结果。</li>
+							</ul></br>
+							
+							<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注意事项：</span>
+							<ul>
+								<li>导入的Excel应只提供一个工作簿(sheet)，系统也只导入第一个工作簿中的数据。</li>
+								<li>导入数据时，系统会将第一行的内容作为标题行，因此导入的Excel请务必提供标题行。</li>
+								<li>导入的Excel的格式尽量遵循模板中的格式，即只有一个标题行，不要出现复杂的格式。</li>
+								<li>一次性导入的记录不要太多，系统规定文件大小控制在2MB以内，导入条数不可超过3000条。</li>
+								<li>导入的过程中会判断客户是否重复，如果系统中有相同名字的客户，则会对该客户执行更新操作。</li>
+								<li>请确保每个单元格的文字长度在100个以内。</li>
+								<li>填写导入内容时注意模板中的必填项同时注意特殊字段的格式是否正确，例如：日期类型，数字类型等。</li>
+								<li>系统导入方式为逐行判断导入，所以符合要求的记录将被导入系统，而导入失败的记录会给出相应提示信息。</li>
+							</ul>
+                        </fieldset>
+                        
+                        <h4>数据预览</h4>
+                        <fieldset>
+                           <label for="name">First name *</label>
+                           <input id="name" name="name" type="text" class="form-control required">
+                           <label for="surname">Last name *</label>
+                           <input id="surname" name="surname" type="text" class="form-control required">
+                           <label for="email">Email *</label>
+                           <input id="email" name="email" type="text" class="form-control required email">
+                           <label for="address">Address</label>
+                           <input id="address" name="address" type="text" class="form-control">
+                           <p>(*) Mandatory</p>
+                        </fieldset>
+                        
+                        <h4>导入数据</h4>
+                        <fieldset>
+                           <p class="lead text-center">Almost there!</p>
+                        </fieldset>
+                        
+                      <!--   <h4>Finish </h4>
+                        <fieldset>
+                           <p class="lead">One last check</p>
+                           <div class="checkbox c-checkbox">
+                              <label>
+                                 <input type="checkbox" required="required" name="terms">
+                                 <span class="fa fa-check"></span>I agree with the Terms and Conditions.</label>
+                           </div>
+                        </fieldset> -->
+                     </div>
+                  </form>
+               </div>
+      <!-- Page footer-->
+     <!--  <footer>
+         <span>© 2015 - Angle</span>
+      </footer> -->
+   </div>
+   <!-- =============== VENDOR SCRIPTS ===============-->
+   <!-- MODERNIZR-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/modernizr.custom.js"></script>
+   <!-- MATCHMEDIA POLYFILL-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/matchMedia.js"></script>
+   <!-- JQUERY-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/jquery.js"></script>
+   <!-- BOOTSTRAP-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/bootstrap.js"></script>
+   <!-- STORAGE API-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/jquery.storageapi.js"></script>
+   <!-- JQUERY EASING-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/jquery.easing.js"></script>
+   <!-- ANIMO-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/animo.js"></script>
+   <!-- SLIMSCROLL-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/jquery.slimscroll.min.js"></script>
+   <!-- SCREENFULL-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/screenfull.js"></script>
+   <!-- LOCALIZE-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/jquery.localize.js"></script>
+   <!-- RTL demo-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/demo-rtl.js"></script>
+   <!-- =============== PAGE VENDOR SCRIPTS ===============-->
+   <!-- JQUERY VALIDATE-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/jquery.validate.js"></script>
+   <!-- JQUERY STEPS-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/jquery.steps.js"></script>
+   <!-- Demo-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/demo-wizard.js"></script>
+   <!-- =============== APP SCRIPTS ===============-->
+   <script src="${ctxPath}/Angle - Bootstrap Admin Template_files/app.js"></script>
+
+<script type="text/javascript">
+
+$(function(){
+	 $('.file_upload').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/cangchugl/uploadFile',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传文件',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.xls',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+ 	    	var obj = JSON.parse(data);
+	  	    alert(obj);
+ 	    	
+        }
+   });
+	  
+});
+
+</script>
+
+
+<%
+	}
+%>

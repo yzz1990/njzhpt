@@ -1,0 +1,467 @@
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<%
+var uuid=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.creatuuid({});
+var name=session.userinfo.area.name;
+var dep=session.userinfo.dep.name;
+var sqwh=parameter.sqwh;
+var obj;
+if(!isEmpty(parameter.sqwh)){ 
+	obj =@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.queryLunRuShenQing({"sqwh":parameter.sqwh,"page":1,"rows":15}).getList().get(0);
+} 
+%>
+<style type="text/css">
+body{
+}
+.dashboard-wrapper-lg {
+    position: relative;
+    background: #f7f7f7;
+    min-height: 0px; 
+    padding: 20px;
+}
+.row {
+    margin: 0px;
+    background-color: white;
+}
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 0px;
+}
+.modal-body {
+    position: relative;
+    padding: 0px;
+}
+td.details-control {
+    background: url('${ctxPath}/img/chubeiliangjh/Delete.png') no-repeat center center;
+}
+
+.textclass{
+	text-align:right;
+}
+
+</style>
+
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  
+	
+	<form action="" id="sc">
+		<div class="row">
+			<div class="col-xs-4">
+				<div class="form-group">
+					<label for="szqy">所在区域:</label>
+						<input id="szqy" name="szqy" class="form-control" value="${name}" readonly="readonly" >
+						<input id="xzqhdm" name="xzqhdm" class="form-control" type="hidden" >
+				</div>
+			</div>
+			<div class="col-xs-4">	
+					<div class="form-group">
+						<label for="qymc">企业:</label>
+							<input id="qymc" name="qymc" class="form-control" value="${dep}" readonly="readonly" >
+							<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" type="hidden" >
+					</div>	
+			</div>
+			<div class="col-xs-4">	
+					<div class="form-group">
+						<label for="liuchenghao"><font color="red" style="font-size:large;">*</font>审批流程:</label>
+							 <input id="liuchenghao" name="liuchenghao" class="form-control" value="${obj.liuchenghao}" readonly="readonly" >
+					</div>	
+			</div>
+		</div>
+			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Row End -->
+      </div>
+   <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	轮入申请                                        
+                    </div>
+                     <div style="float: right;">单位/吨</div>
+                  </div>
+                  <div class="widget-body">
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="sqwh">申请文号:</label>
+					<input name="sqwh" id="sqwh"  class="form-control" type="text"  value="${obj.sqwh}" readonly="readonly" >
+				</div>
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="lhsl">轮入数量:</label>
+					<input name="lhsl" id="lhsl" class="form-control " value="${obj.lhsl}" readonly="readonly" >	
+				</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group" >
+					<label for="ccku" >承储库:</label>
+					<input name="ccku" id="ccku" class="form-control " value="${obj.ccku}" readonly="readonly" >
+				</div>
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="ccdian">承储点:</label>
+					<input name="ccdian" id="ccdian" class="form-control " value="${obj.kdmc}" readonly="readonly" >
+				</div>	
+			</div>
+			<div class="col-xs-6 bgkd" style="display:none">	
+				<div class="form-group">
+					<label for="kudian">原承储点:</label>
+					<input name="kudian" id="kudian" class="form-control " value="${obj.bgkd}" readonly="readonly" >
+				</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="year">生产年限:</label>
+					<input name="year" id="year" class="form-control " value="${obj.year}" readonly="readonly" >
+				</div>
+			</div>
+			<div class="col-xs-6 bgpz" style="display:none">	
+				<div class="form-group">
+					<label for="bgpz">原品种:</label>
+					<input name="bgpz" id="bgpz" class="form-control " value="${obj.bgpz}" readonly="readonly" >
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="pz">品种:</label>
+					<input name="pz" id="pz" class="form-control " value="${obj.pz}" readonly="readonly" >
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="grade">质量等级:</label>
+						<input name="grade" id="grade" class="form-control " value="${obj.grade}" readonly="readonly" >
+					</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="avgprice">平均入库价格(元/吨):</label>
+					<input name="avgprice" id="avgprice" class="form-control " value="${obj.avgprice}" readonly="readonly" >
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="tbaoren">签发人:</label>
+					<input name="tbaoren" id="tbaoren" class="form-control " value="${obj.tbaoren}" readonly="readonly" >
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="sqsj">完成轮入时间:</label>
+					<input name="sqsj" id="sqsj" class="form-control " value="${obj.sqsj}" readonly="readonly">
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="sqsj_tijiao">申请验收时间:</label>
+					<input name="sqsj_tijiao" id="sqsj_tijiao" class="form-control " value="${obj.sqsj_tijiao}" readonly="readonly" >
+				</div>	
+			</div>
+		</div>
+					
+			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>   
+        
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	轮入明细                                 
+                    </div>
+                  </div>
+                  <div class="widget-body">
+               
+               <!--  
+			<div class="row">
+				<div class="col-xs-6">	
+					<div id="div-bgkd" class="form-group" style="display:none">
+						<label for="kudian">变更库点</label>
+						<input name="kudian" id="kudian" class="form-control " value="${obj.bgkd}" readonly="readonly" >
+						<button type="button" class="btn btn-sm btn-info" id="xzykd" style="margin-top: 3px;" onclick="xzykdbg()">下载报告</button>
+						<input id="bgkddoc" name="bgkddoc" type="hidden" class="form-control " value="${obj.bgkddoc}" readonly="readonly">
+						
+						<a class="btn btn-sm btn-info" href="${obj.bgkdimg!=''&&obj.bgkdimg!=null?ctxPath+'/upload/'+obj.bgkdimg:'javascript:void(0)'}" ${obj.bgkdimg!=''&&obj.bgkdimg!=null?" download"} ${obj.bgkdimg==''||obj.bgkdimg==null?" disabled"}><i class="fa fa-download" aria-hidden="true"></i>&nbsp;下载行文</a>
+						<input id="bgkdimg" name="bgkdimg" type="hidden" class="form-control " value="${obj.bgkdimg}" readonly="readonly">
+					</div>
+				</div>
+				<div class="col-xs-6">	
+					<div id="div-bgpz" class="form-group" style="display:none">
+						<label for="bgpz">变更品种</label>
+						<input name="bgpz" id="bgpz" class="form-control " value="${obj.bgpz}" readonly="readonly" >
+						<button type="button" class="btn btn-sm btn-info" id="xzypz" style="margin-top: 3px;" onclick="xzypzbg()">下载报告</button>
+						<input id="bgpzdoc" name="bgpzdoc" type="hidden" class="form-control " value="${obj.bgpzdoc}" readonly="readonly">
+						
+						<a class="btn btn-sm btn-info" href="${obj.bgpzimg!=''&&obj.bgpzimg!=null?ctxPath+'/upload/'+obj.bgpzimg:'javascript:void(0)'}" ${obj.bgpzimg!=''&&obj.bgpzimg!=null?" download"} ${obj.bgpzimg==''||obj.bgpzimg==null?" disabled"}><i class="fa fa-download" aria-hidden="true"></i>&nbsp;下载行文</a>
+						<input id="bgpzimg" name="bgpzimg" type="hidden" class="form-control " value="${obj.bgpzimg}" readonly="readonly">
+					</div>
+				</div>
+			</div>
+			-->   
+			
+			<label for="sqsj_tijiao" style="float:right"><input type="checkbox">按承储计划轮入</label>
+			<div>
+				<div class="row">
+					<div class="col-xs-12">	
+						<div class="form-group">
+							<table id="cftable" class="table table-striped table-hover table-bordered datatables"  data-url="${ctxPath}/lunhuan/selectlrsqmx.do" >
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+	
+				<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+        
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	验收                                
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  
+			<div class="row">
+				<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="pzwh">批复文号:</label>
+						<input name="pzwh" id="pzwh" class="form-control" value="${obj.pzwh}" >
+						
+					</div>
+				</div>
+				<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="pzsj">批复日期:</label>
+						<input name="pzsj" id="pzsj" class="form-control" value="${obj.pzsj}" readonly="readonly" >
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="row">
+					<div class="col-xs-12">	
+						<div class="form-group">
+							<table id="cftable" class="table table-striped table-hover table-bordered datatables"  data-url="${ctxPath}/lunhuan/selectlrsqmx.do" >
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="" style="margin-top: 10px;">
+				<div class="lunru">
+					<button type="button" class="btn btn-sm btn-info" id="xzlunru" style="margin-top: 3px;" onclick="xzlunrubg()">下载轮入报告</button>
+					<input id="lunrudoc" name="lunrudoc" type="hidden" class="form-control " value="${obj.lunrudoc}" readonly="readonly">
+					<a class="btn btn-sm btn-info" href="${obj.lunruimg!=''&&obj.lunruimg!=null?ctxPath+'/upload/'+obj.lunruimg:'javascript:void(0)'}" ${obj.lunruimg!=''&&obj.lunruimg!=null?" download"} ${obj.lunruimg==''||obj.lunruimg==null?" disabled"}><i class="fa fa-download" aria-hidden="true"></i>&nbsp;下载轮入行文</a>
+					<input id="lunruimg" name="lunruimg" type="hidden" class="form-control " value="${obj.lunruimg}" readonly="readonly">
+				</div>
+				
+				<div class="bgkd" style="display:none">
+					<button type="button" class="btn btn-sm btn-info" id="xzykd" style="margin-top: 3px;" onclick="xzykdbg()">下载易库点报告</button>
+					<input id="bgkddoc" name="bgkddoc" type="hidden" class="form-control " value="${obj.bgkddoc}" readonly="readonly">
+					<a class="btn btn-sm btn-info" href="${obj.bgkdimg!=''&&obj.bgkdimg!=null?ctxPath+'/upload/'+obj.bgkdimg:'javascript:void(0)'}" ${obj.bgkdimg!=''&&obj.bgkdimg!=null?" download"} ${obj.bgkdimg==''||obj.bgkdimg==null?" disabled"}><i class="fa fa-download" aria-hidden="true"></i>&nbsp;下载易库点行文</a>
+					<input id="bgkdimg" name="bgkdimg" type="hidden" class="form-control " value="${obj.bgkdimg}" readonly="readonly">
+				</div>
+				
+				<div class="bgpz" style="display:none">
+					<button type="button" class="btn btn-sm btn-info" id="xzypz" style="margin-top: 3px;" onclick="xzypzbg()">下载易品种报告</button>
+					<input id="bgpzdoc" name="bgpzdoc" type="hidden" class="form-control " value="${obj.bgpzdoc}" readonly="readonly">
+					<a class="btn btn-sm btn-info" href="${obj.bgpzimg!=''&&obj.bgpzimg!=null?ctxPath+'/upload/'+obj.bgpzimg:'javascript:void(0)'}" ${obj.bgpzimg!=''&&obj.bgpzimg!=null?" download"} ${obj.bgpzimg==''||obj.bgpzimg==null?" disabled"}><i class="fa fa-download" aria-hidden="true"></i>&nbsp;下载易品种行文</a>
+					<input id="bgpzimg" name="bgpzimg" type="hidden" class="form-control " value="${obj.bgpzimg}" readonly="readonly">
+				</div>
+			</div>
+				<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+          
+     </form>
+</div>
+<script type="text/javascript">
+
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+var mydate = new Date();
+var tyear = mydate.getFullYear();
+var tday = mydate.toLocaleDateString();
+
+var ccku = "";
+var cckuname = "";
+var ccdian = "";
+var pz = "";
+
+$(function(){
+	$('#pzsj').datetimepicker({
+		minView: "month",
+		format:'yyyy-mm-dd',
+		language: 'zh-CN',
+		autoclose: 1,
+		startView: 2,
+	});
+	
+	//加载轮入数量
+	var q = "&sqwh=${sqwh}";
+	document.querySelector('#cftable').dataset.queryparam=q;
+	 datatable = $('#cftable').DataTable({
+		 "processing": true,
+	    "serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {"data":"cfbm","title":"仓号"},
+            {"data":"cflhsl","title":"轮入数量","class":"textclass"}
+	 	]
+	}); 
+	 
+	 if("${obj.lrlx}" == "1"){
+		 $("#div-bgkd").css("display","block");
+		 $(".bgkd").show();
+	 }
+	 if("${obj.lrlx}" == "2"){
+		 var pz;
+		 if("${obj.bgpz}" == "111"){
+			 pz = "小麦";
+		 }
+		 if("${obj.bgpz}" == "1132"){
+			 pz = "粳稻";
+		 }
+		 if("${obj.bgpz}" == "1131"){
+			 pz = "籼稻";
+		 }
+		 $("#bgpz").val(pz);
+		 $("#div-bgpz").css("display","block");
+		 $(".bgpz").show();
+		 
+	 }
+	 
+	 var pzwh = $("#pzwh").val();
+	 if(pzwh != null && pzwh != ""){
+		 $("#pzwh").attr("readonly","readonly");
+	 }
+	 
+
+});
+
+
+
+
+//审批到下一个
+function shenpi(){
+	var pzwh = $("#pzwh").val();
+	var pzsj = $("#pzsj").val();
+	var lunruimg = $("#lunruimg").val();
+	var bgkdimg = $("#bgkdimg").val();
+	var bgpzimg = $("#bgpzimg").val();
+	if(pzwh == "" || pzwh == null){
+		alert("请输入批复文号");
+		return false;
+	}
+	if(pzsj == "" || pzsj == null){
+		alert("请输入批复时间");
+		return false;
+	}
+	
+	$.ajax({
+		url:'${ctxPath}/lunhuan/lunrushenpi.do',
+		type:'post',
+		data:{"sqwh":"${sqwh}","pzwh":pzwh,"pzsj":pzsj,"lunruimg":lunruimg,"bgpzimg":bgpzimg,"bgkdimg":bgkdimg},
+		dataType:'json',
+		success:function(data){
+			if(data.ret){
+				parent.dialog1.close();
+		   		alert("轮入申请成功");
+		   		parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert("审批失败");
+			}
+		},
+		error:function(){
+		}
+	});
+}
+
+//驳回申请
+function bohui(){
+	$.ajax({
+		url:'${ctxPath}/lunhuan/lunrubohui.do',
+		type:'post',
+		data:{"sqwh":"${sqwh}"},
+		dataType:'json',
+		success:function(data){
+			if(data.ret){
+				parent.dialog1.close();
+		   		alert("驳回成功");
+		   		parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert("驳回失败");
+			}
+		},
+		error:function(){
+			
+		}
+	});
+}
+
+//易品种报告下载
+function xzypzbg(){
+	 window.location.href="${ctxPath}/excel/getDocFile?docpath=D:/upload/"+$("#bgpzdoc").val()+"";
+}
+//易库点报告下载
+function xzykdbg(){
+	 window.location.href="${ctxPath}/excel/getDocFile?docpath=D:/upload/"+$("#bgkddoc").val()+"";
+}
+//轮入报告下载
+function xzlunrubg(){
+	 window.location.href="${ctxPath}/excel/getDocFile?docpath=D:/upload/"+$("#lunrudoc").val()+"";
+}
+
+
+
+
+</script>

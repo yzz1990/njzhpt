@@ -1,0 +1,71 @@
+package com.zkzy.njzhpt.bo;
+
+import java.text.DecimalFormat;
+import java.util.HashMap;
+
+import com.jfinal.aop.Before;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.AppDao;
+import com.zkzy.njzhpt.dao.JibenxinxiDao;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class AppBo {
+	/**
+	 * 
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> getQyInfo(HashMap<String, Object> param) throws Exception {
+		Page<Record>  page=AppDao.getQyInfo(param);
+		for(Record record:page.getList()){
+			HashMap<String, Object> queryparam=new HashMap<String, Object>();
+			queryparam.put("rows", 10000);
+			queryparam.put("page", 1);
+			queryparam.put("jyywlxbh", record.getStr("jyywlxbh"));
+			Page<Record> page1=JibenxinxiDao.findQiyexinxi(queryparam);
+			DecimalFormat b1 = new DecimalFormat("###0.00");
+			double sjkc=0;
+			for(Record record1:page1.getList()){
+				Record re=Db.findFirst("select SUM(dmStock) as dmStock from kc_CurrentStock  where qyzzjgdm=?",record1.getStr("qyzzjgdm"));
+				if(re.get("dmStock")!=null){
+					sjkc+=re.getBigDecimal("dmStock").doubleValue();
+				}
+			}
+			record.set("dmStock",b1.format(sjkc));
+		}
+		
+		return page;
+	}
+
+	/**
+	 * 地区表 --- 查删增改
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Page<Record> findDiqu (HashMap<String, Object> param) throws Exception {	
+		 Page<Record>  diqulist=JibenxinxiDao.findDiqu(param);
+		return diqulist;
+	}
+
+	/**
+	 * 获取应急事件
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Page<Record> queryyjsj(HashMap<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		return JibenxinxiDao.queryyjsj(param);
+	}
+
+	
+
+	
+
+
+	
+}

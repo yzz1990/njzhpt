@@ -1,0 +1,97 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+					<label>仓号:</label>
+					<input class="form-control input-sm" name="canghao" id="canghao" placeholder="仓号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>空瓶数量 从:</label>
+					<input type="text" class="form-control date" name="kongpingshul" id="StartShuliang"> 
+					<label>至:</label>
+					<input type="text" class="form-control date" name="kongpingshul" id="EndShuliang"> 
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+					<a class="btn btn-primary btn-sm pull-right" type="button"
+							href="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojizhuizong_edit.html">新增药剂追踪</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYaojizz" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "canghao",
+				"title" : "仓号"
+			},{
+				"data" : "xunzhengtime",
+				"title" : "熏蒸时间"
+			},{
+				"data" : "kaiqitime",
+				"title" : "开启时间"
+			},{
+				"data" : "kongpingshul",
+				"title" : "空瓶数量",
+			},{
+				"data" : "canyuren",
+				"title" : "参与人员",
+			},{
+				"data" : "chulifangshi",
+				"title" : "处理方式"
+			},{
+						"title":"操作",
+                		"render": function (data,type,row,meta) {
+	                   	var bianji = '<a href="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojizhuizong_edit.html?id='+row["id"]+'" class="btn btn-sm btn-info pjax"><em class="fa fa-pencil"></em></a>';
+	                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delYaojizz(\''+row["id"]+'\')"><em class="fa fa-trash"></em></button>';
+	               		return bianji + " " + shanchu;
+                	}
+                }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var canghao = $("#canghao").val();
+	var StartShuliang = $("#StartShuliang").val();
+	var EndShuliang = $("#EndShuliang").val();
+	document.querySelector('.datatables').dataset.queryparam="canghao="+canghao+"&StartShuliang="+StartShuliang+"&EndShuliang="+EndShuliang;
+	datatable.ajax.reload(null,false);
+}
+	
+function delYaojizz(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delYaojizz',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+	
+	
+</script>
+<%
+	}
+%>

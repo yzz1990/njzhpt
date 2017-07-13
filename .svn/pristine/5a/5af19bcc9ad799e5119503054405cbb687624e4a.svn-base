@@ -1,0 +1,60 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>	
+<style>
+.spann{
+	vertical-align: middle;
+	margin-left: 0px;
+	font-weight: 700;
+	font-size: 25px;
+}
+
+.imgg{
+	padding-bottom: 10px;
+	
+}
+</style>
+<div class="panel panel-default" style="vertical-align: middle;margin-top: 150px;">
+	<div class="panel-body" >
+		<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-1">
+						
+					</div>
+					<div class="col-xs-2" onclick="window.open('http://www.jsgrain.gov.cn:88/Check/Index')">
+						<img class="imgg"  alt=""  src="${ctxPath}/img/jczw.png">
+						<br/>
+						<span class="spann">监督检查业务系统</span>
+					</div>
+					<div class="col-xs-2"  onclick="window.open('http://www.jsgrain.gov.cn:88/Law/Index')">
+						<img class="imgg"  alt="" src="${ctxPath}/img/xzzf.png">
+						<br/>
+						<span class="spann">粮食行政执法系统</span>
+					</div>
+					<div class="col-xs-2"  onclick="window.open('http://www.jsgrain.gov.cn:88/Login/Index')">
+						<img class="imgg"  alt="" src="${ctxPath}/img/xygl.png">
+						<br/>
+						<span class="spann">信用信息管理系统</span>
+					</div>
+					<div class="col-xs-2" onclick="window.open('http://www.jsgrain.gov.cn:88/Org/Login')">
+						<img class="imgg"  alt="" src="${ctxPath}/img/xysb.png">
+						<br/>
+						<span class="spann">企业信用申报系统</span>
+					</div>
+					<div class="col-xs-2" onclick="window.open('http://www.jsgrain.gov.cn:88/DblRandom/Login')">
+						<img class="imgg"  alt="" src="${ctxPath}/img/ssj.png">
+						<br/>
+						<span class="spann">双随机检查系统</span>
+					</div>
+					<div class="col-xs-1">
+						
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+	
+	
+<%
+	}
+%>

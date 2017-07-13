@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>廒间信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/jibenxinxi/addAojian",title="新增廒间信息";
+	if (isNotEmpty(parameter.qyzzjgdm)) {
+		var kdxx = @com.zkzy.njzhpt.dao.JibenxinxiDao.findAojian({"qyzzjgdm":parameter.qyzzjgdm,"kdbm":parameter.kdbm,"cfbm":parameter.cfbm,"page":"1","rows":"100"});
+		obj = kdxx.list[0];
+		url = ctxPath+"/jibenxinxi/upAojian";
+		title = "编辑廒间信息";
+	};
+	
+%>
+
+<body>
+   <div class="dashboard-wrapper-lg" style="padding: 0">
+       <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                
+                  <div class="widget-header">
+                    <div class="title">
+                        	廒间信息                                       
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+	                 <form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+						<input type="hidden" name="qyzzjgdm" class="form-control" value="${obj.qyzzjgdm}">
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" value="${obj.qyzzjgdm}">
+									
+									</div>	
+								</div>
+							
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="kdbm">库点编码:</label>
+										<input id="kdbm" name="kdbm" class="form-control" value="${obj.kdbm}">
+									
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="cfbm">仓房编码:</label>
+										<input id="cfbm" name="cfbm" class="form-control" value="${obj.cfbm}">
+									
+									</div>	
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="ajbh">廒间编号:</label>
+										<input id="ajbh" name="ajbh" class="form-control" placeholder="廒间编号"  value="${obj.ajbh}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="ajmc">廒间名称:</label>
+										<input id="ajmc" name="ajmc" class="form-control" placeholder="廒间名称" value="${obj.ajmc}">
+									</div>
+								</div>
+							</div>
+                  	</div>
+                  	 </form>
+                  	 <div class="panel-footer"  style="overflow:hidden;" align="center">
+				<button type="button" class="btn btn-success float-right" onclick="saveAojian('${obj.ID}')"><em class="fa fa-check fa-fw"></em>保存</button>
+                </div>
+                </div>
+                
+              </div>
+            </div>
+           
+        </div>
+
+<!-- uploadifive所需js和css -->
+<script src="${ctxPath}/resource/jquery.uploadifive.min.js"></script>
+<link href='${ctxPath}/resource/uploadifive.css'/>
+
+<script type="text/javascript">
+
+function saveAojian(ID){
+	$.ajax({
+		url:"${ctxPath}/jibenxinxi/upAojian",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				/* parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true); */
+			}else{
+				alert('修改失败');
+			}
+		}
+	});
+}
+
+</script>
+
+</body>
+</html>

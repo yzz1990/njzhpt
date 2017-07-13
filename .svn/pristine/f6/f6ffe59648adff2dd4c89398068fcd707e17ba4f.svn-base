@@ -1,0 +1,257 @@
+package com.zkzy.njzhpt.bo;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.config.interfaces.ICommond;
+import com.zkzy.njzhpt.dao.CangchuglDao;
+import com.zkzy.njzhpt.dao.ChengPinLiangDAO;
+import com.zkzy.njzhpt.dao.ChuBeiLiangJHDAO;
+import com.zkzy.njzhpt.dao.LunHuanGuanLiDAO;
+import com.zkzy.njzhpt.dao.QuxuanCommondDao;
+import com.zkzy.njzhpt.dao.ZhiLiangGLDAO;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+import com.zkzy.njzhpt.dao.ShouchukeshihuaDAO;
+
+public class QuxuanCommondBo implements ICommond {
+
+	@Override
+	public Page<Record> findQiyexinxi(HashMap<String, Object> param)
+			throws Exception {
+		
+		return QuxuanCommondDao.findQiyexinxi(param);
+	}
+
+	@Override
+	public Page<Record> findDiqu(HashMap<String, Object> param)
+			throws Exception {
+		
+		return QuxuanCommondDao.findDiqu(param);
+	}
+
+	@Override
+	public Page<Record> findDiquniandupx(HashMap<String, Object> param)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return QuxuanCommondDao.findDiquniandupx(param);
+	}
+
+	@Override
+	public Page<Record> chubeilianghuizongb(HashMap<String, Object> map)
+			throws Exception {
+		String sql="SELECT a.xzqhdm FROM njpt_diqu a LEFT JOIN fw_area b ON a.areaid=b.id WHERE b.id=?";
+		Record re=Db.findFirst(sql,UserKit.currentUserInfo().getArea().getString("id"));
+		map.put("xzqhdm", re.get("xzqhdm"));
+		Page<Record> PageRecord = ChuBeiLiangJHDAO.queryswkc(map);//查询所有的
+		double cbljh_xm=0,cbljh_jd=0,cbljh_xd=0,cbljh_xj=0;
+		for(Record qykdRecord:PageRecord.getList()){
+			String xzqhdm = qykdRecord.getStr("xzqhdm");
+			String qyzzjgdm = qykdRecord.getStr("qyzzjgdm");
+			String kdbm = qykdRecord.getStr("kdbm");
+			HashMap<String, Object> param1 = new HashMap<>();
+			param1.put("xzqhdm", xzqhdm);
+			param1.put("qyzzjgdm", qyzzjgdm);
+			param1.put("kdbm", kdbm);
+			Record cangaosl = ChuBeiLiangJHDAO.findcangaosl(param1);//查询仓廒数量
+			qykdRecord.setColumns(cangaosl);
+			if(null!=map.get("niandu")){
+				param1.put("niandu", map.get("niandu"));
+			}
+			if(null!=map.get("xingzhi")){
+				param1.put("xingzhi", map.get("xingzhi"));
+			}
+			Record record = ChuBeiLiangJHDAO.findcbljhkudiankc(param1);//统计库点下储备粮计划分品种数量
+			qykdRecord.setColumns(record);
+			cbljh_xm+=(qykdRecord.getBigDecimal("cbljh_xm").doubleValue());
+			cbljh_jd+=(qykdRecord.getBigDecimal("cbljh_jd").doubleValue());
+			cbljh_xd+=(qykdRecord.getBigDecimal("cbljh_xd").doubleValue());
+			cbljh_xj+=(qykdRecord.getBigDecimal("cbljh_xj").doubleValue());
+		}
+		Ret ret =new Ret().put("list", PageRecord).put("cbljh_xm", cbljh_xm).put("cbljh_jd", cbljh_jd).put("cbljh_xd", cbljh_xd).put("cbljh_xj", cbljh_xj); 
+		
+		return PageRecord;
+	}
+
+	@Override
+	public Ret chubeilianghuizongheji(HashMap<String, Object> map)
+			throws Exception {
+		if(map.get("xzqhdm")==""){
+			String sql="SELECT a.xzqhdm FROM njpt_diqu a LEFT JOIN fw_area b ON a.areaid=b.id WHERE b.id=?";
+			Record re=Db.findFirst(sql,UserKit.currentUserInfo().getArea().getString("id"));
+			map.put("xzqhdm", re.get("xzqhdm"));
+		}
+		Ret ret=new Ret();
+		Param p = new Param();
+		p.put("and quming = ?", "xzqhdm");
+		p.put("and ccqy = ?", "qyzzjgdm");
+		p.put("and k.kdmc like ?", "kdmc","%%%s%%");
+		p.put("and niandu = ?", "niandu");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select sum(cbljh_xm)/1000 as cbljh_xm,SUM(cbljh_jd)/1000 cbljh_jd,sum(cbljh_xd)/1000 cbljh_xd,sum(cbljh_xj)/1000 cbljh_xj ",
+				"from njpt_chubeiliangjihua c LEFT JOIN tz_kudian k on c.ccqy=k.qyzzjgdm and c.cckd=k.kdbm where 1=1 " + s.getSql(), s.getParam().toArray(new Object[0]));
+			if(page.getList().size()==0){
+				return  ret.put("heji",null);
+			}else{
+				return  ret.put("heji",page.getList().get(0));	
+			}
+			
+		
+	}
+
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> queryLunHuanShenQing(HashMap<String, Object> map)
+			throws Exception {
+		Page<Record> lastPageRecord=LunHuanGuanLiDAO.queryLunHuanShenQingQX(map);
+		Ret ret = Ret.create("list", lastPageRecord);
+		return lastPageRecord;
+	}
+	
+	/**
+	 *获取库点实时收购情况
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret queryshishi(HashMap<String, Object> map) throws Exception {
+		String xian = UserKit.currentUserInfo().getArea().getString("name");
+		HashMap<String,Object> param = map;
+		if("请选择".equals(param.get("xian"))){
+			param.remove("xian");
+		}
+		if("请选择".equals(param.get("qyzzjgdm"))){
+			param.remove("qyzzjgdm");
+		}
+		if("请选择".equals(param.get("kdmc"))){
+			param.remove("kdmc");
+		}
+		if("0".equals(param.get("isksh"))){
+			param.remove("isksh");
+		}
+		param.put("xian", xian);
+		Page<Record> userPageRecord = ShouchukeshihuaDAO.queryshishi(param);
+		
+		//========================================================
+		//获取当前分期
+		Date dt = new Date();
+		String starttime;
+		String endtime;
+	    SimpleDateFormat matter1=new SimpleDateFormat("yyyy-MM-dd");
+	    String today = matter1.format(dt);
+	    String sql = "select starttime , endtime "
+	    		+ "from njpt_fenqishangbao "
+	    		+ "where convert(date,starttime) <= ? and convert(date,endtime) >= ?";
+	    Record recordt = Db.findFirst(sql, today,today);
+	    if(recordt == null){
+	    	starttime = "2100-01-01";
+	    	endtime = "2000-01-01";	
+	    }else{
+	    	starttime = recordt.getStr("starttime");
+		    endtime = recordt.getStr("endtime");
+	    }
+	    
+	    System.out.println(starttime);
+	    System.out.println(starttime.length());
+	    if(StrKit.isBlank(starttime) || starttime.length() != 10){
+	    	
+	    }
+		//=====================================================
+		
+		
+		
+		for(Record userRecord:userPageRecord.getList()){
+			String qiye = userRecord.getStr("qyzzjgdm");
+			String kdbm = userRecord.getStr("kdbm");
+			HashMap<String, Object> param1 = new HashMap<>();
+			param1.put("qiye", qiye);
+			param1.put("kdbm", kdbm);
+			Record pzkc = ShouchukeshihuaDAO.findzongkucun(param1);
+			userRecord.setColumns(pzkc);
+			
+			HashMap<String, Object> param2 = new HashMap<>();
+			param2.put("qiye", qiye);
+			param2.put("kdbm", kdbm);
+			param2.put("starttime", starttime);
+			param2.put("endtime", endtime);
+			Record pzrk = ShouchukeshihuaDAO.findzongrk(param2);
+			if(pzrk == null){
+				pzrk = new Record();
+				pzrk.set("sunNW", 0);
+			}
+			userRecord.setColumns(pzrk);
+			String[] lspzbm = {"111","1132","1131"};
+			String[] lspz = {"xiaomai","jingdao","xiandao"};
+			for(int i = 0; i < lspzbm.length; i++){
+				param1.remove("lspzbm");
+				param1.remove("lspz");
+				param1.put("lspzbm", lspzbm[i]);
+				param1.put("lspz",lspz[i]);
+				Record record = ShouchukeshihuaDAO.findpzkucun(param1);
+				userRecord.setColumns(record);
+			}	
+		}
+		
+		Ret ret = Ret.create("list", userPageRecord);
+		
+		return ret;
+	}
+
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> selectCPLCBJH(HashMap<String, Object> map) throws Exception {
+		String sql="SELECT a.xzqhdm FROM njpt_diqu a LEFT JOIN fw_area b ON a.areaid=b.id WHERE b.id=?";
+		Record re=Db.findFirst(sql,UserKit.currentUserInfo().getArea().getString("id"));
+		map.put("quming", re.get("xzqhdm"));
+		Page<Record> PageRecord = ChengPinLiangDAO.selectCPLCBJH(map);
+		return PageRecord;
+	}
+
+	@Override
+	public Page<Record> selectZLXQ(HashMap<String, Object> map)
+			throws Exception {
+		String sql="SELECT a.xzqhdm FROM njpt_diqu a LEFT JOIN fw_area b ON a.areaid=b.id WHERE b.id=?";
+		Record re=Db.findFirst(sql,UserKit.currentUserInfo().getArea().getString("id"));
+		map.put("xzqhdm", re.get("xzqhdm"));
+		Page<Record> PageRecord = ZhiLiangGLDAO.selectZLXQ(map);
+		Ret ret = Ret.create("list", PageRecord);
+		return PageRecord;
+	}
+
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> selectlunhuanHZ(HashMap<String, Object> map)
+			throws Exception {
+		String sql="SELECT a.xzqhdm FROM njpt_diqu a LEFT JOIN fw_area b ON a.areaid=b.id WHERE b.id=?";
+		Record re=Db.findFirst(sql,UserKit.currentUserInfo().getArea().getString("id"));
+		map.put("szqy", re.get("xzqhdm"));
+		Page<Record> list= LunHuanGuanLiDAO.selectlunhuanHZ(map);
+		Ret ret = Ret.create("list", list);
+		return list;
+	}
+
+	
+	
+	/**
+	 * 分页查询企业信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<Record> findQiye(HashMap<String, Object> param) throws Exception{
+		String xian = UserKit.currentUserInfo().getArea().getString("name");
+		param.put("quyu", xian);
+		return CangchuglDao.findQiye(param);
+	}
+	
+
+}

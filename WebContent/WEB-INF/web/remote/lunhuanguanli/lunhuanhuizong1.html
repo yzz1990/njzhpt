@@ -1,0 +1,22 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<script type="text/javascript">
+$(function(){
+	var url;
+	url = 'http://49.65.0.27:8080/WebReport/ReportServer?reportlet=lunhuanshenqing.cpt';
+	//	url = 'http://58.214.246.30:1000/WebReport/ReportServer?reportlet=lunhuanshenqing.cpt';
+	
+	$("#lunhuanshenqing").attr("src",url);
+});
+
+
+
+
+</script>
+
+	<div class="panel panel-default">
+		<iframe id="lunhuanshenqing" style="width:1360px; height:650px" src=''></iframe>
+	</div>
+
+<%}%>

@@ -1,0 +1,422 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    border: 1px solid #ADD8E6;
+    border-bottom: 1px solid #ADD8E6;
+}
+
+.table>tbody>tr>td {
+    font-size:15px;
+   text-align:right;
+}
+.div_center{
+	text-align:center;
+}
+
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+}
+.table-bordered {
+    border: 1px solid #ADD8E6;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+}
+
+table.dataTable {
+       margin: 0 auto;
+       clear: both;
+       border-collapse: collapse;
+       border-spacing: 0;
+       float:left;
+}
+
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.dataTables_wrapper{
+	width:760px;
+	float:left;
+
+}
+
+</style>
+
+<div class="row">
+		<div class="col-lg-12">
+			<div class="well" style="height: 400px;">
+				<!--  <h4>种植面积统计分析</h4>-->
+				<span style="width: 200px;font-size: 18px;">种植面积分析统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/亩)</span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1300px;height: 2px;">
+	           	<table id="zzmj"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" data-url="${ctxPath}/zonghe/findzzmj" >
+					<thead>
+						<tr>
+							<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">区域</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">现有土地</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">耕种土地</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">播种土地</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">作物土地</th>
+						</tr>
+	    			</thead>
+				</table>   
+	           <div id="container" style="min-width: 450px; max-width: 600px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+	           
+	         </div>
+	         <div id="container1" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+           <div id="container2" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+           <div id="container3" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+		</div>		
+</div>
+
+
+
+<script>
+
+var quxian = ["市区","江宁区","浦口区","六合区","溧水区","高淳区"];
+var xytdfq = [];
+var gztdfq = [];
+var bztdfq = [];
+var zwtdfq = [];
+
+datatable = $('#zzmj').DataTable({
+	"processing": true,
+    //"serverSide": true,
+    "paging": false,
+	"info": false,
+    "columns": [
+        {
+			"render": function (data,type,row,meta) {
+				var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+				return div;
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var name = row["name"];
+				var div = '<div class="div_center">'+name+'</div>';	
+				return div;
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var xytd = row["mj_xytd"];
+				if("合计" != row["name"]){
+					xytdfq.push(xytd);
+				}
+				var div = '<div class="">'+xytd+'</div>';	
+				return div;
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var gztd = row["mj_gengdi"];
+				if("合计" != row["name"]){
+					gztdfq.push(gztd);
+				}
+				var div = '<div class="">'+gztd+'</div>';	
+				return div;								
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var bztd = row["mj_bozhong"];
+				if("合计" != row["name"]){
+					bztdfq.push(bztd);
+				}
+				var div = '<div class="">'+bztd+'</div>';	
+				return div;								
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var zwtd = row["mj_liangshi"];
+				if("合计" != row["name"]){
+					zwtdfq.push(zwtd);
+				}
+				var div = '<div class="">'+zwtd+'</div>';	
+				return div;								
+			}
+		}
+		]
+});
+$('#zzmj').on( 'draw.dt', function () {
+	var qscfxy = [{name:"市区",value:xytdfq[0]},{name:"江宁区",value:xytdfq[1]},{name:"浦口区",value:xytdfq[2]},
+	            {name:"六合区",value:xytdfq[3]},{name:"溧水区",value:xytdfq[4]},{name:"高淳区",value:xytdfq[5]}];
+	//烘干能力饼状图
+	option = {
+		    title : {
+		        text: '现有土地分区统计',
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}亩({d}%)"
+		    },
+		    legend: {
+		    	 orient : 'vertical',
+			        y:'center',
+			        x:'left',
+		        data:quxian
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '60%',
+		                        width: '60%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    
+		    calculable : true,
+		    series : [
+		              {
+		                  name:'现有土地占比',
+		                  type:'pie',
+		                  radius : '55%',
+		                  center: ['60%', '60%'],
+		                  itemStyle:{
+		                	  normal:{
+		                		  label:{
+		                			  show: false 
+		                		  },
+		                		  labelLine:{
+		                			  show: false
+		                		  }
+		                	  }
+		                  },
+		                  data:qscfxy
+		              }
+		          ]
+		};
+	echarts.init(document.getElementById('container')).setOption(option);	
+	
+	
+	var qscfgz = [{name:"市区",value:gztdfq[0]},{name:"江宁区",value:gztdfq[1]},{name:"浦口区",value:gztdfq[2]},
+		            {name:"六合区",value:gztdfq[3]},{name:"溧水区",value:gztdfq[4]},{name:"高淳区",value:gztdfq[5]}];
+		//烘干能力饼状图
+		option1 = {
+			    title : {
+			        text: '耕种土地分区统计',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}亩({d}%)"
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:quxian
+			    },
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType : {
+			                show: true, 
+			                type: ['pie', 'funnel'],
+			                option: {
+			                    funnel: {
+			                        x: '60%',
+			                        width: '60%',
+			                        funnelAlign: 'left',
+			                        max: 1548
+			                    }
+			                }
+			            },
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    
+			    calculable : true,
+			    series : [
+			              {
+			                  name:'耕种土地占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscfgz
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container1')).setOption(option1);	
+
+		var qscfbz = [{name:"市区",value:bztdfq[0]},{name:"江宁区",value:bztdfq[1]},{name:"浦口区",value:bztdfq[2]},
+			            {name:"六合区",value:bztdfq[3]},{name:"溧水区",value:bztdfq[4]},{name:"高淳区",value:bztdfq[5]}];
+			//烘干能力饼状图
+			option2 = {
+				    title : {
+				        text: '播种土地分区统计',
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}亩({d}%)"
+				    },
+				    legend: {
+				    	 orient : 'vertical',
+					        y:'center',
+					        x:'left',
+				        data:quxian
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    
+				    calculable : true,
+				    series : [
+				              {
+				                  name:'播种土地占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '60%'],
+				                  itemStyle:{
+				                	  normal:{
+				                		  label:{
+				                			  show: false 
+				                		  },
+				                		  labelLine:{
+				                			  show: false
+				                		  }
+				                	  }
+				                  },
+				                  data:qscfbz
+				              }
+				          ]
+				};
+			echarts.init(document.getElementById('container2')).setOption(option2);	
+			
+			var qscfzw = [{name:"市区",value:zwtdfq[0]},{name:"江宁区",value:zwtdfq[1]},{name:"浦口区",value:zwtdfq[2]},
+				            {name:"六合区",value:zwtdfq[3]},{name:"溧水区",value:zwtdfq[4]},{name:"高淳区",value:zwtdfq[5]}];
+				//烘干能力饼状图
+				option3 = {
+					    title : {
+					        text: '作物土地分区统计',
+					    },
+					    tooltip : {
+					        trigger: 'item',
+					        formatter: "{a} <br/>{b} : {c}亩({d}%)"
+					    },
+					    legend: {
+					    	 orient : 'vertical',
+						        y:'center',
+						        x:'left',
+					        data:quxian
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            magicType : {
+					                show: true, 
+					                type: ['pie', 'funnel'],
+					                option: {
+					                    funnel: {
+					                        x: '60%',
+					                        width: '60%',
+					                        funnelAlign: 'left',
+					                        max: 1548
+					                    }
+					                }
+					            },
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    
+					    calculable : true,
+					    series : [
+					              {
+					                  name:'作物土地占比',
+					                  type:'pie',
+					                  radius : '55%',
+					                  center: ['60%', '60%'],
+					                  itemStyle:{
+					                	  normal:{
+					                		  label:{
+					                			  show: false 
+					                		  },
+					                		  labelLine:{
+					                			  show: false
+					                		  }
+					                	  }
+					                  },
+					                  data:qscfzw
+					              }
+					          ]
+					};
+				echarts.init(document.getElementById('container3')).setOption(option3);	
+	
+	
+});
+
+
+
+</script>
+ 
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

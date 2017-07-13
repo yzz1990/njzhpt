@@ -1,0 +1,295 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	/*  .table-striped>tbody>tr>td:nth-child(4){
+		
+	width:100px;  
+     overflow:hidden;  
+    white-space:nowrap;  
+    text-overflow:ellipsis;  
+    -o-text-overflow:ellipsis;  
+    -icab-text-overflow: ellipsis;  
+    -khtml-text-overflow: ellipsis;  
+    -moz-text-overflow: ellipsis;  
+    -webkit-text-overflow: ellipsis;  
+	}
+	.table-striped>tbody>tr>td:nth-child(5){
+	width:100px;  
+     overflow:hidden;  
+    white-space:nowrap;  
+    text-overflow:ellipsis;  
+    -o-text-overflow:ellipsis;  
+    -icab-text-overflow: ellipsis;  
+    -khtml-text-overflow: ellipsis;  
+    -moz-text-overflow: ellipsis;  
+    -webkit-text-overflow: ellipsis;  
+	}  */
+</style>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>应急小组</b></span>
+		</div>
+			<div class="panel-heading">
+				 <div class="form-inline" style="float: left;">
+					
+					<label style="margin-left: 5px">所属单位:</label>
+					<!-- <input class="form-control input-sm"  id="name" placeholder="单位" type="text"> -->
+					 <select id="name" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" >
+						 <option value="" selected="true" >请选择企业</option> 	
+					</select> 
+					<label style="margin-left: 5px">负责人:</label>
+					<input class="form-control input-sm"  id="fuzeren" placeholder="负责人" type="text">
+					<!-- <select id="fuzeren" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="Changefuzeren()">
+						<option value="" selected="true" >请选择负责人</option>	
+					</select> -->
+					<label style="margin-left: 5px">小组成员:</label>
+					<input class="form-control input-sm"  id="chenyuan" placeholder="小组成员" type="text">
+					<!-- <select id="chenyuan" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" >
+						 <option value="" selected="true" >请选择成员</option> 	
+					</select> -->
+					<a  style="margin-left: 5px" class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>  
+				<a class="btn btn-success btn-xs pull-right" type="button" onclick="addxiaozu()"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findxiaozu?isedit=2" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+	
+
+var datatable;
+$(function(){
+	 $.ajax({
+		 url:'${ctxPath}/renyuan/findYjdept',
+		 type:'post',
+		 dataType:'json',
+		 data:{"id": "${array.contain(session.userinfo.auth,'auth_county')?session.userinfo.dep.id:''}"},
+		 success:function(data){
+			 $.each(data,function(i, n){
+					$("#name").append("<option value="+n.id+">"+n.name+"</option>");
+				});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  }); 
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "xuhao",
+				"title" : "序号"
+			},
+			{
+				"data" : "jibie",
+				"title" : "级别"
+			},
+			{
+				"data" : "fuzeren",
+				"title" : "负责人"
+			},
+			{
+				"data":	"chenyuan",
+				"title" : "小组成员"
+			},{
+				width:100,
+				"data" :"ziwei",
+				"title" : "职位"
+			},{
+				"data" : "phone",
+				"title" : "联系方式"
+			},{
+				"data" : "address",
+				"title" : "联络地址"
+			},{
+				"data" : "yuanziwei",
+				"title" : "原职位"
+			},{
+				"data" : "name",
+				"title" : "所属单位"
+			},
+			 {"title":"操作",
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upxiaozu(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delxiaozu(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+			]
+	});
+});
+/* function Changename(){
+	$("#fuzeren").html("");
+	$("#chenyuan").html("");
+	var danwei= $("#name option:selected").val();
+	var op = '<option value="">请选择负责人</option>';
+    $("#fuzeren").append(op);
+    var kd = '<option value="">请选择成员</option>';
+    $("#chenyuan").append(kd);
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findfuzeren',
+		type:'post',
+		data:{"danwei_id":danwei},
+		dataType:'json',
+		success:function(data){
+			$("#fuzeren").find(".select2-selection__rendered").text("请选择负责人");
+			$("#fuzeren").find(".select2-selection__rendered").attr("title","请选择负责人");
+			for(var i = 0; i < data.length; i++){
+				 var op = "<option value="+data[i].fuzeren+">"+data[i].fuzeren+"</option>";
+			     $("#fuzeren").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});	
+}
+function Changefuzeren(){
+	$("#chenyuan").html("");
+	var danwei= $("#name option:selected").val();
+	var fuzeren=$("#fuzeren option:selected").val();
+	var op = '<option value="">请选择成员</option>';
+    $("#chenyuan").append(op);
+	
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findchenyuan',
+		type:'post',
+		data:{"fuzeren":fuzeren},
+		dataType:'json',
+		success:function(data){
+			$("#chenyuan").find(".select2-selection__rendered").text("请选择成员");
+			$("#chenyuan").find(".select2-selection__rendered").attr("title","请选择成员");
+			
+			for(var i = 0; i < data.length; i++){
+				 var op = "<option value="+data[i].chenyuan+">"+data[i].chenyuan+"</option>";
+			     $("#chenyuan").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+} */
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+});
+function doSearch(){
+	var fuzeren = $("#fuzeren").val();
+	var chenyuan = $("#chenyuan").val();
+	var name = $("#name").val();
+	
+	var q="";
+	if($("#name").val()!="请选择企业"){
+		q =q + "&danwei_id="+$("#name").val();
+	}
+	if($("#fuzeren").val()!="请选择负责人"){
+		q =q + "&fuzeren="+$("#fuzeren").val();
+	}
+	if($("#chenyuan").val()!="请选择成员"){
+		q =q + "&chenyuan="+$("#chenyuan").val();
+	}
+	document.querySelector('.datatables').dataset.queryparam=q;
+	datatable.ajax.reload(null,false);
+} 
+ 
+
+
+function addxiaozu(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增小组 ',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/yingji/yingjixiaozu/xiaozu_add.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","430px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.savexiaozu(); 
+        	   
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+function upxiaozu(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑小组信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/yingji/yingjixiaozu/xiaozu_add.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","370px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.savexiaozu(); 
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function delxiaozu(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delxiaozu',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+</script>
+<%
+	}
+%>

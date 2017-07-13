@@ -1,0 +1,69 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+
+%>
+<style>
+.pinfen{
+	width:22%;
+}
+.pinfeng{
+	width:12%;
+}
+.nav-tabs>li>a{
+	padding: 10px 10px;
+}
+
+</style>
+
+
+<body>
+<div>
+	<ul role="tablist" class="nav nav-tabs" style="width:100%;">
+                  <li role="presentation" class="active pinfeng">
+                  <a href="#jj"  aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="text-align: center;">
+                        简介</a>
+                  </li>
+                  <li role="presentation" class="pinfen" >
+                     <a href="#jbqk" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true" style="text-align: center;">
+                       基本情况</a>
+                  </li>
+                  <li role="presentation" class="pinfen" >
+                     <a href="#kqqk" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true" style="text-align: center;">
+                        库区情况</a>
+                  </li>
+                   <li role="presentation" class="pinfen" >
+                     <a href="#zyry" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true" style="text-align: center;">
+                       主要人员</a>
+                  </li>
+                   <li role="presentation" class="pinfen" >
+                     <a href="#ccsb" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true" style="text-align: center;">
+                       仓储设备</a>
+                  </li>
+                  
+               </ul>
+
+</div>
+<div id="myTabContent" class="tab-content" style="padding: 0;margin-top: 3px;">
+	<div class="tab-pane fade in active" id="jj">
+		<iframe id="if1" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/qiyejianjie?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="jbqk">
+		<iframe id="if2" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/qiyejbqk?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="kqqk">
+		<iframe id="if3" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/kuquqk?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="zyry">
+		<iframe id="if4" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/congyery?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="ccsb">
+		<iframe id="if5" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/cangchusb?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+</div>
+<script type="text/javascript">
+
+</script>
+<%
+	}
+%>

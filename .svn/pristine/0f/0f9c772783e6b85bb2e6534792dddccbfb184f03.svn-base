@@ -1,0 +1,84 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addXunzheng",title="新增熏蒸信息";
+	if (isNotEmpty(parameter.id)) {
+		var xz = @com.zkzy.njzhpt.dao.CangchuglDao.findXunzheng({"id":parameter.id,"page":"1","rows":"100"});
+		obj = xz.list[0];
+		url = ctxPath+"/cangchugl/upXunzheng";
+		title = "编辑熏蒸信息";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="zuoyefangshi">作业方式</label>
+							<input type="text" class="form-control" name="zuoyefangshi" id="zuoyefangshi" placeholder="作业方式" value="${obj.zuoyefangshi}" >
+						</div>
+						<div class="form-group">	
+							<label for="caozuorenyuan">操作人员</label>
+							<input type="text" class="form-control" name="caozuorenyuan" id="caozuorenyuan" placeholder="操作人员" value="${obj.caozuorenyuan}" >
+						</div>
+						 <div class="form-group">	
+							<label for="cangao">仓廒</label>
+							<input type="text" class="form-control" name="cangao" id="cangao" placeholder="仓廒" value="${obj.cangao}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="starttime">开始时间</label>
+							<input type="text" class="form-control" name="starttime" id="starttime" placeholder="开始时间" value="${obj.starttime}"  >
+						</div>
+						<div class="form-group">	
+							<label for="endtime">结束时间</label>
+							<input type="text" class="form-control" name="endtime" id="endtime" placeholder="结束时间" value="${obj.endtime}" >
+						</div>
+						<div class="form-group">	
+							<label for="suoyongyaoji">所用药剂</label>
+							<input type="text" class="form-control" name="suoyongyaoji" id="suoyongyaoji" placeholder="所用药剂" value="${obj.suoyongyaoji}"  >
+						</div>
+						<div class="form-group">	
+							<label for="yaojijiliang">药剂剂量</label>
+							<input type="text" class="form-control" name="yaojijiliang" id="yaojijiliang" placeholder="药剂剂量" value="${obj.yaojijiliang}" >
+						</div>
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/zuoyeguanli/xunzhengxinxi.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/zuoyeguanli/xunzhengxinxi.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

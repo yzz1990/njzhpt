@@ -1,0 +1,173 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style type="text/css">
+
+.caozuo{
+	margin-top:0px;
+	width:600px;
+	height:20px;
+}
+.cjd-select{
+	width:200px;
+	float:left;
+}
+
+.cjd-div{
+	float:left;
+}
+
+</style>
+  
+    <script type="text/javascript">
+    var mydate = new Date();
+    var year = mydate.getFullYear();
+    var pzcode;
+    var jglxcode;
+
+    
+    (function ($) {
+      $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+    
+    $(window).load(function() {
+    	$(".cjd-select").select2();
+    	//加载年度下拉框
+    	for(var i = 0; i < 5 ; i++){
+    		var op = '<option value="'+(year-i)+'">'+(year-i)+'</option>';
+    		$("#niandu").append(op);
+    	}
+    	//初始化采价点下拉框
+    	$("#niandu").val("");
+        $("#niandu-div").find(".select2-selection__rendered").text("");
+    	$("#niandu-div").find(".select2-selection__rendered").attr("title","");
+    	
+    });
+
+    
+    
+    $(function(){
+    	pzcode = $.getUrlParam("pzcode");
+    	jglxcode = $.getUrlParam("jglxcode");
+    	
+    	$(".datatables").attr("data-queryparam","&pzcode="+pzcode+"&jglxcode="+jglxcode);
+    	
+    	datatable = $('.datatables').DataTable({
+    		"pageLength": 10,
+    		"lengthMenu": [
+    		       		[5,10,15,20,10000],
+    		       		[5,10,15,20, "所有"]
+    		       	],
+            "columns": [
+                {
+                	"title":"年度",
+            		"render": function (data,type,row,meta) {
+       					var year = row["year"];
+       					var div = '<div style="text-align:center">'+year+'</div>'
+       					return div;
+       				}
+    				
+    			},{
+    				"title":"周数",
+   					"render": function (data,type,row,meta) {
+       					var week = row["week"];
+       					var div = '<div style="text-align:center">'+week+'</div>'
+       					return div;
+       				}
+    				
+    			},{
+    				"title":"价格指数",
+    				"render": function (data,type,row,meta) {
+    					var zhishu = row["zhishu"].toFixed(2);
+    					var div = '<div style="text-align:center">'+zhishu+'</div>'
+    					return div;
+    				}
+    			}
+    			]
+    	});
+    	
+    });
+    
+  //select改变事件
+    function Change(){
+    	//清空下拉框
+    	$("#nianzs").empty();
+    	//获取年度
+    	var niandu = $("#niandu option:selected").text();
+    	//生成星期数据
+    	$.ajax({
+    		url:'${ctxPath}/jiage/findweek',
+    		type:'post',
+    		data:{"niandu":niandu},
+    		dataType:'json',
+    		success:function(data){
+    			
+    			for(var i = 0; i < data.length; i++){	
+    				var op = '<option value="'+(i+1)+'">'+data[i]+'</option>';
+    				$("#nianzs").append(op);
+    			}
+    			
+    			//初始化采价点下拉框
+    			$("#nianzs").val("");
+    		    $("#nianzs-div").find(".select2-selection__rendered").text("");
+    			$("#nianzs-div").find(".select2-selection__rendered").attr("title","");
+    		},
+    		error:function(){
+    			alert("生成年周数失败");
+    		}
+    	});
+    }
+  
+  //查询功能
+    function doSearch(){
+    	
+    	var querystr = "&pzcode="+pzcode+"&jglxcode="+jglxcode;
+    	if($("#niandu option:selected").val() != null && $("#niandu option:selected").val() != ""){
+    		var year = $("#niandu option:selected").val().trim();
+    		querystr += "&year="+year;
+    	}
+    	if($("#nianzs option:selected").val() != null && $("#nianzs option:selected").val() != ""){
+    		var iweek = $("#nianzs option:selected").val().trim();
+    		querystr += "&week="+iweek;
+    	
+    	}
+    	$(".datatables").removeAttr("data-queryparam");
+    	$(".datatables").attr("data-queryparam",querystr);
+    	datatable.ajax.reload(null,true);
+  	}
+    
+    </script>
+    
+    <div id="base" class="">
+    	<div class="panel-heading">
+			<div class="form-inline">
+				 <div class="caozuo">
+				 	<div class="cjd-div niandu-div">
+						<label class="cjd-label">年度:</label>
+						<select id="niandu"  class="form-control cjd-select" style="width:60px" onchange="Change()">
+						</select>
+					</div>
+					<div class="cjd-div nianzs-div" style="margin-left:10px">
+						<label class="cjd-label">年周数:</label>
+						<select id="nianzs" class="form-control cjd-select" style="width:195px">
+						</select>
+					</div>
+				 	
+				 	<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px;"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+    	<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables" data-url="${ctxPath}/jiage/findzhishu.do" >
+          
+    	</table>
+    </div>
+<%
+	}
+%>
+  

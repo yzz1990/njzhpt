@@ -1,0 +1,120 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+  var liuchenghao = parameter.liuchenghao;
+%>
+<div class="panel panel-default">
+	<div class="panel-body" >
+		<table id="liucheng"  class="table table-striped table-hover table-bordered datatables" data-url="${liuchenghao!=null?ctxPath+'/renyuan/findshenpiliucheng?liuchenghao='+liuchenghao:''}"></table>	
+	</div>																								
+</div>
+<script>
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+            {
+            	"data" : "name",
+				"title" : "流程名称",width:100
+				
+			},{
+				"title" : "流程类型",width:100,
+				"render": function (data,type,row,meta) {
+					var type=null;
+					if(row["liuchengtype"]=="0"){
+						type="企业备案流程";
+					}else if(row["liuchengtype"]=="1"){
+						type="熏蒸备案流程";
+					}else if(row["liuchengtype"]=="2"){
+						type="药剂备案流程";
+					}else{
+						type="储备计划备案流程";
+					}
+					return type;
+				}
+			},
+			
+			{
+				"data" : "liuchenghao",
+				"title" : "流水号",width:100
+			},{
+				"data" : "xingming",
+				"title" : "审核人",width:100
+			},{
+				"data" : "dept",
+				"title" : "审核部门",width:100
+			},
+			 {
+				"data" : "jiedian",
+				"title" : "节点",width:100
+			}, 
+			{
+				"title":"操作",width:100,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="editjiedian(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                	//var bianji = '<a href='+url+' onclick="xiangqing(\''+row["liuchenghao"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;详情</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delLc(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }]
+	});
+});
+
+
+var dialogAdd;
+
+function edit(){
+	dialogAdd.close();
+}
+  function editjiedian(id){
+	  dialogAdd=top.BootstrapDialog.show({
+		    title: '编辑流程',
+			closeByBackdrop: true,
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="yes" src="${ctxPath}/renyuan/shenpiguanli/shenpilc_edit.html?id='+id+'"/>'),
+		    onshow:function(dlg){
+	       		dlg.$modalDialog.css("width","1000px");//modal-dialog
+	       		$(".bootstrap-dialog-message", dlg.$modalContent).css("height","230px");//modal-dialog
+	       },
+	       buttons: [
+	                 {
+		           label: '保存',
+		           action: function(dialog) {
+		        	   $(window.parent.document).contents().find("iframe")[1].contentWindow.updateLiucheng(); 
+		           },
+		          cssClass: 'btn-success btn-xs'
+		       },
+		       {
+		           label: '关闭',
+		           action: function(dialog) {
+		               dialog.close();
+		           },
+		          cssClass: 'btn-danger btn-xs'
+		       }]
+		});
+  }
+  
+function  delLc(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/renyuan/dellc',
+			type:'post',
+			dataType:'json',
+			data:{"id":id},
+			success:function(data){
+				if(data.ret){
+					alert("删除成功！");
+					datatable.ajax.reload(null,true);
+				}
+			}
+		});
+	}
+	
+}
+
+
+
+</script>
+
+<%
+	}
+%>

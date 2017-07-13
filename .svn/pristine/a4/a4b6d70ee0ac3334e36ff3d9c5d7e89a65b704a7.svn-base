@@ -1,0 +1,223 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>粮食基本信息管理</title>
+<script type="text/javascript" src="${ctxPath}/js/jsManager5.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+ <link rel="stylesheet" href="${ctxPath}/css/controlIC.css" type="text/css" />
+<style type="text/css">
+.panel {
+	position: absolute;
+}
+
+#run0Img {
+    margin-left: 30px;
+    display: block;
+    widht: 75px;
+    height: 28px;
+    line-height: 28px;
+}
+#stop0Img {
+	margin-left: 30px;
+    display: block;
+    widht: 75px;
+    height: 28px;
+    line-height: 28px;
+}
+</style>
+<script type="text/javascript">
+
+$(function() {		
+	setTimeout("shipin()",1000);  
+});
+
+function shipin(){
+	$("#vide").attr("src","${ctxPath}/yewu/cangchuzhinenghua/shipin1.html");
+}
+
+function runCC(kongtiaoid,name){
+	 if(confirm("您确定要执行操作吗？")==true){
+		 $.ajax({
+		    	url: "${ctxPath}/zhineng/singleconnect",
+		    	type:"post",
+		    	data:{"kongtiaoid":kongtiaoid},
+		    	dataType:"text",
+		    	success:function(data){
+		    		if("0" == data){
+		    			alert(name+"打开失败");
+		    		}else if("1" == data){
+		    			alert(name+"打开成功");
+		    		}else{
+		    			alert("错误信号:"+data);
+		    		}
+		    	},
+		    	error:function(){
+		    		alert("error");
+		    	}
+		    });
+	 }
+	  
+}
+function stopCC(kongtiaoid,name){
+	 if(confirm("您确定要执行操作吗？")==true){
+		 $.ajax({
+		    	url: "${ctxPath}/zhineng/singleconnect",
+		    	type:"post",
+		    	data:{"kongtiaoid":kongtiaoid},
+		    	dataType:"text",
+		    	success:function(data){
+		    		if("0" == data){
+		    			alert(name+"关闭失败");
+		    		}else if("1" == data){
+		    			alert(name+"关闭成功");	
+		    		}else{
+		    			alert("错误信号:"+data);
+		    		}
+		    	},
+		    	error:function(){
+		    		alert("error");
+		    	}
+		    });
+	 }
+}
+
+var pauseCC = function(cangchuangid){
+	$.messager.prompt('提示', '请输入验证码', function(r){
+        if (r == "a"){
+        	$.messager.confirm("操作提示", "您确定要执行操作吗？", function (r) {
+				if(r){
+					$.post(_rooturl+ '/szlk!ajaxcangchuang',{canghao:canghao2,cangchuang:cangchuangid},function(data) {
+						if(data)
+						{
+							var data= eval("("+data+")");
+							alert(data[0].mingling2);
+							$.post(_rooturl+ '/szlk!cangchuangKz',{command:data[0].mingling2},function(data1) {
+								if(data1.ret == true)
+								{
+									alert(json.ret);	
+								}
+				            });
+						}
+		            });
+				}
+        	});
+        }
+    });
+}
+
+function quanxuan()
+{
+	var doc = document.getElementsByName("fx");
+	for(var i = 0;i<doc.length;i++)
+	{
+		doc[i].checked = true; 
+	}
+}
+function chexiao()
+{
+	var doc = document.getElementsByName("fx");
+	for(var i = 0;i<doc.length;i++)
+	{
+		doc[i].checked = false; 
+	}
+}
+
+/*获取当前时间及当前时间加N分钟后的时间*/
+function CurentTime()   
+{   
+    var now = new Date();    
+    var year = now.getFullYear();       //年   
+    var month = now.getMonth() + 1;     //月   
+    var day = now.getDate();            //日
+
+    var hh = now.getHours(); //时
+    var mm = (now.getMinutes() % 60);  //分
+    if (now.getMinutes() / 60 > 1) {
+        hh += Math.floor(now.getMinutes() / 60);
+    }
+    var ss=  now.getSeconds(); 
+    
+    var clock = year + "-";   
+     
+    if(month < 10)   
+        clock += "0";   
+     
+    clock += month + "-";   
+     
+    if(day < 10)   
+        clock += "0";   
+         
+    clock += day + " ";   
+     
+    if(hh < 10)   
+        clock += "0";   
+         
+    clock += hh + ":";   
+    if (mm < 10) clock += '0';   
+    clock += mm+":";  
+    
+    if(ss<10) clock+= '0';
+    	clock += ss;
+    
+    return(clock);
+}   
+</script>
+</head>
+<body>
+	<div class="whole">
+	  	<div class="leftDIV">
+	  		<div class="top2">
+	  			<img src="${ctxPath}/img/headpoint.png" style="width: 13px;height: 13px"></img>&nbsp;&nbsp;智能控制
+	  		</div>
+	  		<div class="center" style="height: 300px">
+	  			<div align="center"><img id="ccImg" src="${ctxPath}/img/lengguji0.png" style="width: 400px;height: 300px;margin-left: 40px;" /></div>
+	  		</div>
+	  		<div class="bottom">
+	  			<div>
+	  				
+	  				<div style="margin-top:15px;text-align:center">
+	  					
+		  				<%
+		  					for(device in deviceList){
+		  				%>	
+	  						<span style="left: 20px;float: left;">
+	  						  	<table align="center" style="width: 150px;height: 150px;">		           		
+						      		<tr>
+						      			<td>${device.vName}</td>
+						      		</tr>
+						      		<tr>	
+						      			<td><a href="javascript:void(0);" id="run0Img" onclick="runCC('${device.vCode}_2','${device.vName}')"  style="margin-left: :30px"></a></td>
+						      		</tr>
+						      		<tr>
+						      			<td><a href="javascript:void(0);" id="stop0Img" onclick="stopCC('${device.vCode}_3','${device.vName}')" style="margin-left: :30px"></a></td>
+						      		</tr>
+						     	 </table>
+	  						</span>
+				      		<!-- <tr align="center">
+				      			<td><a href="javascript:void(0);" id="run0Img" onclick="runCC('${device.vCode}_2')" ></a></td>
+				      		</tr>
+				      		<tr>
+				      			<td><a href="javascript:void(0);" id="stop0Img" onclick="stopCC('${device.vCode}_3')" ></a></td>
+				      		</tr> -->
+		  				<%
+		  					}
+		  				%>
+		  			</div>
+	  			</div>
+	  		</div>
+  		</div>
+	  	<div class="rightDIV" style="width: 360px">
+	 		<div class="top">
+	  			<img src="${ctxPath}/img/headpoint.png" ></img>&nbsp;&nbsp;仓库内
+	  		</div>
+	        <div class="video01" >
+	        	<iframe id="vide" src="" style="width:360px;height:240px" frameborder='0' scrolling='no' ></iframe>
+	        	<!-- <iframe id="vide1" src="${ctxPath}/yewu/cangchuzhinenghua/shipin1.html" style="width:360px;height:240px" frameborder='0' scrolling='no' ></iframe> -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>

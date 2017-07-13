@@ -1,0 +1,75 @@
+<div style="float: left;" align="center">
+	<img alt="" src="${ctxPath}/img/liucheng/ren1.png" width="100px" height="100px">
+	<p><b>${qyinfo.qymc}</b></p>
+</div>
+<div style="float: left;margin-top: 25px;margin-left: -50px;">
+	<img alt="" src="${ctxPath}/img/liucheng/bluejt.png" width="100px" height="50px">
+</div>
+
+<%
+	for(obj in list){
+	 if(obj.status!=null){	
+	   if(strutil.length(obj.status)==1){
+		 if(parseInt(obj.status)> parseInt(obj.jiedian)){	
+%>
+	<div style="float: left;" align="center">
+		<img alt="" src="${ctxPath}/img/liucheng/ren1.png" width="100px" height="100px">
+		<p><b>${obj.xingming}</b></p>
+		<p style="font-size: 12px;"><b>(${obj.bumenname})</b></p>
+	</div>
+	<div style="float: left;margin-top: 25px;display: ${objLP.last?'none':'block'};">
+		<img alt="" src="${ctxPath}/img/liucheng/${parseInt(strutil.subStringTo(obj.status,0,1))>parseInt(obj.jiedian)?'bluejt.png':'blackjt.png'}" width="100px" height="50px">
+	</div>	
+
+<%
+	}else if(parseInt(obj.status)<= parseInt(obj.jiedian)){
+%>
+	<div style="float: left;" align="center">
+		<img alt="" src="${ctxPath}/img/liucheng/ren5.png" width="100px" height="100px">
+		<p><b>${obj.xingming}</b></p>
+		<p style="font-size: 12px;"><b>(${obj.bumenname})</b></p>
+	</div>
+	<div style="float: left;margin-top: 25px;display: ${objLP.last?'none':'block'};">
+		<img alt="" src="${ctxPath}/img/liucheng/${parseInt(strutil.subStringTo(obj.status,0,1))>parseInt(obj.jiedian)?'bluejt.png':'blackjt.png'}" width="100px" height="50px">
+	</div>	
+
+<%
+	}}else{
+	 if(parseInt(strutil.subStringTo(obj.status,0,1))< parseInt(obj.jiedian)){
+%>
+	<div style="float: left;" align="center">
+		<img alt="" src="${ctxPath}/img/liucheng/ren5.png" width="100px" height="100px">
+		<p><b>${obj.xingming}</b></p>
+		<p style="font-size: 12px;"><b>(${obj.bumenname})</b></p>
+	</div>
+	<div style="float: left;margin-top: 25px;display: ${objLP.last?'none':'block'};">
+		<img alt="" src="${ctxPath}/img/liucheng/blackjt.png" width="100px" height="50px">
+	</div>	
+
+<%
+	}else if(parseInt(strutil.subStringTo(obj.status,0,1))==parseInt(obj.jiedian)){
+%>
+	<div style="float: left;" align="center">
+		<img alt="" src="${ctxPath}/img/liucheng/ren2.png" width="100px" height="100px">
+		<p><b>${obj.xingming}</b></p>
+		<p style="font-size: 12px;"><b>(${obj.bumenname})</b></p>
+	</div>
+	<div style="float: left;margin-top: 25px;display: ${objLP.last?'none':'block'};">
+		<img alt="" src="${ctxPath}/img/liucheng/blackjt.png" width="100px" height="50px">
+	</div>	
+	
+<%
+	}else{
+%>
+	<div style="float: left;" align="center">
+		<img alt="" src="${ctxPath}/img/liucheng/ren1.png" width="100px" height="100px">
+		<p><b>${obj.xingming}</b></p>
+		<p style="font-size: 12px;"><b>(${obj.bumenname})</b></p>
+	</div>
+	<div style="float: left;margin-top: 25px;display: ${objLP.last?'none':'block'};">
+		<img alt="" src="${ctxPath}/img/liucheng/bluejt.png" width="100px" height="50px">
+	</div>	
+
+<%
+		}}}}
+%>	

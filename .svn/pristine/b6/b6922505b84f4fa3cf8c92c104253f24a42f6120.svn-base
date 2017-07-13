@@ -1,0 +1,348 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+	<!----------- shiping ------------>
+	<script src="http://58.214.246.30:1000/cdn/shipin/preview.js?version=3.0.4.150415"></script>
+	<!----------- shiping ------------>
+	<link rel="stylesheet" href="${ctxPath}/css/bootstrap.css" >
+	
+	 <style type="text/css">
+	 	.datatables td, .datatables th{
+	 		border:1px  solid #ADD8E6;
+	 		text-align:center;
+	 		vertical-align:middle;
+	 	}
+	 	.datatables th, .datatables tr{
+	 		height:40px;
+	 	}
+	 	.rowhebin{
+	 		border:0px  solid #ADD8E6;
+	 	}
+
+    
+    </style>
+    <script type="text/javascript">
+    
+    Array.prototype.S=String.fromCharCode(2);
+    Array.prototype.in_array=function(e){
+        var r=new RegExp(this.S+e+this.S);
+        return (r.test(this.S+this.join(this.S)+this.S));
+    };
+    
+    function getnum(array,op){
+    	var num = 0;
+    	for(var i = 0;i < array.length; i++){
+    		if(array[i] == op){
+    			num++;
+    		}
+    	}
+    	return num;
+    }
+        
+    (function ($) {
+ 	      $.getUrlParam = function (name) {
+ 	            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+ 	            var r =  decodeURI(window.location.search).substr(1).match(reg);
+ 	            if (r != null) return unescape(r[2]); return null;
+ 	        }
+	      })(jQuery);
+    
+  
+    $(function(){
+    	var xian = decodeURI($.getUrlParam("xian"));
+    	var qymc = decodeURI($.getUrlParam("qymc"));
+    	var qyzzjgdm = $.getUrlParam("qyzzjgdm");
+    	var kdbm = $.getUrlParam("kdbm");
+    	var kdmc = decodeURI($.getUrlParam("kdmc"));
+    	
+    	var sumzy = 0;
+    	var sumsc = 0;
+    	var sumdc = 0;
+    	var sumxc = 0;
+    	var sumlc = 0;
+    	var sumsp = 0;
+    	var sumqt = 0;
+    	//加载总合计
+				var tr = '<tr style="border:1px solid:black">';
+					//tr+=	'<td colspan="2">'+xian+'</td>';
+					//tr+=	'<td>'+qymc+'</td>';
+					tr+=	'<td>'+kdmc+'</td>';
+					tr+=	'<td colspan="2"></td>';
+					tr+=	'<td class="zhj"></td>';
+					tr+= '<td colspan="2" class="zhjzy"></td>';
+					tr+= '<td colspan="2" class="zhjsc"></td>';
+					tr+= '<td colspan="2" class="zhjdc"></td>';
+					tr+= '<td colspan="2" class="zhjxc"></td>';
+					tr+= '<td colspan="2" class="zhjlc"></td>';
+					tr+= '<td colspan="1" class="zhjsp"></td>';
+					tr+= '<td colspan="1" class="zhjqt"></td>';
+					tr+= '</tr>';
+				$(".datatables").find("tbody").append(tr);
+
+				$.ajax({
+		    		url:'${ctxPath}/shouchukeshihua/findzhj.do',
+		    		type:'post',
+		    		data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":10000},
+		    		dataType:'json',
+		    		success:function(data){
+		    			var arraypz = [];
+		    			for(var i = 0; i < data.list.length; i++){
+		    				arraypz.push(data.list[i].vName);
+		    			}
+		    			
+		    			var p = 0;
+		    			var pz = "ewfeewfqwewf";
+		    			var pzbm = "ewfwrfewfdsd";
+		    			var pzzy = 0;
+		    			var pzsc = 0;
+		    			var pzdc = 0;
+		    			var pzxc = 0;
+		    			var pzlc = 0;
+		    			var pzsp = 0;
+		    			var pzqt = 0;
+		    			for(var i = 0; i <= data.list.length; i++){
+		    				var pz1;
+		    				var pzbm1;
+		    				if(i<data.list.length){
+		    					pz1 = data.list[i].vName;
+    		    				pzbm1 = data.list[i].vGrainSubTypeCode;
+		    				}
+		    				
+		    				if((pzbm1!=pzbm)||i==data.list.length){
+		    					
+		    					//========================给品种合计赋值======================
+	    						if(p>0){
+    								$(".zhj"+p).text(((pzzy+pzsc+pzdc+pzxc+pzlc+pzsp)/1000).toFixed(2));
+    	    						$(".zhjzy"+p).text((pzzy/1000).toFixed(2));
+    	    						$(".zhjsc"+p).text((pzsc/1000).toFixed(2));
+    	    						$(".zhjdc"+p).text((pzdc/1000).toFixed(2));
+    	    						$(".zhjxc"+p).text((pzxc/1000).toFixed(2));
+    	    						$(".zhjlc"+p).text((pzlc/1000).toFixed(2));
+    	    						$(".zhjsp"+p).text((pzsp/1000).toFixed(2));
+    	    						$(".zhjqt"+p).text((pzqt/1000).toFixed(2));
+	    	    					pzzy = 0;
+    	    		    			pzsc = 0;
+    	    		    			pzdc = 0;
+    	    		    			pzxc = 0;
+    	    		    			pzlc = 0;
+    	    		    			pzsp = 0;
+    	    		    			pzqt = 0;
+	    						}
+	    						
+		    					//========================给品种合计赋值======================
+		    					//========================加载品种合计=======================
+		    					pzbm = pzbm1;
+		    					pz = pz1;
+		    					p = p+1;
+	    	    				if(i < data.list.length){
+	    	    					
+	    	    						var tr = '<tr>';
+		    	    					tr+=	'<td colspan="3" >小计</td>';
+		    	    					//tr+=	'<td class="rowhebin" colspan="4"></td>';
+		    	    					tr+=	'<td class="zhj'+p+'"></td>';
+		    	    					tr+= '<td colspan="2" class="zhjzy'+p+'"></td>';
+		    	    					tr+= '<td colspan="2" class="zhjsc'+p+'"></td>';
+		    	    					tr+= '<td colspan="2" class="zhjdc'+p+'"></td>';
+		    	    					tr+= '<td colspan="2" class="zhjxc'+p+'"></td>';
+		    	    					tr+= '<td colspan="2" class="zhjlc'+p+'"></td>';
+		    	    					tr+= '<td colspan="1" class="zhjsp'+p+'"></td>';
+		    	    					tr+= '<td colspan="1" class="zhjqt'+p+'"></td>';
+		    	    					tr+= '</tr>';
+	    	    					
+	    	    					
+	    	    				$(".datatables").find("tbody").append(tr);
+	    	    				}
+		    						
+    	    				//========================加载品种合计完成=======================
+		    				}
+		    				if(i < data.list.length){
+		    					
+		    					if(i==0||(data.list[i].vName != data.list[i-1].vName)){
+    	    						var num = getnum(arraypz,data.list[i].vName);
+    	    						var tr = '<tr>';
+    	    						tr+=	'<td colspan="1" rowspan="'+num+'" ></td>';
+    		    					tr+=	'<td rowspan="'+num+'">'+data.list[i].vName+'</td>';
+    		    					tr+=	'<td>'+data.list[i].cfmc+'</td>';
+    		    					tr+=	'<td></td>';
+    		    					//加载储备粮类型
+    		    					if(data.list[i].vGrainPropertyCode == '130'){
+    		    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+    		    						pzzy = pzzy + data.list[i].dmStock;
+    		    						sumzy = sumzy + data.list[i].dmStock;
+    		    					}else{
+    		    						tr+= '<td colspan="2"></td>';
+    		    					}
+    		    					
+    		    					if(data.list[i].vGrainPropertyCode == '121'){
+    		    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+    		    						pzsc = pzsc + data.list[i].dmStock;
+    		    						sumsc = sumsc + data.list[i].dmStock;
+    		    					}else{
+    		    						tr+= '<td colspan="2"></td>';
+    		    					}
+    		    					
+    		    					if(data.list[i].vGrainPropertyCode == '122'){
+    		    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+    		    						pzdc = pzdc + data.list[i].dmStock;
+    		    						sumdc = sumdc + data.list[i].dmStock;
+    		    					}else{
+    		    						tr+= '<td colspan="2"></td>';
+    		    					}
+    		    					
+    		    					if(data.list[i].vGrainPropertyCode == '123'){
+    		    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+    		    						pzxc = pzxc + data.list[i].dmStock;
+    		    						sumxc = sumxc + data.list[i].dmStock;
+    		    					}else{
+    		    						tr+= '<td colspan="2"></td>';
+    		    					}
+    		    					
+    		    					if(data.list[i].vGrainPropertyCode == '134'){
+    		    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+    		    						pzlc = pzlc + data.list[i].dmStock;
+    		    						sumlc = sumlc + data.list[i].dmStock;
+    		    					}else{
+    		    						tr+= '<td colspan="2"></td>';
+    		    					}
+    		    					if(data.list[i].vGrainPropertyCode == '2'){
+    		    						tr+= '<td>'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+    		    						pzsp = pzsp + data.list[i].dmStock;
+    		    						sumsp = sumsp + data.list[i].dmStock;
+    		    					}else{
+    		    						tr+= '<td></td>';
+    		    					}
+    		    					if(data.list[i].vGrainPropertyCode != '2'&&data.list[i].vGrainPropertyCode != '134'
+    		    							&&data.list[i].vGrainPropertyCode != '123'&&data.list[i].vGrainPropertyCode != '122'
+    		    							&&data.list[i].vGrainPropertyCode != '121'&&data.list[i].vGrainPropertyCode != '130'){
+    		    						tr+= '<td>'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+    		    						pzqt = pzqt + data.list[i].dmStock;
+    		    						sumqt = sumqt + data.list[i].dmStock;
+    		    					}else{
+    		    						tr+= '<td></td>';
+    		    					}
+
+    		    					tr+= '</tr>';
+    	    						
+		    					}else{
+		    						var tr = '<tr >';
+		    						tr+=	'<td>'+data.list[i].cfmc+'</td>';
+			    					tr+=	'<td></td>';
+			    					//加载储备粮类型
+			    					if(data.list[i].vGrainPropertyCode == '130'){
+			    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+			    						pzzy = pzzy + data.list[i].dmStock;
+			    						sumzy = sumzy + data.list[i].dmStock;
+			    					}else{
+			    						tr+= '<td colspan="2"></td>';
+			    					}
+			    					
+			    					if(data.list[i].vGrainPropertyCode == '121'){
+			    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+			    						pzsc = pzsc + data.list[i].dmStock;
+			    						sumsc = sumsc + data.list[i].dmStock;
+			    					}else{
+			    						tr+= '<td colspan="2"></td>';
+			    					}
+			    					
+			    					if(data.list[i].vGrainPropertyCode == '122'){
+			    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+			    						pzdc = pzdc + data.list[i].dmStock;
+			    						sumdc = sumdc + data.list[i].dmStock;
+			    					}else{
+			    						tr+= '<td colspan="2"></td>';
+			    					}
+			    					
+			    					if(data.list[i].vGrainPropertyCode == '123'){
+			    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+			    						pzxc = pzxc + data.list[i].dmStock;
+			    						sumxc = sumxc + data.list[i].dmStock;
+			    					}else{
+			    						tr+= '<td colspan="2"></td>';
+			    					}
+			    					
+			    					if(data.list[i].vGrainPropertyCode == '134'){
+			    						tr+= '<td colspan="2">'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+			    						pzlc = pzlc + data.list[i].dmStock;
+			    						sumlc = sumlc + data.list[i].dmStock;
+			    					}else{
+			    						tr+= '<td colspan="2"></td>';
+			    					}
+			    					
+			    					if(data.list[i].vGrainPropertyCode == '2'){
+			    						tr+= '<td>'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+			    						pzqt = pzqt + data.list[i].dmStock;
+			    						sumsp = sumsp + data.list[i].dmStock;
+			    					}else{
+			    						tr+= '<td colspan="1"></td>';
+			    					}
+			    					if(data.list[i].vGrainPropertyCode != '2'&&data.list[i].vGrainPropertyCode != '134'
+		    							&&data.list[i].vGrainPropertyCode != '123'&&data.list[i].vGrainPropertyCode != '122'
+		    							&&data.list[i].vGrainPropertyCode != '121'&&data.list[i].vGrainPropertyCode != '130'){
+		    						tr+= '<td>'+(data.list[i].dmStock/1000).toFixed(2)+'</td>';
+		    						pzqt = pzqt + data.list[i].dmStock;
+		    						sumqt = sumqt + data.list[i].dmStock;
+			    					}else{
+			    						tr+= '<td></td>';
+			    					}
+
+			    					tr+= '</tr>';
+		    						
+		    						
+		    					}
+		    					
+		    				
+		    					
+		    					$(".datatables").find("tbody").append(tr);
+		    				}
+		    			}
+		    			//========================加载总合计==============
+						$(".zhj").text(((sumzy+sumsc+sumdc+sumxc+sumlc+sumsp)/1000).toFixed(2));
+						$(".zhjzy").text((sumzy/1000).toFixed(2));
+						$(".zhjsc").text((sumsc/1000).toFixed(2));
+						$(".zhjdc").text((sumdc/1000).toFixed(2));
+						$(".zhjxc").text((sumxc/1000).toFixed(2));
+						$(".zhjlc").text((sumlc/1000).toFixed(2));
+						$(".zhjsp").text((sumsp/1000).toFixed(2));
+		    		},
+		    		error:function(){
+		    			alert("加载明细失败");
+		    		}
+		    		
+		    	});	
+    	    				
+
+    });
+
+    </script>
+
+      <!-- Unnamed (表格) -->
+	          <div  style="width:100%;margin-top:20px">
+		          	<table  class=" datatables" style="border:solid 1px #add9c0;width:100%;height:100%">
+		          		<thead>
+           				 <tr>
+               				<th rowspan="2" id="col3" style="vertical-align:middle">承储库点</th>
+                			<th rowspan="2" id="col4" style="vertical-align:middle">品种</th>
+                			<th rowspan="2" id="col5" style="vertical-align:middle">仓厫</th>
+                			<th rowspan="2" id="col6" style="vertical-align:middle;border-right:none;">总库存</th>
+                			<th colspan="12" id="col7" style="vertical-align:middle; border-left:none;">其中</th>
+            			</tr>
+            			<tr>
+                			<th colspan="2" id="col8" style="vertical-align:middle">中央储备粮</th>
+               				<th colspan="2" id="col9" style="vertical-align:middle">省级储备粮</th>
+                			<th colspan="2" id="col10" style="vertical-align:middle">市级储备粮</th>
+                			<th colspan="2" id="col11" style="vertical-align:middle">区级储备粮</th>
+               				<th colspan="2" id="col12" style="vertical-align:middle">临时储备粮</th>
+                			<th colspan="1" id="col13" style="vertical-align:middle">商品粮</th>
+                			<th colspan="1" id="col14" style="vertical-align:middle">其他</th>
+            			</tr>
+        			</thead>
+        			<tbody>
+        			</tbody>
+		          	
+	      			</table>
+      			</div>
+  
+<%
+	}
+%>
+  

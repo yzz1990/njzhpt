@@ -1,0 +1,155 @@
+package com.zkzy.njzhpt.bo;
+
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.SecurityEducationDao;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+import org.apache.commons.collections.CollectionUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Created by dx
+ * Date: 2017/5/4
+ * Time: 14:09
+ * Description:
+ */
+public class SecurityEducationBo {
+	/**
+	 * * author:dx
+	 * date:2017/5/4
+	 * time:14:26
+	 * description:查找所有tree的节点并组装好数据格式
+	 *
+	 * @param map
+	 * @return
+	 */
+	public Ret getTreeNodes(HashMap<String, Object> map) throws Exception {
+		List<Record> treeNodes = Db.find("select * from njpt_knowledgeStruct");
+		return Ret.create("list", sortData(treeNodes, "root"));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/4
+	 * time:14:33
+	 * description:递归组装好数据格式
+	 *
+	 * @param treeNodes
+	 * @param parentId
+	 * @return
+	 */
+	public List<Record> sortData(List<Record> treeNodes, String parentId) throws Exception {
+		List<Record> resultData = new ArrayList<>();
+		for (Record node : treeNodes) {
+			if (parentId.equals(node.getStr("parentId"))) {
+				List<Record> childs = sortData(treeNodes, node.getInt("id") + "");
+				if (CollectionUtils.isNotEmpty(childs)) {
+					node.set("children", childs);
+				}
+				resultData.add(node);
+			}
+		}
+		return resultData;
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:8:55
+	 * description:树节点添加
+	 *
+	 * @param param
+	 * @return
+	 */
+	public Ret treeNodeInsert(HashMap<String, Object> param) {
+		if (!param.containsKey("parentId") || !param.containsKey("text")) {
+			return Ret.create("message", "参数不完整").put("ret", false);
+		}
+
+		return Ret.create("ret", Db.save("njpt_knowledgeStruct", new Record().setColumns(param)));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:9:29
+	 * description:树节点更新
+	 * @param param
+	 * @return
+	 */
+	public Ret treeNodeUpdate(HashMap<String, Object> param) {
+		if (!param.containsKey("id") || !param.containsKey("text")) {
+			return Ret.create("message", "参数不完整").put("ret", false);
+		}
+		Record node=Db.findById("njpt_knowledgeStruct",param.get("id"));
+		node.set("text",param.get("text"));
+		return Ret.create("ret", Db.update("njpt_knowledgeStruct", node));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:9:37
+	 * description:删除树节点
+	 * @param param
+	 * @return
+	 */
+	public Ret treeNodeDelete(HashMap<String, Object> param) {
+		if (!param.containsKey("id")) {
+			return Ret.create("message", "参数不完整").put("ret", false);
+		}
+		return Ret.create("ret", Db.deleteById("njpt_knowledgeStruct", param.get("id")));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:16:06
+	 * description:保存上传文件的信息
+	 * @param param
+	 * @return
+	 */
+	public Ret saveFileInfo(HashMap<String, Object> param) {
+		param.put("uploadTime",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		return Ret.create("ret", Db.save("njpt_knowledgeStructFile", new Record().setColumns(param)));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:16:53
+	 * description:查找所有上传的文件
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findFile (HashMap<String, Object> param) throws Exception {
+		return SecurityEducationDao.findFile(param);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:17:42
+	 * description:删除文件
+	 * @param param
+	 * @return
+	 */
+	public Ret deleteFile(HashMap<String, Object> param){
+		if(!param.containsKey("id"))
+		{
+			return Ret.create("ret",false).put("message","参数不完整");
+		}
+		return Ret.create("ret",Db.deleteById("njpt_knowledgeStructFile",param.get("id")));
+	}
+}

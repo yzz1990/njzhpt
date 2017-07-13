@@ -1,0 +1,78 @@
+package com.zkzy.njzhpt.controller;
+
+import java.util.HashMap;
+
+import com.ggy.common.utils.ParamUtil;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.bo.CangchuglBo;
+import com.zkzy.njzhpt.bo.ChuBeiLiangJHBO;
+
+public class ChuBeiLiangJHController extends Controller {
+	public void index() {
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) ChuBeiLiangJHBO.class.getMethod(method, HashMap.class)
+						.invoke(Duang.duang(ChuBeiLiangJHBO.class), ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				render("login.html");
+			}
+		} catch (Exception e) {
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+
+	}
+
+	public void shengchenghuizongb() throws Exception {
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ChuBeiLiangJHBO.class).shengchenghuizongb(queryparam));
+	}
+
+	public void delete() {
+		String id = getPara("id");
+		if (id != null) {
+			boolean flag = Db.deleteById("njpt_chubeiliangjihua", id);
+			if (flag) {
+				Ret ret = Ret.create("ret", true);
+				renderJson(ret.getData());
+			}
+		} else {
+			Ret ret = Ret.create("ret", false);
+			renderJson("ret");
+		}
+	}
+
+	public void xinzeng() {
+		String id = getPara("id");
+		if (id != null) {
+			String sql = "update njpt_chubeiliangjihua set blogname=?,password=? where id =?";
+			Db.update(sql, getPara(""), getPara(""), getPara(""));
+
+			Ret ret = Ret.create("ret", sql);
+			renderJson(ret.getData());
+		} else {
+			HashMap<String, Object> map = ParamUtil.getParamMap(this.getParaMap());
+			Record jihua = new Record().set("id", SqlUtil.uuid());
+			jihua.setColumns(map);
+			Ret ret = Ret.create("ret", Db.save("njpt_chubeiliangjihua", jihua));
+			renderJson(ret.getData());
+		}
+
+	}
+}

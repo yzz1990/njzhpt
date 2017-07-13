@@ -1,0 +1,575 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+	
+	<!----------- shiping ------------>
+	<script src="http://58.214.246.30:1000/cdn/shipin/preview.js?version=3.0.4.150415"></script>
+	<!----------- shiping ------------>
+	<link rel="stylesheet" href="${ctxPath}/css/bootstrap.css" >
+	<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+	<script src="${resourcePath}/echarts/js/echarts.min.js"></script>
+	
+	 <style type="text/css">
+    	div{
+    		float:left;
+    	}
+    	.shiping{
+   
+    		width:230px;
+
+    		margin-right:10px;
+    	}
+    	.biaoge{
+    		width:980px;
+    		height:200px;
+    	}
+    	#base{
+    	 	width:1000px;
+    	 	height:600px;
+    	 	overflow :auto;
+    	 	overflow :yes;
+    	 	overflow-y :yes
+    	}
+    	#mingxixinxi{
+    		height:30px;
+			background:green;
+			color:white;
+			vertical-align:middle;
+			font-size:18px;
+			width:960px;
+			padding-left:10px;
+    	}
+    	.form-inline{
+    		margin-top:20px;
+    		padding-left:10px;
+    	}
+    	.div-lsxz, .div-lspz, .div-lsdj, .div-zylx, .div-time{
+			float:left;
+		}
+		.uu1124{
+			font-size:18px;
+			background:#0066CC;
+			width:130px;
+			float:left;
+			display:inline-block;
+			font-color:white;
+			text-align:center;
+			font-weight:bold;
+			color: white;
+			margin-top:0px;
+		}
+		.u1128{
+			font-size:18px;
+			width:150px;
+			float:left;
+			display:inline-block;
+			font-weight:bold;
+			margin-top:0px;
+		}
+		.lsxzmx{
+			width:300px;
+		
+		}
+		.kczbtb{
+			width:500px;
+			height:300px;
+		}
+	
+    
+    </style>
+  
+  
+    <script type="text/javascript">
+    
+    Array.prototype.S=String.fromCharCode(2);
+    Array.prototype.in_array=function(e){
+        var r=new RegExp(this.S+e+this.S);
+        return (r.test(this.S+this.join(this.S)+this.S));
+    };
+    
+    (function ($) {
+    	
+ 	      $.getUrlParam = function (name) {
+ 	            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+ 	            var r = window.location.search.substr(1).match(reg);
+ 	            if (r != null) return unescape(r[2]); return null;
+ 	        }
+	      })(jQuery);
+    
+    var datatable;
+    var qyzzjgdm = $.getUrlParam("qyzzjgdm");
+	var kdbm = $.getUrlParam("kdbm");
+	var kdmc = $.getUrlParam("kdmc");
+    $(function(){
+    	 $(".form_datetimebegin").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+    	 $(".form_datetimeend").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+    	 
+    	 $(".input-sm-zylx").select2();
+    	 $(".input-sm-lsxz").select2();
+    	 $(".input-sm-lspz").select2();
+    	 $(".input-sm-lsdj").select2();
+    	 
+    	 //$(".input-sm-lsxz").select2();
+    	 
+    	 
+    	
+    	$(".datatables").removeAttr("data-queryparam");
+    	$(".datatables").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm);
+    	datatable = $('.datatables').DataTable({
+    		"pageLength": 5,
+    		"lengthMenu": [
+    		       		[5,10,15,20,25],
+    		       		[5,10,15,20, "所有"]
+    		       	],
+            "columns": [
+				{
+					"title" : "流水号",
+					width:80,
+					"render": function (data,type,row,meta) {
+						var url = '${ctxPath}/shouchukeshihua/churuku/madan.html';
+						var chakan = '<a  href="javascript:void(0)" onclick="getmadan()">'+row["vSwiftNumber"]+'</a>';								
+						return chakan;								
+					}
+				},{
+    				"data" : "dtRegistrateTime",
+    				"title" : "日期",
+    				width:80,
+    				"render": function (data,type,row,meta) {
+	   					var url = '${ctxPath}/shouchukeshihua/churuku/madan.html';
+	   					var chakan = '<p>'+row["dtRegistrateTime"].substring(0,10)+'</p>';								
+	   					return chakan;								
+   					}
+    				
+    			},{
+    				"data" : "vViechelNumber",
+    				"title" : "车船号",
+    				width:80
+    			},{
+    				"data" : "vName",
+    				"title" : "粮食品种",
+    				width:90
+    			},{
+    				"data" : "vGrainProperties",
+    				"title" : "粮食性质",
+    				width:110
+    			},{
+    				"data" : "dmNW",
+    				"title" : "数量",
+    				width:70
+    			},{
+    				"data" : "vHarvestPeriod",
+    				"title" : "年限",
+    				width:50
+    			},{
+    				"data" : "vGrainLevel",
+    				"title" : "等级",
+    				width:40
+    			},{
+    				"data" : "vWareHouseCode",
+    				"title" : "仓房号",
+    				width:60
+    			},{
+    				"data" : "vDirection",
+    				"title" : "作业类型",
+    				width:80
+    			}
+    			]
+    	});
+    	//==============================datagrid加载完成后处理======================================
+    	$('.datatables').on( 'draw.dt', function () {
+    		
+    		
+    			
+   
+    		
+    	});
+    	//==============================datagrid加载完成处理结束======================================
+    		
+    	//==========================加载粮食性质下拉框=========================
+    		var pt = [];
+    		var pz = [];
+    		var dj = [];
+    		var zy = [];
+    		$.ajax({
+    			url:'${ctxPath}/shouchukeshihua/querymingxi.do',
+    			type:'post',
+    			data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":1000},
+    			dataType:'json',
+    			success:function(data){
+    				var op = '<option value="请选择">请选择</option>';
+    				$(".input-sm-lsxz").append(op);
+    				$(".input-sm-lspz").append(op);
+    				$(".input-sm-lsdj").append(op);
+    				$(".input-sm-zylx").append(op);
+    				for(var i = 0; i < data.list.length; i++){
+    					//加载粮食性质
+    					if(!pt.in_array(data.list[i].vGrainProperties) && (data.list[i].vGrainProperties != null)){
+    						pt.push(data.list[i].vGrainProperties);
+    						var op = '<option value='+data.list[i].vGrainProperties+'>'+data.list[i].vGrainProperties+'</option>';
+    						$(".input-sm-lsxz").append(op);
+    					}
+    					//加载粮食品种
+    					if(!pz.in_array(data.list[i].vName) && (data.list[i].vName != null)){
+    						pz.push(data.list[i].vName);
+    						var op = '<option value='+data.list[i].vName+'>'+data.list[i].vName+'</option>';
+    						$(".input-sm-lspz").append(op);
+    					}
+    					//加载粮食等级
+    					if(!dj.in_array(data.list[i].vGrainLevel) && (data.list[i].vGrainLevel != null)){
+    						dj.push(data.list[i].vGrainLevel);
+    						var op = '<option value='+data.list[i].vGrainLevel+'>'+data.list[i].vGrainLevel+'</option>';
+    						$(".input-sm-lsdj").append(op);
+    					}
+    					//加载作业类型
+    					if(!zy.in_array(data.list[i].vDirection) && (data.list[i].vDirection != null)){
+    						zy.push(data.list[i].vDirection);
+    						var op = '<option value='+data.list[i].vDirection+'>'+data.list[i].vDirection+'</option>';
+    						$(".input-sm-zylx").append(op);
+    					}
+    				}
+    			},
+    			error:function(){
+    				alert("加载粮食性质下拉框失败");
+    			}
+    		});
+    		//==========================加载粮食性质下拉框结束=========================
+    			
+    		//库点名称单击事件展示库点存储状况
+   			var myChart = echarts.init(document.getElementById('kczbtb'));
+   			$.ajax({
+   				url:'${ctxPath}/shouchukeshihua/queryshishi.do',
+   				type:'post',
+   				data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":5},
+   				dataType:'json',
+   				success:function(data){
+   					var kczb = (data.list[0].sum != null ? data.list[0].sum : 0);
+   					var syzb = parseFloat(data.list[0].cfzcr) - kczb;
+   					option = {
+   							title : {
+   						        text: "库存占比",
+   						        x:'left',
+   						        textStyle:{
+   						        	fontSize:15
+   						        }
+   						    },
+   						    tooltip: {
+   						        trigger: 'item',
+   						        formatter: "{a} <br/>{b}: {c} ({d}%)"
+   						    },
+   						    legend: {
+   						        orient: 'vertical',
+   						        x: 'left',
+   						        bottom:0,
+   						        data:['库存占比','剩余库存']
+   						    },
+   						    color : ['#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+   						    normal: {
+   			                    position: 'inner'
+   			                },
+   						    series: [
+   						        {
+   						            name:'数量(占比)',
+   						            type:'pie',
+   						            radius: ['50%', '70%'],
+   						            avoidLabelOverlap: false,
+   						            label: {
+   						                normal: {
+   						                    show: false,
+   						                    position: 'center'
+   						                },
+   						                emphasis: {
+   						                    show: true,
+   						                    textStyle: {
+   						                        fontSize: '30',
+   						                        fontWeight: 'bold'
+   						                    }
+   						                }
+   						            },
+   						            data:[
+   						                {value:(kczb/1000).toFixed(2), name:'库存占比'},
+   						                {value:(syzb/1000).toFixed(2), name:'剩余库存'},
+   						            ]
+   						        }
+   						    ]
+   						};
+   					myChart.setOption(option);	
+   				},
+   				error:function(){
+   					alert("加载库点错误");
+   				}
+   			});
+    		//==================================库点名称单击结束======================================
+    			
+    		//==========================加载粮食性质=================================================
+    		$.ajax({
+    			url:'${ctxPath}/shouchukeshihua/queryliangqing.do',
+    			type:'post',
+    			data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":5},
+    			dataType:'json',
+    			success:function(data){
+    				for(var i = 0; i < data.list.length ; i++){
+    					if(data.list[i].vGrainPropertyId == '130'){
+    						$("#uu1124").text((data.list[i].sum/1000).toFixed(2));
+    					}
+    					if(data.list[i].vGrainPropertyId == '121'){
+    						$("#uu1126").text((data.list[i].sum/1000).toFixed(2));
+    					}
+    					if(data.list[i].vGrainPropertyId == '122'){
+    						$("#uu1128").text((data.list[i].sum/1000).toFixed(2));
+    					}
+    					if(data.list[i].vGrainPropertyId == '123'){
+    						$("#uu1130").text((data.list[i].sum/1000).toFixed(2));
+    					}
+    					if(data.list[i].vGrainPropertyId == '134'){
+    						$("#uu1132").text((data.list[i].sum/1000).toFixed(2));
+    					}
+    					if(data.list[i].vGrainPropertyId == '2'){
+    						$("#uu1134").text((data.list[i].sum/1000).toFixed(2));
+    					}
+    				}
+    				
+    			},
+    			error:function(){
+    				
+    			}
+    			
+    			
+    		});
+    			
+    			
+    		//==========================加载粮食性质=================================================
+  
+ 
+    	
+    });
+    
+    function getmadan(){
+    	window.open('${ctxPath}/shouchukeshihua/churuku/madan.html','',
+    			'height=600,width=1000,top=100,left=100,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+   	
+    }
+
+    function doSearch(){
+    	var liushui = $(".input-sm-liushui").val();
+    	var time = $(".form_datetimebegin").val();
+    	var cfbh = $(".input-sm-cfbh").val();
+    	var lsxz = $(".input-sm-lsxz option:selected").val();
+    	var endtime = $(".form_datetimeend").val();
+    	var zylx = $(".input-sm-zylx option:selected").val();
+    	var lspz = $(".input-sm-lspz option:selected").val();
+    	var lsdj = $(".input-sm-lsdj option:selected").val();
+    	
+    	/*
+    	$(".div-lsxz").find(".select2-selection__rendered").text("请选择");
+    	$(".div-lspz").find(".select2-selection__rendered").text("请选择");
+    	$(".div-lsdj").find(".select2-selection__rendered").text("请选择");
+    	$(".div-zylx").find(".select2-selection__rendered").text("请选择");
+    	
+    	$(".input-sm-lsxz").find("option[text='请选择']").attr("selected",true);
+    	$(".input-sm-zylx").find("option[text='请选择']").attr("selected",true);
+    	$(".input-sm-lspz").find("option[text='请选择']").attr("selected",true);
+    	$(".input-sm-lsdj").find("option[text='请选择']").attr("selected",true);
+    	
+
+    	$(".div-lsxz").find(".select2-selection__rendered").attr("title","请选择");
+    	$(".div-lspz").find(".select2-selection__rendered").attr("title","请选择");
+    	$(".div-lsdj").find(".select2-selection__rendered").attr("title","请选择");
+    	$(".div-zylx").find(".select2-selection__rendered").attr("title","请选择");
+    	*/
+    	
+    	$(".datatables").removeAttr("data-queryparam");
+    	$(".datatables").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm);
+    	$(".datatables").attr("data-queryparam","&kdbm="+kdbm);
+    	var attrstr = "&qyzzjgdm=" + qyzzjgdm + "&kdbm=" + kdbm;
+    	if(liushui != "" && liushui != null){
+    		attrstr += "&vSwiftNumber="+liushui;
+    	}
+    	if(time != "" && time != null){
+    		attrstr += "&dtRegistrateTime="+time;
+    	}
+    	if(cfbh != "" && cfbh != null && cfbh != "请选择"){
+    		attrstr += "&vWareHouseCode="+cfbh;
+    	}
+    	if(lsxz != "" && lsxz != null && lsxz != "请选择"){
+    		attrstr += "&vGrainProperties="+lsxz;
+    	}
+    	if(endtime != "" && endtime != null){
+    		attrstr += "&vEndTime="+endtime;
+    	}
+    	if(zylx != "" && zylx != null && zylx != "请选择"){
+    		attrstr += "&vDirection="+zylx;
+    	}
+    	if(lspz != "" && lspz != null && lspz != "请选择"){
+    		attrstr += "&vName="+lspz;
+    	}
+    	if(lsdj != "" && lsdj != null && lsdj != "请选择"){
+    		attrstr += "&vGrainLevel="+lsdj;
+    	}
+    	
+    	$(".datatables").attr("data-queryparam",attrstr);
+    	datatable.ajax.reload(null,true);
+    }
+    
+    function showsp(){
+    	if($("#u1125if").attr("src") == ""){
+    		//加载视频
+        	$.ajax({
+        		url:'${ctxPath}/shouchukeshihua/readshiping',
+        		type:'post',
+        		data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm},
+        		dataType:'json',
+        		success:function(data){
+        			var videoip = data[0].ip;
+        			var user = data[0].user;
+        			var password = data[0].password;
+        			for(var i = 0; i < data.length ; i++){
+        				var cameraIndex = data[i].videopoint;
+        				if(data[i].videoname == "报港处"){
+        					var spurl = '${ctxPath}/shouchukeshihua/churuku/shiping.html?videoip='+videoip+'&user='+user+'&password='+password+'&cameraIndex='+cameraIndex;
+        					$("#u1125if").attr("src",spurl);
+        				}else if(data[i].videoname == "质检处"){
+        					var spurl = "${ctxPath}/shouchukeshihua/churuku/shiping.html"+
+        					"?videoip="+videoip+"&user="+user+"&password="+password+"&cameraIndex="+cameraIndex;
+        					$("#u1127if").attr("src",spurl);
+        				}else if(data[i].videoname == "称重处"){
+        					var spurl = "${ctxPath}/shouchukeshihua/churuku/shiping.html"+
+        					"?videoip="+videoip+"&user="+user+"&password="+password+"&cameraIndex="+cameraIndex;
+        					$("#u1129if").attr("src",spurl);
+        				}else if(data[i].videoname == "入库处"){
+        					var spurl = "${ctxPath}/shouchukeshihua/churuku/shiping.html"+
+        					"?videoip="+videoip+"&user="+user+"&password="+password+"&cameraIndex="+cameraIndex;
+        					$("#u1131if").attr("src",spurl);
+        				}
+        			}
+        		},
+        		error:function(){
+        			alert("error");
+        		}
+        	});
+    	}
+    	
+    	 $("#spclose").toggle();
+    	 	 
+    }
+
+    </script>
+
+    <div id="base" class="">
+    
+    <div>
+    	<div id="kczbtb" class="kczbtb"></div>
+    	<div class="lsxzmx">
+    		<h4>当季各粮食性质收购量</h4>
+    		<p  class="u1128">中央储备粮(吨):</p><p id="uu1124" class="uu1124">0.00</p>
+			<p  class="u1128">省级储备粮(吨):</p><p id="uu1126" class="uu1124">0.00</p>
+			<p  class="u1128">市级储备粮(吨):</p><p id="uu1128" class="uu1124">0.00</p>
+			<p  class="u1128">区级储备粮(吨):</p><p id="uu1130" class="uu1124">0.00</p>
+			<p  class="u1128">临时储备粮(吨):</p><p id="uu1132" class="uu1124">0.00</p>
+			<p  class="u1128">商品粮(吨):</p><p id="uu1134" class="uu1124">0.00</p>
+    	</div>
+    </div>
+    
+    <div style="width:300px">
+		<a href="javascript:void(0)" onclick="showsp()" >显示/隐藏视频</a>
+	</div>
+
+	<div id="spclose" style="width:980px; display:none">
+      <!-- Unnamed (图片) -->
+      <div id="u1125" class="shiping">
+      	<p>报港:</p>
+      	<iframe id="u1125if" src=""  style="width:230px;height:230px"></iframe>
+     
+        <!-- Unnamed () -->
+        <div id="u1126" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1127" class="shiping">
+      	<p>质检:</p>
+        <iframe id="u1127if" src=""  style="width:230px;height:230px"></iframe>
+        <!-- Unnamed () -->
+        <div id="u1128" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1129" class="shiping">
+      	<p>称重:</p>
+        <iframe id="u1129if" src=""  style="width:230px;height:230px"></iframe>
+        <!-- Unnamed () -->
+        <div id="u1130" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1131" class="shiping">
+      	<p>入库:</p>
+        <iframe id="u1131if" src=""  style="width:230px;height:230px"></iframe>
+        <!-- Unnamed () -->
+        <div id="u1132" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+      </div>
+      
+      <div class="form-inline" >
+      		<div class = "div-time">
+				<label>日期:</label>
+				<input size="16" type="text"  readonly class="form_datetimebegin">
+				<!-- 
+				<input class="form-control input-sm input-sm-time"  name="gongdi" style="width:80px;" type="date" />
+				 -->
+				<label>至</label>
+				<input size="16" type="text" readonly class="form_datetimeend">
+				<!-- 
+				<input class="form-control input-sm input-sm-endtime"  name="gongdi" style="width:80px;" type="date" />
+				 -->
+			</div>
+			<div class = "div-lsxz">
+				<label>性质:</label>
+				<select class="form-control input-sm input-sm-lsxz" name="gongdi" style="width:100px;">
+				</select>
+			</div>
+			<div class = "div-lspz">
+				<label>品种:</label>
+				<select class="form-control input-sm input-sm-lspz" name="gongdi" style="width:80px;">
+				</select>
+			</div>
+			<div class = "div-lsdj">
+				<label>等级:</label>
+				<select class="form-control input-sm input-sm-lsdj" name="gongdi" style="width:70px;">
+				</select>
+			</div>
+			<div class = "div-zylx">
+				<label>作业类型:</label>
+				<select class="form-control input-sm input-sm-zylx" name="gongdi" style="width:100px;">
+				</select>	
+			</div>
+
+			<a class="btn btn-success btn-sm" type="button" onclick="doSearch()" style="margin-left:5px"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+	  </div>
+      <!-- Unnamed (表格) -->
+      
+      <div id="u1133" class="biaoge" style="width:970px">
+	      <div id="panelDemo8" class="panel panel-primary" style="width:100%">
+	          <div class="panel-heading" style="width:100%; margin-bottom:-20px">出入库明细</div>
+	          <div  style="width:100%;margin-left:-10px">
+		          	<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/querymingxi.do" >
+	      			</table>
+      			</div>
+	       </div>
+      		
+      </div>
+   
+      
+    </div>
+  
+<%
+	}
+%>
+  

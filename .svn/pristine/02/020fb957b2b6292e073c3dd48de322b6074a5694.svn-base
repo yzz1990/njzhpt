@@ -1,0 +1,117 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+//var ecConfig = require('echarts/config');
+	$.ajax({
+		url:'${ctxPath}/zonghe/finddjck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			option5 = {
+					title : {
+				        text: '                    全市粮食分等级库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} 吨({d}%)",
+				        position: function (p) {
+		                    // 位置回调
+		                    return [p[0]-150, p[1]+15];
+		                }
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x : 'left',
+				        data:data.pzlist
+				    },
+				   
+				    color : ['#FFCC00', '#99CC33', '#66CCCC','#CC3399','#666699', '#666633','#FF6666'],    
+				    calculable : false,
+				    series : [{
+				            name:'分等级占比',
+				            type:'pie',
+							center: ['70%', '65%'],
+							radius : ['30%', '55%'],
+				            itemStyle : {
+				                normal : {
+				                    label : {
+				                    	show: false 
+				                    },
+				                    labelLine : {
+				                        show : false
+				                    }
+				                }
+				            },
+				            data:data.pzzck
+				        }
+				    ]
+				}; 
+			myChart=echarts.init(document.getElementById('container4')).setOption(option5);
+		}
+	});
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findnxck',
+		type:'post',
+		dataType:'json',
+		success:function(data){	
+			option5 = {
+				    title : {
+				        text: '                    全市粮食分年限库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.pzlist
+				    },
+				    color :  ['#FFCC00', '#99CC33', '#66CCCC','#CC3399','#666699', '#666633','#FF6666'],
+				    calculable : false,
+				    series : [{
+				                  name:'粮食分年限占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '60%'],
+				                  itemStyle:{
+				                	  normal:{
+						                    label : {
+						                    	show: false 
+						                    },
+						                    labelLine : {
+						                        show : false
+						                    }
+				                	  }
+				                  },
+				                  data:data.pzzck
+				              }
+				          ]
+				};
+			myChart=echarts.init(document.getElementById('container5')).setOption(option5);
+		}
+	});
+	
+});	
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%;width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="container4" style="width: 50%;height:100%; margin: 0 auto;margin-left: 0px;float: left;"></div>
+          <div id="container5" style="width: 50%;height:100%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;"></div>
+        </div>
+	</div>		
+</div>  

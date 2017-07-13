@@ -1,0 +1,84 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addShisliangq",title="新增实时粮情";
+	if (isNotEmpty(parameter.id)) {
+		var sslq = @com.zkzy.njzhpt.dao.CangchuglDao.findShisliangq({"id":parameter.id,"page":"1","rows":"100"});
+		obj = sslq.list[0];
+		url = ctxPath+"/cangchugl/upShisliangq";
+		title = "编辑实时粮情";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="diqu">地区</label>
+							<input type="text" class="form-control" name="diqu" id="diqu" placeholder="地区" value="${obj.diqu}" >
+						</div>
+						<div class="form-group">	
+							<label for="kudian">库点</label>
+							<input type="text" class="form-control" name="kudian" id="kudian" placeholder="库点" value="${obj.kudian}" >
+						</div>
+						 <div class="form-group">	
+							<label for="xingzhi">粮食性质</label>
+							<input type="text" class="form-control" name="xingzhi" id="xingzhi" placeholder="粮食性质" value="${obj.xingzhi}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="zhandimianji">占地面积</label>
+							<input type="text" class="form-control" name="zhandimianji" id="zhandimianji" placeholder="占地面积" value="${obj.zhandimianji}"  >
+						</div>
+						<div class="form-group">	
+							<label for="cangrong">总仓容</label>
+							<input type="text" class="form-control" name="cangrong" id="cangrong" placeholder="总仓容" value="${obj.cangrong}" >
+						</div>
+						<div class="form-group">	
+							<label for="kucun">实时库存</label>
+							<input type="text" class="form-control" name="kucun" id="kucun" placeholder="实时库存" value="${obj.kucun}" >
+						</div>
+						 <div class="form-group">	
+							<label for="shipin">对应视频</label>
+							<input type="text" class="form-control" name="shipin" id="shipin" placeholder="对应视频" value="${obj.shipin}"  >
+						</div>	
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/shishixinxi/shishiliangqing.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/shishixinxi/shishiliangqing.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

@@ -1,0 +1,986 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+<title>SimpleTree</title>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/resource/SimpleTree.css"/>
+<script type="text/javascript" src="${ctxPath}/resource/SimpleTree.js"></script>
+
+
+<style>
+a {
+	cursor:pointer;
+}
+.active{
+	background-color:#B0C4DE;
+}
+.conttext{
+	border:1px solid;
+	width:300px;
+	height:300px;
+	float:left;
+}
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+.panel-info{
+	float:left;
+	width:314px;
+	height:600px;
+}
+.dashboard-wrapper-lg{
+	float:left;
+	width:70%
+}
+.form-group label{
+	font-size:16px;
+	float:left;
+	width:30%;
+}
+.form-control{
+	width:65%;
+	height:35px;
+	float:left;
+}
+.big_content{
+	
+}
+
+.cjd_conflict{
+	height:300px;
+	width:70%;
+	float:left;
+
+}
+.wduizhao{
+	width:31%;
+	height:100%;
+	float:left;
+	overflow-y :auto
+}
+.jiantou{
+	width:6%;
+	float:left;
+	text-align:center; /*水平居中*/
+	margin-top:120px;
+}
+.cjd-input{
+	height:28px;
+}
+.cjd-div{
+	margin-bottom:40px;
+}
+.panel{
+	   
+	    margin-top: 10px;
+}
+#panelDemo10,#panelDemo11{
+	 background-color: rgba(217, 237, 247, 0.3);
+}
+
+#panelDemo11{
+	margin-left: 10px;
+}
+
+
+</style>
+
+<script type="text/javascript">
+
+/*
+var zpinzhong = [];
+
+var wdzpinzhong = [];
+var zjiage = [];
+
+*/
+
+var flag = 0;
+var type = 0;
+var quxian;
+var vid;
+var dzpinzhong = [];
+var qyzzjgdm;
+var dzjiage = [];
+//选中的已对照商品
+var Vname;
+//选中的未对照商品
+var Wdzpinzhong;
+
+Array.prototype.indexOf = function(val) {
+	for (var i = 0; i < this.length; i++) {
+	if (this[i] == val) return i;
+	}
+	return -1;
+};
+
+Array.prototype.remove = function(val) {
+	var index = this.indexOf(val);
+	if (index > -1) {
+	this.splice(index, 1);
+	}
+};
+
+
+
+
+$(window).load(function() { 
+	
+	//加载采价点名称
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option qyzzjgdm="'+n.qyzzjgdm+'" value="'+n.qyzzjgdm+'">'+n.qymc+'</option>';
+				$("#cjdcode").append(op);
+			});
+		},
+		error:function(){
+			alert("加载采价点名称失效");
+		}
+	});
+	
+	//加载企业类型
+	$.ajax({
+		url:'${ctxPath}/jiage/queryqylx.do',
+		type:'post',
+		data:{"page":1,"rows":100},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option jyywlxbh="'+n.jyywlxbh+'" value="'+n.jyywlxbh+'">'+n.jyywlxmc+'</option>';
+				$("#qylxcode").append(op);
+			});
+		},
+		error:function(){
+			alert("加载企业类型失败");
+		}
+	});
+	
+	//加载报送频率
+	$.ajax({
+		url:'${ctxPath}/jiage/querybspl.do',
+		type:'post',
+		data:{"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option cjplid="'+n.cjplid+'" value="'+n.cjplid+'">'+n.cjplmc+'</option>';
+				$("#bsplcode").append(op);
+			});
+		},
+		error:function(){
+			alert("加载报送频率失败");
+		}
+	});
+	
+	//加载报送日
+	$.ajax({
+		url:'${ctxPath}/jiage/querybsr.do',
+		type:'post',
+		data:{"page":1,"rows":100},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option bsrcode="'+n.bsrcode+'" value="'+n.bsrcode+'">'+n.bsrname+'</option>';
+				$("#bsrcode").append(op);
+			});
+		},
+		error:function(){
+			alert("加载报送日失败");
+		}
+	});
+	
+	//加载联系人
+	$.ajax({
+		url:'${ctxPath}/jiage/querylxr.do',
+		type:'post',
+		data:{"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option  id="'+n.id+'"  dlmc="'+n.dlmc+'" value="'+n.id+'">'+n.zymc+'</option>';
+				$("#lxrcode").append(op);
+			});
+		},
+		error:function(){
+			alert("加载报送日失败");
+		}
+	});
+	
+	//加载已对照商品
+	$(".table-ydz").attr("data-queryparam","&qymc=aaa");
+	datatable = $('.table-ydz').DataTable({
+		"processing": true,
+	    "serverSide": true,
+	    "paging": false,
+		"info": false,
+		//"retrieve": true,
+	    //"searching": false,
+	    "columns": [
+	        {
+	        	"render": function (data,type,row,meta) {
+	        		var name = row["gtname"];
+	        		var code = row["spmccode"];
+	        		var p = '<p id="" class="p_ydz" value="'+code+'"><a  ref="">&nbsp;'+name+'</a></p>'
+					//var div = '<div>'+row["gtname"]+'</div>';	
+					dzpinzhong.push(row["gtname"]);
+					return p;
+				}
+			}
+			]
+	});
+	$('.table-ydz').on( 'draw.dt', function () {
+		//已对照商品的单击事件
+		$(".p_ydz").each(function(){
+		    $(this).click(function(){	
+		    	$(".p_ydz").removeClass("active");
+		    	Vname = $(this).attr("value");
+		    	$(this).addClass("active");
+		    	//加载采价点商品
+		    	$.ajax({
+		    		url:'${ctxPath}/jiage/querycjdsp.do',
+		    		type:'post',
+		    		data:{"page":1,"rows":100,"spmccode":Vname},
+		    		dataType:'json',
+		    		success:function(data){
+		    			dzjiage = [];
+		    			$.each(data.list,function(i, n){
+		    				dzjiage.push(n.jglx);
+		    			});
+		    			$(".table-jglx").removeAttr("data-queryparam");
+		    			datatable2.ajax.reload(null,true);
+		    		},
+		    		error:function(){
+		    			alert("读取采价点商品对照失败");
+		    		}
+		    	});	
+		    });
+		});
+		//加载未对照商品
+		datatable1.ajax.reload(null,true);
+	});
+	
+	//加载未对照商品
+	$(".table-wdz").attr("data-queryparam","&pinzhong=aaa");
+	datatable1 = $('.table-wdz').DataTable({
+		"processing": true,
+	    "serverSide": true,
+	    "paging": false,
+		"info": false,
+	    "columns": [
+	        {
+	        	"render": function (data,type,row,meta) {
+	        		var typecode = row["typecode"];
+	        		//'<p id="" class="p-ydz" onclick="getname(\''+code+'\')"><a  ref="">&nbsp;'+name+'</a></p>'
+        			var div = '<p class="p_wdz" value="'+typecode+'" ><a class="a_wdz"  ref="">&nbsp;'+row["vName"]+'</a></p>';	
+        			return div;
+				}
+			}
+		]
+	});
+	$('.table-wdz').on( 'draw.dt', function () {
+		
+		$(".p_wdz").each(function(){
+		    $(this).click(function(){
+		    	//$("a").removeClass("active");
+		    	$('.p_wdz').removeClass("active");
+		    	Wdzpinzhong = $(this).attr("value");
+		    	$(this).addClass("active");
+		    });
+		});
+		
+	});
+
+	//加载价格类型
+	$(".table-jglx").attr("data-queryparam","&jglx=aaa");
+	datatable2 = $('.table-jglx').DataTable({
+		"processing": true,
+	    "serverSide": true,
+	    "paging": false,
+		"info": false,
+		//"retrieve": true,
+	    //"searching": false,
+	    "columns": [
+	        {
+	        	"render": function (data,type,row,meta) {
+	        		var div;
+	        		if($.inArray(row["jglxbh"],dzjiage)<0){
+	        			div = '<label><input name="jiage" class="check_jiage" type="checkbox" value="'+row["jglxbh"]+'" />'+row["jglx"]+'</label>';	
+	        		}else{
+	        			div = '<label><input name="jiage" class="check_jiage" type="checkbox" checked="true" value="'+row["jglxbh"]+'" />'+row["jglx"]+'</label>';
+	        		}
+	       			return div;
+				}
+			}
+			]
+	});
+	$('.table-jglx').on( 'draw.dt', function () {
+		//添加价格类型复选框单击事件
+		$(".check_jiage").each(function(){
+		    $(this).click(function(){
+		    	var sumjglx ="";
+		    	$('input:checkbox[name=jiage]:checked').each(function(i){
+			    	//sumjglx.push($(this).val());
+			    	if(i==0){
+			    		sumjglx += $(this).val()
+			    	}else{
+			    		sumjglx += ","+$(this).val();
+			    	}
+			    });
+		    	//alert(Vname);
+		    	//alert(sumjglx);
+		    	
+		    	$.ajax({
+		    		url:'${ctxPath}/jiage/updatelscjdpz',
+		    		type:'post',
+		    		data:{"cjdcode":qyzzjgdm,"spmccode":Vname,"sumjglx":sumjglx},
+		    		dataType:'json',
+		    		success:function(data){
+		    			
+		    		},
+		    		error:function(){
+		    			alert("更新临时采价点商品表失败");
+		    		}
+		    		
+		    	});
+		    	
+		    });
+		});
+	});
+});
+
+$(function(){
+	$("#cjdcode").select2();
+	$("#ssqycode").select2();
+	$("#qylxcode").select2();
+	$("#bsplcode").select2();
+	$("#bsrcode").select2();
+	$("#lxrcode").select2();
+	$("#qybz").select2();
+	$("#zsjs").select2();
+	
+	gettree();
+
+	
+
+});
+
+
+function gettree(){
+	$("#sycjd").next().empty();
+	//加载区县
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findquxian',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			$.each(data,function(i, n){
+				//树形列表加载区域
+				var li = '<li id="'+n.id+'" type="1"><a href="#" ref="">&nbsp;'+n.name+'</a></li><ul></ul>';
+				//下拉框加载区域
+				var op = '<option quid="'+n.id+'" value="'+n.id+'">'+n.name+'</option>'
+				$("#sycjd").next().append(li);
+				$("#ssqycode").append(op);
+			});
+			
+			//============加载采价点=========================
+			$.ajax({
+				url:'${ctxPath}/jiage/querycaijiadian.do',
+				type:'post',
+				data:{"page":1,"rows":1000},
+				dataType:'json',
+				success:function(data){
+					
+					//=======================================动态加载tree=================================
+					//加载采价点
+					$.each(data.list,function(i, n){
+						var li = '<li id="'+n.id+'" qyzzjgdm="'+n.cjdcode+'" type="2"><a href="#" ref="">&nbsp;'+n.qymc+'</a></li>';
+						var quid = n.ssqycode;
+						$("#"+quid).next().append(li);	
+					});
+			
+					//=====================================a的单击事件===================================
+					$(".st_tree").SimpleTree({
+				        click:function(a){
+				            if(!$(a).attr("hasChild")){
+				            	alert($(a).attr("ref"));
+				            }
+				            
+				            $("a").removeClass("active");
+				            $(a).addClass("active").siblings().removeClass("active");
+				            //flag1为修改选中的采价点
+				            flag = 1;
+				            
+				            var cjdmc =  $(a).text().trim();
+				            vid = $(a).parent().attr("id");
+				           	type = $(a).parent().attr("type");
+				           	qyzzjgdm = $(a).parent().attr("qyzzjgdm");
+				            quxian = cjdmc;
+				            
+
+				            
+				            if(type == 2){
+				            	
+				            	//清除数据
+				            	dzpinzhong = [];
+				            	$(".table-ydz").removeAttr("data-queryparam");
+				            	$(".table-wdz").removeAttr("data-queryparam");
+				            	//加载已对照的品种
+				            	$(".table-ydz").attr("data-queryparam","&qymc="+cjdmc);
+				            	
+				            	//把数据加载到临时采价点商品对照表
+				            	$.ajax({
+				            		url:'${ctxPath}/jiage/loadlscjdsp',
+				            		type:'post',
+				            		data:{"cjdcode":qyzzjgdm},
+				            		dataType:'json',
+				            		success:function(data){
+				            			//加载已对照商品
+				            			datatable.ajax.reload(null,true);
+						            	datatable2.ajax.reload(null,true);
+				            		},
+				            		error:function(){
+				            			alert("加载临时采价点商品对照失败");
+				            		}
+				            	});
+				            }
+				            
+				            
+				            
+				            //加载详细信息
+				            $.ajax({
+				            	url:'${ctxPath}/jiage/querycaijiadian.do',
+				            	type:'post',
+				            	data:{"cjdmc":cjdmc,"page":1,"rows":1},
+				            	dataType:'json',
+				            	success:function(data){
+				            		$("#id").val(data.list[0].id);
+				            		//采价点名称
+				            		$("#cjdcode").val(data.list[0].cjdcode);
+				            		$("#div_cjdcode").find(".select2-selection__rendered").text(data.list[0].qymc);
+				        			$("#div_cjdcode").find(".select2-selection__rendered").attr("title",data.list[0].qymc);
+				        			$("#cjdcode").attr("disabled","disabled");
+				        			//企业标志
+				            		$("#qybz").val(data.list[0].qybz);
+				            		$("#div_qybz").find(".select2-selection__rendered").text(data.list[0].qybz);
+				        			$("#div_qybz").find(".select2-selection__rendered").attr("title",data.list[0].qybz);
+				            		//所属区域
+				            		$("#ssqycode").val(data.list[0].ssqycode);
+				            		$("#div_ssqycode").find(".select2-selection__rendered").text(data.list[0].quname);
+				        			$("#div_ssqycode").find(".select2-selection__rendered").attr("title",data.list[0].quname);
+				        			$("#ssqycode").attr("disabled","disabled");
+				        			//企业类型
+				            		$("#qylxcode").val(data.list[0].qylxcode);
+				            		$("#div_qylxcode").find(".select2-selection__rendered").text(data.list[0].qylxmc);
+				        			$("#div_qylxcode").find(".select2-selection__rendered").attr("title",data.list[0].qylxmc);
+				        			//报送频率
+				            		$("#bsplcode").val(data.list[0].bsplcode);
+				            		$("#div_bsplcode").find(".select2-selection__rendered").text(data.list[0].bsplmc);
+				        			$("#div_bsplcode").find(".select2-selection__rendered").attr("title",data.list[0].bsplmc);
+				        			//报送日
+				            		$("#bsrcode").val(data.list[0].bsrcode);
+				            		$("#div_bsrcode").find(".select2-selection__rendered").text(data.list[0].bsrname);
+				        			$("#div_bsrcode").find(".select2-selection__rendered").attr("title",data.list[0].bsrname);
+				        			//联系人
+				            		$("#lxrcode").val(data.list[0].lxrcode);
+				            		$("#div_lxrcode").find(".select2-selection__rendered").text(data.list[0].zymc);
+				        			$("#div_lxrcode").find(".select2-selection__rendered").attr("title",data.list[0].zymc);
+				        			//指数计算
+				            		$("#zsjs").val(data.list[0].zsjs);
+				            		$("#div_zsjs").find(".select2-selection__rendered").text(data.list[0].zsjs);
+				        			$("#div_zsjs").find(".select2-selection__rendered").attr("title",data.list[0].zsjs);
+				        			
+				            		$("#lxdz").val(data.list[0].lxdz);
+				            		$("#sjhm").val(data.list[0].sjhm);
+				            		$("#gddh").val(data.list[0].gddh);
+				            		$("#bz").val(data.list[0].bz);
+				            	},
+				            	error:function(){
+				            		alert("寻找采价点失败");
+				            	}
+				            });
+				            //$("#vname").val(dlmc);
+				        }
+				    });    
+					//===================================a的单击事件(结束)===================================
+					//===================================动态加载tree（结束）=================================
+				},
+				error:function(){
+					alert("读取品种失败");
+				}
+			});
+		},
+		error:function(){
+			alert("加载区县失败");
+		}
+	});
+	
+}
+
+//增加采价点
+function addCjd(){
+	//flag=2增加新的采价点
+	flag = 2;
+	if(type == 1){
+		if(confirm("是否要在"+quxian+"下增加新的采价点")){
+			//加载已对照商品
+			datatable.ajax.reload(null,true);
+			
+			$.ajax({
+				url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+				type:'post',
+				data:{"xian":quxian,"page":1,"rows":10000},
+				dataType:'json',
+				success:function(data){
+					$("#cjdcode").empty();
+					$.each(data.list,function(i, n){
+						var op = '<option qyzzjgdm="'+n.qyzzjgdm+'" value="'+n.qyzzjgdm+'">'+n.qymc+'</option>';
+						$("#cjdcode").append(op);
+					});
+				},
+				error:function(){
+					alert("加载企业失败");
+				}
+			});
+
+		    $("#cjdcode").val("");
+		    $("#div_cjdcode").find(".select2-selection__rendered").text("");
+			$("#div_cjdcode").find(".select2-selection__rendered").attr("title","");
+			$("#cjdcode").removeAttr("disabled");
+		    
+			$("#lxrcode").val("");
+			$("#div_lxrcode").find(".select2-selection__rendered").text("");
+			$("#div_lxrcode").find(".select2-selection__rendered").attr("title","");
+			
+			$("#ssqycode").val(vid);
+			$("#div_ssqycode").find(".select2-selection__rendered").text(quxian);
+			$("#div_ssqycode").find(".select2-selection__rendered").attr("title",quxian);
+			$("#ssqycode").attr("disabled","disabled");
+			
+			$("#qylxcode").val("");
+			$("#div_qylxcode").find(".select2-selection__rendered").text("");
+			$("#div_qylxcode").find(".select2-selection__rendered").attr("title","");
+			
+			$("#qybz").val("");
+			$("#div_qybz").find(".select2-selection__rendered").text("");
+			$("#div_qybz").find(".select2-selection__rendered").attr("title","");
+			
+			$("#bsplcode").val("");
+			$("#div_bsplcode").find(".select2-selection__rendered").text("");
+			$("#div_bsplcode").find(".select2-selection__rendered").attr("title","");
+			
+			$("#bsrcode").val("");
+			$("#div_bsrcode").find(".select2-selection__rendered").text("");
+			$("#div_bsrcode").find(".select2-selection__rendered").attr("title","");
+			
+			$("#zsjs").val("");
+			$("#div_zsjs").find(".select2-selection__rendered").text("");
+			$("#div_zsjs").find(".select2-selection__rendered").attr("title","");
+			
+			$("#lxdz").val("");
+			$("#sjhm").val("");
+			$("#gddh").val("");
+			$("#bz").val("");
+		}
+	}else{
+		alert("该位置下不能添加采价点");
+	} 
+}
+
+
+//保存采价点
+function saveCjd(){
+	$("#ssqycode").removeAttr("disabled");
+	//新增采价点
+	if(flag == 2){
+		var form = $(".dashboard-wrapper-lg form");
+		var cjdmc = $("#cjdcode option:selected").text().trim();
+		if(confirm("是否保存新的采价点"+cjdmc)){
+		    $.ajax({
+		    	url:'${ctxPath}/jiage/savecjd',
+		    	type:'post',
+		    	data:form.serialize(),
+		    	dataType:'json',
+		    	success:function(msg){	
+		    		if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("保存成功");
+					}
+		    		gettree();
+		    	},
+		    	error:function(){
+		    		alert("保存采价点失败");
+		    	}
+		    });
+		 }
+	}
+	
+	//修改当前采价点
+	if(flag == 1){
+		var form = $(".dashboard-wrapper-lg form");
+		var cjdmc = $("#cjdcode option:selected").text().trim();
+		$("#cjdcode").removeAttr("disabled");
+		$("#ssqycode").removeAttr("disabled");
+		if(confirm("是否修改采价点"+cjdmc)){
+			
+		    $.ajax({
+		    	url:'${ctxPath}/jiage/updatecjd',
+		    	type:'post',
+		    	data:form.serialize(),
+		    	dataType:'json',
+		    	success:function(msg){	
+		    		if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("修改成功");
+					}
+		    		gettree();
+		    	},
+		    	error:function(){
+		    		alert("修改采价点失败");
+		    	}
+		    });
+		 }
+		
+	}
+}
+
+//删除采价点
+function deleteCjd(){
+	var cjdmc = $("#cjdcode option:selected").text().trim();
+	if(type == 2){
+		if(confirm("是否删除采价点"+cjdmc)){
+			$.ajax({
+				url:'${ctxPath}/jiage/deletecjd',
+				type:'post',
+				data:{"id":vid,"cjdcode":qyzzjgdm},
+				dataType:'json',
+				success:function(msg){
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("删除成功");
+					}
+					gettree();
+				},
+				error:function(){
+					alert("删除采价点失败");
+				}
+			});
+		}
+	}else{
+		alert("该节点无法删除");
+	}
+}
+
+//刷新采价点
+function updateCjd(){
+	location.reload();
+}
+
+//加入为已对照商品
+function turnright(){
+	Wdzpinzhong;
+	qyzzjgdm;
+	if(Wdzpinzhong!=null||Wdzpinzhong!=""){
+		$.ajax({
+			url:'${ctxPath}/jiage/adddzpz',
+			type:'post',
+			data:{"cjdcode":qyzzjgdm,"spmccode":Wdzpinzhong},
+			dataType:'json',
+			success:function(data){
+				//加载已对照商品
+    			datatable.ajax.reload(null,true);
+            	datatable2.ajax.reload(null,true);
+			},
+			error:function(){
+				alert("添加新的对照品种失败");
+			}
+		})
+	}
+}
+
+//移除已对照商品
+function turnleft(){
+	//选中的已对照商品
+	if(Wdzpinzhong!=null||Wdzpinzhong!=""){
+		$.ajax({
+			url:'${ctxPath}/jiage/deldzpz',
+			type:'post',
+			data:{"spmccode":Vname},
+			dataType:'json',
+			success:function(data){
+				//加载已对照商品
+    			datatable.ajax.reload(null,true);
+            	datatable2.ajax.reload(null,true);
+			},
+			error:function(){
+				alert("添加新的对照品种失败");
+			}
+		})
+	}	
+}
+//采价点下拉框变更事件
+function Change(){
+	qyzzjgdm = $("#cjdcode option:selected").val().trim();
+	var cjdmc = $("#cjdcode option:selected").text().trim();
+	//清除数据
+	dzpinzhong = [];
+	$(".table-ydz").removeAttr("data-queryparam");
+	$(".table-wdz").removeAttr("data-queryparam");
+	//加载已对照的品种
+	$(".table-ydz").attr("data-queryparam","&qymc="+cjdmc);
+	
+	//把数据加载到临时采价点商品对照表
+	$.ajax({
+		url:'${ctxPath}/jiage/loadlscjdsp',
+		type:'post',
+		data:{"cjdcode":qyzzjgdm},
+		dataType:'json',
+		success:function(data){
+			//加载已对照商品
+			datatable.ajax.reload(null,true);
+        	datatable2.ajax.reload(null,true);
+		},
+		error:function(){
+			alert("加载临时采价点商品对照失败");
+		}
+	});
+	
+}
+
+/*
+//加载各下拉列表
+
+
+*/
+
+</script>
+</head>
+<body>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>采价点管理</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline" >
+		<p class="caozuo">
+			<a class="btn btn-xs btn-success" type="button" onclick="addCjd()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-clipboard" aria-hidden="true">&nbsp;新增</i></a>
+			<a class="btn btn-xs btn-success" type="button" onclick="saveCjd()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-floppy-o" aria-hidden="true">&nbsp;保存</i></a>
+			<a class="btn btn-xs btn-success" type="button" onclick="deleteCjd()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-times" aria-hidden="true">&nbsp;删除</i></a>
+		</p>
+	</div>
+	<div class="clearfix"></div>
+</div>
+
+<div class="panel-body" >
+	<div id="panelDemo10" class="panel panel-info" >
+	   <div class="panel-heading">采价点列表</div>
+		   <div class="panel-body">
+			   	<div class="st_tree">
+					<ul class = "st_tree_ul">
+						<li id="sycjd"><a href="#" ref="sypz">&nbsp;所有采集点</a></li>
+						<ul>
+						</ul>
+					</ul>
+				</div>
+		   </div>
+	</div>
+
+
+	<div id="panelDemo11" class="panel panel-info" style="width:76%;">
+	   <div class="panel-heading">采价点详细信息</div>
+	   <div class="panel-body" >
+	   		<div class="dashboard-wrapper-lg" style="padding:0; width:100%; margin-top:-20px;">
+			<br><br>
+		        <form id="contentform" role="form" action="" method="post" style="overflow: hidden;">
+		              		<div class="col-lg-12 col-md-12">
+		                		<div class="widget">
+		                  <div class="widget-header">
+		                  </div>
+			                 <div class="widget-body">
+									<div class="row">
+		
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<input id="id" name="id" class="form-control" placeholder="id" style="display:none" value="" >
+												<label for="cjdcode">采价点名称:</label>
+												<div id="div_cjdcode">
+													<select id="cjdcode" name="cjdcode" class="form-control input-sm" onchange="Change()">
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<label for="qybz">启用标志:</label>
+												<div id="div_qybz">
+													<select id="qybz" name="qybz" class="form-control">
+														<option value="是">是</option>
+														<option value="否">否</option>
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<label for="ssqycode">所属区域:</label>
+												<div id="div_ssqycode">
+													<select id="ssqycode" name="ssqycode" class="form-control input-sm" >
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<label for="qylxcode">企业类型:</label>
+												<div id="div_qylxcode">
+													<select id="qylxcode" name="qylxcode" class="form-control input-sm">
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<label for="bsplcode">报送频率:</label>
+												<div id="div_bsplcode">
+													<select id="bsplcode" name="bsplcode" class="form-control input-sm">
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<label for="bsrcode">报送日:</label>
+												<div id="div_bsrcode">
+													<select id="bsrcode" name="bsrcode" class="form-control input-sm">
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<label for="lxrcode">联系人:</label>
+												<div id="div_lxrcode">
+													<select id="lxrcode" name="lxrcode" class="form-control input-sm">
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group">
+												<label for="zsjs">指数计算:</label>
+												<div id="div_zsjs">
+													<select id="zsjs" name="zsjs" class="form-control">
+													  <option value ="是">是</option>
+													  <option value ="否">否</option>
+													</select>
+												</div>
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group cjd-div">
+												<label for="lxdz">联系地址:</label>
+												<input id="lxdz" name="lxdz" class="form-control cjd-input" placeholder="联系地址" value="">
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group cjd-div">
+												<label for="sjhm">手机号码:</label>
+												<input id="sjhm" name="sjhm" class="form-control cjd-input" placeholder="手机号码" value="">
+											</div>
+										</div>	
+										
+										<div class="col-xs-6">	
+											<div class="form-group cjd-div">
+												<label for="gddh">固定电话:</label>
+												<input id="gddh" name="gddh" class="form-control cjd-input" placeholder="固定电话" value="">
+											</div>
+										</div>	
+	
+										<div class="col-xs-6">	
+											<div class="form-group cjd-div">
+												<label for="bz">备注:</label>
+												<input id="bz" name="bz" class="form-control cjd-input" placeholder="备注" value="">
+											</div>
+										</div>	
+										
+									</div>
+								</div>
+		                  </div> 
+		               	 </div>
+		        </form>
+		    </div>
+   </div>
+ 
+   		<div class="cjd_conflict" style="width:100%">
+	    	<div class="weiduizhao wduizhao">
+	    		<div>
+		    		<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-wdz" data-url="${ctxPath}/jiage/querywdzpz.do" >	 
+			    		<thead>
+	           				<tr>
+	                			<th style="vertical-align:middle;text-align:center">未对照商品</th>
+	            			</tr>
+	        			</thead>	 			
+		    		</table>
+	    		</div>
+	    	</div>
+	    	<div class="jiantou">
+	    		<div>
+	    			<input type="button" onclick="turnright()" value="==>">
+	    		</div>
+	    		<div>
+	    			<input type="button" onclick="turnleft()" value="<==">
+	    		</div>
+	    	</div>
+	    	<div class="duizhao wduizhao">
+	    		<div>
+	    			<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-ydz" data-url="${ctxPath}/jiage/querycjdpz.do" >	 
+	    				<thead>
+	           				 <tr>
+	                			<th style="vertical-align:middle;text-align:center">已对照商品</th>
+	            			</tr>
+        				</thead>			
+		    		</table>
+	    		</div>
+	    	</div>
+	    	
+	    	<div class="jiagelx wduizhao">
+	    		<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-jglx" data-url="${ctxPath}/jiage/queryjglx.do" >	 
+    				<thead>
+           				 <tr>
+                			<th style="vertical-align:middle;text-align:center">价格类型</th>
+            			</tr>
+       				</thead>			
+	    		</table>
+	    	</div>
+	    </div>
+   		
+   </div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+
+</script>
+<%}%>

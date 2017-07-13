@@ -1,0 +1,595 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap.min.css" id="bscss">
+
+    <link rel="stylesheet" href="${ctxPath}/css/select2.css">
+    <link rel="stylesheet" href="${ctxPath}/css/select2-bootstrap.css">
+
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    border: 1px solid #ADD8E6;
+    border-bottom: 1px solid #ADD8E6;
+}
+
+.table>tbody>tr>td {
+    font-size:15px;
+   text-align:right;
+}
+.div_center{
+	text-align:center;
+}
+
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+}
+.table-bordered {
+    border: 1px solid #ADD8E6;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+}
+
+table.dataTable {
+       margin: 0 auto;
+       clear: both;
+       border-collapse: collapse;
+       border-spacing: 0;
+       float:left;
+}
+
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.dataTables_wrapper{
+	width:760px;
+	float:left;
+
+}
+.panel-body{
+	padding: 0px;
+}
+</style>
+
+<div class="row">
+		<div class="col-lg-12">
+            <div class="well "style="width: 100%;height: 407px;">
+                <div style="padding-bottom: 10px">
+                    <select class="form-control" name="niandu" id="niandu" style="width:150px;float: right;margin-right: 125px" onchange="changenianfen()">
+                        <option>请选择年份</option>
+                    </select>
+                    <label style="float: right;font-size: 10px;margin-top: 8px">统计年份：</label>
+                </div>
+				<!--  <h4>全市分析</h4>-->
+				<span style="width: 200px;font-size: 18px;">全市分析</span>&nbsp;&nbsp;<span style="font-size: 16px;"></span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1300px;height: 2px;">
+                <div class="panel-body">
+                <table id="zzmj"  class="table table-striped table-hover table-bordered datatables" style="width:1200px" data-url="${ctxPath}/zonghe/findzzmj" >
+					<thead>
+						<tr>
+							<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">区域</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">常住人口(人)</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">粮食总产量(吨)</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">年粮食消费量(吨)</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">口粮粮食消费量(吨)</th>
+                            <th rowspan="1" style="vertical-align:middle;text-align:center;">稻谷生产量(吨)</th>
+                            <th rowspan="1" style="vertical-align:middle;text-align:center;">小麦生产量(吨)</th>
+                        </tr>
+	    			</thead>
+				</table>
+                    </div>
+	         </div>
+            <div id="container" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+            <div id="container1" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+           <div id="container2" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+           <div id="container3" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+           <div id="container4" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+           <div id="container5" style="min-width: 400px; max-width: 500px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+        </div>
+</div>
+
+
+
+<script>
+
+$(function(){
+	$.ajax({
+		url:'${ctxPath}/zonghe/findyear',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				var year = data[i].niandu;
+				var op = '<option value="'+year+'">'+year+'</option>';
+				$("#niandu").append(op);
+			}
+			$("#niandu").val(2015);	
+			 $(".datatables").attr("data-queryparam","&niandu=2015");
+			    datatable.ajax.reload(null,true);
+		},
+		error:function(){
+		}
+	});
+});
+
+function changenianfen(){
+    czrkfq = [];
+    lszcfq = [];
+    lsxffq = [];
+    klxffq = [];
+    dgzlfq = [];
+    xmzlfq = [];
+    niandu=$('#niandu option:selected').val();
+    //重新加载数据
+    $(".datatables").attr("data-queryparam","&niandu="+niandu);
+    datatable.ajax.reload(null,true);
+}
+    //填充年份
+    
+    
+var quxian = ["市区","江宁区","浦口区","六合区","溧水区","高淳区"];
+var czrkfq = [];
+var lszcfq = [];
+var lsxffq = [];
+var klxffq = [];
+var dgzlfq = [];
+var xmzlfq = [];
+datatable = $('#zzmj').DataTable({
+	"processing": true,
+    //"serverSide": true,
+    "paging": false,
+	"info": false,
+    "columns": [
+        {
+			"render": function (data,type,row,meta) {
+				var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+				return div;
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var name = row["name"];
+				var div = '<div class="div_center">'+name+'</div>';	
+				return div;
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var czrk = row["czrk"];
+				if("合计" != row["name"]){
+					czrkfq.push(czrk);
+				}
+				var div = '<div class="">'+czrk+'</div>';	
+				return div;
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var lszcl = row["zc_liangshi"];
+				if("合计" != row["name"]){
+					lszcfq.push(lszcl);
+				}
+				var div = '<div class="">'+lszcl+'</div>';	
+				return div;								
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var lsxf = row["qnlsxfl"];
+				if("合计" != row["name"]){
+					lsxffq.push(lsxf);
+				}
+				var div = '<div class="">'+lsxf+'</div>';	
+				return div;								
+			}
+		},{
+			"render": function (data,type,row,meta) {
+				var klxf = row["kllsxfl"];
+				if(klxf==undefined){
+					klxf=0;
+				}
+				if("合计" != row["name"]){
+					klxffq.push(klxf);
+				}
+				var div = '<div class="">'+klxf+'</div>';	
+				return div;								
+			}
+		},{
+            "render": function (data,type,row,meta) {
+                var dgzl = row["zc_daogu"];
+                if(dgzl==undefined){
+                    dgzl=0;
+                }
+                if("合计" != row["name"]){
+                    dgzlfq.push(dgzl);
+                }
+                var div = '<div class="">'+dgzl+'</div>';
+                return div;
+            }
+        },{
+            "render": function (data,type,row,meta) {
+                var xmzl = row["zc_xiaomai"];
+                if(xmzl==undefined){
+                    xmzl=0;
+                }
+                if("合计" != row["name"]){
+                    xmzlfq.push(xmzl);
+                }
+                var div = '<div class="">'+xmzl+'</div>';
+                return div;
+            }
+        }
+		]
+});
+$('#zzmj').on( 'draw.dt', function () {
+	var qscfxy = [{name:"市区",value:czrkfq[0]},{name:"江宁区",value:czrkfq[1]},{name:"浦口区",value:czrkfq[2]},
+	            {name:"六合区",value:czrkfq[3]},{name:"溧水区",value:czrkfq[4]},{name:"高淳区",value:czrkfq[5]}];
+	//烘干能力饼状图
+	option = {
+		    title : {
+		        text: '常住人口分区统计(人)',
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}人({d}%)",
+		        position: function (p) {
+	                // 位置回调
+	                return [p[0]-180, p[1]+15];
+	            }
+		    },
+		    legend: {
+		    	 orient : 'vertical',
+			        y:'center',
+			        x:'left',
+		        data:quxian
+		    },
+		    /*
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '60%',
+		                        width: '60%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    */
+		    color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+		    calculable : false,
+		    series : [
+		              {
+		                  name:'常住人口占比',
+		                  type:'pie',
+		                  radius : '55%',
+		                  center: ['60%', '60%'],
+		                  itemStyle:{
+		                	  normal:{
+		                		  label:{
+		                			  show: false 
+		                		  },
+		                		  labelLine:{
+		                			  show: false
+		                		  }
+		                	  }
+		                  },
+		                  data:qscfxy
+		              }
+		          ]
+		};
+	echarts.init(document.getElementById('container')).setOption(option);	
+	
+	
+	var qscfgz = [{name:"市区",value:lszcfq[0]},{name:"江宁区",value:lszcfq[1]},{name:"浦口区",value:lszcfq[2]},
+		            {name:"六合区",value:lszcfq[3]},{name:"溧水区",value:lszcfq[4]},{name:"高淳区",value:lszcfq[5]}];
+		//烘干能力饼状图
+		option1 = {
+			    title : {
+			        text: '粮食总产量分区统计(吨)',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+			        position: function (p) {
+		                // 位置回调
+		                return [p[0]-180, p[1]+15];
+		            }
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:quxian
+			    },
+			    
+			    color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+			    calculable : false,
+			    series : [
+			              {
+			                  name:'粮食总产量占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscfgz
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container1')).setOption(option1);	
+
+		var qscfbz = [{name:"市区",value:lsxffq[0]},{name:"江宁区",value:lsxffq[1]},{name:"浦口区",value:lsxffq[2]},
+			            {name:"六合区",value:lsxffq[3]},{name:"溧水区",value:lsxffq[4]},{name:"高淳区",value:lsxffq[5]}];
+			//烘干能力饼状图
+			option2 = {
+				    title : {
+				        text: '年粮食消费量分区统计(吨)',
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+				        position: function (p) {
+			                // 位置回调
+			                return [p[0]-180, p[1]+15];
+			            }
+				    },
+				    legend: {
+				    	 orient : 'vertical',
+					        y:'center',
+					        x:'left',
+				        data:quxian
+				    },
+				    /*
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    */
+				    color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+				    calculable : false,
+				    series : [
+				              {
+				                  name:'粮食消费占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '60%'],
+				                  itemStyle:{
+				                	  normal:{
+				                		  label:{
+				                			  show: false 
+				                		  },
+				                		  labelLine:{
+				                			  show: false
+				                		  }
+				                	  }
+				                  },
+				                  data:qscfbz
+				              }
+				          ]
+				};
+			echarts.init(document.getElementById('container2')).setOption(option2);	
+			
+			var qscfzw = [{name:"市区",value:klxffq[0]},{name:"江宁区",value:klxffq[1]},{name:"浦口区",value:klxffq[2]},
+				            {name:"六合区",value:klxffq[3]},{name:"溧水区",value:klxffq[4]},{name:"高淳区",value:klxffq[5]}];
+				//烘干能力饼状图
+				option3 = {
+					    title : {
+					        text: '口粮粮食消费量分区统计(吨)',
+					    },
+					    tooltip : {
+					        trigger: 'item',
+					        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+					        position: function (p) {
+				                // 位置回调
+				                return [p[0]-180, p[1]+15];
+				            }
+					    },
+					    legend: {
+					    	 orient : 'vertical',
+						        y:'center',
+						        x:'left',
+					        data:quxian
+					    },
+					    color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+					    /*
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            magicType : {
+					                show: true, 
+					                type: ['pie', 'funnel'],
+					                option: {
+					                    funnel: {
+					                        x: '60%',
+					                        width: '60%',
+					                        funnelAlign: 'left',
+					                        max: 1548
+					                    }
+					                }
+					            },
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    */
+					    calculable : false,
+					    series : [
+					              {
+					                  name:'口粮粮食占比',
+					                  type:'pie',
+					                  radius : '55%',
+					                  center: ['60%', '60%'],
+					                  itemStyle:{
+					                	  normal:{
+					                		  label:{
+					                			  show: false 
+					                		  },
+					                		  labelLine:{
+					                			  show: false
+					                		  }
+					                	  }
+					                  },
+					                  data:qscfzw
+					              }
+					          ]
+					};
+				echarts.init(document.getElementById('container3')).setOption(option3);
+    /*******************************************稻谷*************************************************************/
+    var dgzw = [{name:"市区",value:dgzlfq[0]},{name:"江宁区",value:dgzlfq[1]},{name:"浦口区",value:dgzlfq[2]},
+        {name:"六合区",value:dgzlfq[3]},{name:"溧水区",value:dgzlfq[4]},{name:"高淳区",value:dgzlfq[5]}];
+    //烘干能力饼状图
+    option4 = {
+        title : {
+            text: '稻谷生产量分区统计(吨)',
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c}吨({d}%)",
+            position: function (p) {
+                // 位置回调
+                return [p[0]-180, p[1]+15];
+            }
+        },
+        legend: {
+            orient : 'vertical',
+            y:'center',
+            x:'left',
+            data:quxian
+        },
+        color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+        calculable : false,
+        series : [
+            {
+                name:'稻谷占比',
+                type:'pie',
+                radius : '55%',
+                center: ['60%', '60%'],
+                itemStyle:{
+                    normal:{
+                        label:{
+                            show: false
+                        },
+                        labelLine:{
+                            show: false
+                        }
+                    }
+                },
+                data:dgzw
+            }
+        ]
+    };
+    echarts.init(document.getElementById('container4')).setOption(option4,true);
+    /*******************************************稻谷*************************************************************/
+    /*******************************************小麦*************************************************************/
+    var xmzw = [{name:"市区",value:xmzlfq[0]},{name:"江宁区",value:xmzlfq[1]},{name:"浦口区",value:xmzlfq[2]},
+        {name:"六合区",value:xmzlfq[3]},{name:"溧水区",value:xmzlfq[4]},{name:"高淳区",value:xmzlfq[5]}];
+    //烘干能力饼状图
+    option5 = {
+        title : {
+            text: '小麦生产量分区统计(吨)',
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c}吨({d}%)",
+            position: function (p) {
+                // 位置回调
+                return [p[0]-180, p[1]+15];
+            }
+        },
+        legend: {
+            orient : 'vertical',
+            y:'center',
+            x:'left',
+            data:quxian
+        },
+        color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+        calculable : false,
+        series : [
+            {
+                name:'小麦占比',
+                type:'pie',
+                radius : '55%',
+                center: ['60%', '60%'],
+                itemStyle:{
+                    normal:{
+                        label:{
+                            show: false
+                        },
+                        labelLine:{
+                            show: false
+                        }
+                    }
+                },
+                data:xmzw
+            }
+        ]
+    };
+    echarts.init(document.getElementById('container5')).setOption(option5,true);
+    /*******************************************小麦*************************************************************/
+
+});
+
+
+
+</script>
+ 
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

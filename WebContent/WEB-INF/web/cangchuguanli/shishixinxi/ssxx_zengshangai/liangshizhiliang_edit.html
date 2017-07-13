@@ -1,0 +1,112 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addLiangshizl",title="新增粮食质量";
+	if (isNotEmpty(parameter.id)) {
+		var lszl = @com.zkzy.njzhpt.dao.CangchuglDao.findLiangshizl({"id":parameter.id,"page":"1","rows":"100"});
+		obj = lszl.list[0];
+		url = ctxPath+"/cangchugl/upLiangshizl";
+		title = "编辑粮食质量";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="kuqu">库区</label>
+							<input type="text" class="form-control" name="kuqu" id="kuqu" placeholder="库区" value="${obj.kuqu}" >
+						</div>
+						<div class="form-group">	
+							<label for="canghao">仓号</label>
+							<input type="text" class="form-control" name="canghao" id="canghao" placeholder="仓号" value="${obj.canghao}" >
+						</div>
+						 <div class="form-group">	
+							<label for="pingzhong">品种</label>
+							<input type="text" class="form-control" name="pingzhong" id="pingzhong" placeholder="品种" value="${obj.pingzhong}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="chandi">产地</label>
+							<input type="text" class="form-control" name="chandi" id="chandi" placeholder="产地" value="${obj.chandi}"  >
+						</div>
+						<div class="form-group">	
+							<label for="shouhuoniandu">收获年度</label>
+							<input type="text" class="form-control" name="shouhuoniandu" id="shouhuoniandu" placeholder="收获年度" value="${obj.shouhuoniandu}" >
+						</div>
+						<div class="form-group">	
+							<label for="liangshixz">粮食性质</label>
+							<input type="text" class="form-control" name="liangshixz" id="liangshixz" placeholder="粮食性质" value="${obj.liangshixz}" >
+						</div>
+						 <div class="form-group">	
+							<label for="shuliang">数量</label>
+							<input type="text" class="form-control" name="shuliang" id="shuliang" placeholder="数量" value="${obj.shuliang}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="jiancedate">检测日期</label>
+							<input type="text" class="form-control" name="jiancedate" id="jiancedate" placeholder="检测日期" value="${obj.jiancedate}"  >
+						</div>
+						 <div class="form-group">	
+							<label for="shuifen">水分(%)</label>
+							<input type="text" class="form-control" name="shuifen" id="shuifen" placeholder="水分(%)" value="${obj.shuifen}"  >
+						</div>
+						<div class="form-group">	
+							<label for="zazhi">杂质(%)</label>
+							<input type="text" class="form-control" name="zazhi" id="zazhi" placeholder="杂质(%)" value="${obj.zazhi}"  >
+						</div>	
+						<div class="form-group">	
+							<label for="chucao">出糙(%)</label>
+							<input type="text" class="form-control" name="chucao" id="chucao" placeholder="出糙(%)" value="${obj.chucao}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="rongzhong">容重(g/l)</label>
+							<input type="text" class="form-control" name="rongzhong" id="rongzhong" placeholder="容重(g/l)" value="${obj.rongzhong}"  >
+						</div>
+						 <div class="form-group">	
+							<label for="buwanshanli">不完善粒(%)</label>
+							<input type="text" class="form-control" name="buwanshanli" id="buwanshanli" placeholder="不完善粒(%)" value="${obj.buwanshanli}"  >
+						</div>
+						<div class="form-group">	
+							<label for="huangli">黄粒(%)</label>
+							<input type="text" class="form-control" name="huangli" id="huangli" placeholder="黄粒(%)" value="${obj.huangli}"  >
+						</div>	
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/shishixinxi/liangshizhiliang.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/shishixinxi/liangshizhiliang.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

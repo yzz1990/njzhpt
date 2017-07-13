@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+   
+
+
+<title>粮食收储企业资格备案增删</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+
+</head>
+
+<%
+	var obj={},url=ctxPath+"/emergency/addlsscba";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.EmergencyDAO.querylssgzg({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/emergency/uplsscba";
+	};
+%>
+
+
+
+
+<body>
+	 <div class="dashboard-wrapper-lg" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+	 		<input type="hidden"  name="id" class="form-control" placeholder="id" value="${obj.id}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                
+                  <div class="widget-header">
+                    <div class="title">
+                        	粮食收购资格许可信息                                  
+                    </div>
+                  </div>
+                  <div class="widget-body">
+           
+						<div class="row">
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="qymc">企业名称:</label>
+									<input id="qymc" name="qymc" class="form-control" placeholder="企业名称" value="${obj.qymc}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="qyxz">企业性质:</label>	
+									<input id="qyxz" name="qyxz" class="form-control" placeholder="企业性质" value="${obj.qyxz}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="jylx">经营类型:</label>
+									<input id="jylx" name="jylx" class="form-control" placeholder="经营类型" value="${obj.jylx}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="sgzgxk">收购资格许可:</label>
+									<input id="sgzgxk" name="sgzgxk" class="form-control" placeholder="收购资格许可" value="${obj.sgzgxk}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="xkzh">许可证号:</label>
+									<input id="xkzh" name="xkzh" class="form-control" placeholder="许可证号" value="${obj.xkzh}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="fzjg">发证机关:</label>
+									<input id="fzjg" name="fzjg" class="form-control" placeholder="发证机关" value="${obj.fzjg}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="fzrq">发证日期:</label>
+									<input id="fzrq" name="fzrq" class="form-control" placeholder="发证日期" value="${obj.fzrq}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="zyzj">自有资金(万元):</label>
+									<input id="zyzj" name="zyzj" class="form-control" placeholder="自有资金(万元)" value="${obj.zyzj}">
+								</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	收储能力                                 
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="jycd">经营场地(m2):</label>
+									<input id="jycd" name="jycd" class="form-control" placeholder="经营场地(m2)" value="${obj.jycd}">
+								</div>
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="ccnl">储存能力(吨):</label>
+									<input id="ccnl" name="ccnl" class="form-control" placeholder="储存能力(吨)" value="${obj.ccnl}">
+								</div>	
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="fhyqcfcr">符合储粮要求仓房仓容:</label>
+									<input id="fhyqcfcr" name="fhyqcfcr" class="form-control" placeholder="符合储粮要求仓房仓容" value="${obj.fhyqcfcr}">
+								</div>
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="jyc">简易仓(罩棚仓):</label>
+									<input id="jyc" name="jyc" class="form-control" placeholder="简易仓(罩棚仓)" value="${obj.jyc}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="clzp">储粮罩棚:</label>
+									<input id="clzp" name="clzp" class="form-control" placeholder="储粮罩棚" value="${obj.clzp}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="ltccnl">露天储存能力:</label>
+									<input id="ltccnl" name="ltccnl" class="form-control" placeholder="露天储存能力" value="${obj.ltccnl}">
+								</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	检化验(室)设备                                
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="jhys">检化验室(m2):</label>
+									<input id="jhys" name="jhys" class="form-control" placeholder="检化验室(m2)" value="${obj.jhys}">
+								</div>
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="tianpin">天平(台):</label>
+									<input id="tianpin" name="tianpin" class="form-control" placeholder="天平(台)" value="${obj.tianpin}">
+								</div>	
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="fenyangqi">分样器(个):</label>
+									<input id="fenyangqi" name="fenyangqi" class="form-control" placeholder="分样器(个)" value="${obj.fenyangqi}">
+								</div>
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="guwuxuanshan">谷物选筛(台):</label>
+									<input id="guwuxuanshan" name="guwuxuanshan" class="form-control" placeholder="谷物选筛(台)" value="${obj.guwuxuanshan}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="hongxiang">烘箱(台):</label>
+									<input id="hongxiang" name="hongxiang" class="form-control" placeholder="烘箱(台)" value="${obj.hongxiang}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="fensuiji">粉碎机(台):</label>
+									<input id="fensuiji" name="fensuiji" class="form-control" placeholder="粉碎机(台)" value="${obj.fensuiji}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="ganzaoji">干燥机(台):</label>
+									<input id="ganzaoji" name="ganzaoji" class="form-control" placeholder="干燥机(台)" value="${obj.ganzaoji}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="shuifenhe">水分盒(个):</label>
+									<input id="shuifenhe" name="shuifenhe" class="form-control" placeholder="水分盒(个)" value="${obj.shuifenhe}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="rongzhongqi">容重器(台):</label>
+									<input id="rongzhongqi" name="rongzhongqi" class="form-control" placeholder="容重器(台)" value="${obj.rongzhongqi}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="longguji">砻谷机(台):</label>
+									<input id="longguji" name="longguji" class="form-control" placeholder="砻谷机(台)" value="${obj.longguji}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="nianmiji">碾米机(台):</label>
+									<input id="nianmiji" name="nianmiji" class="form-control" placeholder="碾米机(台)" value="${obj.nianmiji}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="shuifenceding">水份测定仪(台):</label>
+									<input id="shuifenceding" name="shuifenceding" class="form-control" placeholder="水份测定仪(台)" value="${obj.shuifenceding}">
+								</div>	
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="qita">其他:</label>
+									<input id="qita" name="qita" class="form-control" placeholder="其他" value="${obj.qita}">
+								</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	计量检斤设备                          
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="dizhongheng">地中衡(吨/台):</label>
+									<input id="dizhongheng" name="dizhongheng" class="form-control" placeholder="地中衡(吨/台)" value="${obj.dizhongheng}">
+								</div>
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="taicheng">台秤(公斤/台):</label>
+									<input id="taicheng" name="taicheng" class="form-control" placeholder="台秤(公斤/台)" value="${obj.taicheng}">
+								</div>	
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="jiliangqita">其他:</label>
+									<input id="jiliangqita" name="jiliangqita" class="form-control" placeholder="其他" value="${obj.jiliangqita}">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	</div>
+            <!-- Row End -->
+            
+    <script type="text/javascript">
+
+    function savelsscba() {
+    	var form = $("#contentform");
+    	$.ajax({
+    		url: form.attr("action"),
+    		type:"post",
+    		dataType:"json",
+    		data: form.serialize(),
+    		success: function(msg) {
+    			if (!msg.ret) {
+    				alert(msg.message);
+    			} else {
+    				alert("保存成功");
+    			}
+    		},
+    		error:function(){
+    			alert("保存失败,请检查内容是否重复");
+    		}
+    	});
+    }
+    
+    </script>
+            
+</body>
+
+
+</html>

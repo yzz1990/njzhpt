@@ -1,0 +1,122 @@
+ <%
+	var ip=parameter.ip;
+	var divid = parameter.divid;
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" > 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+<style>
+	*{
+		margin:0px;
+		padding:0px;
+		height:100%;
+	}  
+  .td_mouseover{      
+      color:#FFFFFF;
+      text-decoration:underline;
+      cursor:pointer;
+  }   
+  .td_normal{   
+      background-color:#343434;  
+  }   
+</style>
+</head> 
+
+<body onload="checkBrowser();"> 
+	  <script type="text/javascript">
+		 //仅适用于IE浏览器是，并且安装有vlc插件，则返回true；
+		    function isInsalledIEVLC(){  
+		        var vlcObj = null;
+		        var vlcInstalled= false; 
+		        try {
+		            vlcObj = new ActiveXObject("VideoLAN.Vlcplugin.1"); 
+		            if( vlcObj != null ){ 
+		                vlcInstalled = true; 
+		            }
+		        } catch (e) {
+		            vlcInstalled= false;
+		        }        
+		        return vlcInstalled;
+		    } 
+		 
+		    //仅适用于firefox浏览器是，并且安装有vlc插件，则返回true；
+		    function isInsalledFFVLC(){
+		         var numPlugins=navigator.plugins.length;
+		         for  (i=0;i<numPlugins;i++){ 
+		              plugin=navigator.plugins[i];
+		              if(plugin.name.indexOf("VideoLAN") > -1 || plugin.name.indexOf("VLC") > -1){ 
+		                 return true;
+		            }
+		         }
+		         return false;
+		    }
+
+                  /* 浏览器检测 */
+	    	function checkBrowser(){
+				var browser=navigator.appName
+				var b_version=navigator.appVersion
+				var version=parseFloat(b_version)
+				if ( browser=="Netscape"  && version>=4) {
+					if(isInsalledFFVLC()){
+						setTimeout("show()",1000);
+					}else{
+						install();
+					}
+				}else if(browser=="Microsoft Internet Explorer" && version>=4) {
+					if(isInsalledIEVLC()){
+						show();
+					}else{
+						install();
+					}
+				}
+			}
+                  
+            function install() {
+				var install = "<table width='100%' height='100%' border='0' cellspacing='0' cellpadding='0'>"
+					  +"<tbody>"
+					  +"<tr>"
+					  +"<td colspan='2' id='main_plugin' align='center' style='width:100%;background:#343434;'>"
+					  +"<label onmouseover=\"this.className='td_mouseover';\" onmouseout=\"this.className='td_normal';\" name='laPlugin' onclick='window.open(&quot;http://49.65.0.27:8080/install/vlc-2.2.4-win32.exe&quot;,&quot;_self&quot;)''>请点击此处下载插件，安装时请关闭浏览器<label></label></label></td>"
+					  +"</tr>"
+					  +"</tbody>"
+					  +"</table>";
+				$(window.parent.document).find("#if1").css('background','#343434');
+				$(window.parent.document).find("#if1").css('width','100%');
+				$(window.parent.document).find("#kongzhiframe").css('width','0px');
+				$("#sp").css("position","absolute");
+				$("#sp").css("top","45%");
+				$("#sp").css("left","22%");
+				$("#sp").html(install);
+			}
+            
+            function show() {
+			    var text = "<object class=\"vlc\" type=\'application/x-vlc-plugin\'  events=\'True\' width=\"100%\" height=\"400%\">"
+       				+"<param name=\'mrl\' value=\'${ip}&subtype=0\' />"
+       				+"<param name=\'volume\' value=\'50\' />"
+       				+"<param name=\'autoplay\' value=\'true\' />"
+       				+"<param name=\'loop\' value=\'false\' />"
+       				+"<param name=\'fullscreen\' value=\'true\' />"
+       				+"<EMBED pluginspage=\"http://www.videolan.org\""
+       				+"type=\"application/x-vlc-plugin\""
+       				+"version=\"VideoLAN.VLCPlugin.2\""
+       				+"width=\"600\""
+       				+"height=\"480\""
+       				+"text=\"Waiting for video\""
+       				+"name=\"vlc\">"
+       				+"</EMBED>"
+       				+"</object>";
+			    	$("#sp").html(text);
+            }
+            
+            function getdivid(){
+            	alert('${divid}');
+            }
+           
+	 </script>
+	 <div id="sp" style="height:100%">
+	 </div>
+ 
+</body> 
+</html>

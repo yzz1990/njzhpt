@@ -1,0 +1,811 @@
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<%
+var uuid=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.creatuuid({});
+var name=session.userinfo.area.name;
+var dep=session.userinfo.dep.name;
+%>
+<style type="text/css">
+body{
+}
+.dashboard-wrapper-lg {
+    position: relative;
+    background: #f7f7f7;
+    min-height: 0px; 
+    padding: 20px;
+}
+.row {
+    margin: 0px;
+    background-color: white;
+}
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 0px;
+}
+.modal-body {
+    position: relative;
+    padding: 0px;
+}
+td.details-control {
+    background: url('${ctxPath}/img/chubeiliangjh/Delete.png') no-repeat center center;
+}
+</style>
+
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  
+	
+	<form action="" id="sc">
+		<div class="row">
+			<div class="col-xs-4">
+				<div class="form-group">
+					<label for="szqy">所在区域:</label>
+						<input id="szqy" name="szqy" class="form-control" value="${name}" readonly="readonly" >
+						<input id="xzqhdm" name="xzqhdm" class="form-control" type="hidden" >
+				</div>
+			</div>
+			<div class="col-xs-4">	
+					<div class="form-group">
+						<label for="qymc">企业:</label>
+							<input id="qymc" name="qymc" class="form-control" value="${dep}" readonly="readonly" >
+							<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" type="hidden" >
+					</div>	
+			</div>
+			<div class="col-xs-4">	
+					<div class="form-group">
+						<label for="liuchenghao"><font color="red" style="font-size:large;">*</font>审批流程:</label>
+							 <select id="liuchenghao" name="liuchenghao"  class="form-control" onchange="selectliucheng()" >
+					 			<option value="">请选择</option>
+							</select> 
+							<input id="sumjiedian" name="sumjiedian" class="form-control" type="hidden" >
+					</div>	
+			</div>
+		</div>
+			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Row End -->
+      </div>
+   <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	轮入申请                                        
+                    </div>
+                     <div style="float: right;">单位/吨</div>
+                  </div>
+                  <div class="widget-body">
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="sqwh">申请文号:</label>
+					<input name="sqwh" id="sqwh"  class="form-control" type="text" placeholder="申请文号" >
+				</div>
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="lhsl">轮入数量:</label>
+					<input name="lhsl" id="lhsl" class="form-control " placeholder="轮入数量" onkeyup="value=value.replace(/[^\d.]/g,'')" >	
+				</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group" >
+					<label for="ccku" >承储库:</label>
+					<select  name="ccku" id="ccku" class="form-control"  onchange="selectccdian()">
+         				<option value="">请选择</option>
+         			</select>
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="ccdian">承储点:</label>
+						<select  name="ccdian" id="ccdian" class="form-control"  onchange="selectkdbm()" >
+         					<option value="">请选择</option>
+         				</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="year">生产年限:</label>
+					<select  name="year" id="year" class="form-control " >
+       					<option value="">请选择</option>
+       				</select>
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="pz">品种:</label>
+						<select  name="pz" id="pz" class="form-control " >
+         					<option value="">请选择</option>
+         					<option value = "111">小麦</option>
+							<option value = "1132">粳稻</option>
+							<option value = "1131">籼稻</option>
+         				</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="grade">质量等级:</label>
+						<select  name="grade" id="grade" class="form-control " >
+         					<option value="">请选择</option>
+         					<option value = "01">一级</option>
+							<option value = "02">二级</option>
+							<option value = "03">三级</option>
+							<option value = "04">四级</option>
+							<option value = "05">五级</option>
+							<option value = "06">等外级</option>
+         				</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="shuifen">水份:</label>
+					<input name="shuifen" id="shuifen"  class="form-control " type="text" placeholder="水份(%)">
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="avgprice">平均入库价格(元/吨):</label>
+					<input name="avgprice" id="avgprice" class="form-control " placeholder="平均入库价格" onkeyup="value=value.replace(/[^\d.]/g,'')" >	
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="tbaoren">填报人:</label>
+					<input name="tbaoren" id="tbaoren" class="form-control " placeholder="填报人" >	
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="sqsj">完成轮入时间:</label>
+					<input name="sqsj" id="sqsj" class="form-control " placeholder="完成轮入时间"  readonly="readonly">	
+				</div>	
+			</div>
+			<div class="col-xs-6">	
+				<div class="form-group">
+					<label for="sqsj_tijiao">申请验收时间:</label>
+					<input name="sqsj_tijiao" id="sqsj_tijiao" class="form-control " placeholder="申请验收时间" readonly="readonly">	
+				</div>	
+			</div>
+		</div>
+					
+			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>   
+        
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	轮入明细                                 
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  
+			<div class="row">
+				<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="sqsj_tijiao"><input id="kdcheck" class="checklx" type="checkbox" onclick="Changekd(this)">变更库点</label>
+						<div id="bgkd" style="display:none">
+							<label for="sqsj_tijiao">原承储库</label>
+							<select  name="kudian" id="kudian" class="form-control " >
+		       					<option value="">请选择</option>
+		        			</select>
+						</div>
+						<div>
+						<input type="button" value="下载模板">
+						<input type="button" value="上传文件">
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="sqsj_tijiao"><input id="pzcheck" class="checklx" type="checkbox" onclick="Changepz(this)">变更品种</label>
+						<div id="bgpz" style="display:none">
+							<label for="sqsj_tijiao">原品种</label>
+							<select  name="bgpz" id="bgpz" class="form-control " >
+		       					<option value="">请选择</option>
+		       					<option value = "111">小麦</option>
+								<option value = "1132">粳稻</option>
+								<option value = "1131">籼稻</option>
+		       				</select>
+						</div>
+						<div>
+						<input type="button" value="下载模板">
+						<input type="button" value="上传文件">
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		
+			
+			<a class="btn btn-xs btn-success" onclick="appendlcpf()" style="margin-top: 15px;" >
+			<i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;添加仓房</a>
+			<label for="sqsj_tijiao" style="float:right"><input type="checkbox">按承储计划轮入</label>
+			<div>
+				<div class="row">
+					<div class="col-xs-12">	
+						<div class="form-group">
+							<input id="cfs" name="cfs" type="hidden" >
+							<input id="cflrsl" name="cflrsl" type="hidden">
+							<input id="changekd" name="changekd" type="hidden">
+							<input id="changepz" name="changepz" type="hidden">
+							<table id="cftable" class="table table-striped table-hover table-bordered datatables"  data-url="${ctxPath}/cangchugl/selectXzch" >
+								<thead>
+									<tr>
+										<th style="">仓号</th>
+										<th style="">轮入数量(吨)</th>
+										<th style="">操作</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+				<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+        
+          
+     </form>
+     
+     <div class="" style="margin-top: 60px;">
+		<button type="button" class="btn btn-sm btn-success" id="btn" style="margin-top: 3px;" onclick="yulan()" ><em class="fa fa-check fa-fw"></em>生成报告</button>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+var mydate = new Date();
+var tyear = mydate.getFullYear();
+var tday = mydate.toLocaleDateString();
+
+var ccqyid = [];
+var datatable;
+var index = 0;
+var flag = 0;
+var changekd = 0;
+var changepz = 0;
+$(function(){
+	$("#sqwh").val("宁粮储轮["+year+"]");
+	$("#liuchenghao,#ccku,#ccdian,#cfbm").select2();
+	//获取流程号
+	$.ajax({
+		 url:'${ctxPath}/lunhuan/findlcbylc',
+		 type:'post',
+		 data:{},
+		 dataType:'json',
+		 success:function(data){
+			$.each(data.list,function(i, n){
+				$("#liuchenghao").append("<option jiedian="+n.jiedian+" value="+n.liuchenghao+">"+n.name+"</option>");
+			});
+		 }
+	});
+	//获取承储企业
+	$.ajax({
+		url:'${ctxPath}/lunhuan/queryCcqy',
+		type:'post',
+		data:{"xian":"${name}"},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				if(!ccqyid.in_array(data.list[i].ccqy)){
+					var op = "<option value="+data.list[i].ccqy+">"+data.list[i].qymc+"</option>";
+				     $("#ccku").append(op);
+				}
+				ccqyid.push(data.list[i].ccqy);
+			}
+		}
+	});
+	
+	//行政区划代码赋值
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findquxian',
+		type:'post',
+		data:{"name":"${name}"},
+		dataType:'json',
+		success:function(data){
+			$("#xzqhdm").val(data[0].xzqhdm);
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	//加载一级企业的企业组织机构编码
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"qymc":"${dep}"},
+		dataType:'json',
+		success:function(data){
+			$("#qyzzjgdm").val(data.list[0].qyzzjgdm);
+		}
+	});
+	
+	for(var i=0; i < 6; i++){
+		var op = '<option value="'+(year-i)+'">'+(tyear-i)+'</option>';
+		$("#year").append(op);
+	}
+	
+	$('#sqsj').datetimepicker({
+		minView: "month",
+		format:'yyyy-mm-dd',
+		language: 'zh-CN',
+		autoclose: 1,
+		startView: 2,
+	});
+	$("#sqsj").val(tday);
+	$('#sqsj_tijiao').datetimepicker({
+		minView: "month",
+		format:'yyyy-mm-dd',
+		language: 'zh-CN',
+		autoclose: 1,
+		startView: 2,
+	});
+	$('#sqsj_tijiao').val(tday);
+	
+});
+
+function loadqiye(index){
+	//获取承储企业
+	var qiyeid = [];
+	$.ajax({
+		url:'${ctxPath}/lunhuan/queryCcqy',
+		type:'post',
+		data:{"xian":"${name}"},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				if(!qiyeid.in_array(data.list[i].ccqy)){
+					var op = "<option value="+data.list[i].ccqy+">"+data.list[i].qymc+"</option>";
+				     $("#qiye"+index).append(op);
+				}
+				qiyeid.push(data.list[i].ccqy);
+			}
+		}
+	});
+}
+
+
+
+/**
+ * 添加轮出批复
+ */
+function appendlcpf(){
+	var qyzzjgdm = $("#ccku option:selected").val();
+	var kdbm = $("#ccdian option:selected").val();
+	if(qyzzjgdm == null || qyzzjgdm == "" || kdbm == null || kdbm == ""){
+		alert("承储库和承储点不能为空");
+		return false;
+	}
+	flag++;
+	index++;
+	var linshi=
+	'<tr id="tr'+index+'">'+
+		'<td><select id="cfbm'+index+'" class="cfbm" style="width:100%;height:100%" onchange="getcfbm(\''+index+'\')"><option value="">请选择</option></select></td>'+
+		'<td><input id="cflhsl'+index+'" class="cflhsl"  type="text"  style="width:100%;height:100%" onkeyup="this.value=this.value.replace(/\D/gi,\'\')" onafterpaste="this.value=this.value.replace(/\D/g,\'\')" /></td>'+
+		'<td  style="text-align: center";><button type="button" class="btn btn-xs btn-success"onclick="shanchu(\''+index+'\')"><i class="fa fa-pencil" aria-hidden="true">&nbsp删除</i></button></td>'+
+	'</tr>';
+	loadcfbm(index);
+	$("#cftable").append(linshi);
+	
+}
+
+	function shanchu(index){
+		$("#tr"+index).remove();
+		flag--;
+	}
+	
+	var zongkuc;
+	function shangchuan(){
+		if(flag == 0){
+			alert("请添加轮入明细");
+			return false;
+		}
+		var cfs = "";
+		var cflrsl = "";
+		for(var i=1;i<=index;i++){
+			if($("#cfbm"+i).length>0){
+				if(""==$("#cfbm"+i+" option:selected").val() 
+						|| "请选择"==$("#cfbm"+i+" option:selected").val()
+						|| null==$("#cfbm"+i+" option:selected").val()){
+					alert("请选择仓房名称！");
+					return false;
+				}
+				cfs += $("#cfbm"+i).val()+",";
+				if(""==$("#cflhsl"+i).val() || null==$("#cflhsl"+i).val()){
+					alert("填写轮入数量明细！");
+					return false;
+				}
+				cflrsl += $("#cflhsl"+i).val()+",";
+			}
+		}
+		
+		$("#cfs").val(cfs);
+		$("#cflrsl").val(cflrsl);
+		$("#changekd").val(changekd);
+		$("#changepz").val(changepz);
+		if($("#liuchenghao option:selected").val()=="" 
+				|| $("#liuchenghao option:selected").val()==null
+				|| $("#liuchenghao option:selected").val()=="请选择"){
+			alert("请选择流程号 ");
+			return false;
+		}else if($("#ccku option:selected").val()=="" 
+				|| $("#ccku option:selected").val()==null
+				|| $("#ccku option:selected").val()=="请选择"){
+			alert("请选择承储企业 ");
+			return false;
+		}else if($("#avgprice").val()=="" 
+			|| $("#avgprice").val()==null){
+			alert("请填写平均轮入价格");
+			return false;
+		}else if($("#ccdian option:selected").val()==""
+				|| $("#ccdian option:selected").val()==null
+				|| $("#ccdian option:selected").val()=="请选择"){
+			alert("请选择承储库 ");
+			return false;
+		}else if($("#pz option:selected").val()==""
+				|| $("#pz option:selected").val()==null
+				|| $("#pz option:selected").val()=="请选择"){
+			alert("请选择品种名称 ");
+			return false;
+		}else if($("#sqwh").val()=="" 
+				|| $("#sqwh").val()==null){
+			alert("请输入申请文号 ");
+			return false;
+		}else if($("#lhsl").val()=="" || $("#lhsl").val()==null){
+			alert("请输入轮入数量 ");
+			return false;
+		}else if($("#sqsj").val()=="" || $("#sqsj").val()==null){
+			alert("请输入轮入完成时间 ");
+			return false;
+		}else if($("#sqsj_tijiao").val()=="" || $("#sqsj_tijiao").val()==null){
+			alert("请输入申请验收时间 ");
+			return false;
+		}else {
+			$.ajax({
+				url:'${ctxPath}/lunhuan/queryLunRuShenQing.do',
+				type:'post',
+				dataType:'json',
+				success:function(data){
+					var sqwhs = [];
+					var sqwh = $("#sqwh").val();
+					var flag = true;
+					$.each(data.list,function(i, n){
+						if(sqwh == n.sqwh){
+							flag = false;
+						}
+					});
+					if(flag == true){
+						$.ajax({
+							url: "${ctxPath}/lunhuan/saveLunRu.do",
+							dataType: "json",
+							data:$("#sc").serialize(),
+							success: function(msg) {
+								if (msg.ret) {
+								  	parent.dialog1.close();
+							   		alert("轮入申请成功");
+							   		parent.window.datatable.ajax.reload(null,true);
+								}else{
+							   		alert(ret.message);
+								}
+								
+								var qyzzjgdm = $("#ccku option:selected").val();
+								var kdbm = $("#ccdian option:selected").val();
+								var kdmc = $("#ccdian option:selected").text();
+								var pz = $("#pz option:selected").val();
+								var sumlunru = $("#lhsl").val();
+								
+								if(changekd == 1){		//变更库点
+									qyzzjgdm = $("#kudian option:selected").attr("qyzzjgdm");
+									kdbm = $("#kudian option:selected").attr("kdbm");
+									kdmc = $("#kudian option:selected").text();
+								}
+								if(changepz == 1){	//变更品种
+									pz = $("#bgpz option:selected").val();
+								}
+								
+								//保存轮入总数
+								$.ajax({
+									url:'${ctxPath}/lunhuan/saveSumlunru.do',
+									type:'post',
+									data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"kdmc":kdmc,"pz":pz,"sumlunru":sumlunru},
+									dataType:'json',
+									success:function(data){
+									},
+									error:function(){
+										
+									}
+								});
+								
+								
+								
+							}
+						}); 
+					}else{
+						alert("申请文号重复请重新填写");
+						return false;
+					}
+				},
+				error:function(){
+					
+				}
+			});	
+		}
+	}
+	
+	
+	//企业下拉框值改变时 联动查询库点名称
+	function selectKDMC(){
+		$("#lhsq_kdmc").html("");
+		var xian = $("#szqy").val();
+		var qymc=$("#qymc").val();
+		var qyzzjgdm="";
+		//给xzqhdm赋值（时间传到后台值）
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/findquxian',
+			type:'post',
+			data:{"name":xian},
+			dataType:'json',
+			success:function(data){
+				$("#xzqhdm").val(data[0].xzqhdm);
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+		
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+			type:'post',
+			data:{"qymc":qymc},
+			dataType:'json',
+			success:function(data){
+				qyzzjgdm=data.list[0].qyzzjgdm;
+				$("#qymcc").val(qyzzjgdm);
+			
+				//选完企业后 自动显示该企业下的储备粮计划和实物库存（取该企业下的所有...）
+				$.ajax({
+					url: "${ctxPath}/lunhuan/selectSWKC.do",
+					dataType: "json",
+					data:{"qyzzjgdm":qyzzjgdm,"niandu":year},
+					success: function(data) {
+						$("#swkc_xj").val(data.ret.swkc_xj);
+						$("#swkc_xm").val(data.ret.swkc_xm);
+						$("#swkc_jd").val(data.ret.swkc_jd);
+						$("#swkc_xd").val(data.ret.swkc_xd);
+						$("#ccjh_xj").val(data.ret.cbljh_xj);
+						$("#ccjh_xm").val(data.ret.cbljh_xm);
+						$("#ccjh_jd").val(data.ret.cbljh_jd);
+						$("#ccjh_xd").val(data.ret.cbljh_xd);
+						$("#xjzb").val(data.ret.xjzb);
+						$("#xmzb").val(data.ret.xmzb);
+						$("#jdzb").val(data.ret.jdzb);
+						$("#xdzb").val(data.ret.xdzb);
+					}
+				}); 
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+		var op = '<option value="">请选择库点名称</option>';
+	    $("#lhsq_kdmc").append(op);
+	}
+	
+	
+	var date=new Date;
+	var year=parseInt(date.getFullYear());
+	
+	function selectccdian() {
+		$("#ccdian").html("");
+		var qyzzjgdm = $("#ccku option:selected").val();
+		$("#ccdian+span>span:first>span>span:first").html("请选择");
+		var op = '<option value="">请选择</option>';
+		$("#ccdian").append(op);
+		$.ajax({
+			url : '${ctxPath}/chubeiliangJH/chengchudian',
+			type : 'post',
+			data : {
+				"qyzzjgdm" : qyzzjgdm,
+				"niandu":year-1
+			},
+			dataType : 'json',
+			success : function(data) {
+				 for (var i = 0; i < data.length; i++) {
+					var op= "<option value="+data[i].kdbm+">" + data[i].kdmc
+							+ "</option>";
+					$("#ccdian").append(op);
+				} 
+			}
+		});
+	}
+
+
+	/**
+	 * 获取仓房编码
+	 */
+	function loadcfbm(index){
+		var qyzzjgdm = $("#ccku option:selected").val();
+		var kdbm = $("#ccdian option:selected").val();
+		var weight = 0;
+		//库点下拉框值改变时 联动查询仓房名称
+		$("#cfbm"+index).html("");
+		$("#cfbm"+index).append("<option>请选择</option>");
+		$.ajax({
+			url: "${ctxPath}/lunhuan/findkongc.do",
+			dataType: "json",
+			data:{"kdbm":kdbm,"qyzzjgdm":qyzzjgdm,"weight":weight},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					$("#cfbm"+index).append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+				});
+			}
+		});
+	}
+
+	//变更库点选中事件
+	function Changekd(obj){
+		if (obj.checked == false) {
+			changekd = 0;
+			$("#bgkd").css("display","none");
+	    }else{
+	    	$("#pzcheck").attr("checked",false);
+	    	$("#bgpz").css("display","none");
+	    	$("#bgkd").css("display","block");
+	    	changekd = 1;
+	    	changepz = 0;
+	    }
+	}
+
+	//变更品种选中事件
+	function Changepz(obj){
+		if (obj.checked == false) {
+			changepz = 0;
+			$("#bgpz").css("display","none");
+	    }else{
+	    	$("#kdcheck").attr("checked",false);
+	    	$("#bgkd").css("display","none");
+	    	$("#bgpz").css("display","block");
+	    	changekd = 0;
+	    	changepz = 1;
+	    }
+	}
+
+function selectkdbm(){
+	var qyzzjgdm = $("#ccku option:selected").val();
+	var kdbm = $("#ccdian option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/lunhuan/findykd.do',
+		type:'post',
+		data:{"xian":"${name}","qyzzjgdm":qyzzjgdm,"kdbm":kdbm},
+		dataType:'json',
+		success:function(data){
+			$("#kudian").empty();
+			$("#kudian").append('<option value="请选择">请选择</option>');
+			var kdmcs = [];
+			$.each(data.list,function(i, n){
+				if(!kdmcs.in_array(n.kdmc)){
+					$("#kudian").append("<option qyzzjgdm="+n.ccqy+" kdbm="+n.cckd+" value="+n.kdmc+">"+n.kdmc+"</option>");
+				}
+				kdmcs.push(n.kdmc);
+			});
+		}
+	});
+}
+
+function selectliucheng(){
+	var sumjiedian = $("#liuchenghao option:selected").attr("jiedian");
+	$("#sumjiedian").val(sumjiedian);
+}
+
+//生成报告
+function yulan(){
+	if(""==$("#lhsl").val()||null==$("#lhsl").val()){
+		alert("请先完善轮换申请信息！");
+		return false;
+	}
+	//品种
+	var data = {};
+	data.pz = $("#pz option:selected").text();
+	//企业名称
+	data.qymc = $("#ccku option:selected").text();
+	//库点名称
+	data.kdmc = $("#ccdian option:selected").text();
+	//轮入数量
+	data.lhsl = $("#lhsl").val();
+	//平均价格
+	data.avgprice = $("#avgprice").val();
+	//仓房和数量
+	var cfbmlr = "";
+	for(var i=1;i<=index;i++){
+		if($("#cfbm"+i).length>0){
+			if(""==$("#cfbm"+i+" option:selected").val() 
+					|| "请选择"==$("#cfbm"+i+" option:selected").val()
+					|| null==$("#cfbm"+i+" option:selected").val()){
+				alert("请选择仓房名称！");
+				return false;
+			}
+			if(""==$("#cflhsl"+i).val() || null==$("#cflhsl"+i).val()){
+				alert("填写轮入数量明细！");
+				return false;
+			}
+			cfbmlr += $("#cfbm"+i).val()+"号仓"+$("#cflhsl"+i).val()+"吨,";
+		}
+	}
+	data.cfbmlrs = cfbmlr;
+	//现在时间
+	var ndate = new Date;
+	var nyear = parseInt(ndate.getFullYear());
+	var nmonth = parseInt(ndate.getMonth()) + 1;
+	var nday = parseInt(ndate.getMonth());
+	data.nyear = nyear;
+	data.nmonth = nmonth;
+	data.nday = nday;
+	//以下时间暂定
+	data.sqyear = data.nyear;
+	data.sqmonth = data.nmonth;
+	data.pzyear = data.nyear;
+	data.pzmonth = data.nmonth;
+	data.pzday = data.nday;
+	//申请文号
+	data.sqwh = $("#sqwh").val();
+	
+	$.ajax({
+		url : '${ctxPath}/excel/yulanlrsq',
+		type : 'post',
+		data : data,
+		dataType : 'json',
+		success : function(data) {
+			if(data.ret){
+				$('#xzbtn').removeAttr("disabled");
+				$("#sqdocpath").val(data.docname);
+				$("#sqdocname").html(data.docname);
+			}
+			/* $('#kdbm').select2({
+			  data:data
+
+			}); */
+		}
+	});
+}
+
+	</script>

@@ -1,0 +1,252 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>页面方法监测管理</b></span>
+		</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<!-- <div> -->
+						<label>用户:</label>
+						<select id="userid" class="js-example-basic-single input-sm" style="width:150px;font-size:14px">
+							<option value="" selected="true" >选择用户</option>	
+						</select>
+					<!-- </div> -->
+					<!-- <div class="div_kudian"> -->
+						<label style="margin-left: 20px">菜单名称:</label>
+						<select id="caidanname" class="js-example-basic-single input-sm" style="width:220px;font-size:14px" >
+							 <option value="" selected="true" >选择菜单</option> 	
+						</select>
+					<!-- </div> -->
+					<a style="margin-left: 5px" class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div> 
+				<a style="float: right;" class="btn btn-success btn-xs" type="button" onclick="qingkong()">&nbsp;清空</a>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findfangfacaozuo" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+	
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+		"autoWidth": false,
+        "columns": [
+			{
+				"data" : "realname",width:50,
+				"title" : "用户"
+			},
+			{
+				"data" : "caidanname",width:170,
+				"title" : "菜单名称"
+			},
+			{
+				"data" : "caozuotime",width:100,
+				"title" : "操作时间"
+			},
+			{
+				"data" : "jiequname",width:80,
+				"title" : "截取字段"
+			},
+			 {"title":"操作",width:50,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	//var bianji = '<a href='+url+' onclick="upykgl(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delykgl(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return shanchu;
+            	}
+            }
+			]
+	});
+});
+
+function doSearch(){
+	var userid = $("#userid").val();
+	var caidanname = $("#caidanname").val();
+	document.querySelector('.datatables').dataset.queryparam="&userid="+userid+"&caidanname="+caidanname;
+	datatable.ajax.reload(null,false);
+}
+
+$(document).ready(function() {
+	  $("#userid").select2();
+	  $("#caidanname").select2();
+	  
+	  $.ajax({
+			 url:'${ctxPath}/shouchukeshihua/finduserid',
+			 type:'post',
+			 dataType:'json',
+			 success:function(data){
+				 $.each(data,function(i, n){
+						$("#userid").append("<option value="+n.id+">"+n.realname+"</option>");
+					});
+			 },
+			 error:function(){
+				 alert("error");
+			 }
+		  });
+	  $.ajax({
+			 url:'${ctxPath}/shouchukeshihua/findcaidanname',
+			 type:'post',
+			 dataType:'json',
+			 success:function(data){
+				 $.each(data,function(i, n){
+						$("#caidanname").append("<option value="+n.caidanname+">"+n.caidanname+"</option>");
+					});
+			 },
+			 error:function(){
+				 alert("error");
+			 }
+		  });
+});
+
+
+
+
+/*  function Changename(){
+	
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findKudian',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option>'+data[i].kdmc+'</option>';
+			     $("#cfkudian").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+}   */
+	
+function qingkong(){
+	if(confirm("确认清空?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/qingkongfacaozuo',
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("清空成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("清空失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+function addykgl(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增视频信息 ',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/weihu/shipinweihu_add.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveykgl(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+function upykgl(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/weihu/shipinweihu_add.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveykgl(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function delykgl(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delfangfacaozuo',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+</script>
+<%
+	}
+%>

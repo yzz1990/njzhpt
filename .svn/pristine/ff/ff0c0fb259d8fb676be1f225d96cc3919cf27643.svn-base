@@ -1,0 +1,227 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+ var baseinfo={
+ editurl:"chengpinliangCBJH_edit.html"
+	};
+%>
+<style type="text/css">
+#szqy{
+width: 128px;
+}
+#qymc{
+width: 212px;
+}
+#lhsq_kdmc{
+width: 128px;
+}
+lhsq_ch{
+width: 128px;
+}
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+
+<div class="col-md-12">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="alert alert-info" style="height: 50px;">
+				
+				<div style="float: right;" class="form-inline">
+				
+					<label>区域:</label>
+					<select id="szqy" name="szqy" class="form-control input-sm"  onchange="selectQYMC()">
+					<option value="">请选择区域名称</option>
+				</select>
+				<label>企业:</label>
+					<select id="qymc" name="qymc" class="form-control input-sm"  onchange="selectKDMC()">
+					<option value="">请选择企业名称</option>
+				</select>
+				<label>库点名称:</label>
+					<select  name="lhsq_kdmc" id="lhsq_kdmc" class="form-control input-sm" style="width:200px"  onchange="selectCH()">
+         			<option value="">请选择库点名称</option>
+         		</select>
+				<label>仓房名称:</label>
+					<select  name="lhsq_ch" id="lhsq_ch" class="form-control input-sm" style="width:128px"  class="form-control input-sm">
+         			<option value="">请选择仓号名称</option>
+         		</select>
+         		<label>出入库:</label>
+					<select  name="vDirection" id="vDirection" class="form-control input-sm" style="width:105px"  class="form-control input-sm">
+         			<option value="">请选择方式</option>
+         			<option >入库</option>
+         			<option >出库</option>
+         			<option >倒仓</option>
+         			<option >入库损耗</option>
+         			<option >出库损耗</option>
+         		</select>
+				<label>时间:</label>
+					<input class="form-control input-sm" name="dtQualityTime" id="dtQualityTime" placeholder="时间" type="text">
+					<span>　</span><a class="btn btn-success btn-sm" id="ahref" type="button" onclick="blurryQuery()">查询</a>
+				</div>
+			</div>
+			<table id="tb"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/zhiliangGL/selectZLXQ.do"></table>
+		</div>
+	</div>
+</div>
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body…</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->		
+<script type="text/javascript">
+function blurryQuery(){
+	var q="";
+	if($("#szqy").val()!=""){
+		q = q+"&xzqhdm="+$("#szqy").val();
+	}
+	if($("#qymc").val()!=""){
+		q =q + "&qyzzjgdm="+$("#qymc").val();
+	}
+	if($("#lhsq_kdmc").val()!=""){
+		q =q + "&kdbm="+$("#lhsq_kdmc").val();
+	}
+	if($("#lhsq_ch").val()!=""){
+		q =q + "&vWareHouseCode="+$("#lhsq_ch").val();
+	}
+	if($("#vDirection").val()!=""){
+		q =q + "&vDirection="+$("#vDirection").val();
+	}
+	if($("#dtQualityTime").val()!=""){
+		q =q + "&dtQualityTime="+$("#dtQualityTime").val();
+	}
+//	"&xzqhdm="+$("#szqy").val()+"&qyzzjgdm="+$("#qymc").val()+"&kdbm="+$("#lhsq_kdmc").val()+"&vWareHouseCode="+$("#lhsq_ch").val()+"&dtQualityTime="+$("#dtQualityTime").val();
+	document.querySelector('#tb').dataset.queryparam=q;
+	datatable.ajax.reload(null,false);
+}
+var datatable;
+$(function(){
+	
+		$.ajax({
+			url: "${ctxPath}/lunhuan/selectQY.do",
+			dataType: "json",
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#szqy").append("<option value="+n.xzqhdm+">"+n.quyu+"</option>");
+				});
+			}
+		});
+
+	 datatable = $('#tb').DataTable({
+        "columns": [
+			{"data":"xzqhdm","title":"地区"},
+			{"data":"qyzzjgdm","title":"企业名称"},
+            {"data":"kdbm","title":"库点名称"},
+            {"data":"vWareHouseCode","title":"仓房名称"},
+            {"data":"vDirection","title":"出入库标识"},
+            {"data":"vGrainSubTypeCode","title":"粮食品种"},
+            {"data":"vGrainPropertyId","title":"粮食性质"},
+            {"title":"操作",width:180,
+            	"render":function(data,type,row,meta){
+            		var xiangqing = '<button type="button" class="btn btn-default" onclick="chakanxiangqing(\''+row["vSwiftNumber"]+'\')"><span style="color:green">查看详情</span> </button>';
+            		return xiangqing;
+            	}
+            }]
+	}); 
+});
+var dialog1;
+function chakanxiangqing(vSwiftNumber){
+	dialog1=BootstrapDialog.show({
+	    title: '质量详情',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0"  src="${ctxPath}/remote/zhiliangGL/zhiliangGLXQ.html?vSwiftNumber='+vSwiftNumber+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+       },
+
+	    buttons: [{
+	        label: '关闭',
+	        cssClass: 'login-dialog',
+	        action: function(dialog) {
+	        	dialog.close();
+	        }
+	    }]
+	});
+}
+function selectQYMC(){
+	$("#qymc").html("");
+	$("#qymc").append("<option value=''>请选择企业名称</option>")
+	$("#lhsq_kdmc").html("");
+	$("#lhsq_kdmc").append("<option value=''>请选择库点名称</option>")
+	$("#lhsq_ch").html("");
+	$("#lhsq_ch").append("<option value=''>请选择库点名称</option>")
+	var szqy=$("#szqy").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{szqy:szqy},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#qymc").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				});
+			}
+		});
+	
+		
+}
+function selectKDMC(){
+	$("#lhsq_kdmc").html("");
+	$("#lhsq_kdmc").append("<option value=''>请选择库点名称</option>")
+	$("#lhsq_ch").html("");
+	$("#lhsq_ch").append("<option value=''>请选择库点名称</option>")
+	var qyzzjgdm=$("#qymc").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectKDMC.do",
+			dataType: "json",
+			data:{qyzzjgdm:qyzzjgdm},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					
+					$("#lhsq_kdmc").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+					$("#lhsq_kdbg").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+				});
+			}
+		});
+}
+function selectCH(){
+	$("#lhsq_ch").html("");
+	$("#lhsq_ch").append("<option value=''>请选择仓号</option>")
+	var kdbm=$("#lhsq_kdmc").val();
+	var qyzzjgdm=$("#qymc").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectCH.do",
+			dataType: "json",
+			data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#lhsq_ch").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+				});
+			}
+		});
+	
+		
+}
+</script>
+
+
+
+<%
+	}
+%>

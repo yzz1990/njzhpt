@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>三维信息</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description"
+	content="Blue Moon - Responsive Admin Dashboard">
+<meta name="keywords"
+	content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+<meta name="author" content="Bootstrap Gallery">
+
+<!-- FONT AWESOME-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/font-awesome.min.css">
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+
+<style type="text/css">
+.datetimepicker {
+	width: 250px;
+}
+
+.datetimepicker>div {
+	padding: 4px;
+}
+
+.datetimepicker table {
+	margin: 0;
+	width: 230px;
+	padding: 6px;
+}
+#edui1_bottombar{
+	visibility: hidden;
+}
+</style>
+</head>
+<% 
+	var obj={},url=ctxPath+"/cangchugl/addOrUpdateSanwei",title="新增三维信息";
+	debug(parameter.id);
+	if(isNotEmpty(parameter.id)&&parameter.id!="undefined") {
+		var qyxx = @com.zkzy.njzhpt.dao.CangchuglDao.querySanwei({"id":parameter.id,"page":"1","rows":"100"});
+		obj = qyxx.list[0]; 
+		title = "编辑三维信息";
+	}; 
+%>
+
+<body style="overflow-x: hidden;">
+
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<form id="contentform" role="form" action="${url}" method="post"
+					style="overflow: hidden;">
+					<input type="hidden" name="id" id="id" class="form-control" value="${obj.id}">
+					<div class="widget">
+						<div class="widget-header">
+							<div class="title">三维信息</div>
+						</div>
+						<div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="xian"><font color="red" style="font-size:large;">*</font>区县:</label> 
+										<select id="xian" onchange="change()" name="xian" class="form-control">
+											<option selected>请选择</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qiyeId"><font color="red" style="font-size:large;">*</font>企业:</label>
+										<select id="qiyeId" name="qiye" onchange="qiyeChange()" class="form-control input-sm" style="width:150px; font-size:14px">
+											<option selected>请选择</option>
+
+										</select>
+									</div>
+								</div>
+
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="kudianId"><font color="red" style="font-size:large;">*</font>库点:</label>
+										<select id="kudianId" name="kudianId" class="form-control">
+											<option selected>请选择</option>
+
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="xian"><font color="red" style="font-size:large;">*</font>三维url</label>
+										<input type="text" id="url" name="url" class="form-control" style="width:530px" value="${obj.url}">
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	$("#xian").select2();
+	$("#qiyeId").select2();
+	$("#kudianId").select2();
+
+	/* 地区初始化 */
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findquxian',
+		type:'post',
+		dataType:'json',
+		async:false,
+		success:function(data){
+			$.each(data,function(i, n){
+				if(n.name=="${obj.xian}"){
+					$("#xian").append("<option value="+n.name+"  selected>"+n.name+"</option>");
+				}else{
+					$("#xian").append("<option value="+n.name+">"+n.name+"</option>");
+				}
+			});
+			$("#xian").find(".select2-selection__rendered").text("${obj.xian}");
+		}
+	});
+
+	/* 企业信息初始化 */
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findQiyexinxi',
+		type:'post',
+		async:false,
+		data:{"page":1,"rows":1000,"xian":$("#xian").val()},
+		dataType:'json',
+		success:function(data){
+			var qymc='';
+			var op='';
+			for(var i = 0; i < data.list.length; i++){
+				if("${obj.qiye}"==data.list[i].qyzzjgdm){
+					op = '<option value=' + data.list[i].qyzzjgdm + ' selected>' + data.list[i].qymc + '</option>';
+					qymc=data.list[i].qymc;
+				}else{
+					op = '<option value=' + data.list[i].qyzzjgdm + '>' + data.list[i].qymc + '</option>';
+				}
+				$("#qiyeId").append(op);
+			}
+			$("#qiyeId").find(".select2-selection__rendered").text(qymc);
+		}
+	});
+	/*库点信息初始化*/
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findKudian',
+		type:'post',
+		data:{"page":1,"rows":1000,"qyzzjgdm":$("#qiyeId").val()},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				var kdmc='';
+				var op='';
+				if("${obj.kudianId}"==data.list[i].ID){
+				 	op = '<option value='+data.list[i].ID+' selected>'+data.list[i].kdmc+'</option>';
+					kdmc=data.list[i].kdmc;
+				}else{
+					op= '<option value='+data.list[i].ID+'>'+data.list[i].kdmc+'</option>';
+				}
+				$("#kudianId").append(op);
+			}
+			$("#kudianId").find(".select2-selection__rendered").text(kdmc);
+		}
+	});
+
+});
+function change(){
+	$("#qiyeId").empty();
+	$("#qiyeId").select2("val", "");
+	$("#qiyeId").append('<option value="" selected>请选择</option>');
+	//$("#qiyeId").trigger('change');//动态改变值以后必须触发改变时间。否则将不会生效
+	var xian1 = $("#xian").val();
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findQiyexinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":xian1},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+				$("#qiyeId").append(op);
+			}
+		}
+	});
+
+}
+function qiyeChange(){
+	$("#kudianId").empty();
+	$("#kudianId").select2("val", "");
+	$("#kudianId").trigger('change');//动态改变值以后必须触发改变时间。否则将不会生效
+	/*库点信息初始化*/
+	$.ajax({
+		url:'${ctxPath}/jibenxinxi/findKudian',
+		type:'post',
+		data:{"page":1,"rows":1000,"qyzzjgdm":$("#qiyeId").val()},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				var op = '<option value='+data.list[i].ID+'>'+data.list[i].kdmc+'</option>';
+				$("#kudianId").append(op);
+			}
+		}
+	});
+
+}
+function saveSanwei() {
+		//表单提交数据验证
+		var flag=true;
+		$('select').each(function(){
+			if(this.value=='请选择')
+			{
+				alert("请完善必要信息");
+				flag=false;
+				return false;
+			}
+		});
+		if(!flag){
+			return;
+		}
+		if($("#url").val()==''||!IsURL($("#url").val()))
+		{
+			alert("url信息填写有误");
+			return;
+		}
+
+			var form = $(".dashboard-wrapper-lg form");
+			$.ajax({
+				url : form.attr("action"),
+				data : $("form").serialize(),
+				dataType : "JSON",
+				success : function(data) {
+					if(data.data.ret){
+						parent.dialog.close();
+						parent.datatable.ajax.reload(null, false);
+					}else{
+						alert(data.data.message);
+					}
+				}
+			});
+		}
+//判断url是否符合要求
+function IsURL(str_url){
+	var strRegex = "^((https|http|ftp|rtsp|mms)?://)"
+			+ "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" //ftp的user@
+			+ "(([0-9]{1,3}\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184
+			+ "|" // 允许IP和DOMAIN（域名）
+			+ "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
+			+ "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\." // 二级域名
+			+ "[a-z]{2,6})" // first level domain- .com or .museum
+			+ "(:[0-9]{1,4})?" // 端口- :80
+			+ "((/?)|" // a slash isn't required if there is no file name
+			+ "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+	var re=new RegExp(strRegex);
+	if (re.test(str_url)){
+		return (true);
+	}else{
+		return (false);
+	}
+}
+</script>
+</body>
+</html>

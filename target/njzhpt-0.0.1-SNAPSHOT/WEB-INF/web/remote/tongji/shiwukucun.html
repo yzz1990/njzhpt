@@ -1,0 +1,381 @@
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<% var xzqhdm,qyzzjgdm;
+ xzqhdm=parameter.xzqhdm;
+ qyzzjgdm=parameter.qyzzjgdm;
+ %>
+<style type="text/css">
+body {
+    /* font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; */
+    /* font-size: 14px; */
+    line-height: 1.42857143;
+    /* color: #333; */
+    background-color: #fff;
+}
+table.dataTable tbody th, table.dataTable tbody td {
+    text-align: center;
+}
+td.details-control {
+    background: url('${ctxPath}/img/chubeiliangjh/buttonadd.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.details td.details-control {
+    background: url('${ctxPath}/img/chubeiliangjh/Delete.png') no-repeat center center;
+}
+.table .table {
+    background-color: #fff;
+    margin-bottom: 0px;
+}
+</style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<label>区域:</label>
+						<select id="quming" name="quming" style="width:100px;font-size:14px" class="js-example-basic-single"  onchange="Change()">
+							<option value="">请选择区域</option>
+				 			<option value="320115" ${"320115"==xzqhdm?" selected"}>江宁区</option>
+				 			<option value="320111" ${"320111"==xzqhdm?" selected"}>浦口区</option>
+				 			<option value="320116" ${"320116"==xzqhdm?" selected"}>六合区</option>
+				 			<option value="320124" ${"320124"==xzqhdm?" selected"}>溧水区</option>
+				 			<option value="320125" ${"320125"==xzqhdm?" selected"}>高淳区</option>
+				 			<option value="210008" ${"210008"==xzqhdm?" selected"}>市区</option>
+						</select>
+					<label>承储企业:</label>
+						<select id="ccqy" style="width:180px;font-size:14px" name="ccqy" class="js-example-basic-single"  onchange="selectKDMC()" >
+							<option value="">请选择企业名称</option>
+							<%
+								var qiyes=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectQYMC({"page":1,"rows":10000}).getList();
+								for(qiye in qiyes){
+							%>
+								<option value="${qiye.qyzzjgdm}" ${qiye.qyzzjgdm==qyzzjgdm?" selected"}>${qiye.qymc}</option>
+							<%
+								}
+							%>
+						</select>
+					<label>库点名称:</label>
+					<select id="kdbm" name="kdbm" style="width:130px;font-size:14px" class="js-example-basic-single"  >
+							<option value="">请选择库点名称</option>
+							<%	
+							var kudians=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectKDMC({"page":1,"rows":15}).getList();
+							for(kudian in kudians){
+						%>
+							<option value="${kudian.kdbm}">${kudian.kdmc}</option>
+						<%
+							}
+						%>
+					</select>
+					<!-- <label>仓廒:</label>
+						<select id="ccch" name="ccch" style="width:150px;font-size:14px" class="js-example-basic-single"  >
+							<option value="">请选择仓廒</option>
+							<%
+								var canghaos=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectCH({"page":1,"rows":10000}).getList();
+								for(canghao in canghaos){
+							%>
+								<option value="${canghao.cfbm}">${canghao.cfmc}</option>
+							<%
+								}
+							%>
+						</select> -->
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+			<p style="float: right">单位：公斤</p>
+				<table id="chubeiliangjihua" class="table table-striped table-hover table-bordered datatables" cellspacing="0" width="100%" data-url="${ctxPath}/chubeiliangJH/queryswkc.do">
+    				<thead>
+           				 <tr>
+           				 	<th rowspan="2"></th>
+                			<th rowspan="2" style="vertical-align:middle">区域</th>
+                			<th rowspan="2" style="vertical-align:middle">承储企业</th>
+               				<th rowspan="2" style="vertical-align:middle">承储库点</th>
+                			<th rowspan="2" style="vertical-align:middle">仓廒数量</th>
+                			<th colspan="4" style="text-align:center">实物库存</th>
+            			</tr>
+            			<tr>
+                			<th>小计</th>
+                			<th>小麦</th>
+               				<th>粳稻</th>
+                			<th>籼稻</th>
+            			</tr>
+        			</thead>
+    			
+    			</table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+
+var dt;
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	 
+});
+	(function ($) {
+	    $.getUrlParam = function (name) {
+	        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+	        var r = window.location.search.substr(1).match(reg);
+	        if (r != null) return unescape(r[2]); return null;
+	    }
+	})(jQuery);
+var datatable;
+$(".datatables").on("draw.dt",function(){
+	var quming = $("#quming").val();
+	var ccqy = $("#ccqy").val();
+	var cckd = $("#kdbm").val();
+	$.ajax({
+		url: "${ctxPath}/chubeiliangJH/queryswkc.do",
+		dataType: "json",
+		data:{"xzqhdm":quming,"qyzzjgdm":ccqy,"kdbm":cckd,"page":1,"rows":10000},
+		success: function(data) {
+			var xm=0;
+			var jd=0;
+			var xd=0;
+			var xj=0;
+			$.each(data.list,function(i, n){
+				xm+=n.xiaomai;
+				jd+=n.jingdao;
+				xd+=n.xiandao;
+				xj+=n.xiaoji;
+			});
+		var tr = '<tr style="border:1px solid:black">';
+		tr+=	'<td><b>合计</b></td>';
+		tr+=	'<td></td>';
+		tr+=	'<td></td>';
+		tr+=	'<td></td>';
+		tr+=	'<td></td>';
+		tr+= '<td >'+xj+'</td>';
+		tr+= '<td >'+xm+'</td>';
+		tr+= '<td >'+jd+'</td>';
+		tr+= '<td >'+xd+'</td>';
+		tr+= '</tr>';
+	$("#chubeiliangjihua").find("tbody").prepend(tr);
+	},
+	error:function(){
+		alert("加载合计失败");
+	}
+});
+})
+$(function(){
+
+	
+	 var q="";
+	 if($("#quming").val()!="请选择区域"){
+			q =q + "&xzqhdm="+$("#quming").val();
+		}
+		if($("#ccqy").val()!="请选择企业名称"){
+			q =q + "&qyzzjgdm="+$("#ccqy").val();
+		}
+		if($("#kdbm").val()!="请选择库点名称"){
+			q =q + "&kdbm="+$("#kdbm").val();
+		}
+		/* if($("#ccch").val()!="请选择仓廒"){
+			q =q + "&vWareHouseCode="+$("#ccch").val();
+		} */
+		
+		/* if($("#pz").val()!="请选择品种"){
+			q =q + "&vGrainSubTypeCode="+$("#pz").val();
+		} */
+	 document.querySelector('#chubeiliangjihua').dataset.queryparam=q;
+	 
+	 dt = $('#chubeiliangjihua').DataTable( {
+		 "processing": true,
+	        "serverSide": true,
+	        "columns": [
+	            {
+	                "class":          "details-control",
+	                "orderable":      false,
+	                "data":           null,
+	                "defaultContent": ""
+	            },
+	            { "data": "quyu" },
+	            { "data": "qymc" },
+	            { "data": "kdmc" },
+	            { "data": "cangaosl" },
+	            { "data": "xiaoji" },
+	            { "data": "xiaomai" },
+	            { "data": "jingdao" },
+	            { "data": "xiandao" },
+	        ],
+	        "order": [[1, 'asc']]
+    } );
+
+	 //dt.ajax.reload(null,false);
+	// Array to track the ids of the details displayed rows
+	    var detailRows = [];
+	 
+	    $('#chubeiliangjihua tbody').on( 'click', 'tr td.details-control', function () {
+	       // tr 表示点击时 当前行
+	       //dt 是整个table
+	       //detailRows 是一个[]
+	    	var tr = $(this).closest('tr');
+	        var row = dt.row( tr );
+	        var idx = $.inArray( tr.attr('id'), detailRows );
+	 
+	        if ( row.child.isShown() ) {
+	            tr.removeClass( 'details' );
+	            row.child.hide();
+	 			
+	            // Remove from the 'open' array
+	            //splice() 方法向/从数组中添加/删除项目，然后返回被删除的项目。
+	            detailRows.splice( idx, 1 );
+	        }
+	        else {
+	            tr.addClass( 'details' );
+	            var d=row.data();
+	            var qyzzjgdm=d.qyzzjgdm;
+	    		var kdbm=d.kdbm;
+	    		var trlinshi;
+	    	 	$.ajax({
+	    			url: "${ctxPath}/chubeiliangJH/chakanswkcxiangxich.do",
+	    			dataType: "json",
+	    			data:{qyzzjgdm:qyzzjgdm,kdbm:kdbm,page:1,rows:15},
+	    			success: function(data) {
+	    				var tablelinshi='<table class="table table-striped table-hover table-bordered datatables" cellspacing="0"><tbody>';
+	    				$.each(data.list,function(i, n){
+	    					trlinshi= '<tr><td class="subcol0"></td><td class="subcol1"></td><td class="subcol2"></td><td class="subcol3"></td><td class="subcol4">'+n.cfmc+'</td><td class="subcol5">'+n.xiaoji+'</td><td class="subcol6">'+n.xiaomai+'</td><td class="subcol7">'+n.jingdao+'</td><td class="subcol8">'+n.xiandao+'</td></tr>';
+	    					tablelinshi=tablelinshi+trlinshi;
+	    				});
+	    				tablelinshi=tablelinshi+'</tbody></table>'
+	    				row.child(tablelinshi).show();
+	    				$("td:has(table)").css("padding","0px");
+	    				var colwidth0=$("#chubeiliangjihua>tbody>tr:first>td").eq(0).width();
+	    				var colwidth1=$("#chubeiliangjihua>tbody>tr:first>td").eq(1).width();
+	    				var colwidth2=$("#chubeiliangjihua>tbody>tr:first>td").eq(2).width();
+	    				var colwidth3=$("#chubeiliangjihua>tbody>tr:first>td").eq(3).width();
+	    				var colwidth4=$("#chubeiliangjihua>tbody>tr:first>td").eq(4).width();
+	    				var colwidth5=$("#chubeiliangjihua>tbody>tr:first>td").eq(5).width();
+	    				var colwidth6=$("#chubeiliangjihua>tbody>tr:first>td").eq(6).width();
+	    				var colwidth7=$("#chubeiliangjihua>tbody>tr:first>td").eq(7).width();
+	    				var colwidth8=$("#chubeiliangjihua>tbody>tr:first>td").eq(8).width();
+	    				$(".subcol0").css("width",colwidth0+"px");
+	    				$(".subcol1").css("width",colwidth1+"px");
+	    				$(".subcol2").css("width",colwidth2+"px");
+	    				$(".subcol3").css("width",colwidth3+"px");
+	    				$(".subcol4").css("width",colwidth4+"px");
+	    				$(".subcol5").css("width",colwidth5+"px");
+	    				$(".subcol6").css("width",colwidth6+"px");
+	    				$(".subcol7").css("width",colwidth7+"px");
+	    				$(".subcol8").css("width",colwidth8+"px");
+	    			}
+	    		}); 
+	             //row.child( d.ccqy  ).show();
+	            // Add to the 'open' array
+	            if ( idx === -1 ) {
+	                detailRows.push( tr.attr('id') );
+	            }
+	        }
+	    } );
+	 
+	    // On each draw, loop over the `detailRows` array and show any child rows
+	    dt.on( 'draw', function () {
+	        $.each( detailRows, function ( i, id ) {
+	        	//trigger() 方法触发被选元素的指定事件类型。
+	            $('#'+id+' td.details-control').trigger( 'click' );
+	        } );
+	    } );	 
+	
+
+});
+	
+function doSearch(){
+	
+	var q="";
+	if($("#quming").val()!="请选择区域"){
+		q =q + "&xzqhdm="+$("#quming").val();
+	}
+	if($("#ccqy").val()!="请选择企业名称"){
+		q =q + "&qyzzjgdm="+$("#ccqy").val();
+	}
+	if($("#ccch").val()!="请选择库点名称"){
+		q =q + "&kdbm="+$("#kdbm").val();
+	}
+	document.querySelector('#chubeiliangjihua').dataset.queryparam=q;
+	dt.ajax.reload(null,false);
+}
+function Change(){
+	$("#ccqy").html("");
+	$("#kdbm").html("");
+	var xian = $("#quming option:selected").text().trim();
+	var op = '<option value="">请选择企业名称</option>';
+    $("#ccqy").append(op);
+    var ch = '<option value="">请选择库点名称</option>';
+    $("#kdbm").append(ch);
+	$.ajax({
+		url:'${ctxPath}/lunhuan/findcompany',
+		type:'post',
+		data:{"xian":xian},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = "<option value="+data[i].qyzzjgdm+">"+data[i].qymc+"</option>";
+			     $("#ccqy").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});	
+}
+/* function selectQYMC(){
+	$("#ccqy").html("");
+	$("#ccqy").append("<option value=''>请选择企业名称</option>")
+	$("#cckd").html("");
+	$("#cckd").append("<option value=''>请选择库点名称</option>")
+	var szqy=$("#quming").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{szqy:szqy},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#ccqy").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				});
+			}
+		});
+	
+		
+}		 */
+function selectKDMC(){
+	$("#kdbm").html("");
+	var xian = $("#quming option:selected").text().trim();
+	var qyzzjgdm=$("#ccqy option:selected").val();
+	var op = '<option value="">请选择库点名称</option>';
+    $("#kdbm").append(op);
+	
+	$.ajax({
+		url:'${ctxPath}/lunhuan/findcckd',
+		type:'post',
+		data:{"qyzzjgdm":qyzzjgdm},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = "<option value="+data[i].kdbm+">"+data[i].kdmc+"</option>";
+			     $("#kdbm").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+
+function selectCH(){
+	$("#ccch").html("");
+	$("#ccch").append("<option value=''>请选择仓廒</option>")
+	var qyzzjgdm=$("#ccqy").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectCH.do",
+			dataType: "json",
+			data:{qyzzjgdm:qyzzjgdm},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#ccch").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+				});
+			}
+		});
+	
+		
+}
+</script>

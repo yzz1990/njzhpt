@@ -1,0 +1,381 @@
+<% layout("/WEB-INF/web/ui/globalStyle.html"){ %>
+<script type="text/javascript" src="${ctxPath}/web/echarts.js"></script>
+
+<title>SimpleTree</title>
+<link rel="stylesheet" type="text/css"
+	href="${ctxPath}/resource/SimpleTree.css" />
+<script type="text/javascript" src="${ctxPath}/resource/SimpleTree.js"></script>
+
+<style>
+.active {
+	background-color: #B0C4DE;
+}
+
+.conttext {
+	border: 1px solid;
+	width: 300px;
+	height: 300px;
+	float: left;
+}
+
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+
+.panel-info {
+	float: left;
+	width: 250px;
+	height: 600px;
+}
+
+.panel-success {
+	margin-left: 30px;
+	float: left;
+
+}
+.panel{
+	   
+	    margin-top: 10px;
+}
+
+#panelDemo10,#panelDemo9{
+	 background-color: rgba(217, 237, 247, 0.3);
+}
+
+#panelDemo11{
+	margin-left: 10px;
+}
+</style>
+
+<script type="text/javascript">
+	var vfid;
+	var vcengshu;
+	var visend;
+	var vname;
+
+	$(function() {
+		$("#pinzhong").select2();
+		$("#vgrade").select2();
+		
+		//
+		//加载应急状态列表
+		datatable = $('.datatables').DataTable({
+			"pageLength": 10,
+			"lengthMenu": [
+			       		[5,10,15,20,10000],
+			       		[5,10,15,20, "所有"]
+			       	],
+	        "columns": [
+	            {
+					"render": function (data,type,row,meta) {
+						var div = '<div style="text-align:center">'+row["name"]+'</div>';	
+						return div;
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div = '<div style="text-align:center">'+row["zhiwu"]+'</div>';
+						return div;								
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div = '<div>'+row["bumen"]+'</div>';
+						return div;								
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div = '<div>'+row["diqu"]+'</div>';
+						return div;								
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div = '<div>'+row["tel"]+'</div>';
+						return div;								
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div = '<div>'+row["beizhu"]+'</div>';
+						return div;								
+					}
+				}
+				]
+		});
+		
+		gettree();
+
+
+		
+
+	});
+	
+	
+	function gettree(){
+		$("#sysp").empty();
+		//树形结构方式加载粮食品种
+		$
+				.ajax({
+					url : '${ctxPath}/emergency/querytree.do',
+					type : 'post',
+					data : {
+						"page" : 1,
+						"rows" : 100
+					},
+					dataType : 'json',
+					success : function(data) {
+						//=======================================动态加载tree=================================
+						var num = data.list.length;
+						var ceng;
+
+						for (var j = 0; j < num; j++) {
+							var li;
+							//处理根节点
+							if(data.list[j].cengshu == 1){
+								li = '<li id="'+data.list[j].id+'" ceng="1" isend="0"><a href="#" ref="sypz">&nbsp;'
+								+ data.list[j].name
+								+ '</a></li><ul></ul>';
+								$("#sysp").append(li);
+							}else{
+								if(data.list[j].isend == 0){
+									var fujiedian = data.list[j].shangji;
+									var ceng = data.list[j].cengshu;
+									li = '<li id="'+data.list[j].id+'" ceng="'+ceng+'" isend="0"><a href="#" ref="sypz">&nbsp;'
+											+ data.list[j].name + '</a></li><ul></ul>';
+									$("#" + fujiedian).next().append(li);
+								}else{
+									var fujiedian = data.list[j].shangji;
+									var ceng = data.list[j].cengshu;
+									li = '<li id="'+data.list[j].id+'" ceng="'+ceng+'" isend="1"><a href="#" ref="sypz">&nbsp;'
+											+ data.list[j].name + '</a></li>';
+									$("#" + fujiedian).next().append(li);
+								}
+								
+							}
+		
+						}
+						//=======================================动态加载tree（结束）=================================
+						//=====================================a的单击事件===================================
+
+						$(".st_tree")
+								.SimpleTree(
+										{
+											click : function(a) {
+												if (!$(a).attr("hasChild")) {
+													alert($(a).attr("ref"));
+												}
+												//增加和删除a的选中状态
+												$("a").removeClass("active");
+												$(a).addClass("active")
+														.siblings()
+														.removeClass("active");
+												var fid = $(a).parent().attr("id");
+												var isend = $(a).parent().attr("isend");
+												vfid = fid;
+												vcengshu = $(a).parent().attr("ceng");
+												visend = $(a).parent().attr("isend");
+												vname = $(a).text();
+												if(isend == 1){
+													$(".datatables").attr("data-queryparam","&id="+fid);
+													datatable.ajax.reload(null,true);
+												}else{
+													$(".datatables").attr("data-queryparam","&fid="+fid);
+													datatable.ajax.reload(null,true);
+												}
+											}
+										});
+						//===================================a的单击事件(结束)===================================
+					},
+					error : function() {
+						alert("读取品种失败");
+					}
+				});
+	}
+	
+	//增加部门
+	function addbm(){
+		if(vcengshu != "" && vcengshu != null){
+			if(visend != 1){
+				dialog1=BootstrapDialog.show({
+				    title: '新增部门',
+				    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/renyuan/renyuanguanli/addbm.html?fid='+vfid+'&cengshu='+vcengshu+'"/>'),
+				    onshow:function(dlg){
+			       	dlg.$modalDialog.css("width","500px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","400px");//modal-dialog
+			       },
+			       buttons: [{
+			           label: '保存',
+			           action: function(dialog) {
+			        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.savebumen(); 
+			        	   parent.window.dialog1.close();
+			        	   parent.window.datatable.ajax.reload(null,true);
+			           },
+			          cssClass: 'btn-xs btn-success'
+			          
+			       },{
+			           label: '关闭',
+			           action: function(dialog) {
+			               dialog.close();
+			           },
+			          cssClass: 'btn-xs btn-danger'
+			       }]
+				});
+			}else{
+				alert("不能在人员下新增部门");
+			}
+
+		}else{
+			alert("请选择节点再进行增加");
+		}
+		
+	}
+
+	function addry() {
+		if(vcengshu != "" && vcengshu != null){
+			if(visend != 1){
+				dialog1=BootstrapDialog.show({
+				    title: '新增人员',
+				    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/renyuan/renyuanguanli/addrenyuan.html?fid='+vfid+'&cengshu='+vcengshu+'"/>'),
+				    onshow:function(dlg){
+			       	dlg.$modalDialog.css("width","600px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+			       },
+			       buttons: [{
+			           label: '保存',
+			           action: function(dialog) {
+			        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saverenyuan(); 
+			        	   parent.window.dialog1.close();
+			        	   parent.window.datatable.ajax.reload(null,true);
+			           },
+			          cssClass: 'btn-xs btn-success'
+			          
+			       },{
+			           label: '关闭',
+			           action: function(dialog) {
+			               dialog.close();
+			           },
+			          cssClass: 'btn-xs btn-danger'
+			       }]
+				});
+			}else{
+				alert("不能在人员下新增人员");
+			}
+			
+		}else{
+			alert("请选择节点再进行增加");
+		}	
+	}
+
+	//刷新树形结构
+	function updatePz() {
+		gettree();
+		//location.reload();
+	}
+
+	function deletery() {
+		if (confirm("是否删除节点" + vname)) {
+			if(visend == 1){
+				$.ajax({
+					url:'${ctxPath}/emergency/delry',
+					type:'post',
+					data:{"id":vfid},
+					dataType:'json',
+					success:function(msg){
+						if (msg.ret != "false") {
+							alert("删除成功");
+						} else {
+							alert(msg.message);
+						}
+						gettree();
+					},
+					error:function(){
+						alert("删除失败");
+					}
+				});
+			}else{
+				$.ajax({
+					url:'${ctxPath}/emergency/delbumen',
+					type:'post',
+					data:{"id":vfid},
+					dataType:'json',
+					success:function(msg){
+						if (msg.ret == "false") {
+							alert(msg.message);
+						} else {
+							alert("删除成功");
+						}
+						gettree();
+					},
+					error:function(){
+						alert("删除失败");
+					}
+				});
+				
+			}
+			
+			
+		}
+	}
+</script>
+</head>
+<body>
+	<div class="panel panel-default">
+		<div
+			style="border: 1px solid #ADD8E6; width: 100%; background-color: #E8F2F9; border-radius: 3px; margin-top: 5px"
+			align="left">
+			<img alt="" src="${ctxPath}/img/titleico.png"
+				style="padding: 5px; position: absolute;"> <span
+				style="height: 50px; font-size: 20px; color: black; padding: 0px; margin-left: 25px;"><b>通讯录</b></span>
+		</div>
+		<div class="panel-heading">
+			<div class="form-inline" >
+				<p class="caozuo">
+					<a class="btn btn-xs btn-success" type="button" onclick="addbm()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-clipboard" aria-hidden="true">&nbsp;新增部门</i></a>
+					<a class="btn btn-xs btn-success" type="button" onclick="addry()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-clipboard" aria-hidden="true">&nbsp;新增人员</i></a> 
+					<a class="btn btn-xs btn-success" type="button" onclick="deletery()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-times" aria-hidden="true">&nbsp;删除</i></a> 
+				</p>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="panel-body" >
+			<div id="panelDemo10" class="panel panel-info">
+			<div class="panel-heading">通讯录</div>
+			<div class="panel-body">
+				<div class="st_tree">
+					<ul class="st_tree_ul">
+						<li id="" ceng="0" ><a href="#" ref="sypz">&nbsp;全部人员</a></li>
+						<ul id="sysp"></ul>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="panelDemo9" class="panel panel-success" style="width:75%">
+			<div class="panel-heading">人员</div>
+			<div class="panel-body">
+				<div class="liebiao">
+					<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped  table-bordered table-hover  datatables table-caijia" data-url="${ctxPath}/emergency/querytongxun.do" >	 
+						<thead>
+							<tr>
+				    			<th rowspan="1" colspan="1" style="vertical-align:middle">姓名</th>
+				     			<th rowspan="1" colspan="1" style="vertical-align:middle">职务</th>
+				     			<th rowspan="1" colspan="1" style="vertical-align:middle">所属部门</th>
+				     			<th rowspan="1" colspan="1" style="vertical-align:middle">地区</th>
+				     			<th rowspan="1" colspan="1" style="vertical-align:middle">电话</th>
+				     			<th rowspan="1" colspan="1" style="vertical-align:middle">备注</th>
+				 			</tr>
+						</thead>	
+					</table>
+				</div>
+			</div>
+		</div>
+		</div>
+
+		
+	</div>
+	<%}%>

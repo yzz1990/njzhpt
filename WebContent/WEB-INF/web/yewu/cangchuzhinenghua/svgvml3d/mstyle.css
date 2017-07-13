@@ -1,0 +1,54 @@
+@charset "utf-8";
+/* CSS Document */
+html{height:100%}
+body{margin:0; height:100%; padding:0; font-family:"微软雅黑"; background:url(${ctxPath}/imgs/beijing.jpg); background-size:100% 100%; overflow:hidden}
+img{border:0; position:absolute}
+div{position:absolute}
+a{text-decoration:none; color:inherit}
+
+.base{width:1820px; height:1080px; left:50%; top:50%; margin:-510px 0 0 -1100px}
+
+.wuding{width:1565px; height:770px; left:241px; top:0; background:url(${ctxPath}/imgs/wuding.png); z-index:999}
+.jianzhu1{width:1518px; height:997px; left:267px; top:12px; background:url(${ctxPath}/imgs/jianzhu1.png); z-index:5}
+.jianzhu2{width:1453px; height:750px; left:300px; top:25px; background:url(${ctxPath}/imgs/jianzhu2.png); z-index:2}
+.yinying{width:715px; height:499px; left:0; top:570px; background:url(${ctxPath}/imgs/yinying.png); z-index:1}
+
+.liangshi{width:1429px; height:746px; right:80px; top:249px; background:url(${ctxPath}/imgs/liangshi.png); z-index:3}
+.nols{background:url(${ctxPath}/imgs/liangshi_no.png)}
+
+.fengjia{width:136px; height:100px; background:url(${ctxPath}/imgs/fengjia.png); z-index:4}
+.fjasbox{width:173px; height:131px; left:43px; top:18px}
+.fengjixa{width:124px; height:96px; background:url(${ctxPath}/imgs/fengjixa.png); z-index:4}
+.fjxasbox{width:173px; height:131px; left:32px; top:23px}
+
+.fengjib{width:124px; height:126px; background:url(${ctxPath}/imgs/fengjib.png); z-index:6}
+.fjbsbox{width:222px; height:162px; left:-115px; top:-81px}
+.fengjixb{width:136px; height:125px; background:url(${ctxPath}/imgs/fengjixb.png); z-index:6}
+
+.kongzhigui{width:598px; height:363px; background:url(${ctxPath}/imgs/kongzhigui.png); left:881px; top:458px; z-index:7}
+
+.kongtiao{width:1214px; height:649px; background:url(${ctxPath}/imgs/kongtiao.png); left:436px; top:98px; z-index:7}
+#kts1{width:22px; height:27px; left:20px; top:383px}
+#kts2{width:22px; height:27px; left:775px; top:26px}
+#kts3{width:22px; height:27px; left:430px; top:596px}
+#kts4{width:22px; height:27px; left:1181px; top:216px}
+
+.chuanga{width:100px; height:121px; background:url(${ctxPath}/imgs/chuanga1.png); z-index:8}
+.guana{background:url(${ctxPath}/imgs/chuanga2.png)}
+.chuangxa{width:104px; height:123px; background:url(${ctxPath}/imgs/chuangxa1.png); z-index:8}
+.guanxa{background:url(${ctxPath}/imgs/chuangxa2.png)}
+.guanxa .cs{display:none}
+.cs{width:28px; height:34px}
+#cs1,#cs2{left:61px; top:66px}
+
+.chuangb{width:108px; height:99px; background:url(${ctxPath}/imgs/chuangb1.png); z-index:8}
+.guanb{background:url(${ctxPath}/imgs/chuangb2.png)}
+.chuangxb{width:77px; height:87px; background:url(${ctxPath}/imgs/chuangxb1.png); z-index:8}
+.guanxb{background:url(${ctxPath}/imgs/chuangxb2.png)}
+.guanxb .cs,.guanxb .cc{display:none}
+.chuangxb .cc{left:8px; top:-13px}
+#cs3,#cs4{left:23px; top:24px}
+
+.liu{width:1820px; height:1080px; z-index:9}
+
+.kongzhiui{width:540px; height:415px; background:url(${ctxPath}/imgs/kongzhiui.png); left:1426px; top:551px; z-index:10}

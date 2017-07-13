@@ -1,0 +1,221 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var obj={};
+ var qyzzjgdm = parameter.qyzzjgdm;
+ var kdbm = parameter.kdbm;
+ var cfbm = parameter.cfbm;
+ 
+%>
+
+ <style type="text/css">
+ 	.datatables td{
+ 		height:35px;
+ 		width:100px;
+ 	}
+ 	.table-striped>tbody>tr>td:nth-of-type(odd) {
+		 background-color: #E8F2F9;
+	}
+	.table-striped>tbody>tr>td:nth-of-type(even) {
+		background-color: #FFFFFF;
+	}
+ </style>
+ <script type="text/javascript">
+ 	var qyzzjgdm;
+ 	var kdbm;
+ 	var cfbm;
+ 	var page;
+ 	var shownum;
+ 	var scf = [];
+ 	var pi = 0;
+ 	$(function(){
+ 		
+ 		qyzzjgdm = $("#qyzzjgdm").val();
+ 	 	kdbm = $("#kdbm").val();
+ 	 	cfbm = $("#cfbm").val();
+ 	 	$.ajax({
+ 	 		url:'${ctxPath}/yewu/pingmiantu1?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm,
+			type:'post',
+			dataType:'json',
+ 	 		success:function(data){
+ 	 			if(data.length == 0){
+ 	 				$("#jiance").attr("disabled","disabled");
+ 	 			}
+ 	 		},
+ 	 		error:function(){
+ 	 			alert("error");
+ 	 		}
+ 	 	});
+ 		$.ajax({
+ 	 		url:'${ctxPath}/shouchukeshihua/findcangfang',
+ 	 		type:'post',
+ 	 		data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":1000},
+ 	 		dataType:'json',
+ 	 		success:function(data){
+ 	 			page = data.list.length;
+ 	 			if(page==0){
+ 	 				$("#first").val("无");
+ 	 	 			$("#last").val("无");
+ 	 	 			$('.datatables').load('${ctxPath}/shouchukeshihua/kudianxinxi/cangfangdetail.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+scf[0]);	
+ 	 			}else{
+ 	 				for(var i = 0; i < page; i++){
+ 	 	 				scf.push(data.list[i].cfbm);
+ 	 	 			}
+ 	 	 			$("#first").val(scf[0]+"号仓")
+ 	 	 			$("#last").val(scf[page-1]+"号仓");
+ 	 	 			$("#pagenum").val(scf[0]);
+ 	 	 			$('.datatables').load('${ctxPath}/shouchukeshihua/kudianxinxi/cangfangdetail.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+scf[0]);	
+ 	 			}
+ 	 			
+ 	 		},
+ 	 		error:function(){
+ 	 			alert("error");
+ 	 		}
+ 	 	});
+ 		shownum = $("#pagenum").val();
+ 	});
+ 	function getfirst(){
+ 		pi = 0;
+ 		$("#pagenum").val(scf[0]);
+ 		$('.datatables').load('${ctxPath}/shouchukeshihua/kudianxinxi/cangfangdetail.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+scf[0]);
+ 	}
+ 	
+ 	function getend(){
+ 		pi = page;
+ 		$("#pagenum").val(scf[page-1]);
+ 		$('.datatables').load('${ctxPath}/shouchukeshihua/kudianxinxi/cangfangdetail.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+scf[page-1]);
+ 	}
+ 	
+ 	
+ 	function getformat(){
+ 		if(pi>0){
+ 			pi = pi - 1;
+ 			$("#pagenum").val(scf[pi]);
+ 	 		$('.datatables').load('${ctxPath}/shouchukeshihua/kudianxinxi/cangfangdetail.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+scf[pi]);
+ 		}else{
+ 			$("#pagenum").val(scf[0]);
+ 		}
+ 		
+ 		
+ 	}
+ 	function getnext(){
+ 		if(pi < (page - 1)){
+ 			pi++;
+ 			$("#pagenum").val(scf[pi]);
+ 	 		$('.datatables').load('${ctxPath}/shouchukeshihua/kudianxinxi/cangfangdetail.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+scf[pi]);
+ 			
+ 		}else{
+ 			$("#pagenum").val(scf[page-1]);
+ 		}
+ 		
+ 	}
+ 	function search(){
+ 		if(pi < page && pi >= 0){
+ 			var num=$("#pagenum").val();
+ 			var xx=0;
+ 			for(var i=0;i<scf.length;i++){
+ 				if(scf[i]==num){
+ 					pi=i;
+ 					xx++;
+ 		 			$('.datatables').load('${ctxPath}/shouchukeshihua/kudianxinxi/cangfangdetail.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+num);
+ 				}
+ 			}
+ 			if(xx==0){
+ 				alert("仓号不存在!");
+ 			}
+ 		}
+ 	}
+ 	
+ 	function getjiance(){
+ 		if(pi < page && pi >= 0){
+ 
+ 			
+ 			var url = '${ctxPath}/shouchukeshihua/kudianxinxi/cangfangjiance.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&cfbm='+scf[pi];
+ 			
+ 		
+ 			
+ 			dialog1=top.BootstrapDialog.show({
+ 			    //title: shownum+'号仓粮情',
+ 			    title: '库点鸟瞰图',
+ 			    //label: 
+ 				closeByBackdrop: true,
+ 				type: BootstrapDialog.TYPE_DEFAULT,
+ 				//dialog1.setType(BootstrapDialog.TYPE_DEFAULT);
+ 				//cssClass: 'btn-default',
+ 			    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="'+url+'"/>'),
+ 			    onshow:function(dlg){
+ 		       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+ 		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+ 		       },
+ 		      
+ 			});
+ 			
+ 			/*
+ 			$("#myModalLabel").text("新增");   
+ 			$('#myModal').modal(); 
+ 			*/
+ 		}
+ 	}
+
+</script>
+
+<div class="panel-body">
+	<input id="qyzzjgdm" type="text" value="${qyzzjgdm}" style="display:none">
+	<input id="kdbm" type="text" value="${kdbm}" style="display:none">
+	<input id="cfbm" type="text" value="${cfbm}" style="display:none">
+	<div id="pageturn" style="text-align:left;font-size: 10px; height: 28px; margin-left: 2px" >
+		<input id="first" type="button" onclick="getfirst()" value="1号仓">
+		<a disabled="disabled" onclick="getformat()" style="margin-right:5px;cursor:pointer">上一个</a>
+		<input id="pagenum" type="text" value="1" style="text-align:center;width:50px"/>
+		<a disabled="disabled" onclick="getnext()" style="margin-right:5px;cursor:pointer">下一个</a>
+		<input id="last" type="button" onclick="getend()" value="">
+		<input id="search" type="button" value="搜索" onclick="search()">&nbsp;
+		<button type="button" id="jiance" class="btn btn-square btn-primary pull-right" style="margin-left:10px;cursor:pointer;height: 30px;" onclick="getjiance()">仓房监测信息</button>
+		 
+	</div>
+	<table  class="table table-striped table-hover table-bordered datatables">
+	</table>
+	
+	<!-- 
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">   
+		<div class="modal-dialog modal-full" role="document">    
+		<div class="modal-content">     
+			<div class="modal-header">      
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>      
+				<h4 class="modal-title" id="myModalLabel">新增</h4>     
+			</div>     
+			<div class="modal-body">        
+				<div class="form-group">       
+					<label for="txt_departmentname">部门名称</label>       
+					<input type="text" name="txt_departmentname" class="form-control" id="txt_departmentname" placeholder="部门名称">      
+				</div>      
+				<div class="form-group">       
+					<label for="txt_parentdepartment">上级部门</label>       
+					<input type="text" name="txt_parentdepartment" class="form-control" id="txt_parentdepartment" placeholder="上级部门">      
+				</div>      
+				<div class="form-group">       
+					<label for="txt_departmentlevel">部门级别</label>       
+					<input type="text" name="txt_departmentlevel" class="form-control" id="txt_departmentlevel" placeholder="部门级别">      
+				</div>      
+				<div class="form-group">       
+					<label for="txt_statu">描述</label>       
+					<input type="text" name="txt_statu" class="form-control" id="txt_statu" placeholder="状态">      
+				</div>     
+			</div>     
+		</div>   
+	</div>  
+</div> 
+ -->
+
+</div>
+
+
+
+<script type="text/javascript">
+
+
+</script>
+<%
+	}
+%>

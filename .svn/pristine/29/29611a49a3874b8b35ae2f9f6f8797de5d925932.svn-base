@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>库点信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/fontawesome/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/jibenxinxi/addKudian",title="新增库点信息";
+	if (isNotEmpty(parameter.ID)) {
+		var kdxx = @com.zkzy.njzhpt.dao.JibenxinxiDao.findKudian({"ID":parameter.ID,"page":"1","rows":"100"});
+		obj = kdxx.list[0];
+		url = ctxPath+"/jibenxinxi/upKudian";
+		title = "编辑库点信息";
+	};
+	
+%>
+
+<body>
+   <div class="dashboard-wrapper-lg" style="padding: 0">
+       <form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+			<input type="hidden" name="ID" class="form-control" value="${obj.ID}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                
+                  <div class="widget-header">
+                    <div class="title">
+                        	库点信息                                       
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="sheng">省:</label>
+										<select id="sheng" name="sheng" class="form-control">
+											<option value="江苏省" ${obj.sheng=="江苏省"?" selected"}>江苏省</option>
+											<!-- <option value="浙江省" ${obj.sheng=="浙江省"?" selected"}>浙江省</option>
+											<option value="安徽省" ${obj.sheng=="安徽省"?" selected"}>安徽省</option> -->
+										</select>
+									</div>	
+								</div>
+							
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="shi">市:</label>
+										<select id="shi" name="shi" class="form-control">
+											<option value="南京市" ${obj.shi=="南京市"?" selected"}>南京市</option>
+											<!-- <option value="无锡市" ${obj.shi=="无锡市"?" selected"}>无锡市</option>
+											<option value="苏州市" ${obj.shi=="苏州市"?" selected"}>苏州市</option> -->
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xian">区县:</label>
+											<select id="xian" name="xian" class="form-control">
+													<option value="江宁区" ${obj.xian=="江宁区"?" selected"}>江宁区</option>
+													<option value="浦口区" ${obj.xian=="浦口区"?" selected"}>浦口区</option>
+													<option value="六合区" ${obj.xian=="六合区"?" selected"}>六合区</option>
+													<option value="溧水区" ${obj.xian=="溧水区"?" selected"}>溧水区</option>
+													<option value="高淳区" ${obj.xian=="高淳区"?" selected"}>高淳区</option>
+													<option value="市区" ${obj.xian=="市区"?" selected"}>市区</option>
+											</select>
+									</div>	
+								</div>
+							</div>
+                  </div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	库点基本信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="kdmc">库点名称:</label>
+										<input id="kdmc" name="kdmc" class="form-control" placeholder="库点名称"  value="${obj.kdmc}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${obj.qyzzjgdm}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="kdbm">库点编码:</label>
+										<input id="kdbm" name="kdbm" class="form-control" placeholder="库点编码" value="${obj.kdbm}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="xzqhdm">行政区划代码:</label>
+										<input id="xzqhdm" name="xzqhdm" class="form-control" placeholder="行政区划代码" value="${obj.xzqhdm}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="yzbm">邮政编码:</label>
+										<input id="yzbm" name="yzbm" class="form-control" placeholder="邮政编码" value="${obj.yzbm}">
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xxdz">详细地址:</label>
+										<input id="xxdz" name="xxdz" class="form-control" placeholder="详细地址" value="${obj.xxdz}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="xgsj">修改时间:</label>
+										<input id="xgsj" name="xgsj" class="form-control" placeholder="修改时间" value="${obj.xgsj}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tbr">填报人:</label>
+										<input id="tbr" name="tbr" class="form-control" placeholder="填报人" value="${obj.tbr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="shr">审核人:</label>
+										<input id="shr" name="shr" class="form-control" placeholder="审核人" value="${obj.shr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tbsj">填报时间:</label>
+										<input id="tbsj" name="tbsj" class="form-control" placeholder="填报时间" value="${obj.tbsj}">
+									</div>
+								</div>
+							</div>
+                 	 </div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业库区基本信息                                        
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+	                 		<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zdmj">占地面积:</label>
+										<input id="zdmj" name="zdmj" class="form-control" placeholder="占地面积" value="${obj.zdmj}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tdxz_hb">土地性质_划拨:</label>
+										<input id="tdxz_hb" name="tdxz_hb" class="form-control" placeholder="土地性质_划拨" value="${obj.tdxz_hb}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="kqh">库区数:</label>
+										<input id="kqh" name="kqh" class="form-control" placeholder="库区数" value="${obj.kqh}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="cfzcr">仓房总仓容:</label>
+										<input id="cfzcr" name="cfzcr" class="form-control" placeholder="仓房总仓容" value="${obj.cfzcr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="ygzcr">油罐总罐容:</label>
+										<input id="ygzcr" name="ygzcr" class="form-control" placeholder="油罐总罐容" value="${obj.ygzcr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+										<div class="form-group">
+											<label for="tlzyx">铁路专用线:</label>
+											<input id="tlzyx" name="tlzyx" class="form-control" placeholder="铁路专用线" value="${obj.tlzyx}">
+										</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zymt">专用码头:</label>
+										<input id="zymt" name="zymt" class="form-control" placeholder="专用码头" value="${obj.zymt}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="dp">地坪:</label>
+										<input id="dp" name="dp" class="form-control" placeholder="地坪" value="${obj.dp}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="synx">使用年限:</label>
+										<input id="synx" name="synx" class="form-control" placeholder="使用年限" value="${obj.synx}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="gwlqj">谷物冷却机:</label>
+										<select id="gwlqj" name="gwlqj" class="form-control">
+											<option value="1" ${obj.gwlqj=="1"?" selected"}>有</option>
+											<option value="0" ${obj.gwlqj=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="ywglxt_y">业务管理系统:</label>
+										<select id="ywglxt_y" name="ywglxt_y" class="form-control">
+											<option value="1" ${obj.ywglxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.ywglxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="ccbgxt_y">仓储保管系统:</label>
+										<select id="ccbgxt_y" name="ccbgxt_y" class="form-control">
+											<option value="1" ${obj.ccbgxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.ccbgxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zdhzyxt_y">自动化作业系统:</label>
+										<select id="zdhzyxt_y" name="zdhzyxt_y" class="form-control">
+											<option value="1" ${obj.zdhzyxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.zdhzyxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="ycjgxt_y">远程监管系统:</label>
+										<select id="ycjgxt_y" name="ycjgxt_y" class="form-control">
+											<option value="1" ${obj.ycjgxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.ycjgxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="kshxt_y">可视化系统:</label>
+										<select id="kshxt_y" name="kshxt_y" class="form-control">
+											<option value="1" ${obj.kshxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.kshxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+                  	</div>
+                  	
+				<div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	库点位置信息                                      
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qyjd">库点经度:</label>
+										<input id="qyjd" name="qyjd" class="form-control" placeholder="库点经度" value="${obj.qyjd}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qywd">库点纬度:</label>
+										<input id="qywd" name="qywd" class="form-control" placeholder="库点纬度" value="${obj.qywd}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+			            		<div class="col-xs-6">
+			            			<div class="form-group">
+			            				<label for="kdsypath">库点示意图:</label>
+						            	<input id="kdsypath" class="kdsypath" name="kdsypath" type="hidden">
+										<a class="btn btn-sm btn-info"><input class="file_upload_syt " type="file" name="file" /></a>
+										<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+										<div class="imgsyt">
+											<img src=""/>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-6">
+			            			<div class="form-group">
+			            				<label for="kdqmpath">库点全貌图:</label>
+										<input id="kdqmpath" class="kdqmpath" name="kdqmpath" type="hidden">
+										<a class="btn btn-sm btn-info"><input class="file_upload_qmt " type="file" name="file" /></a>
+										<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+										<div class="imgqmt">
+											<img src=""/>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+                	</div>
+                </div>
+                
+              </div>
+            </div>
+            </form>
+        </div>
+
+<!-- uploadifive所需js和css -->
+<script src="${ctxPath}/resource/jquery.uploadifive.min.js"></script>
+<link href='${ctxPath}/resource/uploadifive.css'/>
+
+<script type="text/javascript">
+
+function saveKudian() {
+	var form = $(".dashboard-wrapper-lg form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		}
+	});
+}
+
+
+$(function(){
+	
+	 $('.file_upload_syt').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/cangchugl/scqysyt',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传示意图',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.jpg; *.png',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	    	var url = "${ctxPath}/upload/";
+	  	    	url+=data;
+	  	    	var obimg=document.getElementsByTagName("img")[0];
+	  	    	obimg.setAttribute("src",url);
+	  	    	$("#kdsypath").val(data);
+	  	    
+	  	    	
+	  	    	
+    }
+});
+	 
+	 $('.file_upload_qmt').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/cangchugl/scqysyt',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传全貌图',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.jpg; *.png',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	    	var url = "${ctxPath}/upload/";
+	  	    	url+=data;
+	  	    	var obimg=document.getElementsByTagName("img")[1];
+	  	    	obimg.setAttribute("src",url);
+	  	    	$("#kdqmpath").val(data);
+	  	    	
+ }
+});
+	 
+});
+
+
+</script>
+
+</body>
+</html>

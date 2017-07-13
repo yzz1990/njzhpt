@@ -1,0 +1,55 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var id = parameter.id;
+ var sjrid = parameter.sjrid;
+ var fjrid = parameter.fjrid;
+ var isdel = parameter.isdel;
+ if(id!="undefined"){
+	 if(isdel=='1'){
+	 	obj=@com.zkzy.njzhpt.dao.CangchuglDao.findlaji({page:1,rows:1,id:parameter.id}).getList().get(0);
+	 }else{
+	 	if(sjrid==session.userinfo.user.id){
+	 		obj=@com.zkzy.njzhpt.dao.CangchuglDao.findshoujian({page:1,rows:1,id:parameter.id}).getList().get(0);
+		 }else{
+			obj=@com.zkzy.njzhpt.dao.CangchuglDao.findfajian({page:1,rows:1,id:parameter.id}).getList().get(0);
+		}
+	 }
+ }
+%>
+
+
+	<div id="show" style="padding-top: 10px;">
+		<div style="background-color: #F6F6F6;margin-left:10px;border-bottom:#cccccc 1px solid;width:98%;">
+			<table id="table_id">
+	        <tr height="20"><td>主&nbsp;&nbsp;题：</td><td id="title" name="title" style="font-weight: bold;"></td></tr>
+	        <tr height="20"><td>发件人：</td><td id="create_name"></td></tr>
+	        <tr height="20"><td>收件人：</td><td id="user_names"></td></tr>
+	        <tr height="20"><td>时&nbsp;&nbsp;间：</td><td id="createtime"></td></tr>
+	      </table>
+		</div>
+		<div style="text-align: left; margin-top: 10px; text-indent: 2em;overflow-y: auto;height:260px;"
+			id="e_content">内容</div>
+	</div>
+	<script type="text/javascript">
+		 if(${obj.hassend}=="0"){
+			 $('#createtime').html("${obj.createtime}");
+		 }else{
+			 $('#createtime').html("${obj.sendtime}");
+		 }
+		$('#title').html("[${obj.level}]${obj.title}");
+		$('#e_content').html("${obj.content}");
+		$('#create_name').html("${obj.realname}");
+		//$('#user_names').html('${session.userinfo.user.realname}');
+		$('#user_names').html("${obj.sjrname}");
+		var fujian="${obj.fujianname}";
+		var path="${obj.fujianpath}";
+		if(fujian!=""&&fujian!=null){
+			$('#table_id').append('<tr height="20"><td>附&nbsp;&nbsp;件：</td><td id="fujian"></td></tr>');
+			$('#fujian').html("<a href='${ctxPath}/upload/"+path.split("upload")[1]+"' download="+fujian+">"+fujian+"</a>");
+		}
+		
+	</script>
+
+<%
+}
+%>

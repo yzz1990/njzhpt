@@ -1,0 +1,235 @@
+html,body
+{
+	font-family:微软雅黑;font-size:14px;color:#000000;
+	margin:0; padding:0;
+	width:100%;height:100%;
+	border:none;
+	overflow-y:hidden; 
+	position: absolute;
+}
+    
+.container {margin:0 auto; width:100%;height:100%;position: absolute;}
+
+.header 
+{
+	width:100%;
+	height:45px;		
+	background:#085ABD;
+}
+
+.gisheader 
+{
+	width:100%;	
+	height:30px;
+	top:0px;
+	left:0px;
+	z-Index:99;
+	position:absolute;		
+	background:#EAEAEA;
+}
+
+.main
+{		
+	width:100%;
+	height:100%;	
+	text-align:left;
+	position:absolute;	
+}
+
+.titleTab tr td{
+	color:#ffffff;
+	font-size: 14px;
+	font-family:'微软雅黑'
+}
+
+.selectDIV{
+	border-bottom:1px solid #0A88BA;
+}
+
+.commonToolDIV{
+	width:40px;
+	height:25px;
+	top:3px;
+	position:absolute;
+	
+	text-align:center;
+	border-right:1px solid #858585;
+}
+
+.commonToolImg{
+	width:25px;
+	height:25px;
+	border-style:none;
+}
+	
+.siderMenu
+{
+	width:100%;
+	height:40px;
+	text-align: center;	
+	background-color: #40A4C2;
+	border-radius:90px;
+	border: 1px solid #55b0cc;
+}
+
+.siderMenu:hover
+{
+	background-color: #03659D;	
+}
+
+.siderMenuClicked
+{
+	width:100%;
+	height:40px;
+	text-align: center;
+	background-color: #03659D;
+	border-radius:90px;
+	border: 1px solid #55b0cc;
+}
+
+.main_map 
+{
+	width:100%;
+	height:100%;
+	position:relative;
+	background-color: #F5F5F5;
+}
+
+.main_map_img 
+{
+	width:50%;
+	height:100%;
+	top:0px;
+	right:0px;
+	position:absolute;
+	z-Index:9;	
+	border-left: 3px solid #4A4A4A;	
+	background-color: #F5F5F5;
+}
+
+.topDIV{	
+	width:365px;
+	height:580px;			
+	border-width: 1px;
+	border-color: #000;
+	border-style: solid;	
+	background-color: #fff;	
+	position:absolute;
+	top:35px; 
+	right:0px;  
+	z-Index:99;		
+}
+
+.tableHeader
+{
+	width:355px;
+	height:30px;
+	border:1px solid #AFAFAF;
+	margin-left:5;
+	margin-top:5;
+	background-color:#ffffff;
+	font-size:14;
+	text-align:center
+}
+
+.tableHeader1
+{
+	width:335px;
+	height:30px;
+	border:1px solid #AFAFAF;
+	margin-left:5;
+	margin-top:5;
+	background-color:#ffffff;
+	font-size:14;
+	text-align:center
+}
+
+.tableDiv
+{
+	margin-top:-1;
+	margin-left:5;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+
+.tableInfo
+{
+	width:355px;
+	table-layout:fixed;
+	border:1px solid #AFAFAF;
+	background-color:white;
+	text-align:center;	
+	font-size:14px;	
+	font-family:微软雅黑;
+}
+
+.tableInfo tr td
+{
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.tableInfo1
+{
+	width:335px;
+	table-layout:fixed;
+	border:1px solid #AFAFAF;
+	background-color:white;
+	text-align:center;	
+	font-size:14px;	
+	font-family:微软雅黑;
+}
+
+.tableInfo1 tr td
+{
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.tableLegend
+{
+	width:100%;
+	height:100%;
+	font-size:14;	
+	font-family:微软雅黑;
+}
+.tltd1
+{
+	width:20%;
+	text-align:center;
+}
+.tltd2
+{
+	width:30%;
+	text-align:left;
+}
+
+.infoWinTable
+{	
+	font-family:微软雅黑;
+	font-size:14px;
+	border-collapse:collapse;
+}
+.infoWinTable tr td
+{						
+	border: 1px solid #a4d3ee;	
+}
+.td_left
+{
+	background-color: #F2F2F2;
+	text-align: right;
+	padding-right: 5px;	
+}
+.td_right
+{
+	text-align: center;
+	padding-right: 5px;	
+}
+
+.aButton
+{
+	text-align:center;color:#fff;background-color:#0696E9;
+	font-size:14px;font-weight:bold;text-decoration:none;padding:5 50 5 50;
+}

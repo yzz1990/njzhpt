@@ -1,0 +1,40 @@
+package com.zkzy.njzhpt.dao;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+import java.util.HashMap;
+
+/**
+ * Created by Administrator
+ * Date: 2017/5/4
+ * Time: 14:09
+ * Description:
+ */
+public class SecurityEducationDao {
+	public static Page<Record> findFile(HashMap<String, Object> queryparam) throws Exception {
+		String secondSql;
+		//sql injection
+		if(queryparam.containsKey("originName")){
+			secondSql=" from  njpt_knowledgeStructFile a where 1=1 and a.originName like '%"+queryparam.get("originName")+"%' ";
+		}else{
+			secondSql=" from  njpt_knowledgeStructFile a where 1=1";
+		}
+		Param p = new Param();
+		p.put("and a.type = ?", "type");
+		p.put("and a.uploadTime = ?", "uploadTime");
+		p.put("and a.knowLedgeStructId = ?", "knowLedgeStructId");
+		SqlAndParam s = SqlUtil.buildSql(p, queryparam);
+		Page<Record> page = Db.paginate(Integer.valueOf(String
+						.valueOf(queryparam.get("page"))), Integer.valueOf(String
+						.valueOf(queryparam.get("rows"))),
+				"select a.* ",
+				secondSql + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+}

@@ -1,0 +1,142 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+	var quxian = ["市区","江宁区","浦口区","六合区","溧水区","高淳区"];
+	var cfndmc = ["1999年以前","2000年至2013年","2014年至今"];
+	/************************************仓房建设年代****************************************/
+	$.ajax({
+		url:'${ctxPath}/zonghe/findcfnd',
+		dataType:'json',
+		success: function (data) {
+			console.log(data);
+			qscfnd=[];
+			$.each(data.list,function(i,n){
+				if(n.name=='合计'){
+					qscfnd.push(n.eight);
+					qscfnd.push(n.nine);
+					qscfnd.push(n.zero);
+				}
+			});
+			console.log(qscfnd);
+		var qscf = [{name:"1999年以前",value:qscfnd[0]},{name:"2000年至2013年",value:qscfnd[1]},{name:"2014年至今",value:qscfnd[2]}];
+		//仓房使用饼状图
+		option7 = {
+			title : {
+				text: '全市仓房使用统计',
+			},
+			tooltip : {
+				trigger: 'item',
+				formatter: "{a} <br/>{b} : {c}吨({d}%)",
+				position: function (p) {
+					// 位置回调
+					return [p[0]-190, p[1]+15];
+				}
+			},
+			legend: {
+				orient : 'vertical',
+				y:'center',
+				x:'left',
+				data:cfndmc
+			},
+			calculable : false,
+			series : [
+				{
+					name:'仓房类型占比',
+					type:'pie',
+					radius : '55%',
+					center: ['60%', '60%'],
+					itemStyle:{
+						normal:{
+							label:{
+								show: false
+							},
+							labelLine:{
+								show: false
+							}
+						}
+					},
+					data:qscf
+				}
+			]
+		};
+		echarts.init(document.getElementById('jsnd')).setOption(option7);
+  	}
+});
+
+/***************************************烘干能力*******************************************/
+		$.ajax({
+				url:'${ctxPath}/zonghe/findhgnl',
+				dataType:'json',
+				success: function (data) {
+					qscfnl=[];
+					$.each(data.list,function(i,n){
+						qscfnl.push(n.hgnl.toFixed(0));
+					})
+					var qscf = [{name:"市区",value:qscfnl[1]},{name:"江宁区",value:qscfnl[2]},{name:"浦口区",value:qscfnl[3]},
+						{name:"六合区",value:qscfnl[4]},{name:"溧水区",value:qscfnl[5]},{name:"高淳区",value:qscfnl[6]}];
+					//烘干能力饼状图
+					option4 = {
+						title : {
+							text: '全市烘干能力统计',
+						},
+						tooltip : {
+							trigger: 'item',
+							formatter: "{a} <br/>{b} : {c}吨/天({d}%)",
+							position: function (p) {
+								// 位置回调
+								return [p[0]-190, p[1]+15];
+							}
+						},
+						legend: {
+							orient : 'vertical',
+							y:'center',
+							x:'left',
+							data:quxian
+						},
+						color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+						calculable : false,
+						series : [
+							{
+								name:'仓房类型占比',
+								type:'pie',
+								radius : '55%',
+								center: ['60%', '60%'],
+								itemStyle:{
+									normal:{
+										label:{
+											show: false
+										},
+										labelLine:{
+											show: false
+										}
+									}
+								},
+								data:qscf
+							}
+						]
+					};
+					echarts.init(document.getElementById('hgnl')).setOption(option4);
+				}
+			});
+
+
+});
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%;width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="jsnd" style="width: 50%;height:100%; margin: 0 auto;margin-left: 0px;float: left;"></div>
+          <div id="hgnl" style="width: 50%;height:100%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;"></div>
+        </div>
+	</div>		
+</div>  

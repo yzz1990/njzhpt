@@ -1,0 +1,237 @@
+
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+
+.text-center{
+	text-align: center;
+}
+.form-control[readonly]{
+	background-color: white;
+}
+</style>
+<script type="text/javascript">
+		var datatable;
+		$(function(){
+			datatable = $('.datatables').DataTable({
+		        "columns": [
+					
+					{
+						"data" : "realname",
+						"title": "发件人"
+					
+					},{
+						"data" : "title",
+						"title" : "主题"
+					
+					},{
+						"data" : "sendtime",
+						"title": "时间"
+					
+					},{
+						"data" : "level",
+						"title": "紧急程度",
+						"sClass": "text-center"
+					},{
+						"title":"操作",
+						"sClass": "text-center",
+		            	"render": function (data,type,row,meta) {
+		            		var url = 'javascript:void(0)';
+		            		var chakan = '<a  href='+url+' onclick="showmessage(\''+row["id"]+'\',\''+row["sjrid"]+'\',\''+row["fjrid"]+'\',\''+row["isdel"]+'\')" class="btn btn-xs btn-success pjax" >详情</a>';
+		                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="deletemail5(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;彻底删除</button>';
+		               		return chakan+ " " + shanchu;
+		            	}
+					}
+					
+					]
+			});
+		});
+			$(function(){
+				$("#d1").datetimepicker({
+					
+					format : 'yyyy-mm-dd hh:ii:ss',
+					language : 'zh-CN', //这里需要修改
+					weekStart : 1,
+					autoclose : 1,
+					todayHighlight : 1,
+					startView : 2,
+					minView : 2,
+					forceParse : 0
+				});
+				$("#d2").datetimepicker({
+					
+					format : 'yyyy-mm-dd hh:ii:ss',
+					language : 'zh-CN', //这里需要修改
+					weekStart : 1,
+					autoclose : 1,
+					todayHighlight : 1,
+					startView : 2,
+					minView : 2,
+					forceParse : 0
+				});
+				$("select").select2();
+			})
+			
+			function searchparam() {
+				var param = "";
+				
+				var title="";
+				var realname=""; 
+				var sendtime="";
+				var endtime="";
+				
+				if ($.trim($('#type option:selected').text()) != "全部"
+					&& $.trim($("#searchtext").val()) != "") {
+					if ($('#type option:selected').val() == "0") {
+						title= $("#searchtext").val();
+					} else if ($('#type option:selected').val() == "1") {
+						realname=  $("#searchtext").val();
+					}
+				}
+				if ($('#d1').val() != "") {
+					sendtime= $('#d1').val();
+				}
+				if ($('#d2').val() != "") {
+					endtime= $('#d2').val();
+				}
+				if(sendtime>endtime){
+					alert("起始时间不能大于结束时间！")
+					return false;
+				}else{
+					//列表重新加载
+					document.querySelector('#shoujian').dataset.queryparam="&title="+title
+					+"&realname="+realname+"&sendtime="+sendtime+"&endtime="+endtime;
+					datatable.ajax.reload(null,true);
+				}
+			}
+
+			function showmessage(id,sjrid,fjrid,isdel) {
+				dialog1=BootstrapDialog.show({
+				    title: '邮件详情',
+					closeByBackdrop: true,
+				    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/nbyj/showemail.html?id='+id+'&sjrid='+sjrid+'&fjrid='+fjrid+'&isdel='+isdel+'"/>'),
+				    onshow:function(dlg){
+			       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+			       },
+			       buttons: [
+	          		{
+			           label: '关闭',
+			           action: function(dialog) {
+			               dialog.close();
+			           },
+			          cssClass: 'btn-xs btn-danger'
+			       }]
+				});
+			}
+			function myformatter(date) {
+				var y = date.getFullYear();
+				var m = date.getMonth() + 1;
+				var d = date.getDate();
+				var h = date.getHours();
+				var M = date.getMinutes();
+				var s = date.getSeconds();
+				return y + '-' + (m < 10 ? ('0' + m) : m) + '-'
+						+ (d < 10 ? ('0' + d) : d) + ' '
+						+ (h < 10 ? ('0' + h) : h) + ':'
+						+ (M < 10 ? ('0' + M) : M) + ':'
+						+ (s < 10 ? ('0' + s) : s);
+			}
+			//写信 窗口
+			function xiexin() {
+				dialogAdd=BootstrapDialog.show({
+				    title: '写邮件',
+					closeByBackdrop: true,
+				    message:$('<iframe id="if1" name="if1" frameborderno="0"  style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="no" src="${ctxPath}/nbyj/xyj.html"/>'),
+				    onshow:function(dlg){
+				    	
+			       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+			       },
+			       buttons: [
+			               /*   {
+				    	   label: '保存至草稿箱',
+				           action: function(dialog) {
+				               dialog.close();
+				           },
+				           cssClass: 'btn-xs btn-success'
+			       		}, */
+			            {
+				           label: '发送',
+				           action: function(dialog) {
+				        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveyoujian(); 
+				           },
+				          cssClass: 'btn-xs btn-success'
+				       },{
+				           label: '关闭',
+				           action: function(dialog) {
+				               dialog.close();
+				           },
+				          cssClass: 'btn-xs btn-danger'
+				       }]
+				});
+			}
+			function Changetype(){
+				if ($('#type option:selected').val() == "0") {
+					
+					$("#searchtext").attr("placeholder","主题");
+				} else if ($('#type option:selected').val() == "1") {
+					
+					$("#searchtext").attr("placeholder","发件人");
+				}
+				
+			}
+			function deletemail5(id) {
+				if(confirm("确认删除?")){
+					$.ajax({
+						url:'${ctxPath}/shoujian/delemail',
+						type:'post',
+						data:{'id':id},
+						dataType:'json',
+						success:function(data){
+							if(data){
+								alert("删除成功");
+								datatable.ajax.reload(null,false);
+							}else{
+								alert("删除失败");
+							}
+							
+						}
+					});
+				}
+			}
+			
+		</script>
+<div class="panel panel-default">
+			<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>发件箱</b></span>
+			</div>
+			<div class="panel-heading">
+				<div style="float: left;" class="form-inline">
+					
+	         		<select  name="type" id="type" class="form-control input-sm" style="width:130px" onchange="Changetype()">
+						<option value="0">主题</option>
+						<option value="1">发件人</option>
+					</select> 
+					<input class="form-control input-sm" placeholder="主题" type="text" id="searchtext" name="name" style="width: 200px;">
+	         		<label style="margin-left: 20px">发送时间:</label>
+					<input class="form-control input-sm" style="width: 140px;" id="d1"  type="text" readonly="readonly">~
+					<input class="form-control input-sm" style="width: 140px;" id="d2"  type="text" readonly="readonly"> 
+					<button class="btn btn-success  btn-xs" onclick="searchparam()" style="margin-top: 3px;">查询</button>	
+				</div>
+				<div style="float: right;">
+					<button class="btn btn-success  btn-xs" onclick="xiexin()" style="margin-top: 3px;"><i class="fa fa-plus-circle" aria-hidden="true"></i> 写信</button>
+				</div>
+				<div style="clear: both;"></div>
+			</div>
+			<div class="panel-body" style="padding: 0">
+					<table id="shoujian" class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shoujian/findfajianxiang?isedit=2" ></table>
+			</div>
+</div>
+
+<%
+}
+%>

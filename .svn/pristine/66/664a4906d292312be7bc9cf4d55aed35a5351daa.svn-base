@@ -1,0 +1,37 @@
+<script src="${resourcePath}/jquery/js/jquery.min.js"></script>
+<style>
+iframe{
+margin: 0px;
+}
+</style>
+<script type="text/javascript">
+(function ($) {
+    $.getUrlParam = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+})(jQuery);
+
+$(function(){
+/* 	var niandu=$.getUrlParam("niandu");
+	var ccqy=$.getUrlParam("ccqy"); */
+	var url;
+//	url = 'http://localhost:8075/WebReport/ReportServer?reportlet=chengpinliangyoucbkctjbb.cpt&op=write';
+	
+	url = 'http://58.214.246.30:1000/WebReport/ReportServer?reportlet=chengpinliangjihuab.cpt';
+
+	$("#chengpinliangjihuab").attr("src",url);
+	
+	
+});
+
+
+
+
+</script>
+
+	<div class="panel panel-default">
+		<iframe id="chengpinliangjihuab" style="width:100%; height:100%;"  frameborder="0" scrolling="no" src=''></iframe>
+	</div>
+

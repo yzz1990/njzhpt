@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+</head>
+<style type="text/css">
+.select2-container--default .select2-selection--single{
+	    height: 32px;
+}
+
+</style>
+<body>
+	<div class="dashboard-wrapper-lg" style="min-height:0px;padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget" style="margin-bottom: 0px;">
+					<div class="widget-header">
+						<div class="title">人员信息</div>
+					</div>
+					<div class="widget-body">
+                        <form id="contentform" role="form" action="${ctxPath}/securityedu/releasePaper" method="post">
+                            <div class="row">
+                                <input type="hidden" name="paperId" value="${parameter.id}">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="users" ><font color="red" style="font-size:large;">*</font>人员:</label>
+                                        <select id="users" name="users" multiple class="form-control input-sm" style="width:334px;font-size:14px">
+                                            <%if(isEmpty(parameter.look)){%>
+												<option value="all" selected>全部</option>
+											<%}%>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(function(){
+			<%if(isEmpty(parameter.look)){%>
+				//加载知识点
+			$.ajax({
+					url:'${ctxPath}/framework/queryFwUser.do',
+					data:{type:"single",page:1,rows:1000},
+					dataType:'json',
+                    async:false,
+                    success: function (data) {
+                            $.each(data.list,function(i, n){
+                                $("#users").append("<option value="+n.id+">"+n.realname+"</option>");
+                            });
+                        }
+                    });
+			<%}else{%>
+				$.ajax({
+					url:'${ctxPath}/securityedu/findPaperBatchUsers',
+					data:{page:1,rows:10000,batchId:"${parameter.batchId}"},
+					dataType:'json',
+					async:false,
+					success: function (data) {
+						if(typeof data.ret =='undefined'){
+							$.each(data.list,function(i, n){
+								$("#users").append("<option value="+n.id+" selected>"+n.realname+"</option>");
+							});
+						}else{
+							$("#users").append('<option value="all" selected>全部</option>');
+						}
+					}
+				});
+			 <%}%>
+            $("#users").select2();
+        })
+
+
+
+		function saveReleasePaper() {
+            var form = $(".widget-body form");
+            $.ajax({
+				url : form.attr("action"),
+				dataType : "json",
+				data : form.serialize(),
+				success : function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+                        alert("操作成功");
+                        parent.dialogRelease.close();
+					}
+				}
+			});
+		}
+	</script>
+</body>
+</html>

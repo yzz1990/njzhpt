@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>库点信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<style type="text/css">
+.datetimepicker {
+	width: 250px;
+}
+
+.datetimepicker>div {
+	padding: 4px;
+}
+
+.datetimepicker table {
+	margin: 0;
+	width: 230px;
+	padding: 6px;
+}
+#edui1_bottombar{
+	visibility: hidden;
+}
+</style>
+  </head>
+<%
+	var obj={"qyzzjgdm":parameter.qyzzjgdm},url=ctxPath+"/jibenxinxi/addKudian",title="新增库点信息";
+	if (isNotEmpty(parameter.ID)) {
+		var kdxx = @com.zkzy.njzhpt.dao.JibenxinxiDao.findKudian({"ID":parameter.ID,"qyzzjgdm":parameter.qyzzjgdm,"kdbm":parameter.kdbm,"page":"1","rows":"100"});
+		obj = kdxx.list[0];
+		url = ctxPath+"/jibenxinxi/upKudian";
+		title = "编辑库点信息";
+	}else{
+		//var qyxx = @com.zkzy.njzhpt.dao.JibenxinxiDao.findQiyexinxi({"qyzzjgdm":parameter.qyzzjgdm,"page":"1","rows":"100"});
+		//obj = qyxx.list[0]; 
+	}
+%>
+
+<body style="overflow-x: hidden;">
+   <div class="dashboard-wrapper-lg" style="padding: 0">
+     <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+			<input type="hidden" name="ID" class="form-control" value="${obj.ID}">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	库点信息                                       
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="sheng"><font color="red" style="font-size:large;">*</font>省:</label>
+										<input id="sheng" name="sheng" class="form-control" readonly="readonly" value="${obj.sheng==null?parameter.sheng:obj.sheng}">
+										
+									</div>	
+								</div>
+							
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="shi"><font color="red" style="font-size:large;">*</font>市:</label>
+										<input id="shi" name="shi" class="form-control" readonly="readonly" value="${obj.shi==null?parameter.shi:obj.shi}">
+										
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xian"><font color="red" style="font-size:large;">*</font>区县:</label>
+										<input id="xian" name="xian" class="form-control" readonly="readonly" value="${obj.xian==null?parameter.xian:obj.xian}">
+											
+									</div>	
+								</div>
+							</div>
+                  </div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	库点基本信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qyzzjgdm"><font color="red" style="font-size:large;">*</font>企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${parameter.qyzzjgdm}" readonly>
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="kdmc"><font color="red" style="font-size:large;">*</font>库点名称:</label>
+										<input id="kdmc" name="kdmc" class="form-control" placeholder="库点名称"  value="${obj.kdmc}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="kdbm"><font color="red" style="font-size:large;">*</font>库点编码:</label>
+										<input id="kdbm" name="kdbm" class="form-control" placeholder="库点编码" value="${obj.kdbm}" onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+									</div>
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="kdlxbh"><font color="red" style="font-size:large;">*</font>库点类型:</label>
+										<select id="kdlxbh" name="kdlxbh" class="form-control" onchange="changekdlx()">
+											<option value="">请选择</option>
+										</select>
+										<input type="hidden" id="kdlxmc" name="kdlxmc"  value="${obj.kdlxmc}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="xzqhdm">行政区划代码:</label>
+										<input id="xzqhdm" name="xzqhdm" class="form-control" placeholder="行政区划代码" value="${obj.xzqhdm}" readonly="readonly">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="lxr">联系人:</label>
+										<input id="lxr" name="lxr" class="form-control" placeholder="联系人" value="${obj.lxr}" >
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="lxdh">联系电话:</label>
+										<input id="lxdh" name="lxdh" class="form-control" onblur="ss()" onKeyPress="if (event.keyCode!=46 && event.keyCode!=45 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false" placeholder="联系电话" value="${obj.lxdh}" >
+										<script type="text/javascript">
+											function ss(){
+												var Fax = $("#lxdh").val();
+							                    if (Fax != "") {
+							                        var reg =/\d{3}-\d{8}$|\d{4}-\d{7}$|^1(3|4|5|7|8)\d{9}$/;
+							                        if (!reg.test(Fax)) {
+							                            alert('电话格式不正确！');
+							                            $("#lxdh").focus();
+							                            return false;
+							                        }
+							                    }
+											}
+										</script>
+									</div>
+								</div>
+							</div>
+							<script type="text/javascript">
+							$("#kdlxbh").bind("change", function(){  
+			            		var kdlxbh = this.value;
+			            		
+			            		if("06"==kdlxbh){
+			            			$("#fangxinlyDiv").show();
+			            		}else{
+			            			$("#dpfl").val("");
+			            			$("#ygrs").val("");
+			            			$("#jyfw").val("");
+			            			$("#fangxinlyDiv").hide();  
+			            		}
+			            		});
+							</script>
+							<div class="row" id="fangxinlyDiv" ${obj.kdlxbh!="06"?"style='display:none;'"}>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="dpfl">店铺分类:</label>
+										<select id="dpfl" name="dpfl" class="form-control">
+											<option value="" >请选择</option>
+											<option value="0" ${obj.dpfl=="0"?" selected"}>柜台</option>
+											<option value="1" ${obj.dpfl=="1"?" selected"}>店铺</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="ygrs">员工人数:</label>
+										<input id="ygrs" name="ygrs" class="form-control" placeholder="员工人数" value="${obj.ygrs}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="jyfw">经营范围:</label>
+										<input id="jyfw" name="jyfw" class="form-control" placeholder="经营范围" value="${obj.jyfw}" >
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="yzbm">邮政编码:</label>
+										<input id="yzbm" name="yzbm" class="form-control" placeholder="邮政编码" value="${obj.yzbm}" onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xxdz">详细地址:</label>
+										<input id="xxdz" name="xxdz" class="form-control" placeholder="详细地址" value="${obj.xxdz}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="xgsj">修改时间:</label>
+										<input id="xgsj" name="xgsj" class="form-control" placeholder="修改时间" value="${obj.xgsj}" readonly="readonly">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tbr">填报人:</label>
+										<input id="tbr" name="tbr" class="form-control" placeholder="填报人" value="${obj.tbr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="shr">审核人:</label>
+										<input id="shr" name="shr" class="form-control" placeholder="审核人" value="${obj.shr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tbsj"><font color="red" style="font-size:large;">*</font>填报时间:</label>
+										<input id="tbsj" name="tbsj" class="form-control" placeholder="填报时间" value="${obj.tbsj}" readonly="readonly">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+									<label for="xgsj">库点简介:</label>
+										<div id="titleeditor">
+										    <script id="textcontent" name="textcontent" type="text/plain"  style="width:100%;height:400px;">
+    										</script>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+                 	 </div>
+                </div>
+                <div class="widget">
+						<div class="widget-header">
+							<div class="title">库点设备信息</div>
+						</div>
+						<div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zhaopeng">罩棚(平方米):</label> <input id="zhaopeng" name="zhaopeng"
+											class="form-control" placeholder="罩棚(平方米)" value="${obj.zhaopeng}"
+											onKeyPress="if (event.keyCode!=46 && event.keyCode!=45&&(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="jixiezhaopeng">机械罩棚(平方米):</label> 
+										<input id="jixiezhaopeng" name="jixiezhaopeng"
+											class="form-control" placeholder="机械罩棚(平方米)" value="${obj.jixiezhaopeng}"
+											onKeyPress="if (event.keyCode!=46 && event.keyCode!=45&&(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="jhyshi">检化验室(平方米):</label> 
+										<input id="jhyshi" name="jhyshi"
+											class="form-control" placeholder="检化验室(平方米)" value="${obj.jhyshi}"
+											onKeyPress="if (event.keyCode!=46 && event.keyCode!=45&&(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="yaojiku">药剂库(平方米):</label> <input id="yaojiku" name="yaojiku"
+											class="form-control" placeholder="药剂库(平方米)" value="${obj.yaojiku}"
+											onKeyPress="if (event.keyCode!=46 && event.keyCode!=45&&(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="xiaofangshuichi">消防水池(平方米):</label> 
+										<input id="xiaofangshuichi" name="xiaofangshuichi"
+											class="form-control" placeholder="消防水池(平方米)" value="${obj.xiaofangshuichi}"
+											onKeyPress="if (event.keyCode!=46 && event.keyCode!=45&&(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+									</div>
+								</div>
+							</div>
+						</div>
+						<script>
+							/* $(function(){
+								if($("#zhaopeng").val()!=""){
+									var zhaopeng=$("#zhaopeng").val();
+									$("#zhaopeng").val((zhaopeng*1000/1000).toFixed(2));
+								}
+								if($("#jixiezhaopeng").val()!=""){
+									var jixiezhaopeng=$("#jixiezhaopeng").val();
+									$("#jixiezhaopeng").val((jixiezhaopeng*1000/1000).toFixed(2));
+								}
+								if($("#jhyshi").val()!=""){
+									var jhyshi=$("#jhyshi").val();
+									$("#jhyshi").val((jhyshi*1000/1000).toFixed(2));
+								}
+								if($("#yaojiku").val()!=""){
+									var yaojiku=$("#yaojiku").val();
+									$("#yaojiku").val((yaojiku*1000/1000).toFixed(2));
+								}
+								if($("#xiaofangshuichi").val()!=""){
+									var xiaofangshuichi=$("#xiaofangshuichi").val();
+									$("#xiaofangshuichi").val((xiaofangshuichi*1000/1000).toFixed(2));
+								}
+								
+							}); */
+						</script>
+					</div>
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业库区基本信息                                        
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+	                 		<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zdmj">占地面积(平方米):</label>
+										<input id="zdmj" name="zdmj" class="form-control" placeholder="占地面积(平方米)" 
+										onKeyPress="if (event.keyCode!=46 && event.keyCode!=45&&(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+									</div>
+									<script type="text/javascript">
+										$(function(){
+											var zhaopeng="${obj.zhaopeng}";
+											if(zhaopeng!=null&&zhaopeng!=""){
+												$("#zhaopeng").val(parseFloat(zhaopeng).toFixed(2));
+											}
+											var jixiezhaopeng="${obj.jixiezhaopeng}";
+											if(jixiezhaopeng!=null&&jixiezhaopeng!=""){
+												$("#jixiezhaopeng").val(parseFloat(jixiezhaopeng).toFixed(2));
+											}
+											var jhyshi="${obj.jhyshi}";
+											if(jhyshi!=null&&jhyshi!=""){
+												$("#jhyshi").val(parseFloat(jhyshi).toFixed(2));
+											}
+											
+											var yaojiku="${obj.yaojiku}";
+											if(yaojiku!=null&&yaojiku!=""){
+												$("#yaojiku").val(parseFloat(yaojiku).toFixed(2));
+											}
+											
+											var xiaofangshuichi="${obj.xiaofangshuichi}";
+											if(xiaofangshuichi!=null&&xiaofangshuichi!=""){
+												$("#xiaofangshuichi").val(parseFloat(xiaofangshuichi).toFixed(2));
+											}
+											var zdmj="${obj.zdmj}";
+											if(zdmj!=null&&zdmj!=""){
+												$("#zdmj").val(parseFloat(zdmj).toFixed(2));
+											}
+											var tdxz_hb="${obj.tdxz_hb}";
+											if(tdxz_hb!=null&&tdxz_hb!=""){
+												$("#tdxz_hb").val(parseFloat(tdxz_hb).toFixed(2));
+											}
+											var cfzcr="${obj.cfzcr}";
+											if(cfzcr!=null&&cfzcr!=""){
+												$("#cfzcr").val(parseFloat(cfzcr).toFixed(3));
+											}
+											var ygzcr="${obj.ygzcr}";
+											if(ygzcr!=null&&ygzcr!=""){
+												$("#ygzcr").val(parseFloat(ygzcr).toFixed(3));
+											}
+											var dp="${obj.dp}";
+											if(dp!=null&&dp!=""){
+												$("#dp").val(parseFloat(dp).toFixed(2));
+											}
+											var synx="${obj.synx}";
+											if(synx!=null&&synx!=""){
+												$("#synx").val(parseFloat(synx).toFixed(0));
+											}
+											var tlzyx="${obj.tlzyx}";
+											if(tlzyx!=null&&tlzyx!=""){
+												$("#tlzyx").val(parseFloat(tlzyx).toFixed(0));
+											}
+										})
+									</script>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tdxz_hb">土地性质_划拨(平方米):</label>
+										<input id="tdxz_hb" name="tdxz_hb" class="form-control" placeholder="土地性质_划拨" value="${obj.tdxz_hb}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="kqh">库区数:</label>
+										<input id="kqh" name="kqh" class="form-control" placeholder="库区数" value="${obj.kqh}" onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="cfzcr"><font color="red" style="font-size:large;">*</font>仓房总仓容<font color="red">(吨)</font>:</label>
+										<input id="cfzcr" name="cfzcr" class="form-control" placeholder="仓房总仓容(吨)" value="${obj.cfzcr}"
+										onKeyPress="if (event.keyCode!=46 && event.keyCode!=45&&(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="ygzcr">油罐总罐容(吨):</label>
+										<input id="ygzcr" name="ygzcr" class="form-control" placeholder="油罐总罐容(吨)" value="${obj.ygzcr}" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" >
+									</div>
+								</div>
+								<div class="col-xs-4">
+										<div class="form-group">
+											<label for="tlzyx">铁路专用线:</label>
+											<input id="tlzyx" name="tlzyx" class="form-control" placeholder="铁路专用线" value="${obj.tlzyx}" >
+										</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="zymt">专用码头:</label>
+										<input id="zymt" name="zymt" class="form-control" placeholder="专用码头" value="${obj.zymt}" onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dp">地坪(平方米):</label>
+										<input id="dp" name="dp" class="form-control" placeholder="地坪(平方米)" value="${obj.dp}" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" >
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="synx">使用年限:</label>
+										<input id="synx" name="synx" class="form-control" placeholder="使用年限" value="${obj.synx}" onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="hgnl">烘干能力(吨/日):</label>
+										<input id="hgnl" name="hgnl" class="form-control" placeholder="烘干能力(吨/日)" value="${obj.hgnl}" onkeyup="value=value.replace(/[^\d.]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d.]/g,''))">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="gwlqj">谷物冷却机:</label>
+										<select id="gwlqj" name="gwlqj" class="form-control">
+											<option value="1" ${obj.gwlqj=="1"?" selected"}>有</option>
+											<option value="0" ${obj.gwlqj=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="ywglxt_y"><font color="red" style="font-size:large;">*</font>业务管理系统:</label>
+										<select id="ywglxt_y" name="ywglxt_y" class="form-control">
+											<option value="1" ${obj.ywglxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.ywglxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="ccbgxt_y"><font color="red" style="font-size:large;">*</font>仓储保管系统:</label>
+										<select id="ccbgxt_y" name="ccbgxt_y" class="form-control">
+											<option value="1" ${obj.ccbgxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.ccbgxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="zdhzyxt_y"><font color="red" style="font-size:large;">*</font>自动化作业系统:</label>
+										<select id="zdhzyxt_y" name="zdhzyxt_y" class="form-control">
+											<option value="1" ${obj.zdhzyxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.zdhzyxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="ycjgxt_y"><font color="red" style="font-size:large;">*</font>远程监管系统:</label>
+										<select id="ycjgxt_y" name="ycjgxt_y" class="form-control">
+											<option value="1" ${obj.ycjgxt_y=="1"?" selected"}>有</option>
+											<option value="0" ${obj.ycjgxt_y=="0"?" selected"}>无</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="isksh"><font color="red" style="font-size:large;">*</font>是否可视化库:</label>
+										<select id="isksh" name="isksh" class="form-control">
+											<option value="1" ${obj.isksh=="1"?" selected"}>是</option>
+											<option value="0" ${obj.isksh=="0"?" selected"}>否</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="isznh"><font color="red" style="font-size:large;">*</font>是否智能化库:</label>
+										<select id="isznh" name="isznh" class="form-control">
+											<option value="1" ${obj.isznh=="1"?" selected"}>是</option>
+											<option value="0" ${obj.isznh=="0"?" selected"}>否</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="isscxt"><font color="red" style="font-size:large;">*</font>是否有收储系统:</label>
+										<select id="isscxt" name="isscxt" class="form-control">
+											<option value="1" ${obj.isscxt=="1"?" selected"}>是</option>
+											<option value="0" ${obj.isscxt=="0"?" selected"}>否</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+                  	</div>
+                  	
+				<div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	库点位置信息                                      
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qyjd">库点经度:</label><a class="btn btn-success btn-xs" type="button" style="margin-left: 5px" onclick="huoqujwdu()">获取经纬度</a> 
+										<input id="qyjd" name="qyjd" class="form-control" placeholder="库点经度" value="${obj.qyjd}" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qywd">库点纬度:</label>
+										<input id="qywd" name="qywd" class="form-control" placeholder="库点纬度" value="${obj.qywd}" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="maplevel">显示等级:</label>
+										<input id="maplevel" name="maplevel" class="form-control" placeholder="显示等级" value="${obj.maplevel}" onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+			            		<div class="col-xs-6">
+			            			<div class="form-group">
+			            				<label for="kdsypath">库点示意图:</label>
+						            	<input id="kdsypath" class="kdsypath" name="kdsypath" type="hidden" value="${obj.kdsypath}">
+										<a class="btn btn-sm btn-info"><input class="file_upload_syt " type="file" name="file" /></a>
+										<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+										<div class="imgsyt">
+											<img id="kdsyPic" ${(obj.kdsypath!=null&&obj.kdsypath!='')? 'width="330px" height="180px"'}  src="${(obj.kdsypath!=null&&obj.kdsypath!='')?strutil.startWith(obj.kdsypath,'upload')?ctxPath+'/'+obj.kdsypath:ctxPath+'/upload/'+obj.kdsypath}"/>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-6">
+			            			<div class="form-group">
+			            				<label for="kdqmpath">库点全貌图:</label>
+										<input id="kdqmpath" class="kdqmpath" name="kdqmpath" type="hidden" value="${obj.kdqmpath}">
+										<a class="btn btn-sm btn-info"><input class="file_upload_qmt " type="file" name="file" /></a>
+										<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+										<div class="imgqmt">
+											<img id="kdqmPic" ${(obj.kdqmpath!=null&&obj.kdqmpath!='')? 'width="330px" height="180px"'} src="${(obj.kdqmpath!=null&&obj.kdqmpath!='')?strutil.startWith(obj.kdqmpath,'upload')?ctxPath+'/'+obj.kdqmpath:ctxPath+'/upload/'+obj.kdqmpath}"/>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+                	</div>
+                </div>
+                </form>
+             <div class="panel-footer"  style="overflow:hidden;" align="center" ${parameter.isedit=="1"?" hidden"}>
+				<button type="button" style="display: ${decode(parameter.isedit,'',' none',' block')};" class="btn btn-success float-right" onclick="saveKudian('${obj.ID}')"><em class="fa fa-check fa-fw"></em>保存</button>
+			</div>
+           </div>
+          </div>
+            
+    
+
+<!-- uploadifive所需js和css -->
+<script src="${ctxPath}/resource/jquery.uploadifive.min.js"></script>
+<link href="${ctxPath}/resource/uploadifive.css"/>
+
+<script type="text/javascript">
+var ue = UE.getEditor('textcontent');
+
+$(document).ready(function(){  
+	var ue = UE.getEditor('textcontent'); 
+	
+    ue.ready(function() {//编辑器初始化完成再赋值  
+    	if("${parameter.qyzzjgdm}"!=""){
+    		ue.setContent('${obj.textcontent}');
+    	}  
+    });  
+      
+});
+
+
+
+
+$(function() {
+
+	$("#tbsj").datetimepicker({
+		setStartDate : new Date(),
+		format : 'yyyy-mm-dd hh:ii:ss',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+	$("#xgsj").datetimepicker({
+		setStartDate : new Date(),
+		format : 'yyyy-mm-dd hh:ii:ss',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+	
+	
+	/* 库点类型*/
+	$.ajax({
+		url: "${ctxPath}/cangchugl/queryKdlx",
+		dataType: "json",
+		success: function(data) {
+			
+			$.each(data,function(i, n){
+				if(n.kdlxmc=="${obj.kdlxmc}"){
+					$("#kdlxbh").append("<option value="+n.kdlxbh+"  selected>"+n.kdlxmc+"</option>");
+				}else{
+					$("#kdlxbh").append("<option value="+n.kdlxbh+">"+n.kdlxmc+"</option>");
+				}
+			});
+		}
+	});
+	
+	
+});
+
+var dialog10;
+function huoqujwdu(){
+	dialog10=top.BootstrapDialog.show({
+	    title: "获取经纬度",
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0" id="jw"  name="jw" style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="no" src="http://49.65.0.27:8080/ZYGIS4NJPT/idxLocate.jsp?leixin=2&id=${parameter.ID}"/>'),
+	    onshow:function(dlg){
+	    	
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+               //getcookie("xy");
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+	
+	
+}
+function getjwdu(x,y){
+	$("#qyjd").val(x);
+	$("#qywd").val(y);
+}
+
+function changekdlx(){
+	var kdbmmc=$("#kdlxbh").find("option:selected").text();
+	$("#kdlxmc").val(kdbmmc);
+}
+
+
+function saveKudian(ID) {
+	var form = $(".dashboard-wrapper-lg form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+				if(ID!=""){
+						window.parent.frames["ab"].window.frames["if2"].edit();				
+				}else{				
+						window.parent.frames["ab"].window.frames["if2"].add();
+				}
+				
+			}
+		}
+	});
+}
+
+
+$(function(){
+	/* 地区初始化 */
+	$.ajax({
+		url: "${ctxPath}/cangchugl/queryDiqu",
+		dataType: "json",
+		success: function(data) {
+			$.each(data,function(i, n){
+				if(n.quyu=="${parameter.xian}"){
+					//alert(n.xzqhdm);
+					$("#xian").append("<option value="+n.quyu+"  selected>"+n.quyu+"</option>");
+				}else{
+					$("#xian").append("<option value="+n.quyu+">"+n.quyu+"</option>");
+				}
+			});
+		}
+	});
+	
+	
+	/* 行政区划代码初始化 */
+	$.ajax({
+			 url:'${ctxPath}/shouchukeshihua/findquxian',
+			 type:'post',
+			 data:{"name":"${parameter.xian}"},
+			 dataType:'json',
+			 success:function(data){
+				 //alert(data[0].xzqhdm);
+				$("#xzqhdm").val(data[0].xzqhdm);
+			 }
+		});
+	
+	 $('.file_upload_syt').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/cangchugl/scqysyt',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传示意图',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.jpg; *.png',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	    	var url = "${ctxPath}/upload/";
+	  	    	url+=data;
+	  	    	var obimg=document.getElementsByTagName("img")[0];
+	  	    	obimg.setAttribute("src",url);
+	  	    	$("#kdsypath").val("upload/"+data);
+	  	    	$("#kdsyPic").css("width","330px");
+	  	    	$("#kdsyPic").css("height","180px");
+	  	    	
+	  	    	
+    }
+});
+	 
+	 $('.file_upload_qmt').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/cangchugl/scqysyt',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传全貌图',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.jpg; *.png',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	    	var url = "${ctxPath}/upload/";
+	  	    	url+=data;
+	  	    	var obimg=document.getElementsByTagName("img")[1];
+	  	    	obimg.setAttribute("src",url);
+	  	    	$("#kdqmpath").val("upload/"+data);
+	  	    	$("#kdqmPic").css("width","330px");
+	  	    	$("#kdqmPic").css("height","180px");
+ }
+}); 
+});
+</script>
+
+</body>
+</html>

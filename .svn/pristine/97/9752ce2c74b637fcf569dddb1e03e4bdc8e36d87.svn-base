@@ -1,0 +1,235 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>放心粮油库点信息</b></span>
+		</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<div style="float: left;"> 
+						<label>区域:</label>
+						<select id="quyu" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="Changeqymc()">
+							<option value="" selected="true" >请选择</option>	
+						</select>
+				</div> 
+				<div class="div_kudian" style="float: left; margin-left: 20px;">
+					<label>库点名称:</label>
+					<select id="kudian" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" >
+						 <option value="" selected="true" >请选择</option> 	
+					</select>
+				</div>
+					<a class="btn btn-success btn-xs" style="margin-left: 5px;" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div> 
+				<a class="btn btn-success btn-xs pull-right" type="button" onclick="addykgl()"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findFangxinly" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+	
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+		"autoWidth": false,
+        "columns": [
+			
+			{
+				"data" : "sheng",width:40,
+				"title" : "省"
+			},
+			{
+				"data" : "shi",width:40,
+				"title" : "市"
+			},
+			{
+				"data" : "xian",width:40,
+				"title" : "区"
+			},
+			{
+				"data" : "kdmc",width:180,
+				"title" : "库点名称"
+			},
+			{
+				"data" : "xxdz",width:200,
+				"title" : "地址"
+			},
+			{
+				"data" : "lxr",width:40,
+				"title" : "联系人"
+			},
+			{
+				"data" : "lxdh",width:80,
+				"title" : "联系电话"
+			},
+			 {"title":"操作",width:100,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upykgl(\''+row["ID"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delykgl(\''+row["ID"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+			]
+	});
+});
+
+function doSearch(){
+	var quyu = $("#quyu").val();
+	var kudian = $("#kudian").val();
+	document.querySelector('.datatables').dataset.queryparam="&quyu="+quyu+"&kdmc="+kudian;
+	datatable.ajax.reload(null,false);
+}
+ function Changeqymc(){
+
+	$("#kudian").empty();
+	var kd = $("#quyu option:selected").val();
+	
+	//查找库点
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykud.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xzqhdm":kd,"bh":"06"},
+		dataType:'json',
+		success:function(data){
+			
+			 $(".div_kudian").find(".select2-selection__rendered").text("请选择");
+			$(".div_kudian").find(".select2-selection__rendered").attr("title","请选择"); 
+			
+			$("#kudian").append('<option value="">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].kdmc+'>'+data.list[i].kdmc+'</option>';
+			     $("#kudian").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});	
+}  
+
+$(document).ready(function() {
+	  $("#quyu").select2();
+	  $.ajax({
+			 url:'${ctxPath}/shouchukeshihua/findquxian',
+			 type:'post',
+			 dataType:'json',
+			 success:function(data){
+				 $.each(data,function(i, n){
+						$("#quyu").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+					});
+			 },
+			 error:function(){
+				 alert("error");
+			 }
+		  });
+});
+
+
+$(document).ready(function() {
+	  $("#kudian").select2();
+});
+
+function addykgl(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增放心粮油库点信息 ',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0"  src="${ctxPath}/oa/jibenxinxi/fangxinliangyou_add.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1000");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px"); 
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveKudian(); 
+        	   
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+function upykgl(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑放心粮油库点信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/oa/jibenxinxi/fangxinliangyou_add.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveKudian(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function delykgl(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delFangxinliangyou',
+			type:'post',
+			data:{'ID':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+</script>
+<%
+	}
+%>

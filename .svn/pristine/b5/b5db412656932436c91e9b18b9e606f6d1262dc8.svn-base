@@ -1,0 +1,775 @@
+<html><head>
+    <title>码单详情</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- =============== VENDOR STYLES ===============-->
+<!-- FONT AWESOME-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/font-awesome.min.css">
+
+<link href='${ctxPath}/css/jquery.dataTables.min.css'
+	rel='stylesheet'>
+<!-- SIMPLE LINE ICONS-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/simple-line-icons.css">
+<!-- ANIMATE.CSS-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/animate.min.css">
+<!-- WHIRL (spinners)-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/whirl.css">
+<!-- =============== PAGE VENDOR STYLES ===============-->
+<!-- =============== BOOTSTRAP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap.css"
+	id="bscss">
+<!-- =============== APP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/app.css"
+	id="maincss">
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap-slider.min.css">
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<!----------select-------------->
+<link rel="stylesheet"
+	href="${ctxPath}/css/select2.css">
+<link rel="stylesheet"
+	href="${ctxPath}/css/select2-bootstrap.css">
+<script src="${ctxPath}/js/select2.js"></script>
+<script src="${ctxPath}/js/echarts.min.js"></script>
+
+<script src="${ctxPath}/js/bootstrap.min.js"></script>
+<link href="${ctxPath}/css/bootstrap-dialog.min.css" rel="stylesheet">
+<script src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+<!----------select-------------->
+<!---------kindeditor--------->
+	<script src='${ctxPath}/js/kindeditor-all-min.js'></script>
+	<script src='${ctxPath}/js/zh-CN.js'></script>
+	<link rel="stylesheet" href='${ctxPath}/css/default.css'>
+	<link rel="stylesheet" href='${ctxPath}/css/default.css'>
+	<link rel="stylesheet" href='${ctxPath}/css/prettify.css'>
+	<script src='${ctxPath}/js/modal.js'></script>
+	<script src='${ctxPath}/js/transition.js'></script>
+	
+	<link rel="stylesheet" href='${ctxPath}/css/animate.css'>
+<!------ datetimepicker ------>
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap-datetimepicker.min.css">
+<script src="${ctxPath}/js/bootstrap-datetimepicker.min.js"></script>
+<script src="${ctxPath}/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="${ctxPath}/js/bootstrap-datetimepicker.fr.js"></script>
+<!------ datetimepicker ------>
+<!-- =============== VENDOR SCRIPTS ===============-->
+	<!-- MODERNIZR-->
+	<script
+		src="${ctxPath}/js/modernizr.custom.js"></script>
+	<!-- MATCHMEDIA POLYFILL-->
+	<script
+		src="${ctxPath}/js/matchMedia.js"></script>
+	
+	<!-- BOOTSTRAP-->
+	<script
+		src="${ctxPath}/js/bootstrap.js"></script>
+	<script
+		src="${ctxPath}/js/bootstrap-slider.min.js"></script>
+	<!--highchart  -->
+	<script src="${ctxPath}/js/highcharts.js"></script>
+	<!--echart -->
+	<script src="${ctxPath}/js/echarts.min.js"></script>
+	<!--flot  -->
+	<script
+		src="${ctxPath}/js/jquery.flot.js"></script>
+	<script
+		src="${ctxPath}/js/jquery.flot.tooltip.min.js"></script>
+	<script
+		src="${ctxPath}/js/jquery.flot.resize.js"></script>
+	<script
+		src="${ctxPath}/js/jquery.flot.pie.js"></script>
+	<script
+		src="${ctxPath}/js/jquery.flot.time.js"></script>
+	<script
+		src="${ctxPath}/js/jquery.flot.categories.js"></script>
+	<script
+		src="${ctxPath}/js/jquery.flot.spline.min.js"></script>
+
+	<!-- STORAGE API-->
+	<script
+		src="${ctxPath}/js/jquery.storageapi.js"></script>
+	<!-- JQUERY EASING-->
+	<script
+		src="${ctxPath}/js/jquery.easing.js"></script>
+	<!-- ANIMO-->
+	<script
+		src="${ctxPath}/js/animo.js"></script>
+	<!-- SLIMSCROLL-->
+	<script
+		src="${ctxPath}/js/jquery.slimscroll.min.js"></script>
+	<!-- SCREENFULL-->
+	<script
+		src="${ctxPath}/js/screenfull.js"></script>
+	<!-- LOCALIZE-->
+	<script
+		src="${ctxPath}/js/jquery.localize.js"></script>
+	<!-- RTL demo-->
+	<script
+		src="${ctxPath}/js/demo-rtl.js"></script>
+	<!-- =============== PAGE VENDOR SCRIPTS ===============-->
+	<!-- =============== APP SCRIPTS ===============-->
+	<script
+		src="${ctxPath}/js/app.js"></script>
+
+	<!----------dataTables-------------->
+	<script src="${ctxPath}/js/jquery.dataTables.min.js"></script>
+	<script src='${ctxPath}/js/dataTables.bootstrap.min.js'></script>
+	<!----------dataTables-------------->
+	<script src='${ctxPath}/web/datagrid.js'></script>
+	
+	<!----------dialog-------------->
+	<link href="${ctxPath}/css/bootstrap-dialog.min.css" rel="stylesheet">
+	<script src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+	<!----------dialog-------------->
+	
+	
+	
+	
+	 <style type="text/css">
+    	div{
+    		
+    		float:left;
+    	}
+    	.liucheng{
+    		width:152px;
+    	
+    	}
+    	.biaoge{
+    		width:980px;
+    		margin-bottom:20px;
+    	}
+    	#base{
+    	 	width:1000px;
+    	 	height:600px;
+    	 	overflow :auto;
+    	}
+    	#mingxixinxi{
+    		height:30px;
+			background:green;
+			color:white;
+			vertical-align:middle;
+			font-size:18px;
+			width:900px;
+			padding-left:10px;
+			margin-left:30px;
+    	}
+    	.x-table{
+    		margin-left:30px;
+    	}
+    	.x-table tr {
+    		height:35px;
+    	}
+    	
+    	.x-table tr td{
+    		border:1px solid;
+
+    	}
+    	
+    
+    </style>
+  
+  
+    <script type="text/javascript">
+    var datatable;
+    /*
+    function DX(n) {
+        if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(n))
+          return "数据非法";
+        var unit = "仟佰拾亿仟佰拾万仟佰拾元角分", newchar = "";
+          n += "00";
+        var p = n.indexOf('.');
+        if (p >= 0)
+          n = n.substring(0, p) + n.substr(p+1, 2);
+          unit = unit.substr(unit.length - n.length);
+        for (var i=0; i < n.length; i++)
+        	newchar += '零壹贰叁肆伍陆柒捌玖'.charAt(n.charAt(i)) + unit.charAt(i);
+        newchar.replace(/零(千|百|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万|壹(拾)/g, "$1$2").replace(/^元零?|零分/g, "").replace(/元$/g, "元整");
+        
+        while (newchar.search("零零") != -1 || newchar.search("零亿") != -1 || newchar.search("亿万") != -1 || 
+        		newchar.search("零万") != -1 || newchar.search("零仟") != -1 || newchar.search("零佰") != -1 || 
+        		newchar.search("零拾") != -1 || newchar.search("零元") != -1 || newchar.search("零角") != -1 || newchar.search("零分") != -1) {
+            newchar = newchar.replace("零亿", "亿");
+            newchar = newchar.replace("亿万", "亿");
+            newchar = newchar.replace("零万", "万");
+            newchar = newchar.replace("零零", "零");
+            newchar = newchar.replace("零仟", ""); 
+            newchar = newchar.replace("零佰", ""); 
+            newchar = newchar.replace("零拾", ""); 
+            newchar = newchar.replace("零元", "元"); 
+            newchar = newchar.replace("零角", ""); 
+            newchar = newchar.replace("零分", "");
+        }
+        //替换以“一十”开头的，为“十”
+        if (newchar.indexOf("壹拾") == 0) {
+            newchar = newchar.substr(1);
+        }
+        //替换以“零”结尾的，为“”
+        if (newchar.lastIndexOf("零") == newchar.length - 1) {
+            newchar = newchar.substr(0, newchar.length - 1);
+        }
+        
+        return newchar;
+    }
+    */
+    
+    function RX(n) {
+        if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(n))
+          return "数据非法";
+        var unit = "仟佰拾亿仟佰拾万仟佰拾 ", str = "";
+          n += "";
+        var p = n.indexOf('.');
+        if (p >= 0)
+          n = n.substring(0, p) + n.substr(p+1, 2);
+          unit = unit.substr(unit.length - n.length);
+        for (var i=0; i < n.length; i++)
+          str += '零壹贰叁肆伍陆柒捌玖'.charAt(n.charAt(i)) + unit.charAt(i);
+        return str.replace(/零(千|百|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万|壹(拾)/g, "$1$2").replace(/^元零?|零分/g, "").replace(/元$/g, "元整");
+    }
+    
+    function DX(Num) {
+        for (i = Num.length - 1; i >= 0; i--) {
+            Num = Num.replace(",", "")//替换Num中的“,”
+            Num = Num.replace(" ", "")//替换Num中的空格
+        }    
+        if (isNaN(Num)) { //验证输入的字符是否为数字
+            //alert("请检查小写金额是否正确");
+            return;
+        }
+        //字符处理完毕后开始转换，采用前后两部分分别转换
+        part = String(Num).split(".");
+        newchar = "";
+        //小数点前进行转化
+        for (i = part[0].length - 1; i >= 0; i--) {
+            if (part[0].length > 10) {
+                //alert("位数过大，无法计算");
+                return "";
+            }//若数量超过拾亿单位，提示
+            tmpnewchar = ""
+            perchar = part[0].charAt(i);
+            switch (perchar) {
+                case "0":  tmpnewchar = "零" + tmpnewchar;break;
+                case "1": tmpnewchar = "壹" + tmpnewchar; break;
+                case "2": tmpnewchar = "贰" + tmpnewchar; break;
+                case "3": tmpnewchar = "叁" + tmpnewchar; break;
+                case "4": tmpnewchar = "肆" + tmpnewchar; break;
+                case "5": tmpnewchar = "伍" + tmpnewchar; break;
+                case "6": tmpnewchar = "陆" + tmpnewchar; break;
+                case "7": tmpnewchar = "柒" + tmpnewchar; break;
+                case "8": tmpnewchar = "捌" + tmpnewchar; break;
+                case "9": tmpnewchar = "玖" + tmpnewchar; break;
+            }
+            switch (part[0].length - i - 1) {
+                case 0: tmpnewchar = tmpnewchar; break;
+                case 1: if (perchar != 0) tmpnewchar = tmpnewchar + "拾"; break;
+                case 2: if (perchar != 0) tmpnewchar = tmpnewchar + "佰"; break;
+                case 3: if (perchar != 0) tmpnewchar = tmpnewchar + "仟"; break;
+                case 4: tmpnewchar = tmpnewchar + "万"; break;
+                case 5: if (perchar != 0) tmpnewchar = tmpnewchar + "拾"; break;
+                case 6: if (perchar != 0) tmpnewchar = tmpnewchar + "佰"; break;
+                case 7: if (perchar != 0) tmpnewchar = tmpnewchar + "仟"; break;
+                case 8: tmpnewchar = tmpnewchar + "亿"; break;
+                case 9: tmpnewchar = tmpnewchar + "拾"; break;
+            }
+            newchar = tmpnewchar + newchar;
+        }
+
+        
+        //替换所有无用汉字，直到没有此类无用的数字为止
+        while (newchar.search("零零") != -1 || newchar.search("零亿") != -1 || newchar.search("亿万") != -1 || newchar.search("零万") != -1) {
+            newchar = newchar.replace("零亿", "亿");
+            newchar = newchar.replace("亿万", "亿");
+            newchar = newchar.replace("零万", "万");
+            newchar = newchar.replace("零零", "零");      
+        }
+        //替换以“一十”开头的，为“十”
+        if (newchar.indexOf("壹拾") == 0) {
+            newchar = newchar.substr(1);
+        }
+        //替换以“零”结尾的，为“”
+        if (newchar.lastIndexOf("零") == newchar.length - 1) {
+            newchar = newchar.substr(0, newchar.length - 1);
+        }
+        newchar += "元";
+        
+        if(part[1].length >=1 ){
+        	for (i = part[1].length - 1; i >= part[1].length - 2 && i >= 0; i--) {
+        		var perchar = part[1].charAt(i);
+        		switch (perchar) {
+	                case "0":  perchar = "零";break;
+	                case "1": perchar = "壹"; break;
+	                case "2": perchar = "贰"; break;
+	                case "3": perchar = "叁"; break;
+	                case "4": perchar = "肆"; break;
+	                case "5": perchar = "伍"; break;
+	                case "6": perchar = "陆"; break;
+	                case "7": perchar = "柒"; break;
+	                case "8": perchar = "捌"; break;
+	                case "9": perchar = "玖"; break;
+	            }
+        		if(i == part[1].length - 1){
+        			if(perchar != "零" ){
+                		newchar += perchar+"角"; 
+                	}
+        		}else{
+        			if(perchar != "零" ){
+                		newchar += perchar+"分"; 
+                	}
+        		}
+            	
+            }
+        }
+        
+        
+        return newchar;
+    }
+    
+    function Arabia_To_SimplifiedChinese(Num) {
+        for (i = Num.length - 1; i >= 0; i--) {
+            Num = Num.replace(",", "")//替换Num中的“,”
+            Num = Num.replace(" ", "")//替换Num中的空格
+        }    
+        if (isNaN(Num)) { //验证输入的字符是否为数字
+            //alert("请检查小写金额是否正确");
+            return;
+        }
+        //字符处理完毕后开始转换，采用前后两部分分别转换
+        part = String(Num).split(".");
+        newchar = "";
+        //小数点前进行转化
+        for (i = part[0].length - 1; i >= 0; i--) {
+            if (part[0].length > 10) {
+                //alert("位数过大，无法计算");
+                return "";
+            }//若数量超过拾亿单位，提示
+            tmpnewchar = ""
+            perchar = part[0].charAt(i);
+            switch (perchar) {
+                case "0":  tmpnewchar = "零" + tmpnewchar;break;
+                case "1": tmpnewchar = "壹" + tmpnewchar; break;
+                case "2": tmpnewchar = "贰" + tmpnewchar; break;
+                case "3": tmpnewchar = "叁" + tmpnewchar; break;
+                case "4": tmpnewchar = "肆" + tmpnewchar; break;
+                case "5": tmpnewchar = "伍" + tmpnewchar; break;
+                case "6": tmpnewchar = "陆" + tmpnewchar; break;
+                case "7": tmpnewchar = "柒" + tmpnewchar; break;
+                case "8": tmpnewchar = "捌" + tmpnewchar; break;
+                case "9": tmpnewchar = "玖" + tmpnewchar; break;
+            }
+            switch (part[0].length - i - 1) {
+                case 0: tmpnewchar = tmpnewchar; break;
+                case 1: if (perchar != 0) tmpnewchar = tmpnewchar + "拾"; break;
+                case 2: if (perchar != 0) tmpnewchar = tmpnewchar + "佰"; break;
+                case 3: if (perchar != 0) tmpnewchar = tmpnewchar + "仟"; break;
+                case 4: tmpnewchar = tmpnewchar + "万"; break;
+                case 5: if (perchar != 0) tmpnewchar = tmpnewchar + "拾"; break;
+                case 6: if (perchar != 0) tmpnewchar = tmpnewchar + "佰"; break;
+                case 7: if (perchar != 0) tmpnewchar = tmpnewchar + "仟"; break;
+                case 8: tmpnewchar = tmpnewchar + "亿"; break;
+                case 9: tmpnewchar = tmpnewchar + "拾"; break;
+            }
+            newchar = tmpnewchar + newchar;
+        }   
+        //替换所有无用汉字，直到没有此类无用的数字为止
+        while (newchar.search("零零") != -1 || newchar.search("零亿") != -1 || newchar.search("亿万") != -1 || newchar.search("零万") != -1) {
+            newchar = newchar.replace("零亿", "亿");
+            newchar = newchar.replace("亿万", "亿");
+            newchar = newchar.replace("零万", "万");
+            newchar = newchar.replace("零零", "零");      
+        }
+        //替换以“一十”开头的，为“十”
+        if (newchar.indexOf("壹拾") == 0) {
+            newchar = newchar.substr(1);
+        }
+        //替换以“零”结尾的，为“”
+        if (newchar.lastIndexOf("零") == newchar.length - 1) {
+            newchar = newchar.substr(0, newchar.length - 1);
+        }
+        return newchar;
+    }
+    
+    
+    (function ($) {
+    	
+	      $.getUrlParam = function (name) {
+	            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+	            var r = decodeURI(window.location.search).substr(1).match(reg);
+	            if (r != null) return unescape(r[2]); return null;
+	        }
+	      
+      })(jQuery);
+    
+    $(function(){
+
+    	datatable = $('.datatables').DataTable({
+    		"pageLength": 5,
+    		"lengthMenu": [
+    		       		[5,10,15,20,25],
+    		       		[5,10,15,20, "所有"]
+    		       	],
+            "columns": [
+				{
+					"title" : "流水号",
+					"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+'>'+row["vSwiftNumber"]+'</a>';								
+					return chakan;								
+					}
+				},{
+    				"data" : "dtRegistrateTime",
+    				"title" : "日期"
+    			},{
+    				"data" : "vViechelNumber",
+    				"title" : "车船号"
+    			},{
+    				"data" : "vGrainSubTypeCode",
+    				"title" : "粮食品种"
+    			},{
+    				"data" : "vGrainPropertyId",
+    				"title" : "粮食性质"
+    			},{
+    				"data" : "dmCheckWeight",
+    				"title" : "数量"
+    			},{
+    				"data" : "vHarvestPeriod",
+    				"title" : "年限"
+    			},{
+    				"data" : "vGrainLevel",
+    				"title" : "等级"
+    			},{
+    				"data" : "vWareHouseCode",
+    				"title" : "仓房号"
+    			},{
+    				"data" : "bCheckState",
+    				"title" : "业务状态"
+    			}
+    			]
+    	});
+    	
+    	var vSwiftNumber = $.getUrlParam("vSwiftNumber");
+    	var qyzzjgdm = $.getUrlParam("qyzzjgdm");
+    	var kdbm = $.getUrlParam("kdbm");
+    	var kdmc = decodeURI($.getUrlParam("kdmc"));
+    	var direction = decodeURI($.getUrlParam("vDirection"));
+    	$.ajax({
+    		url:'${ctxPath}/shouchukeshihua/findpurchase',
+    		type:'post',
+    		data:{"vSwiftNumber":vSwiftNumber,"qyzzjgdm":qyzzjgdm,"kdbm":kdbm},
+    		dataType:'json',
+    		success:function(data){
+    			if(direction=="入库"||direction=="收购"){	
+    				$("#E1-0-0").find("h3").text("粮食入库检斤结算单");
+    			}else if(direction=="出库"||direction=="出库损耗"){
+    				$("#E1-0-0").find("h3").text("粮食出库检斤结算单");
+  				
+    			}
+    			//售粮单位
+    			$("#C4-0-0").text(data.vDispatchCompany != null? data.vDispatchCompany : "" );
+    			//收粮单位
+    			$("#G4-0-0").text(kdmc);
+    			$("#D3-0-0").text(kdmc);
+    			//车号
+    			$("#J4-0-0").text(data.vViechelNumber != null? data.vViechelNumber : "");
+    			//品名
+    			$("#C5-0-0").text(data.name != null? data.name : "");
+    			//性质
+    			$("#E5-0-0").text(data.gp != null? data.gp : "");
+    			//年度
+    			$("#C8-0-0").text(data.vGrainLevel != null? data.vGrainLevel : "");
+    			//仓号
+    			$("#J5-0-0").text(data.vWareHouseCode != null? data.vWareHouseCode : "");
+    			//容重
+    			$("#D6-0-0").text(data.dmOriginalGamma != null? data.dmOriginalGamma : "");
+    			//水分
+    			$("#F6-0-0").text(data.dmOriginalMoisture != null? data.dmOriginalMoisture+"%" : "");
+    			//杂质
+    			$("#H6-0-0").text(data.dmOriginalImpurity != null? data.dmOriginalImpurity+"%" : "");
+    			//硬度指数
+    			$("#J6-0-0").text(data.dmHardness != null? data.dmHardness : "");
+    			//不完善粒
+    			$("#D7-0-0").text(data.dmOriginalUnsoundKernel != null? data.dmOriginalUnsoundKernel+"%" : "");
+    			//出糙率
+    			$("#F7-0-0").text(data.dmOriginalBRRatio != null? data.dmOriginalBRRatio+"%" : "");
+    			//整精米粒
+    			$("#H7-0-0").text(data.dmOriginalMilledRice != null? data.dmOriginalMilledRice+"%" : "");
+    			//色泽气味
+    			$("#J7-0-0").text(data.dmOriginalOdor != null? data.dmOriginalOdor : "");
+    			//等级
+    			$("#G5-0-0").text(data.vHarvestPeriod != null? data.vHarvestPeriod : "");
+    			//毛重
+    			$("#E8-0-0").text(data.dmGW != null? Math.abs(parseInt(data.dmGW)) : "");
+    			//皮重
+    			$("#G8-0-0").text(data.dmPW != null? Math.abs(parseInt(data.dmPW)) : "");
+    			//净重
+    			$("#J8-0-0").text(data.dmNW != null? Math.abs(parseInt(data.dmNW)) : "");
+    			//单价
+    			$("#C9-0-0").text(data.dmPrice != null? data.dmPrice : "");
+    			//水分扣重
+    			$("#G9-0-0").text(data.dmMoisture != null? Math.abs(parseInt(data.dmMoisture)) : "");
+    			//杂质扣重
+    			$("#J9-0-0").text(data.dmImpurity != null? Math.abs(parseInt(data.dmImpurity)) : "");
+    			//流水号
+    			$("#C12-0-0").text("流水号： "+data.vSwiftNumber);
+    			//结算数量
+    			$("#D10-0-0").text(Arabia_To_SimplifiedChinese(Math.abs(parseInt(data.dmCheckWeight))));
+    			$("#J10-0-0").text(Math.abs(parseInt(data.dmCheckWeight)));
+    			//实付金额
+    			$("#D11-0-0").text(DX((Math.abs(data.dmCheckWeight) * data.dmPrice).toFixed(2)));
+    			$("#J11-0-0").text((Math.abs(data.dmCheckWeight) * data.dmPrice).toFixed(2));
+    			//检验员
+    			$("#C13-0-0").text();
+    			//检斤员
+    			$("#E13-0-0").text();
+    			//保管员
+    			$("#G13-0-0").text();
+    			//结算员
+    			$("#I13-0-0").text();
+    			//客户
+    			$("#J13-0-0").text("客户:");
+    			
+    		},
+    		error:function(){
+    			alert("加载码单失败");
+    		}
+    	});
+    	
+    	
+    	
+    });
+
+    
+
+    </script>
+  </head>
+  <body>
+    <div id="base" class="">
+    
+
+	<!-- Unnamed (表格) -->
+    <div id="u1137" class="biaoge">
+    	
+    	 
+    	 <table class="x-table" style="width:920px;table-layout:fixed;text-align:center" id="0" >
+
+	    	 <tbody>
+	    	 	<tr style="" id="r-0-0" >
+	    	 		
+	    	 		<td class="fh bw pl2 b0" id="B1-0-0" ></td>
+	    	 		<td class="fh bw pl2 b0" id="C1-0-0" ></td>
+	    	 		<td class="fh bw pl2 b0" id="D1-0-0" ></td>
+	    	 		<td class="fh bw f18-0 pl2 b0" id="E1-0-0"  colspan="3" rowspan="2"  ><h3>粮食出库检斤结算单</h3></td>
+	    	 		<td class="fh bw pl2 b0" id="H1-0-0" ></td>
+	    	 		<td class="fh bw pl2 b0" id="I1-0-0"  ></td>
+	    	 		<td class="fh bw pl2 b0" id="J1-0-0" ></td>
+	 
+	    	 	</tr>
+	    	 	<tr style="" id="r-1-0" >
+	    	 	
+	    	 		<td class="fh bw pl2 b0" id="B2-0-0"  ></td>
+	    	 		<td class="fh bw pl2 b0" id="C2-0-0"  ></td>
+	    	 		<td class="fh bw pl2 b0" id="D2-0-0"  ></td>
+	    	 		<td class="fh bw pl2 b0" id="H2-0-0"  ></td>
+	    	 		<td class="fh bw pl2 b0" id="I2-0-0"  ></td>
+	    	 		<td class="fh bw pl2 b0" id="J2-0-0"  ></td>
+	    
+	    	 	</tr>
+	    	 	<tr style="" id="r-2-0" >
+	    	
+	    	 		<td class="fh bw f11-0 pl2 br0 bbw2 bbss bbcb bl0 bt0" id="B3-0-0"   colspan="1" style="text-align: left" >填写单位:</td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bbw2 bbss bbcb bl0 bt0" id="D3-0-0" 	colspan="5" style="text-align: left"></td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bbw2 bbss bbcb bl0 bt0" id="E3-0-0" colspan="1" ></td>
+	    	 	
+	    	 		<td class="fh bw f11-0 pl2 br0 bbw2 bbss bbcb bl0 bt0" id="I3-0-0" colspan="2" >单位:公斤,元</td>
+	
+	    	 	</tr>
+	    	 	<tr style="" id="r-3-0" >
+	    	 		<td class="" id="B4-0-0">售粮单位</td>
+	    	 		<td class="" id="C4-0-0"  colspan="3" ></td>
+	    	 		<td class="" id="F4-0-0"  >收粮单位</td>
+	    	 		<td class="" id="G4-0-0"  colspan="2" ></td>
+	    	 		<td class="" id="I4-0-0" >车 &nbsp; 号</td>
+	    	 		<td class="" id="J4-0-0"  ></td>
+	    	 	</tr>
+	    	 	<tr style="" id="r-4-0">
+	    	 	
+	    	 		<td class="" id="B5-0-0"   >品 &nbsp; 名</td>
+	    	 		<td class="" id="C5-0-0"  colspan="" ></td>
+	    	 		<td class="" id="D5-0-0"   >性 &nbsp; 质</td>
+	    	 		<td class="" id="E5-0-0"  colspan="" ></td>
+	    	 		<td class="" id="F5-0-0"  >年 &nbsp; 度</td>
+	    	 		<td class="" id="G5-0-0"  colspan="2" ></td>
+	    	 		<td class="" id="I5-0-0" >仓 &nbsp; 号</td>
+	    	 		<td class="" id="J5-0-0"  ></td>
+	    	 	
+	    	 	</tr>
+	    	 	<tr style="" id="r-5-0" >
+	   
+	    	 		<td class="" id="B6-0-0" rowspan="2" >检验结果</td>
+	    	 		<td class="" id="C6-0-0"   >容重(g/l)</td>
+	    	 		<td class="" id="D6-0-0"  ></td>
+	    	 		<td class="" id="E6-0-0"  >水 &nbsp; 分</td>
+	    	 		<td class="" id="F6-0-0"  ></td>
+	    	 		<td class="" id="G6-0-0"   >杂 &nbsp; 质</td>
+	    	 		<td class="" id="H6-0-0"  ></td>
+	    	 		<td class="" id="I6-0-0" >硬度指数</td>
+	    	 		<td class="" id="J6-0-0"  ></td>
+	    	
+	    	 	</tr>
+	    	 	<tr style="" id="r-6-0" >
+	 
+	    	 		<td class="" id="C7-0-0"   >不完善粒</td>
+	    	 		<td class="" id="D7-0-0"  ></td>
+	    	 		<td class="" id="E7-0-0" >出糙率</td>
+	    	 		<td class="" id="F7-0-0"  ></td>
+	    	 		<td class="" id="G7-0-0"   >整精米粒</td>
+	    	 		<td class="" id="H7-0-0"  ></td>
+	    	 		<td class="" id="I7-0-0"   >色泽气味</td>
+	    	 		<td class="" id="J7-0-0"  ></td>
+	    	
+	    	 	</tr>
+	    	 	<tr style="" id="r-7-0">
+
+	    	 		<td class="" id="B8-0-0"   >等&nbsp;级</td>
+	    	 		<td class="" id="C8-0-0"  colspan="1" ></td>
+	    	 		<td class="" id="D8-0-0"  colspan="1" >毛 &nbsp; 重</td>
+	    	 		<td class="" id="E8-0-0"  colspan="1" ></td>
+	    	 		<td class="" id="F8-0-0"  >皮 &nbsp; 重</td>
+	    	 		<td class="" id="G8-0-0"  colspan="2" ></td>
+	    	 		<td class="" id="I8-0-0" >净 &nbsp; 重</td>
+	    	 		<td class="" id="J8-0-0"  ></td>
+	    
+	    	 	</tr>
+	    	 	<tr style="" id="r-8-0">
+
+	    	 		<td class="" id="B9-0-0"  >单 &nbsp; 价</td>
+	    	 		<td class="" id="C9-0-0"  colspan="3" ></td>
+	    	 		<td class="" id="F9-0-0" >水分扣重</td>
+	    	 		<td class="" id="G9-0-0"  colspan="2" ></td>
+	    	 		<td class="" id="I9-0-0"  >杂质扣量</td>
+	    	 		<td class="" id="J9-0-0"  ></td>
+	    	
+	    	 	</tr>
+	    	 	<tr style="" id="r-9-0">
+
+	    	 		<td class="" id="B10-0-0"  >结算数量</td>
+	    	 		<td class="" id="C10-0-0" >大 &nbsp; 写</td>
+	    	 		<td class="" id="D10-0-0"  colspan="5" ></td>
+	    	 		<td class="" id="I10-0-0"  >小 &nbsp; 写</td>
+	    	 		<td class="" id="J10-0-0"  ></td>
+	    
+	    	 	</tr>
+	    	 	<tr style="" id="r-10-0">
+	
+	    	 		<td class="" id="B11-0-0"  >实付金额</td>
+	    	 		<td class="" id="C11-0-0"  >大 &nbsp; 写</td>
+	    	 		<td class="" id="D11-0-0"  colspan="5" ></td>
+	    	 		<td class="" id="I11-0-0"  >小 &nbsp; 写</td>
+	    	 		<td class="" id="J11-0-0"  ></td>
+	
+	    	 	</tr>
+	    	 	<tr style="" id="r-11-0" >
+	
+	    	 		<td class="" id="B12-0-0"  >备 &nbsp; 注</td>
+	    	 		<td class="" id="C12-0-0"   colspan="8" > &nbsp; 流水号:</td>
+	 
+	    	 	</tr>
+	    	 	<tr style="" id="r-12-0" >
+	
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="B13-0-0"  >检验员:</td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="C13-0-0"  ></td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="D13-0-0" >检斤员:</td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="E13-0-0"  ></td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="F13-0-0"  >保管员:</td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="G13-0-0"  ></td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="H13-0-0"  >结算员:</td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="I13-0-0"  ></td>
+	    	 		<td class="fh bw f11-0 pl2 br0 bb0 bl0 btw2 btss btcb" id="J13-0-0"   >客户:</td>
+	
+	    	 	</tr>
+	    	 </tbody>
+	    	</table>
+	    	 		
+    	
+    	 <!-- =====================================TABLE(END)==================================== -->
+    	<!-- 
+    		<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/querymingxi.do" ></table>
+    	 -->
+    </div>
+    
+    
+    
+    
+    <div id="panelDemo8" class="panel panel-primary" style="width:920px;margin-left:30px">
+        <div class="panel-heading" style="width:100%; margin-bottom:0px">粮食收购过程追踪图</div>
+        <!-- Unnamed (图片) -->
+      <div id="u1125" class="liucheng">
+      	<p>报港及检化验上:</p>
+        <img id="u1125_img" class="" src="${ctxPath}/img/churuku/noImage.jpg" style="width:145px;height:145px">
+        <!-- Unnamed () -->
+        <div id="u1126" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1127" class="liucheng">
+      	<p>称毛重:</p>
+        <img id="u1127_img" class="" src="${ctxPath}/img/churuku/noImage.jpg" style="width:145px;height:145px">
+        <!-- Unnamed () -->
+        <div id="u1128" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1129" class="liucheng">
+      	<p>称毛重:</p>
+        <img id="u1129_img" class="" src="${ctxPath}/img/churuku/noImage.jpg" style="width:145px;height:145px">
+        <!-- Unnamed () -->
+        <div id="u1130" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+      
+      <!-- Unnamed (图片) -->
+      <div id="u1135" class="liucheng">
+      	<p>入库:</p>
+        <img id="u1135_img" class="" src="${ctxPath}/img/churuku/noImage.jpg" style="width:145px;height:145px">
+        <!-- Unnamed () -->
+        <div id="u1136" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1131" class="liucheng">
+      	<p>称皮重:</p>
+        <img id="u1131_img" class="" src="${ctxPath}/img/churuku/noImage.jpg" style="width:145px;height:145px">
+        <!-- Unnamed () -->
+        <div id="u1132" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+      
+      <!-- Unnamed (图片) -->
+      <div id="u1133" class="liucheng">
+      	<p>称皮重:</p>
+        <img id="u1133_img" class="" src="${ctxPath}/img/churuku/noImage.jpg" style="width:145px;height:145px">
+        <!-- Unnamed () -->
+        <div id="u1134" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      
+     </div>
+
+    </div>
+	</body>
+</html>

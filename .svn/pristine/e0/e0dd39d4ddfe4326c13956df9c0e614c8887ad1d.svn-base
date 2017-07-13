@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+</head>
+<%
+	var obj={}, url=ctxPath+"/securityedu/virtualAddOrUpdatePaper",title="新增";
+	if(isNotEmpty(parameter.id)) {
+		debug(parameter.id);
+		obj=@com.zkzy.njzhpt.dao.SecurityEducationDao.findsubjects({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+		debug(parameter.obj);
+		title = "编辑题目";
+	};
+%>
+<style type="text/css">
+.select2-container--default .select2-selection--single{
+	    height: 32px;
+}
+</style>
+<body>
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">试卷信息</div>
+					</div>
+					<div class="widget-body">
+                        <form id="contentform" role="form" action="${url}" method="post">
+                            <div class="row">
+                                <input type="hidden" name="examiner" value="${session.userinfo.user.id}">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="paperName" ><font color="red" style="font-size:large;">*</font>标题:</label>
+                                        <input type="text"  id="paperName" name="paperName" placeholder="标题" style="width: 334px" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="score"><font color="red" style="font-size:large;">*</font>总分:</label>
+                                            <input type="text" onKeypress="return (/[\d.]/.test(String.fromCharCode(event.keyCode)))" id="score" name="score" class="form-control" style="width: 334px"  placeholder="总分" value="100">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="passScore"><font color="red" style="font-size:large;">*</font>及格分:</label>
+                                            <input type="text" onKeypress="return (/[\d.]/.test(String.fromCharCode(event.keyCode)))" id="passScore" name="passScore" style="width: 334px" placeholder="及格分" class="form-control" value="60">
+                                        </div>
+                                </div>
+                            </div>
+                            <!--单选-->
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="score"><font color="red" style="font-size:large;">*</font>单选题数:</label>
+                                        <input type="text" id="singleNums" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" name="singleNums" class="form-control" style="width: 150px" value="10" placeholder="单选题数">
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="singleScore"><font color="red" style="font-size:large;">*</font>每题分数:</label>
+                                        <input type="text" id="singleScore" onKeypress="return (/[\d.]/.test(String.fromCharCode(event.keyCode)))" name="singleScore" class="form-control" style="width: 150px" value="4" placeholder="每题分数">
+                                    </div>
+                                </div>
+                                <span id="showSinglePercent" style="position: absolute;margin-top:30px;">占总分40%</span>
+                            </div>
+                            <!--单选知识点-->
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="singleSelections" ><font color="red" style="font-size:large;">*</font>单选知识点:</label>
+                                         <select id="singleSelections" multiple name="singleSelections" class="form-control input-sm selects select2" style="width:334px;font-size:14px">
+                                            <option value="all" selected>全部</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--多选-->
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="multiNums"><font color="red" style="font-size:large;">*</font>多选题数:</label>
+                                        <input type="text" id="multiNums" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" name="multiNums" class="form-control" value="10" style="width: 150px"  placeholder="多选题数">
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="score"><font color="red" style="font-size:large;">*</font>每题分数:</label>
+                                        <input type="text" id="multiScore" onKeypress="return (/[\d.]/.test(String.fromCharCode(event.keyCode)))" name="multiScore" class="form-control" value="4" style="width: 150px"  placeholder="每题分数">
+                                    </div>
+                                </div>
+                                <span id="showMultiPercent" style="position: absolute;margin-top:30px;">占总分40%</span>
+                            </div>
+                            <!--多选知识点-->
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="multiSelections" ><font color="red" style="font-size:large;">*</font>多选知识点:</label>
+                                        <select id="multiSelections" name="multiSelections" multiple class="form-control input-sm selects select2" style="width:334px;font-size:14px">
+                                            <option value="all" selected>全部</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--判断-->
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="judgeNums"><font color="red" style="font-size:large;">*</font>判断题数:</label>
+                                        <input type="text" id="judgeNums" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" name="judgeNums" class="form-control" value="10" style="width: 150px"  placeholder="判断题数">
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="judgeScore"><font color="red" style="font-size:large;">*</font>每题分数:</label>
+                                        <input type="text" id="judgeScore" onKeypress="return (/[\d.]/.test(String.fromCharCode(event.keyCode)))" name="judgeScore" class="form-control" value="2" style="width: 150px"  placeholder="每题分数">
+                                    </div>
+                                </div>
+                                <span id="showJudgePercent" style="position: absolute;margin-top:30px;">占总分20%</span>
+                            </div>
+                            <!--判断知识点-->
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="judgeSelections" ><font color="red" style="font-size:large;">*</font>判断知识点:</label>
+                                        <select id="judgeSelections" name="judgeSelections" multiple class="form-control input-sm selects select2" style="width:334px;font-size:14px">
+                                            <option value="all" selected>全部</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(function(){
+			//加载知识点
+			$.ajax({
+					url:'${ctxPath}/securityedu/findknowledgePoint',
+					data:{type:"single",page:1,rows:1000},
+					dataType:'json',
+                    async:false,
+                    success: function (data) {
+                            $.each(data.list,function(i, n){
+                                $("#singleSelections").append("<option value="+n.knowledgePointName+">"+n.knowledgePointName+"</option>");
+                                $("#judgeSelections").append("<option value="+n.knowledgePointName+">"+n.knowledgePointName+"</option>");
+                                $("#multiSelections").append("<option value="+n.knowledgePointName+">"+n.knowledgePointName+"</option>");
+                            });
+                        }
+                    });
+            $(".select2").select2();
+            //绑定onchange事件 ????
+/*            $('input[name!="examiner"][name!="paperName"]').not("[type='search']").each(function(){
+            });*/
+            $('input[name!="examiner"][name!="paperName"]').not("[type='search']").on("input",function(){
+                //计算占比
+                 score=$("#score").val();
+                console.log(score);
+                //单选
+                 singleScore=$("#singleNums").val()*$("#singleScore").val();
+                singleScore=singleScore/score;
+                $("#showSinglePercent").html("");
+                $("#showSinglePercent").append("占总分"+singleScore.toFixed(2)*100+"%");
+                console.log("单选"+singleScore);
+                //多选
+                multiScore=$("#multiNums").val()*$("#multiScore").val();
+                multiScore=multiScore/score;
+                $("#showMultiPercent").html("");
+                $("#showMultiPercent").append("占总分"+multiScore.toFixed(2)*100+"%");
+                console.log("多选"+multiScore);
+                //判断
+                 judgeScore=$("#judgeNums").val()*$("#judgeScore").val();
+                $("#showJudgePercent").html("");
+                judgeScore=judgeScore/score;
+                $("#showJudgePercent").append("占总分"+judgeScore.toFixed(2)*100+"%");
+                console.log("判断"+judgeScore);
+            });
+        })
+
+
+
+		function savePaper() {
+            //非空验证alert($('input').filter("[type='text']").length);
+            flag=false;
+            $('input').not("[type='search']").each(function(){
+                if(this.value=='')
+                {
+                    alert("请输入"+$(this).attr('placeholder'));
+                    flag=true;
+                    return;
+                }
+            })
+            if(flag){
+                return;
+            }
+            //分数验证
+            if($("#singleNums").val()*$("#singleScore").val()+$("#multiNums").val()*$("#multiScore").val()+$("#judgeNums").val()*$("#judgeScore").val()!=$("#score").val())
+            {
+                alert("分值设定与总分数不匹配，请检查后重试");
+                return;
+            }
+			var form = $(".widget-body form");
+			$.ajax({
+				url : form.attr("action"),
+				dataType : "json",
+				data : form.serialize(),
+				success : function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+                        parent.paperPreview();
+					}
+				}
+			});
+		}
+	</script>
+</body>
+</html>

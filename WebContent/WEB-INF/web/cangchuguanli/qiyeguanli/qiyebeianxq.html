@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>企业备案详情</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	
+	var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findQiyebeian({"jzid":parameter.jzid,page:1,rows:1}).getList().get(0);	
+%>
+  <body>
+
+        <div class="dashboard-wrapper-lg">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业备案详情                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="beianbianhao">备案编号:</label>
+										<input id="beianbianhao" name="beianbianhao" class="form-control" placeholder="备案编号" value="${obj.beianbianhao}">
+									</div>	
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${obj.qyzzjgdm}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="balx">备案类型:</label>
+										<input id="balx" name="balx" class="form-control" placeholder="备案编号" value="${obj.balx}">
+									</div>	
+								</div>
+							
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="quyu">区域:</label>
+										<input id="quyu" name="quyu" class="form-control" placeholder="备案类型" value="${obj.quyu}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qymc">企业名称:</label>
+										<input id="qymc" name="qymc" class="form-control" placeholder="企业名称" value="${obj.qymc}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="faren">法人代表:</label>
+										<input id="faren" name="faren" class="form-control" placeholder="法人代表" value="${obj.faren}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="ywlx">业务类型:</label>
+										<input id="ywlx" name="ywlx" class="form-control" placeholder="业务类型" value="${obj.ywlx}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="crgm">仓容规模:</label>
+										<input id="crgm" name="crgm" class="form-control" placeholder="仓容规模" value="${obj.crgm}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="lxfs">联系方式:</label>
+										<input id="lxfs" name="lxfs" class="form-control" placeholder="联系方式" value="${obj.lxfs}">
+									</div>
+								</div>
+							
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="dizhi">地址:</label>
+										<input id="dizhi" name="dizhi" class="form-control" placeholder="地址" value="${obj.dizhi}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="zhuangtai">是否备案通过:</label>
+										<select id="zhuangtai" name="zhuangtai" class="form-control">
+											<option value="1"  ${obj.zhuangtai=="1"?" selected"}>通过</option>
+											<option value="0"  ${obj.zhuangtai=="0"?" selected"}>未通过</option>
+										</select>
+									</div>	
+								</div>
+							</div>
+					</form>
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+
+    <!-- Main Container end -->
+
+</body>
+</html>

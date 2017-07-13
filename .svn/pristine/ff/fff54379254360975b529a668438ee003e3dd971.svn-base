@@ -1,0 +1,286 @@
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<style type="text/css">
+body{
+background: #f7f7f7;
+}
+.dashboard-wrapper-lg {
+    position: relative;
+    background: #f7f7f7;
+    min-height: 0px; 
+    padding: 20px;
+}
+</style>
+<%
+	var obj,title,selecteddep,selectedrole,action;
+if(isEmpty(parameter.id)){
+		title = "新增";
+		selecteddep={list:[]};
+		selectedrole={list:[]};
+		obj = {orderno:1,canuse:1};
+		action = ctxPath+"/lunhuan/saveLHSQ.do";
+	}else{
+		title = "编辑";
+		
+		 obj = @com.zkzy.njzhpt.dao.ChuBeiLiangJHDAO.querycbljhById({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+		 debug(obj);
+		action = ctxPath+"/lunhuan/saveLHSQ.do";
+	}
+%>
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	承储计划                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  		<form id="sc" role="form" action=""  style="overflow: hidden;">
+					        <input id="qyzzjgdm" hidden="true"> 
+							<input id="cfbm" hidden="true"> 
+							<input value="${obj.id}" name="id" type="hidden">
+		<div class="row">
+		<div class="col-xs-6">
+				<div class="form-group">
+					<label>年度:</label> 
+					<select id="niandu" name="niandu" class="form-control" >
+					</select>
+				</div>
+		</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label>所在区域:</label> <select id="quming" name="quming"	class="form-control"class="js-example-basic-single" onchange="Change()">
+						<%
+							var quyus=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectQY({"page":1,"rows":15}).getList();
+							for(quyu in quyus){
+						%>
+							<option value="${quyu.xzqhdm}" ${quyu.xzqhdm==obj.quming?" selected"}>${quyu.quyu}</option>
+						<%
+							}
+						%>
+					</select>
+				</div>
+			</div>
+			</div>
+			<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label>承储企业:</label> <select id="ccqy" name="ccqy"	class="form-control"  onchange="selectKDMC()">
+						
+						<%
+							var qiyes=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectQYMC({"page":1,"rows":15}).getList();
+							for(qiye in qiyes){
+						%>
+							<option value="${qiye.qyzzjgdm}" ${qiye.qyzzjgdm==obj.qyzzjgdm?" selected"}>${qiye.qymc}</option>
+						<%
+							}
+						%>
+						
+					</select>
+				</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label>承储库点:</label> <select id="cckd" name="cckd"	class="form-control" onchange="selectCH()">
+						
+						<%	
+							var kudians=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectKDMC({"page":1,"rows":15}).getList();
+							for(kudian in kudians){
+						%>
+							<option value="${kudian.kdbm}" ${kudian.kdbm==obj.cckd&&kudian.qyzzjgdm==obj.qyzzjgdm?" selected"}>${kudian.kdmc}</option>
+						<%
+							}
+						%>
+					</select>
+				</div>
+			</div>
+			</div>
+			<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label>承储仓号:</label> <select id="ccch" name="ccch"	class="form-control">
+						<%
+							var canghaos=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectCH({"page":1,"rows":15}).getList();
+							for(canghao in canghaos){
+						%>
+							<option value="${canghao.cfbm}" ${canghao.cfbm==obj.ccch&&canghao.kdbm==obj.cckd&&canghao.qyzzjgdm==obj.qyzzjgdm?" selected"}>${canghao.cfmc}</option>
+						<%
+							}
+						%>
+						
+					</select>
+				</div>
+			</div>
+			<div class="col-xs-6">
+					<div class="form-group">
+						<label>粮食性质:</label> 
+							<select id="xingzhi" name="xingzhi"	class="form-control">
+								<option value="132" ${"122"==obj.xingzhi?" selected"}>地市级储备粮</option>
+								<option value="133" ${"123"==obj.xingzhi?" selected"}>县级储备粮</option>
+								
+							</select>
+					</div>
+				</div>
+			</div>
+                     
+        			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+					<label for="pinzhong">粮食品种:</label>
+						<select id="pinzhong" name="pinzhong"	class="form-control">
+								<option value="111" ${"111"==obj.pinzhong?" selected"}>小麦</option>
+								<option value="430" ${"1132"==obj.pinzhong?" selected"}>粳稻</option>
+								<option value="431" ${"1131"==obj.pinzhong?" selected"}>籼稻</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="qymc">计划数量:</label> 
+						<input name="jhsl" value="${obj.jhsl}"
+							id="jhsl" class="form-control " type="text" placeholder="计划数量"
+							onkeyup="value=value.replace(/[^\d.]/g,'')" >
+					</div>
+				</div>
+				</div>
+        		<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+</form>
+<script type="text/javascript">
+var date=new Date;
+var year=parseInt(date.getFullYear());
+for(var i = 0; i < 5; i++){
+	$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+}
+function bjniandu(){
+	alert(1);
+	var date=new Date;
+	var year=parseInt(date.getFullYear());
+	for(var i = 0; i < 5; i++){
+		$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+	}
+}
+$(document).ready(function() {
+	$("#niandu").select2();
+	$("#quming").select2();
+	$("#ccqy").select2();
+	$("#cckd").select2();
+	$("#ccch").select2();
+	$("#xingzhi").select2();
+	$("#pinzhong").select2();
+	
+	
+});
+	function Change() {
+		$("#ccqy").html("");
+		$("#cckd").html("");
+		$("#ccch").html("");
+		var xian = $("#quming option:selected").text().trim();
+		var op = '<option value="">请选择企业名称</option>';
+		$("#ccqy").append(op);
+		var kd = '<option value="">请选择库点名称</option>';
+		$("#cckd").append(kd);
+		var ch = '<option value="">请选择仓房名称</option>';
+		$("#ccch").append(ch);
+		$.ajax({
+			url : '${ctxPath}/lunhuan/findcompany',
+			type : 'post',
+			data : {
+				"xian" : xian
+			},
+			dataType : 'json',
+			success : function(data) {
+				for (var i = 0; i < data.length; i++) {
+					var op = "<option value="+data[i].qyzzjgdm+">"
+							+ data[i].qymc + "</option>";
+					$("#ccqy").append(op);
+				}
+			},
+			error : function() {
+				alert("error");
+			}
+		});
+	}
+	function selectKDMC() {
+		$("#cckd").html("");
+		$("#ccch").html("");
+		var xian = $("#quming option:selected").text().trim();
+		var qyzzjgdm = $("#ccqy option:selected").val();
+		var op = '<option value="">请选择库点名称</option>';
+		$("#cckd").append(op);
+		var ch = '<option value="">请选择仓房名称</option>';
+		$("#ccch").append(ch);
+		$.ajax({
+			url : '${ctxPath}/lunhuan/findcckd',
+			type : 'post',
+			data : {
+				"qyzzjgdm" : qyzzjgdm
+			},
+			dataType : 'json',
+			success : function(data) {
+				for (var i = 0; i < data.length; i++) {
+					var op = "<option value="+data[i].kdbm+">" + data[i].kdmc
+							+ "</option>";
+					$("#cckd").append(op);
+				}
+			},
+			error : function() {
+				alert("error");
+			}
+		});
+	}
+	function selectCH() {
+		$("#ccch").html("");
+		$("#ccch").append("<option>请选择仓号</option>")
+		var kdbm = $("#cckd option:selected").val();
+		var qyzzjgdm = $("#ccqy option:selected").val();
+		$.ajax({
+			url : "${ctxPath}/lunhuan/selectCH.do",
+			dataType : "json",
+			data : {
+				kdbm : kdbm,
+				qyzzjgdm : qyzzjgdm
+			},
+			success : function(data) {
+				$.each(data.list,
+						function(i, n) {
+							$("#ccch").append(
+									"<option value="+n.cfbm+">" + n.cfmc
+											+ "</option>");
+						});
+			}
+		});
+
+	}
+	function tijiao() {
+		if ($("#jhsl").val() == null || $("jhsl").val() == "") {
+			alert("请填写储备粮计划数量");
+			return false;
+		} else {
+			$.ajax({
+				type : 'post',
+				url : '${ctxPath}/chubeiliangJH/bianji.do',
+				data : $("#sc").serialize(),
+				success : function(msg) {
+					if (msg.ret) {
+						alert("编辑成功");
+					} else {
+						alert("编辑失败！");
+					}
+				}
+			})
+		}
+	}
+
+
+
+</script>

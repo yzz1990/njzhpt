@@ -1,0 +1,10 @@
+<%
+ var obj={};
+ var qyzzjgdm = parameter.qyzzjgdm;
+ var kdbm = parameter.kdbm;
+ var cfbm = parameter.cfbm;
+%>
+
+<div class="panel-body">
+	<iframe id="if" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/yewu/pingmiantu?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}"></iframe>
+</div>

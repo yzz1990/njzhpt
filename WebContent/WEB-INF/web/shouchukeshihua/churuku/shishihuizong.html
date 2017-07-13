@@ -1,0 +1,394 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+<style>
+	.panel-body p{
+		margin-bottom:0px;
+		margin-top:0px;
+		
+	}
+	.panel-body{
+		float:left;
+	    left: 0px;
+	    margin-top:0px;
+
+	}
+	.panel-body-right{
+	    float:left;
+	    margin-top:16px;
+	}
+
+	#kudian{
+		height:33px;
+		background:green;
+		color:white;
+		vertical-align:middle;
+		font-size:20px;
+	}
+
+	.heji{
+		
+		font-family : 微软雅黑,宋体;
+		color : black;
+	}
+	.odd{
+		height:50px;
+	}
+</style>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+				
+					<label>地区:</label>
+					<select class="form-control input-sm input-smdq" style="width:150px; font-size:14px" onchange="Changedq()">
+						<option value="" selected="true" >请选择</option>
+					</select>
+					<label>企业:</label>
+					<select class="form-control input-sm input-smqy" style="width:150px; font-size:14px" onchange="Changeqy()">
+					</select>
+					<label>库点名称:</label>
+					<select class="form-control input-sm input-smkdmc" style="width:200px;font-size:14px">	
+					</select>
+					<label>日期:</label>
+					<input size="16" type="text"  readonly class="form_datetimebegin">
+					</select>
+					<label>至</label>
+					<input size="16" type="text" readonly class="form_datetimeend">	
+					</select>
+					<label>粮食性质:</label>
+					<select class="form-control input-sm input-smlsxz" style="width:200px;font-size:14px">	
+					</select>
+					<label>粮食品种:</label>
+					<select class="form-control input-sm input-smlspz" style="width:200px;font-size:14px">	
+					</select>
+					<label>粮食等级:</label>
+					<select class="form-control input-sm input-smlsdj" style="width:200px;font-size:14px">	
+					</select>
+					<label>作业类型:</label>
+					<select class="form-control input-sm input-smzylx" style="width:200px;font-size:14px">	
+					</select>
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+				</div>
+				
+				<div class="clearfix"></div>
+			</div>
+			
+			<div id="panelDemo8" class="panel panel-primary" style="width:100%;border:0px solid">
+	          <div class="panel-heading" style="width:100%; margin-bottom:-20px;border:0px solid">实时汇总</div>
+	       
+	          <div  style="width:100%;margin-top:22px;">
+					<table id="exctable"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/queryhuizong.do" >
+					</table>
+      			</div>
+	       </div>	
+		</div>
+
+<script type="text/javascript">
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+var xian = "请选择";
+var qyzzjgdm = "请选择";
+var kdmc = "请选择";
+var lsxz = "请选择";
+var lspz = "请选择";
+var lsdj = "请选择";
+var zylx = "请选择";
+var endtime = "";
+var time = "";
+
+$(function(){
+	datatable = $('.datatables').DataTable({
+		"pageLength": 5,
+		"lengthMenu": [
+		       		[5,10,15,20,25],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+            	"data" : "xian",
+				"title" : "所属地区"
+			},{
+				"data" : "qymc",
+				"title" : "企业名称"
+			},{
+				"data" : "kdmc",
+				"title" : "库点名称"
+			},{
+				"data" : "dtRegistrateTime",
+				"title" : "时间"
+			},{
+				"data" : "vGrainProperties",
+				"title" : "粮食性质"
+			},{
+				"data" : "vName",
+				"title" : "粮食品种"
+				
+			},{
+				"data" : "vGrainLevel",
+				"title" : "粮食等级"
+			},{
+				"data" : "vDirection",
+				"title" : "作业类型"
+			},{
+				"title" : "质量",
+				"render": function (data,type,row,meta) {
+					var num = row["dmNW"]!=null ? row["dmNW"]:0;
+					var s = '<div>'+num.toFixed(2)+'</div>'
+					return s;								
+				}
+			}
+			]
+	});
+	
+	$('.datatables').on( 'draw.dt', function () {
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryhuizong.do',
+			type:'post',			
+			data:{"xian":xian,"qyzzjgdm":qyzzjgdm,"kdmc":kdmc,"vGrainProperties":lsxz,
+				"vName":lspz,"vGrainLevel":lsdj,"vDirection":zylx,
+				"dtRegistrateTime":time,"vEndTime":endtime,"page":1,"rows":10000},
+			dataType:'json',
+			success:function(data){
+				var sum = 0;
+				for(var i = 0; i < data.list.length; i++){
+					var sumcf = data.list[i].dmNW!=null ? data.list[i].dmNW:0;
+					sum = sum + sumcf;
+				}
+				var tr = '<tr class="heji">'+
+					'<td><b>合计</td>'+
+					'<td></td>'+
+					'<td></td>'+
+					'<td></td>'+
+					'<td></td>'+
+					'<td></td>'+
+					'<td></td>'+
+					'<td></td>'+
+					'<td><b>'+sum.toFixed(2)+'</td>'+
+				'</tr>';
+				$('.datatables').prepend(tr);
+				
+			},
+			error:function(){
+				alert("计算合计错误");
+			}
+			
+		});
+
+	});
+	
+});
+
+$(document).ready(function() {
+	
+		$(".input-smdq").select2();		//地区
+		$(".input-smqy").select2();		//企业
+		$(".input-smkdmc").select2();	//库点名称
+		$(".input-smlsxz").select2();	//粮食性质
+		$(".input-smlspz").select2();	//粮食品种
+		$(".input-smlsdj").select2();	//粮食等级
+		$(".input-smzylx").select2();	//作业类型
+		$(".form_datetimebegin").datetimepicker({format: 'yyyy-mm-dd hh:ii'});	//起始时间
+   	 	$(".form_datetimeend").datetimepicker({format: 'yyyy-mm-dd hh:ii'});	//结束时间
+		
+	  //========================加载地区下拉框====================================
+	  $.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option value='+data[i].quyu+'>'+data[i].quyu+'</option>';
+				 $(".input-smdq").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	//========================加载地区下拉框结束====================================
+		
+	Changedq();		//地区变换方法
+	  
+});
+
+//================================地区变换方法=====================================
+function Changedq(){
+	$(".input-smqy").empty();
+	$(".input-smkdmc").empty();
+	$(".input-smlsxz").empty();
+	$(".input-smlspz").empty();
+	$(".input-smlsdj").empty();
+	$(".input-smzylx").empty();
+	xian = $(".input-smdq option:selected").text().trim();
+
+	var qiyes = [];
+	var kdmcs = [];
+	var lsxzs = [];
+	var lspzs = [];
+	var lsdjs = [];
+	var zylxs = [];
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryhuizong.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":xian},
+		dataType:'json',
+		success:function(data){
+			$(".input-smqy").append('<option value="请选择">请选择</option>');
+			$(".input-smkdmc").append('<option value="请选择">请选择</option>');
+			$(".input-smlsxz").append('<option value="请选择">请选择</option>');
+			$(".input-smlspz").append('<option value="请选择">请选择</option>');
+			$(".input-smlsdj").append('<option value="请选择">请选择</option>');
+			$(".input-smzylx").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				//插入企业
+				if(!qiyes.in_array(data.list[i].qyzzjgdm) && data.list[i].qyzzjgdm != null){
+					qiyes.push(data.list[i].qyzzjgdm);
+					var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+				    $(".input-smqy").append(op);
+				}
+				//插入库点名称
+				if(!kdmcs.in_array(data.list[i].kdbm) && data.list[i].kdbm != null){
+					kdmcs.push(data.list[i].kdbm);
+					var op = '<option value='+data.list[i].kdbm+'>'+data.list[i].kdmc+'</option>';
+				    $(".input-smkdmc").append(op);
+				}
+				//插入粮食性质名称
+				if(!lsxzs.in_array(data.list[i].vGrainProperties) && data.list[i].vGrainProperties != null){
+					lsxzs.push(data.list[i].vGrainProperties);
+					var op = '<option value='+data.list[i].vGrainProperties+'>'+data.list[i].vGrainProperties+'</option>';
+				    $(".input-smlsxz").append(op);
+				}
+				//插入粮食品种
+				if(!lspzs.in_array(data.list[i].vName) && data.list[i].vName != null){
+					lspzs.push(data.list[i].vName);
+					var op = '<option value='+data.list[i].vName+'>'+data.list[i].vName+'</option>';
+				    $(".input-smlspz").append(op);
+				}
+				//插入粮食等级
+				if(!lsdjs.in_array(data.list[i].vGrainLevel) && data.list[i].vGrainLevel != null){
+					lsdjs.push(data.list[i].vGrainLevel);
+					var op = '<option value='+data.list[i].vGrainLevel+'>'+data.list[i].vGrainLevel+'</option>';
+				    $(".input-smlsdj").append(op);
+				}
+				//插入作业类型
+				if(!zylxs.in_array(data.list[i].vDirection) && data.list[i].vDirection != null){
+					zylxs.push(data.list[i].vDirection);
+					var op = '<option value='+data.list[i].vDirection+'>'+data.list[i].vDirection+'</option>';
+				    $(".input-smzylx").append(op);
+				}
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+//======================================地区变换方法结束================================
+	
+//===================================企业下拉框change事件=================================
+function Changeqy(){
+	$(".input-smkdmc").empty();
+	$(".input-smlsxz").empty();
+	$(".input-smlspz").empty();
+	$(".input-smlsdj").empty();
+	$(".input-smzylx").empty();
+	qyzzjgdm = $(".input-smqy option:selected").val();
+	var kdmcs = [];
+	var lsxzs = [];
+	var lspzs = [];
+	var lsdjs = [];
+	var zylxs = [];
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryhuizong.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"qyzzjgdm":qyzzjgdm},
+		dataType:'json',
+		success:function(data){
+			$(".input-smkdmc").append('<option value="请选择">请选择</option>');
+			$(".input-smlsxz").append('<option value="请选择">请选择</option>');
+			$(".input-smlspz").append('<option value="请选择">请选择</option>');
+			$(".input-smlsdj").append('<option value="请选择">请选择</option>');
+			$(".input-smzylx").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				//插入库点名称
+				if(!kdmcs.in_array(data.list[i].kdbm) && data.list[i].kdbm != null){
+					kdmcs.push(data.list[i].kdbm);
+					var op = '<option value='+data.list[i].kdbm+'>'+data.list[i].kdmc+'</option>';
+				    $(".input-smkdmc").append(op);
+				}
+				//插入粮食性质名称
+				if(!lsxzs.in_array(data.list[i].vGrainProperties) && data.list[i].vGrainProperties != null){
+					lsxzs.push(data.list[i].vGrainProperties);
+					var op = '<option value='+data.list[i].vGrainProperties+'>'+data.list[i].vGrainProperties+'</option>';
+				    $(".input-smlsxz").append(op);
+				}
+				//插入粮食品种
+				if(!lspzs.in_array(data.list[i].vName) && data.list[i].vName != null){
+					lspzs.push(data.list[i].vName);
+					var op = '<option value='+data.list[i].vName+'>'+data.list[i].vName+'</option>';
+				    $(".input-smlspz").append(op);
+				}
+				//插入粮食等级
+				if(!lsdjs.in_array(data.list[i].vGrainLevel) && data.list[i].vGrainLevel != null){
+					lsdjs.push(data.list[i].vGrainLevel);
+					var op = '<option value='+data.list[i].vGrainLevel+'>'+data.list[i].vGrainLevel+'</option>';
+				    $(".input-smlsdj").append(op);
+				}
+				//插入作业类型
+				if(!zylxs.in_array(data.list[i].vDirection) && data.list[i].vDirection != null){
+					zylxs.push(data.list[i].vDirection);
+					var op = '<option value='+data.list[i].vDirection+'>'+data.list[i].vDirection+'</option>';
+				    $(".input-smzylx").append(op);
+				}
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+//===================================企业下拉框change事件结束=================================
+
+//==================================高级查询方法============================================
+function doSearch(){
+	xian = $(".input-smdq option:selected").text().trim();
+	qyzzjgdm = $(".input-smqy option:selected").val();
+	kdmc = $(".input-smkdmc option:selected").text().trim();
+	lsxz = $(".input-smlsxz option:selected").text().trim();
+	lspz = $(".input-smlspz option:selected").text().trim();
+	lsdj = $(".input-smlsdj option:selected").text().trim();
+	zylx = $(".input-smzylx option:selected").text().trim();
+	endtime = $(".form_datetimeend").val();
+	time = $(".form_datetimebegin").val();
+	
+	$(".input-smqy").empty();
+	$(".input-smkdmc").empty();
+	$(".input-smlsxz").empty();
+	$(".input-smlspz").empty();
+	$(".input-smlsdj").empty();
+	$(".input-smzylx").empty();	
+	Changedq();
+
+	
+	$(".datatables").attr("data-queryparam","&vEndTime="+endtime+
+			"&dtRegistrateTime="+time+"&xian="+xian+"&qyzzjgdm="+qyzzjgdm+
+			"&kdmc="+kdmc+"&vGrainProperties="+lsxz+"&vName="+lspz+
+			"&vGrainLevel="+lsdj+"&vDirection="+zylx);
+	datatable.ajax.reload(null,true);
+	
+	
+}
+//================================高级查询方法结束===========================================
+
+
+</script>
+<%}%>

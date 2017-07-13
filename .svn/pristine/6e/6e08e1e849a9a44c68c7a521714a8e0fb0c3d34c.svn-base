@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>视频信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%	
+	var obj={};
+	var spgl = @com.zkzy.njzhpt.dao.CangchuglDao.findUserxinxi({"id":session.userinfo.user.id,"page":"1","rows":"100"});
+	obj = spgl.list[0];
+	var url=ctxPath+"/cangchugl/upmima",title="修改密码";
+%>
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	密码信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${session.userinfo.user.id}">
+					        <input type="hidden" name="loginname" value="${obj.loginname}">
+					         <input type="hidden" name="realname" value="${obj.realname}">
+					          <input type="hidden" name="canuse" value="${obj.canuse}">
+					           <input type="hidden" name="orderno" value="${obj.orderno}">
+							<div class="row">
+								<div class="col-xs-12">	
+									<div class="form-group">
+										<label for="password">原密码:</label>
+										<input type="password" id="yuanpassword"  class="form-control" placeholder="原密码" >
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+										<div class="form-group">
+										<label for="qyzzjgdm">新密码:</label> 
+										<input type="password" id="xinpassword" name="password" class="form-control" placeholder="新密码" onchange="bijiaomima()">
+									</div>	
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">	
+									<div class="form-group">
+										<label for="kdbm">确认密码:</label> 
+										<input type="password" id="querenpassword"  class="form-control" placeholder="确认密码" onchange="mima()">
+									</div>	
+								</div>
+								
+							</div>
+							
+					</form>
+					<!-- <div>
+						<button class="btn btn-xs btn-success" onclick="baocun()">保存</button>
+					</div> -->
+					
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+        </div>
+
+<script type="text/javascript">
+/* function getyuanmima(){
+	var yuanpassword=$("#yuanpassword").val();
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findmima',
+		 type:'post',
+		 data:{yuanpassword:yuanpassword,"userid":"${session.userinfo.user.id}"},
+		 dataType:'json',
+		success:function(data){
+			if(!data.size>0){
+				alert("原密码错误！")
+			}
+		}
+		
+	})
+} */
+function baocun() {
+	if($("#yuanpassword").val()==""){
+		alert("请输入原密码!");
+		$("#yuanpassword").focus();
+		return false;
+	}else if($("#yuanpassword").val()!="${obj.password}"){
+		alert("原密码错误!");
+		$("#yuanpassword").focus();
+		return false;
+	}else if($("#xinpassword").val()==""){
+		alert("请输入新密码!");
+		$("#xinpassword").focus();
+		return false;
+	}else if($("#xinpassword").val()=="${obj.password}"){
+		alert("新密码不能与原密码重复!");
+		$("#xinpassword").focus();
+		return false;
+	}else if($("#querenpassword").val()==""){
+		alert("请确认密码!");
+		$("#querenpassword").focus();
+		return false;
+	}else if($("#querenpassword").val()!=$("#xinpassword").val()){
+		alert("新密码确认不一致!");
+		$("#querenpassword").focus();
+		return false;
+	}
+ var form = $(".widget-body form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功,请重新登录!");
+				parent.window.location.href="${ctxPath}/login/login.html"
+			}
+		}
+	}); 
+}
+</script>
+
+</body>
+</html>

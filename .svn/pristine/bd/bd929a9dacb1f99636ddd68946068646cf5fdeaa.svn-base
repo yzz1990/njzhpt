@@ -1,0 +1,81 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addanquantj",title="新增企业安全标准信息";
+	if (isNotEmpty(parameter.id)) {
+		var qyaq = @com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,"page":"1","rows":"100"});
+		obj = qyaq.list[0];
+		url = ctxPath+"/cangchugl/upanquantj";
+		title = "编辑企业安全标准信息";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="sb">市别</label>
+							<input type="text" class="form-control" name="sb" id="sb" placeholder="市别" value="${obj.sb}" >
+						</div>
+						<div class="form-group">	
+							<label for="dbdw">达标单位</label>
+							<input type="text" class="form-control" name="dbdw" id="dbdw" placeholder="达标单位" value="${obj.dbdw}" >
+						</div>
+						 <div class="form-group">	
+							<label for="dj">等级</label>
+							<input type="text" class="form-control" name="dj" id="dj" placeholder="等级" value="${obj.dj}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="zsh">证书号</label>
+							<input type="text" class="form-control" name="zsh" id="zsh" placeholder="证书号" value="${obj.zsh}"  >
+						</div>
+						<div class="form-group">	
+							<label for="pddw">评定单位</label>
+							<input type="text" class="form-control" name="pddw" id="pddw" placeholder="评定单位" value="${obj.pddw}" >
+						</div>
+						<div class="form-group">	
+							<label for="bz">备注</label>
+							<input type="text" class="form-control" name="bz" id="bz" placeholder="备注" value="${obj.bz}" >
+						</div>
+						
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_bzh_qslsj.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/anquanshengchan/anquan_bzh_qslsj.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

@@ -1,0 +1,2143 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<script src="${ctxPath}/resource/select2.min.js"></script>
+<script src="${ctxPath}/resource/zh-CN.js"></script>
+<link href="${ctxPath}/resource/select2.min.css" rel="stylesheet">
+<link href="${ctxPath}/resource/select2-bootstrap.css" rel="stylesheet">
+<!----------select-------------->
+	
+
+<style>
+
+.panel-pinzhong{
+	width:50%;
+	float:left;
+}
+
+.cjd-select{
+	float:left;
+	z-index:999;
+}
+.cjd-label{
+	float:left;
+	font-size:25px;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia, #div-baojia{
+	height:800px;
+	overflow-y:auto;
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein , .pinleiqs{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+.wenben{
+	text-align:center;
+	height:40px;
+}
+.shuju{
+	text-align:right;
+	height:40px;
+}
+
+#searchprice{
+	font-size:25px;
+	text-aligh:center;
+	vertical-align: middle;
+	margin-left:20px; 
+	margin-top:2px;
+	background-color: #C6E2FF;
+	text-align:center;
+	display:block;
+	width:100px;
+	height:35px;
+	float:left;
+}
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    height: 35px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 35px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 35px;
+    font-size:20px;
+}
+.select2-results__option[aria-selected] {
+    cursor: pointer;
+    font-size:20px;
+}
+
+</style>
+<script type="text/javascript">
+
+
+var myChart;
+var myChart1;
+var myChart2;
+
+var mydate = new Date();
+var tyear = mydate.getFullYear();
+var priceStyle;
+
+var vwidth;
+var vheight;
+$(function(){
+	$(".cjd-select").select2();
+	
+	for(var i = 0 ; i < 3; i++){
+		var op;
+		if(i == 0){
+			op= '<option selected="selected" value = "'+(tyear - i)+'" >'+(tyear - i)+'</option>';
+		}else{
+			op= '<option value = "'+(tyear - i)+'">'+(tyear - i)+'</option>';
+		}
+		$("#niandu").append(op);
+	}
+	
+	vwidth = $("#container3").width();
+	vheight = $("#container3").height();
+	$("#divbannian").width(vwidth);
+	$("#divbannian").height(vheight);
+	$("#divniandu").width(vwidth);
+	$("#divniandu").height(vheight);
+	
+	//加载价格类型下拉框
+	$.ajax({
+		url:'${ctxPath}/jiage/queryjglx.do',
+		type:'post',
+		dataType:'json',
+		async:false,
+		success:function(data){
+			priceStyle=data.list;
+			for(var i = 0; i < data.list.length; i++){
+				var jglxid = data.list[i].jglxid;
+				var jglxname = data.list[i].jglxname;
+				var op = '<option value="'+jglxid+'">'+jglxname+'</option>';
+				$("#jglx").append(op);
+			}
+			
+		},
+		error:function(){
+			alert("加载价格类型失败");
+		}
+	});
+	
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":tyear,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#cjzs").empty();
+			var selected="";
+			for(var i = 0; i <data.list.length ; i++){
+				if(tyear==new Date().getFullYear())
+				{
+					if(i<getYearWeek(new Date())-1)
+					{
+						if(i == (getYearWeek(new Date())-2)){
+							var op = '<option selected value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+							$("#nianzs").prepend(op);
+						}else{
+							var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+							$("#nianzs").prepend(op);
+						}
+						
+					}
+				}else{
+					var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+					$("#nianzs").prepend(op);
+				}
+				doSearch();
+			}
+			
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+});
+ 
+function doSearch(){
+	 
+	 var year = $("#niandu option:selected").val();
+	 var week = $("#nianzs option:selected").val();
+	 var jglxid = $("#jglx option:selected").val();
+ 
+	 myChart = echarts.init(document.getElementById('divjidu')); 	//季度趋势
+	 myChart1 = echarts.init(document.getElementById('divbannian'));	//半年趋势
+	 myChart2 = echarts.init(document.getElementById('divniandu')); 	//年度趋势
+	 
+	 //进厂价
+	 if(jglxid == "001"){
+		//粳稻进厂
+		var jdjc = [];
+		//元稻进厂
+		var ydjc = [];
+		//小麦进厂
+		var xmjc = [];
+		//麦麸进厂
+		var mfjc = [];
+		
+		//半年图表
+		var bnjdjc = [];
+		var bnydjc = [];
+		var bnxmjc = [];
+		var bnmfjc = [];
+		
+		//季度图表
+		var jdjdjc = [];
+		var jdydjc = [];
+		var jdxmjc = [];
+		var jdmfjc = [];
+		
+		//年周数
+		var nianzhou = [];
+		var bnnianzhou = [];
+		var jdnianzhou = [];
+		var indexlength = 0;
+		
+		$.ajax({
+			url:'${ctxPath}/jiage/querynzjg.do',
+			type:'post',
+			data:{'year':year,'week':week,"jglxid":"001"},
+			dataType:'json',
+			success:function(data){
+				var nz = data.list[0].nyear+"年"+data.list[0].nweek+"周";
+				nianzhou.push(nz);
+				var zhou = data.list[0].nweek;
+				for(var i = 0; i < data.list.length; i++){
+					if(data.list[i].jglxid == '001' || data.list[i].jglxid == null || data.list[i].jglxid == ""){
+						if(zhou != data.list[i].nweek){
+							nz = data.list[i].nyear+"年"+data.list[i].nweek+"周";
+							zhou = data.list[i].nweek;
+							nianzhou.push(nz);
+							indexlength = indexlength + 1;
+							if(indexlength > jdjc.length){
+								jdjc.push(0);
+							}
+							if(indexlength > ydjc.length){
+								ydjc.push(0);
+							}
+							if(indexlength > xmjc.length){
+								xmjc.push(0);
+							}
+							if(indexlength > mfjc.length){
+								mfjc.push(0);
+							}
+						}
+						var pzid = data.list[i].pzid;
+						var price = data.list[i].price;
+						var pzname = data.list[i].pzname;
+						var level = data.list[i].level;
+						if(pzid != null){
+							//粳稻进厂
+							//if(pzid == "a0ef8c2ca38743e5854cb484d7c5ba71"){
+							if(pzname == "粳稻" && level == "中等"){
+								jdjc.push(price);
+							}
+							//元稻进厂
+							//if(pzid == "e388ca6e484f4eca882103f01ef1eda7"){
+							if(pzname == "元稻" && level == "中等"){
+								ydjc.push(price);
+							}
+							//小麦进厂
+							//if(pzid == "b03f1be855a742e09363e53d08ad99d1"){
+							if(pzname == "小麦" && level == "三等"){
+								xmjc.push(price);
+							}
+							//麦麸进厂
+							//if(pzid == "d37228cc3e9b46aabc6d54dbf1ec7582"){
+							if(pzname == "麦麸"){
+								mfjc.push(price);
+							}
+						}
+					}
+					
+				}
+				//保存半年价格和周期
+				bnjdjc = jdjc.slice(-26);
+				bnydjc = ydjc.slice(-26);
+				bnxmjc = xmjc.slice(-26);
+				bnmfjc = mfjc.slice(-26);
+				bnnianzhou = nianzhou.slice(-26);
+				//保存季度价格和周期
+				jdjdjc = jdjc.slice(-13);
+				jdydjc = ydjc.slice(-13);
+				jdxmjc = xmjc.slice(-13);
+				jdmfjc = mfjc.slice(-13);
+				jdnianzhou = nianzhou.slice(-13);
+				
+				//季度进厂价格
+				option = {
+					title: {
+				        text: '季度市内进厂价格趋势图',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳稻进厂","元稻进厂","小麦进厂","麦麸进厂"],
+				        textStyle:{
+				        	fontSize:20,
+				        }
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: jdnianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳稻进厂",
+				            type:'line',
+				            data:jdjdjc,
+				        },
+				        {
+				            name:"元稻进厂",
+				            type:'line',
+				            data:jdydjc,
+				        },
+				        {
+				            name:"小麦进厂",
+				            type:'line',
+				            data:jdxmjc,
+				        }
+				        ,
+				        {
+				            name:"麦麸进厂",
+				            type:'line',
+				            data:jdmfjc,
+				        },
+				    ]
+				};
+				myChart.setOption(option);
+				
+				//半年度进厂价格
+				option1 = {
+					title: {
+				        text: '半年度市内进厂价格趋势图',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳稻进厂","元稻进厂","小麦进厂","麦麸进厂"],
+				        textStyle:{
+				        	fontSize:20,
+				        }
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: bnnianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳稻进厂",
+				            type:'line',
+				            data:bnjdjc,
+				        },
+				        {
+				            name:"元稻进厂",
+				            type:'line',
+				            data:bnydjc,
+				        },
+				        {
+				            name:"小麦进厂",
+				            type:'line',
+				            data:bnxmjc,
+				        }
+				        ,
+				        {
+				            name:"麦麸进厂",
+				            type:'line',
+				            data:bnmfjc,
+				        },
+				    ]
+				};
+				myChart1.setOption(option1);
+				
+				//半年度进厂价格
+				option2 = {
+					title: {
+				        text: '年度市内进厂价格趋势图',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳稻进厂","元稻进厂","小麦进厂","麦麸进厂"],
+				        textStyle:{
+				        	fontSize:20,
+				        }
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: nianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳稻进厂",
+				            type:'line',
+				            data:jdjc,
+				        },
+				        {
+				            name:"元稻进厂",
+				            type:'line',
+				            data:ydjc,
+				        },
+				        {
+				            name:"小麦进厂",
+				            type:'line',
+				            data:xmjc,
+				        }
+				        ,
+				        {
+				            name:"麦麸进厂",
+				            type:'line',
+				            data:mfjc,
+				        },
+				    ]
+				};
+				myChart2.setOption(option2);
+				
+			},
+			error:function(){
+			}
+		});
+			
+	 }
+	 //出厂价
+	 if(jglxid == "002"){
+		 
+		//特二面粉出厂
+			var mfwcc = [];
+			//特一面粉出厂
+			var mfocc = [];
+			//粳米出厂
+			var jmcc = [];
+			//元米出厂
+			var ymcc = [];
+			//豆油出厂
+			var dycc = [];
+			
+			//半年图表
+			var bnmfwcc = [];
+			var bnmfocc = [];
+			var bnjmcc = [];
+			var bnymcc = [];
+			var bndycc = [];
+			
+			//季度图表
+			var jdmfwcc = [];
+			var jdmfocc = [];
+			var jdjmcc = [];
+			var jdymcc = [];
+			var jddycc = [];
+			
+			//年周数
+			var nianzhou = [];
+			var bnnianzhou = [];
+			var jdnianzhou = [];
+			var indexlength = 0;
+			
+			$.ajax({
+				url:'${ctxPath}/jiage/querynzjg.do',
+				type:'post',
+				data:{'year':year,'week':week,"jglxid":"002"},
+				dataType:'json',
+				success:function(data){
+					var nz = data.list[0].nyear+"年"+data.list[0].nweek+"周";
+					nianzhou.push(nz);
+					var zhou = data.list[0].nweek;
+					for(var i = 0; i < data.list.length; i++){
+						if(data.list[i].jglxid == '002' || data.list[i].jglxid == null || data.list[i].jglxid == ""){
+							if(zhou != data.list[i].nweek){
+								nz = data.list[i].nyear+"年"+data.list[i].nweek+"周";
+								zhou = data.list[i].nweek;
+								nianzhou.push(nz);
+								indexlength = indexlength + 1;
+								if(indexlength > mfwcc.length){
+									mfwcc.push(0);
+								}
+								if(indexlength > mfocc.length){
+									mfocc.push(0);
+								}
+								if(indexlength > jmcc.length){
+									jmcc.push(0);
+								}
+								if(indexlength > ymcc.length){
+									ymcc.push(0);
+								}
+								if(indexlength > dycc.length){
+									dycc.push(0);
+								}
+							}
+							var pzid = data.list[i].pzid;
+							var price = data.list[i].price;
+							var pzname = data.list[i].pzname;
+							var level = data.list[i].level;
+							if(pzid != null){
+								//豆油出厂
+								//if(pzid == "ee75b15b4a554409bf2d9bfb014d4a9c"){
+								if(pzname == "豆油" && level == "一级"){
+									dycc.push(price);
+								}
+								//特二粉出厂
+								//if(pzid == "f47f916e4acf4d3fa6a8c7bd4e2ccc6d"){
+								if(pzname == "面粉" && level == "特二"){
+									mfwcc.push(price);
+								}
+								//特一粉出厂
+								//if(pzid == "52db6974b36046b2b40751df0906b500"){
+								if(pzname == "面粉" && level == "特一"){
+									mfocc.push(price);
+								}
+								//粳米出厂
+								//if(pzid == "75fa26f9f92e4c3e99b922a01107b100"){
+								if(pzname == "粳米" && level == "特等"){
+									jmcc.push(price);
+								}
+								//元米出厂
+								//if(pzid == "9bbc2b0e365144f2a42169c070a8f95d"){
+								if(pzname == "元米" && level == "中等"){
+									ymcc.push(price);
+								}
+							}
+						}
+					}
+					
+					//保存半年价格和周期
+					bnmfwcc = mfwcc.slice(-26);
+					bnmfocc = mfocc.slice(-26);
+					bnjmcc = jmcc.slice(-26);
+					bnymcc = ymcc.slice(-26);
+					bndycc = dycc.slice(-26);
+					bnnianzhou = nianzhou.slice(-26);
+					//保存季度价格和周期
+					jdmfwcc = mfwcc.slice(-13);
+					jdmfocc = mfocc.slice(-13);
+					jdymcc = ymcc.slice(-13);
+					jddycc = dycc.slice(-13);
+					jdjmcc = jmcc.slice(-13);
+					jdnianzhou = nianzhou.slice(-13);
+					
+					//季度进厂价格
+					option = {
+						title: {
+					        text: '季度市内出厂价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					        data:["面粉特一","面粉特二","粳米","元米","豆油"],
+					        textStyle:{
+					        	fontSize:20,
+					        }
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: jdnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+					        {
+					            name:"面粉特一",
+					            type:'line',
+					            data:jdmfocc,
+					        },
+					        {
+					            name:"面粉特二",
+					            type:'line',
+					            data:jdmfwcc,
+					        },
+					        {
+					            name:"粳米",
+					            type:'line',
+					            data:jdjmcc,
+					        }
+					        ,
+					        {
+					            name:"元米",
+					            type:'line',
+					            data:jdymcc,
+					        },
+					        {
+					            name:"豆油",
+					            type:'line',
+					            data:jddycc,
+					        },
+					    ]
+					};
+					myChart.setOption(option);
+					
+					//半年度进厂价格
+					option1 = {
+						title: {
+					        text: '半年度市内出厂价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					        data:["面粉特一","面粉特二","粳米","元米","豆油"],
+					        textStyle:{
+					        	fontSize:20,
+					        }
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: bnnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+							{
+							    name:"面粉特一",
+							    type:'line',
+							    data:bnmfocc,
+							},
+							{
+							    name:"面粉特二",
+							    type:'line',
+							    data:bnmfwcc,
+							},
+							{
+							    name:"粳米",
+							    type:'line',
+							    data:bnjmcc,
+							}
+							,
+							{
+							    name:"元米",
+							    type:'line',
+							    data:bnymcc,
+							},
+							{
+							    name:"豆油",
+							    type:'line',
+							    data:bndycc,
+							},
+					    ]
+					};
+					myChart1.setOption(option1);
+					
+					//半年度进厂价格
+					option2 = {
+						title: {
+					        text: '年度市内进厂价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					    	data:["面粉特一","面粉特二","粳米","元米","豆油"],
+					    	textStyle:{
+					        	fontSize:20,
+					        }
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: nianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+							{
+							    name:"面粉特一",
+							    type:'line',
+							    data:mfocc,
+							},
+							{
+							    name:"面粉特二",
+							    type:'line',
+							    data:mfwcc,
+							},
+							{
+							    name:"粳米",
+							    type:'line',
+							    data:jmcc,
+							}
+							,
+							{
+							    name:"元米",
+							    type:'line',
+							    data:ymcc,
+							},
+							{
+							    name:"豆油",
+							    type:'line',
+							    data:dycc,
+							},
+					    ]
+					};
+					myChart2.setOption(option2);
+				},
+				error:function(){
+				}
+			});
+		 
+		 
+		 
+	 }
+	 //批发价
+	 if(jglxid == "003"){
+		 
+			//特一面粉批发价
+			var mfopf = [];
+			//特二面粉批发价
+			var mfwpf = [];
+			//特等粳米批发价
+			var jmopf = [];
+			//标一粳米批发价
+			var jmwpf = [];
+			//特等杂交米批发价
+			var zjpf = [];
+			//中等元米批发价
+			var ympf = [];
+			//中等东北米批发价
+			var dbmpf = [];
+			//中等泰国香米批发价
+			var tgxmpf = [];
+			//四级菜油批发价
+			var cypf = [];
+			//中等色拉油
+			var slypf = [];
+			//中等花生仁
+			var hsrpf = [];
+			//中等黄豆
+			var hdpf = [];
+			//中等红豆
+			var hongdpf = [];
+			//中等绿豆
+			var ldpf = [];
+			//花生油
+			var hsypf = [];
+			
+			//半年图表
+			var bnmfopf = [];
+			var bnmfwpf = [];
+			var bnjmopf = [];
+			var bnjmwpf = [];
+			var bnzjpf = [];
+			var bnympf = [];
+			var bndbmpf = [];
+			var bntgxmpf = [];
+			var bncypf = [];
+			var bnslypf = [];
+			var bnhsrpf = [];
+			var bnhdpf = [];
+			var bnhongdpf = [];
+			var bnldpf = [];
+			var bnhsypf = [];
+			
+			//季度图表
+			var jdmfopf = [];
+			var jdmfwpf = [];
+			var jdjmopf = [];
+			var jdjmwpf = [];
+			var jdzjpf = [];
+			var jdympf = [];
+			var jddbmpf = [];
+			var jdtgxmpf = [];
+			var jdcypf = [];
+			var jdslypf = [];
+			var jdhsrpf = [];
+			var jdhdpf = [];
+			var jdhongdpf = [];
+			var jdldpf = [];
+			var jdhsypf = [];
+
+			
+			//年周数
+			var nianzhou = [];
+			var bnnianzhou = [];
+			var jdnianzhou = [];
+			var indexlength = 0;
+			
+			$.ajax({
+				url:'${ctxPath}/jiage/querynzjg.do',
+				type:'post',
+				data:{'year':year,'week':week,"jglxid":"003"},
+				dataType:'json',
+				success:function(data){
+					var nz = data.list[0].nyear+"年"+data.list[0].nweek+"周";
+					nianzhou.push(nz);
+					var zhou = data.list[0].nweek;
+					for(var i = 0; i < data.list.length; i++){
+						if(data.list[i].jglxid == '003' || data.list[i].jglxid == null || data.list[i].jglxid == ""){
+							if(zhou != data.list[i].nweek){
+								nz = data.list[i].nyear+"年"+data.list[i].nweek+"周";
+								zhou = data.list[i].nweek;
+								nianzhou.push(nz);
+								indexlength = indexlength + 1;
+								if(indexlength > mfopf.length){
+									mfopf.push(0);
+								}
+								if(indexlength > mfwpf.length){
+									mfwpf.push(0);
+								}
+								if(indexlength > jmopf.length){
+									jmopf.push(0);
+								}
+								if(indexlength > jmwpf.length){
+									jmwpf.push(0);
+								}
+								if(indexlength > zjpf.length){
+									zjpf.push(0);
+								}
+								if(indexlength > ympf.length){
+									ympf.push(0);
+								}
+								if(indexlength > dbmpf.length){
+									dbmpf.push(0);
+								}
+								if(indexlength > tgxmpf.length){
+									tgxmpf.push(0);
+								}
+								if(indexlength > cypf.length){
+									cypf.push(0);
+								}
+								if(indexlength > slypf.length){
+									slypf.push(0);
+								}
+								if(indexlength > hsrpf.length){
+									hsrpf.push(0);
+								}
+								if(indexlength > hdpf.length){
+									hdpf.push(0);
+								}
+								if(indexlength > hongdpf.length){
+									hongdpf.push(0);
+								}
+								if(indexlength > ldpf.length){
+									ldpf.push(0);
+								}
+								if(indexlength > hsypf.length){
+									hsypf.push(0);
+								}
+							}
+							var pzid = data.list[i].pzid;
+							var price = data.list[i].price;
+							var pzname = data.list[i].pzname;
+							var level = data.list[i].level;
+							if(pzid != null){
+								//面粉特一批发
+								//if(pzid == "52db6974b36046b2b40751df0906b500"){
+								if(pzname == "面粉" && level == "特一"){
+									mfopf.push(price);
+								}
+								//特二粉批发
+								//if(pzid == "f47f916e4acf4d3fa6a8c7bd4e2ccc6d"){
+								if(pzname == "面粉" && level == "特二"){
+									mfwpf.push(price);
+								}
+								//特等粳米批发
+								//if(pzid == "75fa26f9f92e4c3e99b922a01107b100"){
+								if(pzname == "粳米" && level == "特等"){
+									jmopf.push(price);
+								}
+								//标一粳米批发
+								//if(pzid == "987744d8878241b990a85d2d46d243f6"){
+								if(pzname == "粳米" && level == "标一"){
+									jmwpf.push(price);
+								}
+								//特等杂交米批发
+								//if(pzid == "1bc3cc2505c34b42871a4471bd407d95"){
+								if(pzname == "杂交米" && level == "特等"){
+									zjpf.push(price);
+								}
+								//中等元米批发价
+								//if(pzid == "9bbc2b0e365144f2a42169c070a8f95d"){
+								if(pzname == "元米" && level == "中等"){
+									ympf.push(price);
+								}
+								//中等东北米批发
+								//if(pzid == "0e5b1c5584b2473496f14ba7ead3ed12"){
+								if(pzname == "东北米" && level == "中等"){
+									dbmpf.push(price);
+								}
+								//中等泰国香米批发
+								//if(pzid == "fe3b4907f90b4d28ba333e17349c168d"){
+								if(pzname == "泰国香米" && level == "中等"){
+									tgxmpf.push(price);
+								}
+								//四级菜油批发
+								//if(pzid == "04a40d0f1f9148488d3f841cee0143a0"){
+								if(pzname == "菜油" && level == "四级"){
+									cypf.push(price);
+								}
+								//中等色拉油批发
+								//if(pzid == "b636e41779c94e45b1bd49b70d3df8b6"){
+								if(pzname == "色拉油" && level == "中等"){
+									slypf.push(price);
+								}
+								//中等花生仁
+								//if(pzid == "d2ca17097f0c4ac49a8ebb07f176ec79"){
+								if(pzname == "花生仁" && level == "中等"){
+									hsrpf.push(price);
+								}
+								//中等黄豆批发
+								//if(pzid == "c7b0af7f32614208b262ece0e46fcba6"){
+								if(pzname == "黄豆" && level == "中等"){
+									hdpf.push(price);
+								}
+								//中等红豆批发
+								//if(pzid == "e9afb479244344c4bffcb12ee1348adb"){
+								if(pzname == "红豆" && level == "中等"){
+									hongdpf.push(price);
+								}
+								//中等绿豆批发
+								//if(pzid == "9b3cbdffa32843a98421795bc5c811e7"){
+								if(pzname == "绿豆" && level == "中等"){
+									ldpf.push(price);
+								}
+								//花生油批发5升
+								//if(pzid == "7343d35e4c5146389533e967b2d33fa4"){
+								if(pzname == "花生油" && level == "5升/桶装"){
+									hsypf.push(price);
+								}
+							}
+						}
+					}
+					
+					//保存半年价格和周期
+					bnmfopf = mfopf.slice(-26);
+					bnmfwpf = mfwpf.slice(-26);
+					bnjmopf = jmopf.slice(-26);
+					bnjmwpf = jmwpf.slice(-26);
+					bnzjpf = zjpf.slice(-26);
+					bnympf = ympf.slice(-26);
+					bndbmpf = dbmpf.slice(-26);
+					bntgxmpf = tgxmpf.slice(-26);
+					bncypf = cypf.slice(-26);
+					bnslypf = slypf.slice(-26);
+					bnhsrpf = hsrpf.slice(-26);
+					bnhdpf = hdpf.slice(-26);
+					bnhongdpf = hongdpf.slice(-26);
+					bnldpf = ldpf.slice(-26);
+					bnhsypf = hsypf.slice(-26);
+					
+					bnnianzhou = nianzhou.slice(-26);
+					//保存季度价格和周期
+					jdmfopf = mfopf.slice(-13);
+					jdmfwpf = mfwpf.slice(-13);
+					jdjmopf = jmopf.slice(-13);
+					jdjmwpf = jmwpf.slice(-13);
+					jdzjpf = zjpf.slice(-13);
+					jdympf = ympf.slice(-13);
+					jddbmpf = dbmpf.slice(-13);
+					jdtgxmpf = tgxmpf.slice(-13);
+					jdcypf = cypf.slice(-13);
+					jdslypf = slypf.slice(-13);
+					jdhsrpf = hsrpf.slice(-13);
+					jdhdpf = hdpf.slice(-13);
+					jdhongdpf = hongdpf.slice(-13);
+					jdldpf = ldpf.slice(-13);
+					jdhsypf = hsypf.slice(-13);
+					jdnianzhou = nianzhou.slice(-13);
+					
+					//季度进厂价格
+					option = {
+						title: {
+					        text: '季度市内批发价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					        data:["面粉特一","面粉特二",
+					              "粳米特等","粳米标一",
+					              "杂交米","元米","东北米",
+					              "泰国香米","菜油","色拉油",
+					              "花生仁","黄豆","红豆","绿豆",
+					              "花生油"],
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: jdnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+					        {
+					            name:"面粉特一",
+					            type:'line',
+					            data:jdmfopf,
+					        },
+					        {
+					            name:"面粉特二",
+					            type:'line',
+					            data:jdmfwpf,
+					        },
+					        {
+					            name:"粳米特等",
+					            type:'line',
+					            data:jdjmopf,
+					        }
+					        ,
+					        {
+					            name:"粳米标一",
+					            type:'line',
+					            data:jdjmwpf,
+					        },
+					        {
+					            name:"杂交米",
+					            type:'line',
+					            data:jdzjpf,
+					        },
+					        {
+					            name:"元米",
+					            type:'line',
+					            data:jdympf,
+					        },
+					        {
+					            name:"东北米",
+					            type:'line',
+					            data:jddbmpf,
+					        },
+					        {
+					            name:"泰国香米",
+					            type:'line',
+					            data:jdtgxmpf,
+					        },
+					        {
+					            name:"菜油",
+					            type:'line',
+					            data:jdcypf,
+					        },
+					        {
+					            name:"色拉油",
+					            type:'line',
+					            data:jdslypf,
+					        },
+					        {
+					            name:"花生仁",
+					            type:'line',
+					            data:jdhsrpf,
+					        },
+					        {
+					            name:"黄豆",
+					            type:'line',
+					            data:jdhdpf,
+					        },
+					        {
+					            name:"红豆",
+					            type:'line',
+					            data:jdhongdpf,
+					        },
+					        {
+					            name:"绿豆",
+					            type:'line',
+					            data:jdldpf,
+					        },
+					        {
+					            name:"花生油",
+					            type:'line',
+					            data:jdhsypf,
+					        },
+					        
+					    ]
+					};
+					myChart.setOption(option);
+					
+					//半年度进厂价格
+					option1 = {
+						title: {
+					        text: '半年度市内批发价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					    	data:["面粉特一","面粉特二",
+					              "粳米特等","粳米标一",
+					              "杂交米","元米","东北米",
+					              "泰国香米","菜油","色拉油",
+					              "花生仁","黄豆","红豆","绿豆",
+					              "花生油"],
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: bnnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+							{
+							    name:"面粉特一",
+							    type:'line',
+							    data:bnmfopf,
+							},
+							{
+							    name:"面粉特二",
+							    type:'line',
+							    data:bnmfwpf,
+							},
+							{
+							    name:"粳米特等",
+							    type:'line',
+							    data:bnjmopf,
+							}
+							,
+							{
+							    name:"粳米标一",
+							    type:'line',
+							    data:bnjmwpf,
+							},
+							{
+							    name:"杂交米",
+							    type:'line',
+							    data:bnzjpf,
+							},
+							{
+							    name:"元米",
+							    type:'line',
+							    data:bnympf,
+							},
+							{
+							    name:"东北米",
+							    type:'line',
+							    data:bndbmpf,
+							},
+							{
+							    name:"泰国香米",
+							    type:'line',
+							    data:bntgxmpf,
+							},
+							{
+							    name:"菜油",
+							    type:'line',
+							    data:bncypf,
+							},
+							{
+							    name:"色拉油",
+							    type:'line',
+							    data:bnslypf,
+							},
+							{
+							    name:"花生仁",
+							    type:'line',
+							    data:bnhsrpf,
+							},
+							{
+							    name:"黄豆",
+							    type:'line',
+							    data:bnhdpf,
+							},
+							{
+							    name:"红豆",
+							    type:'line',
+							    data:bnhongdpf,
+							},
+							{
+							    name:"绿豆",
+							    type:'line',
+							    data:bnldpf,
+							},
+							{
+							    name:"花生油",
+							    type:'line',
+							    data:bnhsypf,
+							},
+					    ]
+					};
+					myChart1.setOption(option1);
+					
+					//半年度进厂价格
+					option2 = {
+						title: {
+					        text: '年度市内批发价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					    	data:["面粉特一","面粉特二",
+					              "粳米特等","粳米标一",
+					              "杂交米","元米","东北米",
+					              "泰国香米","菜油","色拉油",
+					              "花生仁","黄豆","红豆","绿豆",
+					              "花生油"],
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: nianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+							{
+							    name:"面粉特一",
+							    type:'line',
+							    data:mfopf,
+							},
+							{
+							    name:"面粉特二",
+							    type:'line',
+							    data:mfwpf,
+							},
+							{
+							    name:"粳米特等",
+							    type:'line',
+							    data:jmopf,
+							}
+							,
+							{
+							    name:"粳米标一",
+							    type:'line',
+							    data:jmwpf,
+							},
+							{
+							    name:"杂交米",
+							    type:'line',
+							    data:zjpf,
+							},
+							{
+							    name:"元米",
+							    type:'line',
+							    data:ympf,
+							},
+							{
+							    name:"东北米",
+							    type:'line',
+							    data:dbmpf,
+							},
+							{
+							    name:"泰国香米",
+							    type:'line',
+							    data:tgxmpf,
+							},
+							{
+							    name:"菜油",
+							    type:'line',
+							    data:cypf,
+							},
+							{
+							    name:"色拉油",
+							    type:'line',
+							    data:slypf,
+							},
+							{
+							    name:"花生仁",
+							    type:'line',
+							    data:hsrpf,
+							},
+							{
+							    name:"黄豆",
+							    type:'line',
+							    data:hdpf,
+							},
+							{
+							    name:"红豆",
+							    type:'line',
+							    data:hongdpf,
+							},
+							{
+							    name:"绿豆",
+							    type:'line',
+							    data:ldpf,
+							},
+							{
+							    name:"花生油",
+							    type:'line',
+							    data:hsypf,
+							},
+					    ]
+					};
+					myChart2.setOption(option2);
+				},
+				error:function(){
+				}
+			});
+		 
+		 
+	 }
+	 //农贸市场价
+	 if(jglxid == "004"){
+		 
+		//粳米特等农贸市场价
+			var jmnm = [];
+			//东北米特等农贸市场价
+			var dbmnm = [];
+			//杂交米特等农贸市场价
+			var zjmnm = [];
+			//面粉特一农贸市场价
+			var mfnm = [];
+			//菜油农贸市场价
+			var cynm = [];
+			
+			//半年图表
+			var bnjmnm = [];
+			var bndbmnm = [];
+			var bnzjmnm = [];
+			var bnmfnm = [];
+			var bncynm = [];
+			
+			//季度图表
+			var jdjmnm = [];
+			var jddbmnm = [];
+			var jdzjmnm = [];
+			var jdmfnm = [];
+			var jdcynm = [];
+			
+			//年周数
+			var nianzhou = [];
+			var bnnianzhou = [];
+			var jdnianzhou = [];
+			var indexlength = 0;
+			
+			$.ajax({
+				url:'${ctxPath}/jiage/querynzjg.do',
+				type:'post',
+				data:{'year':year,'week':week,"jglxid":"004"},
+				dataType:'json',
+				success:function(data){
+					var nz = data.list[0].nyear+"年"+data.list[0].nweek+"周";
+					nianzhou.push(nz);
+					var zhou = data.list[0].nweek;
+					for(var i = 0; i < data.list.length; i++){
+						if(data.list[i].jglxid == '004' || data.list[i].jglxid == null || data.list[i].jglxid == ""){
+							if(zhou != data.list[i].nweek){
+								nz = data.list[i].nyear+"年"+data.list[i].nweek+"周";
+								zhou = data.list[i].nweek;
+								nianzhou.push(nz);
+								indexlength = indexlength + 1;
+								if(indexlength > jmnm.length){
+									jmnm.push(0);
+								}
+								if(indexlength > dbmnm.length){
+									dbmnm.push(0);
+								}
+								if(indexlength > zjmnm.length){
+									zjmnm.push(0);
+								}
+								if(indexlength > mfnm.length){
+									mfnm.push(0);
+								}
+								if(indexlength > cynm.length){
+									cynm.push(0);
+								}
+								
+							}
+							var pzid = data.list[i].pzid;
+							var price = data.list[i].price;
+							var pzname = data.list[i].pzname;
+							var level = data.list[i].level;
+							if(pzid != null){
+								//粳米特等农贸市场价
+								//if(pzid == "75fa26f9f92e4c3e99b922a01107b100"){
+								if(pzname == "粳米" && level == "特等"){
+									jmnm.push(price);
+								}
+								//东北米特等农贸市场价
+								//if(pzid == "610e971a384f4b33acd08cfb82819f45"){
+								if(pzname == "东北米" && level == "特等"){
+									dbmnm.push(price);
+								}
+								//特等杂交米农贸市场价
+								//if(pzid == "1bc3cc2505c34b42871a4471bd407d95"){
+								if(pzname == "杂交米" && level == "特等"){
+									zjmnm.push(price);
+								}
+								//面粉特一农贸市场价
+								//if(pzid == "52db6974b36046b2b40751df0906b500"){
+								if(pzname == "面粉" && level == "特一"){
+									mfnm.push(price);
+								}
+								//菜油农贸市场价
+								//if(pzid == "04a40d0f1f9148488d3f841cee0143a0"){
+								if(pzname == "菜油" && level == "四级"){
+									cynm.push(price);
+								}
+							}
+						}
+					}
+					//保存半年价格和周期
+					bnjmnm = jmnm.slice(-26);
+					bndbmnm = dbmnm.slice(-26);
+					bnzjmnm = zjmnm.slice(-26);
+					bnmfnm = mfnm.slice(-26);
+					bncynm = cynm.slice(-26);
+					bnnianzhou = nianzhou.slice(-26);
+					//保存季度价格和周期	
+					jdjmnm = jmnm.slice(-13);
+					jddbmnm = dbmnm.slice(-13);
+					jdzjmnm = zjmnm.slice(-13);
+					jdmfnm = mfnm.slice(-13);
+					jdcynm = cynm.slice(-13);
+					
+					jdnianzhou = nianzhou.slice(-13);
+					
+					//季度进厂价格
+					option = {
+						title: {
+					        text: '季度市内农贸市场价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					        data:["粳米特等","东北米特等",
+					              "杂交米特等","面粉特一",
+					              "菜油"],
+					              textStyle:{
+							        	fontSize:20,
+							        }
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: jdnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+					        {
+					            name:"粳米特等",
+					            type:'line',
+					            data:jdjmnm,
+					        },
+					        {
+					            name:"东北米特等",
+					            type:'line',
+					            data:jddbmnm,
+					        },
+					        {
+					            name:"杂交米特等",
+					            type:'line',
+					            data:jdzjmnm,
+					        }
+					        ,
+					        {
+					            name:"面粉特一",
+					            type:'line',
+					            data:jdmfnm,
+					        },
+					        {
+					            name:"菜油",
+					            type:'line',
+					            data:jdcynm,
+					        },
+					    ]
+					};
+					myChart.setOption(option);
+					
+					//半年度进厂价格
+					option1 = {
+						title: {
+					        text: '半年度市内农贸价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					    	data:["粳米特等","东北米特等",
+					              "杂交米特等","面粉特一",
+					              "菜油"],
+					              textStyle:{
+							        	fontSize:20,
+							        }
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: bnnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+							{
+							    name:"粳米特等",
+							    type:'line',
+							    data:bnjmnm,
+							},
+							{
+							    name:"东北米特等",
+							    type:'line',
+							    data:bndbmnm,
+							},
+							{
+							    name:"杂交米特等",
+							    type:'line',
+							    data:bnzjmnm,
+							}
+							,
+							{
+							    name:"面粉特一",
+							    type:'line',
+							    data:bnmfnm,
+							},
+							{
+							    name:"菜油",
+							    type:'line',
+							    data:bncynm,
+							},
+					    ]
+					};
+					myChart1.setOption(option1);
+					
+					//半年度进厂价格
+					option2 = {
+						title: {
+					        text: '年度市内农贸价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					    	data:["粳米特等","东北米特等",
+					              "杂交米特等","面粉特一",
+					              "菜油"],
+					              textStyle:{
+							        	fontSize:20,
+							        }
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: nianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+							{
+							    name:"粳米特等",
+							    type:'line',
+							    data:jmnm,
+							},
+							{
+							    name:"东北米特等",
+							    type:'line',
+							    data:dbmnm,
+							},
+							{
+							    name:"杂交米特等",
+							    type:'line',
+							    data:zjmnm,
+							}
+							,
+							{
+							    name:"面粉特一",
+							    type:'line',
+							    data:mfnm,
+							},
+							{
+							    name:"菜油",
+							    type:'line',
+							    data:cynm,
+							},
+					    ]
+					};
+					myChart2.setOption(option2);
+				},
+				error:function(){
+				}
+			});
+		 
+		 
+		 
+	 }
+	 //超市零售价
+	 if(jglxid == "005"){
+		
+		//苏垦大米超市零售价
+			var skdmls = [];
+			//福临门大米零售价
+			var flmdmls = [];
+			//黄禾精制面粉
+			var jzmfls = [];
+			//金龙鱼大豆油
+			var jlyddyls = [];
+			//金龙鱼食用调和油
+			var jlythyls = [];
+			//金龙鱼菜籽油
+			var jlyccyls = [];
+			//鲁花花生油
+			var lhhsyls = [];
+			
+			//半年图表
+			var bnskdmls = [];
+			var bnflmdmls = [];
+			var bnjzmfls = [];
+			var bnjlyddyls = [];
+			var bnjlythyls = [];
+			var bnjlyccyls = [];
+			var bnlhhsyls = [];
+			
+			//季度图表
+			var jdskdmls = [];
+			var jdflmdmls = [];
+			var jdjzmfls = [];
+			var jdjlyddyls = [];
+			var jdjlythyls = [];
+			var jdjlyccyls = [];
+			var jdlhhsyls = [];
+			
+			//年周数
+			var nianzhou = [];
+			var bnnianzhou = [];
+			var jdnianzhou = [];
+			var indexlength = 0;
+			
+			
+			$.ajax({
+				url:'${ctxPath}/jiage/querynzjg.do',
+				type:'post',
+				data:{'year':year,'week':week,"jglxid":"005"},
+				dataType:'json',
+				success:function(data){
+					var nz = data.list[0].nyear+"年"+data.list[0].nweek+"周";
+					nianzhou.push(nz);
+					var zhou = data.list[0].nweek;
+					for(var i = 0; i < data.list.length; i++){
+						if(data.list[i].jglxid == '005' || data.list[i].jglxid == null || data.list[i].jglxid == ""){
+							if(zhou != data.list[i].nweek){
+								nz = data.list[i].nyear+"年"+data.list[i].nweek+"周";
+								zhou = data.list[i].nweek;
+								nianzhou.push(nz);
+								indexlength = indexlength + 1;
+								if(indexlength > skdmls.length){
+									skdmls.push(0);
+								}
+								if(indexlength > flmdmls.length){
+									flmdmls.push(0);
+								}
+								if(indexlength > jzmfls.length){
+									jzmfls.push(0);
+								}
+								if(indexlength > jlyddyls.length){
+									jlyddyls.push(0);
+								}
+								if(indexlength > jlythyls.length){
+									jlythyls.push(0);
+								}
+								if(indexlength > jlyccyls.length){
+									jlyccyls.push(0);
+								}
+								if(indexlength > lhhsyls.length){
+									lhhsyls.push(0);
+								}
+							}
+							var pzid = data.list[i].pzid;
+							var price = data.list[i].price;
+							var pzname = data.list[i].pzname;
+							var level = data.list[i].level;
+							if(pzid != null){
+								//苏垦大米零售价
+								if(pzid == "218949b0345847f68b619074c1e5c9b3"){
+								//if(pzname == "粳米" && level == "苏垦大米(宝金玉10kg)"){
+									skdmls.push(price);
+								}
+								//福临门大米零售价
+								if(pzid == "ba80d538ce434fb2884d69c851e2e58e"){
+								//if(pzname == "粳米" && level == "福临门东北优质大米(10kg)"){
+									flmdmls.push(price);
+								}
+								//精制面粉零售价
+								if(pzid == "66487b448e104c69850e0fcd5d2122d0"){
+								//if(pzname == "面粉" && level == "黄禾精制面粉(2kg)"){
+									jzmfls.push(price);
+								}
+								//金龙鱼大豆油零售价
+								if(pzid == "2caac5028e944f2688c0cf60a4d28599"){
+								//if(pzname == "大豆油" && level == "金龙鱼大豆油(5L)"){
+									jlyddyls.push(price);
+								}
+								//金龙鱼调和油零售
+								if(pzid == "b4175f1f7add4c7c8c6961abb1fa3b73"){
+								//if(pzname == "调和油" && level == "金龙鱼食用调和油(5L)"){
+									jlythyls.push(price);
+								}
+								//金龙鱼菜籽油
+								if(pzid == "1d33963158fd4b4aaa74f1d9b266186c"){
+								//if(pzname == "菜籽油" && level == "金龙鱼一级菜籽油(5L)"){
+									jlyccyls.push(price);
+								}
+								//鲁花花生油
+								if(pzid == "1967db5624164d6384972c7e7fcdb944"){
+								//if(pzname == "花生油" && level == "鲁花5S压榨花生油(5L)"){
+									lhhsyls.push(price);
+								}
+							}
+						}
+					}
+					//保存半年价格和周期					
+					bnskdmls = skdmls.slice(-26);
+					bnflmdmls = flmdmls.slice(-26);
+					bnjzmfls = jzmfls.slice(-26);
+					bnjlyddyls = jlyddyls.slice(-26);
+					bnjlythyls = jlythyls.slice(-26);
+					bnjlyccyls = jlyccyls.slice(-26);
+					bnlhhsyls = lhhsyls.slice(-26);
+					
+					bnnianzhou = nianzhou.slice(-26);
+					//保存季度价格和周期	
+					jdskdmls = skdmls.slice(-13);
+					jdflmdmls = flmdmls.slice(-13);
+					jdjzmfls = jzmfls.slice(-13);
+					jdjlyddyls = jlyddyls.slice(-13);
+					jdjlythyls = jlythyls.slice(-13);
+					jdjlyccyls = jlyccyls.slice(-13);
+					jdlhhsyls = lhhsyls.slice(-13);
+					
+					jdnianzhou = nianzhou.slice(-13);
+					
+					/*
+					var lname = ["苏垦大米","福临门东北优质大米",
+					              "黄禾精制面粉"];
+					var lprice = [[12,32,12,32,22,21,23,12,14,16,2,17,22],
+					              [14,22,22,12,25,24,22,15,11,12,21,16,24],
+					              [11,35,15,30,24,26,29,17,15,13,25,19,22]];
+				
+					var series=[];
+				    for(var i = 0;i<lname.length;i++){
+				        series.push({
+				            name: lname[i],
+				            type: 'line',
+				            stack: '总量',
+				            // data:[120, 132, 101, 134, 90, 230, 210]
+				            data: lprice[i]
+				        });
+				    }
+				    */
+					
+					//季度进厂价格
+					option = {
+						title: {
+					        text: '季度市内零售价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					        data:["苏垦大米","福临门东北优质大米",
+					              "黄禾精制面粉","金龙鱼大豆油",
+					              "金龙鱼食用调和油","金龙鱼一级菜籽油",
+					              "鲁花5S压榨花生油"],
+					
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: jdnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+					        {
+					            name:"苏垦大米",
+					            type:'line',
+					            data:jdskdmls,
+					        },
+					        {
+					            name:"福临门东北优质大米",
+					            type:'line',
+					            data:jdflmdmls,
+					        },
+					        {
+					            name:"黄禾精制面粉",
+					            type:'line',
+					            data:jdjzmfls,
+					        }
+					        ,
+					        {
+					            name:"金龙鱼大豆油",
+					            type:'line',
+					            data:jdjlyddyls,
+					        },
+					        {
+					            name:"金龙鱼食用调和油",
+					            type:'line',
+					            data:jdjlythyls,
+					        },
+					        {
+					            name:"金龙鱼一级菜籽油",
+					            type:'line',
+					            data:jdjlyccyls,
+					        },
+					        {
+					            name:"鲁花5S压榨花生油",
+					            type:'line',
+					            data:jdlhhsyls,
+					        },
+					
+					    ]
+					};
+					myChart.setOption(option);
+					
+					//半年度进厂价格
+					option1 = {
+						title: {
+					        text: '半年度市内零售价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					    	data:["苏垦大米","福临门东北优质大米",
+					              "黄禾精制面粉","金龙鱼大豆油",
+					              "金龙鱼食用调和油","金龙鱼一级菜籽油",
+					              "鲁花5S压榨花生油"],
+					     
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: bnnianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+					        
+							{
+							    name:"苏垦大米",
+							    type:'line',
+							    data:bnskdmls,
+							},
+							{
+							    name:"福临门东北优质大米",
+							    type:'line',
+							    data:bnflmdmls,
+							},
+							{
+							    name:"黄禾精制面粉",
+							    type:'line',
+							    data:bnjzmfls,
+							}
+							,
+							{
+							    name:"金龙鱼大豆油",
+							    type:'line',
+							    data:bnjlyddyls,
+							},
+							{
+							    name:"金龙鱼食用调和油",
+							    type:'line',
+							    data:bnjlythyls,
+							},
+							{
+							    name:"金龙鱼一级菜籽油",
+							    type:'line',
+							    data:bnjlyccyls,
+							},
+							{
+							    name:"鲁花5S压榨花生油",
+							    type:'line',
+							    data:bnlhhsyls,
+							},
+					    ]
+					};
+					myChart1.setOption(option1);
+					
+					//半年度进厂价格
+					option2 = {
+						title: {
+					        text: '年度市内农贸价格趋势图',
+					    },
+					    tooltip: {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					    	data:["苏垦大米","福临门东北优质大米",
+					              "黄禾精制面粉","金龙鱼大豆油",
+					              "金龙鱼食用调和油","金龙鱼一级菜籽油",
+					              "鲁花5S压榨花生油"],
+					            
+					    },
+					    xAxis:  {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: nianzhou
+					    },
+					    yAxis: {
+					    	name: '单位:元/50公斤',
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value}'
+					        }
+					    },
+					    series: [
+							{
+							    name:"苏垦大米",
+							    type:'line',
+							    data:skdmls,
+							},
+							{
+							    name:"福临门东北优质大米",
+							    type:'line',
+							    data:flmdmls,
+							},
+							{
+							    name:"黄禾精制面粉",
+							    type:'line',
+							    data:jzmfls,
+							},
+							{
+							    name:"金龙鱼大豆油",
+							    type:'line',
+							    data:jlyddyls,
+							},
+							{
+							    name:"金龙鱼食用调和油",
+							    type:'line',
+							    data:jlythyls,
+							},
+							{
+							    name:"金龙鱼一级菜籽油",
+							    type:'line',
+							    data:jlyccyls,
+							},
+							{
+							    name:"鲁花5S压榨花生油",
+							    type:'line',
+							    data:lhhsyls,
+							},
+					    ]
+					};
+					myChart2.setOption(option2);
+				},
+				error:function(){
+				}
+			});
+		 
+		 
+	 }
+ }
+ 
+function getjd(){
+	$(".divjidu").css('display','block');
+	$(".divbannian").css('display','none');
+	$(".divniandu").css('display','none');
+}
+
+function getbn(){
+	$(".divjidu").css('display','none');
+	$(".divbannian").css('display','block');
+	$(".divniandu").css('display','none');
+}
+
+function getyn(){
+	$(".divjidu").css('display','none');
+	$(".divbannian").css('display','none');
+	$(".divniandu").css('display','block');
+}
+
+//获取当前周数
+function getYearWeek(date){
+	var date2=new Date(date.getFullYear(), 0, 1);
+	var day1=date.getDay();
+	if(day1==0) day1=7;
+	var day2=date2.getDay();
+	if(day2==0) day2=7;
+	d = parseInt((date.getTime() - date2.getTime()+(day2-day1)*(24*60*60*1000)) / 86400000);
+	return parseInt(d /7)+1;
+}
+
+function Change(){
+	var year = $("#niandu option:selected").val();
+	//生成星期数据
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":year,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#nianzs").empty();
+			for(var i = 0; i < data.list.length; i++){	
+				if(year==new Date().getFullYear())
+				{
+					if(i<getYearWeek(new Date())-1)
+					{
+						var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+						$("#nianzs").prepend(op);
+					}
+				}else{
+					var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+					$("#nianzs").prepend(op);
+				}	
+			}
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+}
+
+
+</script>
+<meta content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0;" name="viewport" />
+<div class="panel panel-default">
+	
+
+<div class="panel-heading">
+	<div class="form-inline">
+	 	<div class="cjd-div niandu-div" style="float:left;margin-left:100px">
+			<label class="cjd-label">年:</label>
+			<select id="niandu"  class="form-control cjd-select" onchange="Change()" style="width: 100px;">
+			</select>
+		</div>
+		<div class="cjd-div nianzs-div" style="margin-left:0px">
+			<label class="cjd-label">周:</label>
+			<select id="nianzs" class="form-control cjd-select" style="width: 200px;">
+			</select>
+		</div>
+		<div class="cjd-div jglx-div" style="margin-left:0px">
+			<label class="cjd-label">类型:</label>
+			<select id="jglx" class="form-control cjd-select" style="width:150px; height:27px;">
+			</select>
+		</div>
+	 	<a id="searchprice" class="abutton" type="button" onclick="doSearch()" >查询</a>
+		<div style="float:right;width:15%;text-align:right;font-size:20px">
+			单位:元/50公斤
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+	<div class="panel-body">
+		<div class="panel-zhouqi" style="width:100%; float:left; text-align:right">
+			<label style="font-size:20px;"><input name="zhiliang" type="radio" value="xingzhi" onclick="getjd()" checked="checked"/>&nbsp;季度 </label>&nbsp;&nbsp;  
+			<label style="font-size:20px;"><input name="zhiliang" type="radio" value="pinzhong" onclick="getbn()" />&nbsp;半年</label>&nbsp;&nbsp; 
+			<label style="font-size:20px;"><input name="zhiliang" type="radio" value="dengji" onclick="getyn()" />&nbsp;一年</label> 
+		</div>
+		
+		<div id="container3" style="flaot:left;margin-top:20px;width:100%;height:80%">
+			<div id="divjidu" class="tubiao divjidu" style="width:100%; height:100%;float:left">
+			</div>
+			<div id="divbannian" class="tubiao divbannian" style="display:none">
+			</div>
+			<div id="divniandu" class="tubiao divniandu" style="display:none">
+			</div>
+		</div>
+	</div>
+	
+</div>

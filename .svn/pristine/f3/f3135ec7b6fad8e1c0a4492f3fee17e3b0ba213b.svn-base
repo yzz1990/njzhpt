@@ -1,0 +1,172 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+	<link rel="stylesheet" type="text/css" href="${ctxPath}/web/showBo.css"/>
+	<script src="${ctxPath}/web/showBo.js" type="text/javascript" charset="utf-8"></script>
+	
+	<style>
+	.datatables{
+		text-align:center;
+		color:black;
+	}
+	</style>
+
+		<div class="panel panel-default">
+		<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>秋粮预测表</b></span>
+				</div>
+			<div class="panel-heading">
+				<div class="form-inline">
+				<label>年份:</label>
+				<select class="form-control input-sm input-smnd" style="width:100px; font-size:12pt">
+					<option value="请选择">请选择</option>
+				</select>
+
+				
+					<a class="btn btn-success btn-xs " type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+				
+					<a class="btn btn-success btn-xs pull-right" type="button" onclick="addyuce()" style="float:right;"><i class="fa fa-plus-circle" aria-hidden="true">&nbsp;新增</i></a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/queryqiuliangyuce" ></table>
+			</div>
+		
+		</div>
+<script type="text/javascript">
+var datatable;
+var date=new Date;
+var year=parseInt(date.getFullYear());
+
+$(function(){
+	
+	
+	for(var i = 0; i < 5; i++){
+		$(".input-smnd").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+	}
+	
+	$(".input-smnd").select2();
+
+	
+});
+
+$(window).load(function() { 
+	$(".datatables").attr("data-queryparam","&year="+year+"&dizhi=市区");
+	
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "niandu",
+				"title" : "年度",
+			},{
+				"data" : "diqu",
+				"title" : "地区",
+			},{
+				"title" : "报表名称",
+				"render": function (data,type,row,meta) {
+					var name = row["niandu"]+"年秋粮收购预测报表";
+					return name;
+				}
+			},{
+				"title" : "操作",
+				width : 150,
+				"render": function (data,type,row,meta) {
+					var curl = '${ctxPath}/shouchukeshihua/update/qiujizengjia.html?id='+row["id"].trim()+'&flag=1';
+					var xiugai = '<a class="btn btn-xs btn-success" type="button" onclick="updateurl(\''+curl+'\')"><i class="fa fa-pencil" aria-hidden="true" >&nbsp;编辑</i></a>';
+					var shanchu = '<a class="btn btn-xs btn-danger" type="button" onclick="deletewuri(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true" >&nbsp;删除</i></a>';
+					return xiugai +" "+ shanchu;		
+				}	
+			}
+			]
+
+	});
+	
+}); 
+
+function updateurl(curl){
+	dialog1=BootstrapDialog.show({
+	    title: '秋季预测收购报表修改',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="'+curl+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1300px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveyuce(); 
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function addyuce(){
+	dialog1=BootstrapDialog.show({
+	    title: '秋季预测收购报表增改',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/shouchukeshihua/update/qiujizengjia.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1300px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveyuce(); 
+        	   
+           },
+          cssClass: 'btn-xs btn-success'
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+	
+function doSearch(){
+	var year = $(".input-smnd option:selected").val();
+	if(year != "请选择" && year != "" && year != null){
+		$(".datatables").attr("data-queryparam","&niandu="+year+"&diqu=市区");
+		datatable.ajax.reload(null,true);
+	}else{
+		$(".datatables").attr("data-queryparam","&diqu=市区");
+		datatable.ajax.reload(null,true);
+	}
+}
+
+function deletewuri(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/deletebaobiao',
+			type:'post',
+			data:{'id':id,'temp':'2',"isedit":'2'},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+}
+
+</script>
+<%}%>

@@ -1,0 +1,84 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addAqjyshipin",title="新增企业教育视频信息";
+	if (isNotEmpty(parameter.id)) {
+		var qyaqsp = @com.zkzy.njzhpt.dao.CangchuglDao.findAqjyshipin({"id":parameter.id,"page":"1","rows":"100"});
+		obj = qyaqsp.list[0];
+		url = ctxPath+"/cangchugl/upAqjyshipin";
+		title = "编辑企业教育视频信息";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="qu">区</label>
+							<input type="text" class="form-control" name="qu" id="qu" placeholder="区" value="${obj.qu}" >
+						</div>
+						<div class="form-group">	
+							<label for="qiye">企业</label>
+							<input type="text" class="form-control" name="qiye" id="qiye" placeholder="企业" value="${obj.qiye}" >
+						</div>
+						 <div class="form-group">	
+							<label for="kudian">库点</label>
+							<input type="text" class="form-control" name="kudian" id="kudian" placeholder="库点" value="${obj.kudian}"  >
+						</div>	
+						<div class="form-group">	
+							<label for="fuzeren">负责人</label>
+							<input type="text" class="form-control" name="fuzeren" id="fuzeren" placeholder="负责人" value="${obj.fuzeren}" >
+						</div>
+						 <div class="form-group">	
+							<label for="anquandabiao">安全是否达标</label>
+							<input type="text" class="form-control" name="anquandabiao" id="anquandabiao" placeholder="安全是否达标" value="${obj.anquandabiao}"  >
+						</div>
+						<div class="form-group">	
+							<label for="shipinip">视频ip</label>
+							<input type="text" class="form-control" name="shipinip" id="shipinip" placeholder="视频ip" value="${obj.shipinip}" >
+						</div>
+						 <div class="form-group">	
+							<label for="indexnum">端口</label>
+							<input type="text" class="form-control" name="indexnum" id="indexnum" placeholder="端口" value="${obj.indexnum}"  >
+						</div>
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_jiaoyu_shipin.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/anquanshengchan/anquan_jiaoyu_shipin.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

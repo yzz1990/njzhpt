@@ -1,0 +1,193 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var xzqhdm = parameter.xzqhdm;
+ 
+ debug(xzqhdm);
+%>
+<style>
+#gengdi{
+	width:390px;
+	height:300px;
+	margin-left: auto;
+    text-align: center;
+    margin-right: auto;
+}
+.quxian-table{
+	border:1px solid;
+	width:420px;
+}
+.quxian-table th,td{
+	border:1px solid;
+	text-align:center;
+}
+.tudi{
+	border:1px solid;
+	text-align:right;
+}
+
+</style>
+
+
+<body>
+	<div style="text-align:center;">
+		<h2 id="biaoti"></h2>
+		<input type="text" id="xzqh" style="display:none" value="${xzqhdm}"/>
+		<div id="gengdi">
+		</div>
+		<div id="biaoge" align="center">
+			<table class="quxian-table">	 
+				<thead>
+					<tr>
+		    			<th rowspan="1" colspan="1" id="col3" style="vertical-align:middle"></th>
+		     			<th id="year1" rowspan="1" colspan="1" id="col4" style="vertical-align:middle"></th>
+		     			<th id="year2" rowspan="1" colspan="1" id="col5" style="vertical-align:middle"></th>
+		     			<th id="year3" rowspan="1" colspan="1" id="col6" style="vertical-align:middle"></th>
+		 			</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>户籍人口</td>
+						<td class="tudi" id="huji1"></td>
+						<td class="tudi" id="huji2"></td>
+						<td class="tudi" id="huji3"></td>
+					</tr>
+					<tr>
+						<td>常住人口</td>
+						<td class="tudi" id="changzhu1"></td>
+						<td class="tudi" id="changzhu2"></td>
+						<td class="tudi" id="changzhu3"></td>
+					</tr>
+				</tbody>	
+			</table>
+		</div>
+		
+		
+	</div>
+</body>
+
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+<script type="text/javascript">
+$(function(){
+	var xzqhdm = $("#xzqh").val();
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryquxianmingxi.do',
+		type:'post',
+		data:{"xzqhdm":xzqhdm,"page":1,"rows":3},
+		dataType:'json',
+		success:function(data){
+			var hujirenkou = [];
+			var czrk = [];
+			var niandu = [];
+			$("#biaoti").text(data.list[0].quyu);
+			for(var i = 0; i < data.list.length; i++){
+				var huji = "huji"+(i+1);
+				var changzhu = "changzhu"+(i+1);
+				var year = "year"+(i+1);
+				$("#"+huji).text(data.list[i].hujirenkou);
+				$("#"+changzhu).text(data.list[i].czrk);
+				$("#"+year).text(data.list[i].niandu+"年度");
+				hujirenkou.push(data.list[i].hujirenkou);
+				czrk.push(data.list[i].czrk);
+				niandu.push(data.list[i].niandu);
+			}
+			
+			hujirenkou.reverse();
+			czrk.reverse();
+			niandu.reverse();
+			var myChart = echarts.init(document.getElementById('gengdi'));
+			
+			option = {
+				    title: {
+				        text: '户籍人口与常住人口'
+				    },
+				    tooltip : {
+				        trigger: 'axis'
+				    },
+				    legend: {
+			
+				        x: 'center',
+				        bottom:0,
+				        data:['播种面积','粮食面积']
+				    },
+				    toolbox: {
+				        feature: {
+				            saveAsImage: {}
+				        }
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '10%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            data : niandu,
+				        }
+				    ],
+				    yAxis : [
+				        {
+				        	name: '人口',
+				            type : 'value'
+				        }
+				    ],
+				    
+				    series : [
+			              
+				        
+				        {
+				            name:'户籍人口',
+				            type:'line',
+				            //stack: '总量',
+				            data:hujirenkou,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        {
+				            name:'常住人口',
+				            type:'line',
+				            //stack: '总量',
+				            data:czrk,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        
+				        
+				    ]
+				};
+			myChart.setOption(option);	
+		},
+		error:function(){
+			alert("加载耕地错误");
+		}
+		
+	});
+});
+
+</script>
+<%
+	}
+%>

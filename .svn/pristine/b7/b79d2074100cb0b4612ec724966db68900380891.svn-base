@@ -1,0 +1,126 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+					<label>备案编号:</label>
+					<input class="form-control input-sm" name="beianbianhao" id="beianbianhao" placeholder="备案编号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>单位名称:</label>
+					<input class="form-control input-sm" name="danweimc" id="danweimc" placeholder="单位名称" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+					<a class="btn btn-primary btn-sm pull-right" type="button"
+							href="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeian_edit.html">新增备案</a>
+				</div>
+				
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findQiyebeian" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "suoshuxiaqu",
+				"title" : "所属辖区"
+			},{
+				"data" : "beianbianhao",
+				"title" : "备案编号"
+			},{
+				"data" : "beianleixing",
+				"title" : "备案类型"
+			},{
+				"data" : "danweimc",
+				"title" : "单位名称",
+			},{
+				"data" : "yewulx",
+				"title" : "业务类型",
+			},{
+				"data" : "cangrong",
+				"title" : "仓容"
+			},{
+				"data" : "farendb",
+				"title" : "法人代表",
+			},{
+				"data" : "lianxifangshi",
+				"title" : "联系方式",
+			},{
+				"data" : "dizhi",
+				"title" : "地址"
+			},{
+				"data" : "zhuangtai",
+				"title" : "状态"
+			},{
+				"title" : "详情",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="beianxq()" class="btn btn-sm btn-info pjax">企业备案详情</a>';								
+					return chakan;	
+					}
+				},
+				 {"title":"操作",
+                	"render": function (data,type,row,meta) {
+	                   	var bianji = '<a href="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeian_edit.html?id='+row["id"]+'" class="btn btn-sm btn-info pjax"><em class="fa fa-pencil"></em></a>';
+	                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delQiyebeian(\''+row["id"]+'\')"><em class="fa fa-trash"></em></button>';
+	               		return bianji + " " + shanchu;
+                	}
+                }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var beianbianhao = $("#beianbianhao").val();
+	var danweimc = $("#danweimc").val();
+	document.querySelector('.datatables').dataset.queryparam="beianbianhao="+beianbianhao+"&danweimc="+danweimc;
+	datatable.ajax.reload(null,false);
+}
+	
+function delQiyebeian(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delQiyebeian',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+function beianxq(){
+	dialog1=BootstrapDialog.show({
+	    title: '企业备案详情',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeianxq.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+	});
+}
+	
+</script>
+<%
+	}
+%>

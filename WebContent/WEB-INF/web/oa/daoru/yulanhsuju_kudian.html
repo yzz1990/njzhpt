@@ -1,0 +1,134 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+<style>
+	table,td
+	  {
+	  border:1px solid #000000;
+	  }
+	table
+	  {
+	  width:100%;
+	  
+	  }
+	td
+	  {
+	  width:120px;
+	  height:50px;
+	  text-align: center;
+ 	 }
+ 	 table>tbody>tr:first-child{
+ 	 background-image: url(${ctxPath}/img/cell_blue.jpg);
+ 	 }
+</style>
+<div class="panel panel-default">
+   <div class="panel-heading" style="width: 100%;height: 40px;padding: 0">
+		<div style="width: 33%;height: 40px;float: left;text-align: center;font-size: 18px;margin-top: 6px;color: #D3D3D3;"><span>上传Excel</span></div>
+		<div style="width: 33%;height: 40px;float: left;text-align: center;font-size: 18px;font-weight:bold;margin-top: 6px;"><img src="${ctxPath}/img/table.png"><span>预览数据</span></div>
+		<div style="width: 33%;height: 40px;float: right;text-align: center;font-size: 18px;margin-top: 6px;color: #D3D3D3;"><span>导入数据</span></div>
+	</div>
+	<!-- <div style="width: 100%;height: 40px;padding: 0">
+		<label>文件名:</label>
+	</div> -->
+	<div class="panel-body" style="padding: 0;">
+		<div id="createtable" style=" width:100% ; height:100%; overflow-x:auto;overflow-y:hidden;">
+			<table id="example" class="display" cellspacing="0" width="100%" style="">
+				<thead>
+					<tr>
+					
+					</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			
+			</table>
+		</div>
+		</tr>
+		<div class="pull-right">
+			<a class="btn btn-primary btn-sm" type="button" onclick="shangyibu()">&nbsp;上一步</a>
+			<a class="btn btn-primary btn-sm" type="button" onclick="xiayibu()">&nbsp;下一步</a>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+(function ($) {
+	
+    $.getUrlParam = function (name) {
+          var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+          var r = window.location.search.substr(1).match(reg);
+          if (r != null) return unescape(r[2]); return null;
+      }
+   })(jQuery);
+   
+var liucid = $.getUrlParam("liucid");
+var lie = $.getUrlParam("data");
+var trs = [];
+
+$(function(){
+	var liucid = $.getUrlParam("liucid");
+	$.ajax({
+		url:'${ctxPath}/cangchugl/JiexiExcel',
+		type:'post',
+		data:{"liucid":liucid},
+		dataType:'json',
+		success:function(data){
+			createShowingTable(data);
+		}
+	});
+	/* $.ajax({
+		url:'${ctxPath}/cangchugl/Hqfilename',
+		type:'post',
+		data:{"liucid":liucid},
+		dataType:'json',
+		success:function(data){
+			alert(data);
+		}
+	}); */
+});
+
+function createShowingTable(data){
+	var hang = data.length;
+	var lie = $.getUrlParam("data");
+	for (var a=0;a<lie;a++) {
+		var th = '<th style="display:none">'+a+'</th>';
+		$("#createtable").find("thead tr").append(th);
+	}
+	for (var i=0;i<hang;i++) {
+		var t = "tr"+i;
+		trs.push(t);
+	}
+	for (var i=0;i<hang;i++) {
+		var tr = '<tr>';
+			
+		for (var j=0;j<lie;j++) {
+			var shuju = data[i][j];
+			if (shuju == "null") {
+				shuju = "";
+				tr+= '<td style="white-space:nowrap;">'+shuju+'</td>';
+			}else{
+				tr+= '<td style="white-space:nowrap;">'+shuju+'</td>';
+			}
+			
+		}
+		tr+= '</tr>';
+		$("#createtable").find("tbody").append(tr);
+	}
+	
+}
+
+
+function shangyibu(){
+	window.location="${ctxPath}/oa/daoru/biaoqianye_kudian.html?liucid="+liucid;
+}
+
+function xiayibu(){
+	window.location="${ctxPath}/oa/daoru/daorushuju_kudian.html?liucid="+liucid;
+}
+
+
+</script>
+<%
+	}
+%>

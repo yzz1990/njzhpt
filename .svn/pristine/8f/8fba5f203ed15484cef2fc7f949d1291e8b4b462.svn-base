@@ -1,0 +1,224 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+
+
+#div-caijia, #div-baojia{
+	height:800px;
+	overflow-y:auto;
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein , .pinleiqs{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+</style>
+<script type="text/javascript">
+
+
+$(window).load(function() {
+	
+	
+});
+
+$(function(){
+	
+	
+	
+	datatable = $('.table-news').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div style="text-align:center">'+row["name"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div style="text-align:center">'+row["url"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var id = row["id"];
+					var div = '<div style="text-align:center"><a class="btn btn-success btn-xs " type="button"  onclick="upnews(\''+id+'\')"><i class="fa fa-search" aria-hidden="true">&nbsp;修改</i></a>'+
+							'<a class="btn btn-success btn-xs" style="margin-left:10px" type="button" onclick="delnews(\''+id+'\')" ><i class="fa fa-download" aria-hidden="true">&nbsp;删除</i></a></div>';
+					return div;								
+				}
+			}
+			
+			]
+	});
+	
+
+	
+});
+
+//添加新闻网站
+function addnews(){
+	
+	dialog1=BootstrapDialog.show({
+	    title: '新增新闻网站',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/news/addnews.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","600px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","290px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.savenews(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+	
+}
+
+//更新新闻网站
+function upnews(id){
+	dialog1=BootstrapDialog.show({
+		
+	    title: '修改新闻网站',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/news/addnews.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","600px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","290px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.savenews(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+	
+}
+
+//删除新闻网站
+function delnews(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/renyuan/delnews',
+			type:'post',
+			data:{"id":id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+			},
+			error:function(){
+				alert("删除失败");
+			}
+		});
+	}
+	
+}
+//用户id绑定新闻网站
+function connectnews(){
+	
+	dialog1=BootstrapDialog.show({
+		
+		    title: '用户关联新闻网站',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/news/conflictnews.html"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","600px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '保存',
+	           action: function(dialog) {
+	        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveconflict(); 
+	        	   parent.window.dialog1.close();
+	        	   parent.window.datatable.ajax.reload(null,true);
+	           },
+	          cssClass: 'btn-xs btn-success'   
+	       },{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+	});
+	
+	
+}
+
+
+</script>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>新闻网站维护</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+		<div class="caozuo">
+		 	<a class="btn btn-xs btn-success" type="button" onclick="addnews()" style="margin-left:5px; margin-top:2px; float:right"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</i></a>
+		 	<a class="btn btn-xs btn-success" type="button" onclick="connectnews()" style="margin-left:5px; margin-top:2px; float:left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;关联网站</i></a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px; width:100%; float:left;">
+	<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped  table-bordered table-hover  datatables table-news" data-url="${ctxPath}/emergency/querynews.do" >	 
+		<thead>
+			<tr>
+    			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">网站名称</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">网站地址</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">操作</th>
+ 			</tr>
+		</thead>	
+	</table>
+	
+</div>
+
+</div>
+</div>
+
+<%}%>

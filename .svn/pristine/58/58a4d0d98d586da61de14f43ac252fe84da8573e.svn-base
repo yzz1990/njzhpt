@@ -1,0 +1,300 @@
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<% var qyzzjgdm;
+	qyzzjgdm=parameter.qyzzjgdm; 
+	uuid=parameter.uuid;
+%>
+<style type="text/css">
+body{
+background: #f7f7f7;
+}
+.dashboard-wrapper-lg {
+    position: relative;
+    background: #f7f7f7;
+    min-height: 0px; 
+    padding: 20px;
+}
+.row {
+    margin: 0px;
+    background-color: white;
+}
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 0px;
+}
+.modal-body {
+    position: relative;
+    padding: 0px;
+}
+</style>
+
+      
+<form action="" id="addsq">  
+	<input type="hidden" id="qyzzjgdm" name="qyzzjgdm"> 
+	<input type="hidden" id="lhsq_sqwh" name="lhsq_sqwh">         
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	轮换申请                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+		<div class="row">
+		<!-- 	<div class="col-xs-6">
+				<div class="form-group">
+					<label for="lhsq_sqwh">申请文号:</label>
+					<input name="lhsq_sqwh" id="lhsq_sqwh"  class="form-control" type="text" placeholder="申请文号" >
+				</div>
+			</div> -->
+			<div class="col-xs-6">	
+					<div class="form-group" >
+						<label for="lhsq_kdmc">库点名称:</label>
+						<select  name="kdbm" id="kdbm"  class="form-control" onchange="selectCH()">
+         					<option value="">请选择库点名称</option>
+         					<%	
+								var kudians=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.selectKDMC({"qyzzjgdm":qyzzjgdm,"page":1,"rows":15}).getList();
+								for(kudian in kudians){
+							%>
+								<option value="${kudian.kdbm}">${kudian.kdmc}</option>
+							<%
+								}
+							%>
+         				</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group" >
+					<label for="lhsq_ch" >仓号:</label>
+					<select  name="cfbm" id="cfbm" class="form-control"  onchange="selectYearPZ()">
+         				<option value="">请选择仓号名称</option>
+         			</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="pz">品种:</label>
+						<select name="pz" id="pz" class="form-control ">
+						</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="scnx">生产年限:</label>
+					<input name="scnx" id="scnx"  class="form-control " type="text" placeholder="生产年限" onkeyup="value=value.replace(/[^\d.]/g,'')">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="lhsl">轮换数量:</label>
+						<input name="lhsl" id="lhsl" class="form-control " placeholder="轮换数量" onkeyup="value=value.replace(/[^\d.]/g,'')">	
+					</div>	
+			</div>
+		</div>
+			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+        
+  
+
+    </form>
+    <div class="panel-footer">
+		<button type="button" class="btn btn-sm btn-primary" id="btn" style="margin-top: 3px;" onclick="tianjia()" ><em class="fa fa-check fa-fw"></em> 添加</button>
+		<a class="btn btn-sm btn-danger back" id="fanhui" style="margin-top: 3px;" onclick="quxiao()"><em class="fa fa-mail-reply fa-fw"></em>取消</a>
+	</div>
+        <div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body…</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript">
+(function ($) {
+    $.getUrlParam = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+})(jQuery);
+$(function(){
+	var qyzzjgdm=$.getUrlParam("qyzzjgdm");
+	$("#qyzzjgdm").val(qyzzjgdm);
+	var uuid=$.getUrlParam("uuid");
+	$("#lhsq_sqwh").val(uuid);
+})
+
+//向临时表里添加轮换记录
+function tianjia(){
+	 $.ajax({
+			url: "${ctxPath}/lunhuan/addduotiao.do",
+			dataType: "json",
+			data:$("#addsq").serialize(),
+			success: function(msg) {
+				if (msg.ret) {
+					//parent.dialog6.close();
+					alert("添加成功");
+					parent.dialog6.close();
+					window.top.document.querySelectorAll("iframe")[0].contentWindow.datatable.ajax.reload(null,true);
+				}else{
+					alert(parent.datatable.dataset);
+					alert("添加失败");
+				}
+			}
+		});
+}
+$(function(){
+	  $("#kdbm").select2();
+	  $("#cfbm").select2();
+});
+//点击批准提示，显示结果
+function pizhuntishi(){
+	var scnx=$("#lhsq_scnx").val();//当前仓生产年限
+	var lhsl=$("#lhsq_lhsl").val();//轮换数量
+	var pz=$("#lhsq_pz").val();    //品种
+	var qyzzjgdm=$.getUrlParam("qyzzjgdm"); //企业组织机构代码
+	var kdbm=$("#lhsq_kdmc").val();  //库点编码
+	var cfbm=$("#lhsq_ch").val();  //仓房编码
+	$("#lhsq_tsjg").html("");
+	alert(qyzzjgdm+" "+kdbm+" "+cfbm+" "+pz+" "+lhsl+" "+scnx+" ");
+	$.ajax({
+		url:'${ctxPath}/lunhuan/pizhuntishi.do',
+		type:'post',
+		data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"cfbm":cfbm,"scnx":scnx,"lhsl":lhsl,"pz":pz},
+		dataType:'json',
+		success:function(data){
+				$("#lhpzts_qszlbl").val(data.ret.qszlbl);
+				$("#lhpzts_zlbl").val(data.ret.zlbl);
+				$("#lhpzts_fpzbl").val(data.ret.fpzbl);
+				$("#lhpzts_zzscnx").val(data.ret.zzscnx);
+				//fpzbudiyu 1 3 5 分别对应小麦粳稻籼稻 条件满足
+				//fpzbudiyu 2 4 6 分别对应小麦粳稻籼稻 条件不满足
+				if(data.ret.sfzzscnx==true&&data.ret.budiyu==true&&data.ret.fpzbudiyu==1){
+					var tishijieguo="<font color='green'>"+"满足"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo);
+				}else if(data.ret.sfzzscnx==true&&data.ret.budiyu==true&&data.ret.fpzbudiyu==3){
+					var tishijieguo="<font color='green'>"+"满足"+"</font>"+'<br>';
+				}else if(data.ret.sfzzscnx==true&&data.ret.budiyu==true&&data.ret.fpzbudiyu==5){
+					var tishijieguo="<font color='green'>"+"满足"+"</font>"+'<br>';
+				}
+				//显示是否最早年限
+				if(data.ret.sfzzscnx==true){
+					/* var tishijieguo="<font color='green'>"+"是否最早年限：是"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo); */
+				}else{
+					var tishijieguo="<font color='red'>"+"　不是最早生产年限"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo);
+				}	
+				//现有库存实物数-报批数/计划数=轮换后的库存是否满足
+				if(data.ret.budiyu==true){
+					/* var tishijieguo="<font color='green'>"+"现有库存实物数-报批数/计划数不得少于1/2：是"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo); */
+				}else{
+					var tishijieguo="<font  color='red'>"+"　(现有库存实物数-报批数)/计划数低于1/2"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo);
+				}
+				
+				//根据状态分品种显示是否满足
+				if(data.ret.fpzbudiyu==1){
+					/* var tishijieguo="<font color='green'>"+"是否低于小麦库存的1/2：是"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo); */
+				}else if(data.ret.fpzbudiyu==2){
+					var tishijieguo="<font color='red'>"+"　低于小麦库存的1/2"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo);
+				}else if(data.ret.fpzbudiyu==3){
+					/* var tishijieguo="<font color='green'>"+"是否低于粳稻库存的1/4：是"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo); */
+				}else if(data.ret.fpzbudiyu==4){
+					var tishijieguo="<font color='red'>"+"　低于粳稻库存的1/4"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo);
+				}else if(data.ret.fpzbudiyu==5){
+					/* var tishijieguo="<font color='green'>"+"是否低于籼稻库存的1/3：是"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo); */
+				}else if(data.ret.fpzbudiyu==6){
+					var tishijieguo="<font color='red'>"+"　低于籼稻库存的1/3"+"</font>"+'<br>';
+					$("#lhsq_tsjg").append(tishijieguo);
+				}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+}
+//根据选择的仓号查询生产年限和品种
+function selectYearPZ(){
+	var cfbm=$("#cfbm").val();
+	var kdbm=$("#kdbm").val();
+	var qyzzjgdm=$("#qyzzjgdm").val();
+	$.ajax({
+		url:'${ctxPath}/lunhuan/findYearPZ.do',
+		type:'post',
+		data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"cfbm":cfbm},
+		dataType:'json',
+		success:function(data){
+				 $("#scnx").html("");
+				 $("#lhsl").html("");
+				 $("#scnx").val(data.ret.year);
+				 var pinzhong = "<option value="+data.ret.vCode+">"+data.ret.vName+"</option>";
+				 $("#pz").html("");
+				 $("#pz").append(pinzhong);
+				 $("#lhsl").val(data.ret.zongkucun);
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+	
+}
+	//查询仓房名称
+	function selectCH(){
+		$("#cfbm").html("");
+		$("#cfbm").append("<option>请选择仓房名称</option>")
+		var kdbm=$("#kdbm").val();
+		var qyzzjgdm=$("#qyzzjgdm").val();
+		$.ajax({
+				url: "${ctxPath}/lunhuan/selectCH.do",
+				dataType: "json",
+				data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+							$("#cfbm").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+					});
+				}
+			});
+		
+			
+	}
+function quxiao(){
+	parent.dialog6.close();
+}
+	</script>

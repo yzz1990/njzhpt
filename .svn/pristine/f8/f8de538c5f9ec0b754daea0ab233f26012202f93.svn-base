@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药剂损耗信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addYjsh",title="新增药剂损耗信息";
+	if (isNotEmpty(parameter.id)) {
+		var yjsh = @com.zkzy.njzhpt.dao.CangchuglDao.findYjsh({"id":parameter.id,"page":"1","rows":"100"});
+		obj = yjsh.list[0];
+		url = ctxPath+"/cangchugl/upYjsh";
+		title = "编辑药剂损耗信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	药剂损耗信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="ykmc"><font color="red" style="font-size:large;">*</font>药库名称:</label>
+										<select id="ykmc" name="ykmc" class="form-control" onchange="getykmc()">	
+											<option value="请选择">请选择</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="yjmc"><font color="red" style="font-size:large;">*</font>药剂名称:</label>
+										<select id="yjmc" name="yjmc" class="form-control" onchange="getyjmc()">
+											<option value="请选择">请选择</option>
+										</select>
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="yjpp"><font color="red" style="font-size:large;">*</font>药剂品牌:</label>
+										<select id="yjpp" name="yjpp" class="form-control" onchange="getyjpp()">
+											<option value="请选择">请选择</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="gg"><font color="red" style="font-size:large;">*</font>规格:</label>
+										<select id="gg" name="gg" class="form-control" onchange="getyjgg()">
+											<option value="请选择">请选择</option>
+										</select>
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cj">厂家:</label>
+										<select id="cj" name="cj" class="form-control">
+											<option value="请选择">请选择</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="danwei"><font color="red" style="font-size:large;">*</font>单位:</label>
+										<select id="danwei" name="danwei" class="form-control" onchange="getdanwei()">
+											<option value="克(g)">克(g)</option>
+											<option value="毫升(ml)">毫升(ml)</option>
+										</select>
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="shuliang" class="shuliang">损耗数量(瓶):</label>
+										<input id="shuliang" name="shuliang" class="form-control" placeholder="损耗数量" value="${obj.shuliang}" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="dealday">损耗日期:</label>
+										<input id="dealday" name="dealday"  class="form-control form_xzsj" placeholder="损耗日期"  value="${obj.dealday}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="dealman">处理人:</label>
+										<input id="dealman" name="dealman"  class="form-control form_kqsj" placeholder="处理人"  value="${obj.dealman}">
+									</div>	
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="reason">损耗原因:</label>
+										<input id="reason" name="reason" class="form-control" placeholder="损耗原因" value="${obj.reason}">
+									</div>
+								</div>
+							</div>
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+var yjmcs = [];
+var yjpps = [];
+var area = "${session.userinfo.area.name}";
+var qymc = "${session.userinfo.dep.name}";
+var shuliang;
+
+
+$.fn.datetimepicker.dates['zh'] = {  
+        days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],  
+        daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],  
+        daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],  
+        months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],  
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],  
+        meridiem:    ["上午", "下午"],  
+        //suffix:      ["st", "nd", "rd", "th"],  
+        today:       "今天"  
+};  
+
+function saveYjsh() {
+	//$("#qyzzjgdm").attr("disabled",false);
+	//$("#xzqydm").attr("disabled",false);
+	var ykmc = $("#ykmc option:selected").val();
+	var yjmc = $("#yjmc option:selected").val();
+	var yjpp = $("#yjpp option:selected").val();
+	var yjgg = $("#gg option:selected").val();
+	var yjsl = $("#shuliang").val();
+	
+	if(ykmc == "请选择" || ykmc == null || ykmc == ""){
+		alert("请选择药库");
+	}else{
+		if(yjmc == "请选择" || yjmc == null || yjmc == ""){
+			alert("请选择药剂");
+		}else{
+			if(yjpp == "请选择" || yjpp == null || yjpp == ""){
+				alert("请选择药剂品牌");
+			}else{
+				if(yjgg == "请选择" || yjgg == null || yjgg == ""){
+					alert("请选择药剂规格");
+				}else{
+					if(yjsl > shuliang){
+						alert("损耗数量不能大于剩余库存");
+					}else{
+						var form = $(".widget-body form");
+						$.ajax({
+							url: form.attr("action"),
+							dataType: "json",
+							data: form.serialize(),
+							success: function(msg) {
+								if (!msg.ret) {
+									alert(msg.message);
+								} else {
+									alert("保存成功");
+								}
+								parent.window.dialog1.close();
+								parent.window.datatable.ajax.reload(null,true);
+							}
+						});
+					}	
+				}
+			}
+		}
+	}
+}
+
+//药库名称改变事件
+function getykmc(){
+	var ykmc = $("#ykmc option:selected").val();
+	//获取药剂名称
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findYjkucun',
+		type:'post',
+		data:{"kdbm":ykmc},
+		dataType:'json',
+		success:function(data){
+			yjmcs = [];
+			$("#yjmc").empty();
+			$("#yjmc").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				
+				var yjmc = data.list[i].yjmc;
+				if(!yjmcs.in_array(yjmc)){
+					var op = '<option value="'+data.list[i].yjmc+'">'+data.list[i].yjmc+'</option>';
+				    $("#yjmc").append(op);
+				}
+				yjmcs.push(yjmc);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+
+//药剂名称改变事件
+function getyjmc(){
+	var ykmc = $("#ykmc option:selected").val();
+	var yjmc = $("#yjmc option:selected").val();
+	//获取药剂品牌
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findYjkucun',
+		type:'post',
+		data:{"kdbm":ykmc,"yjmc":yjmc},
+		dataType:'json',
+		success:function(data){
+			$("#yjpp").empty();
+			$("#yjpp").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				var pp = data.list[i].pp;
+				if(!yjpps.in_array(pp)){
+					var op = '<option value="'+pp+'">'+pp+'</option>';
+				    $("#yjpp").append(op);
+				}
+				yjpps.push(pp);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+
+//药剂品牌改变事件
+function getyjpp(){
+	var ykmc = $("#ykmc option:selected").val();
+	var yjmc = $("#yjmc option:selected").val();
+	var yjpp = $("#yjpp option:selected").val();
+	//获取药剂规格
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findYjkucun',
+		type:'post',
+		data:{"kdbm":ykmc,"yjmc":yjmc,"pp":yjpp},
+		dataType:'json',
+		success:function(data){
+			$("#gg").empty();
+			$("#gg").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				var gg = data.list[i].gg;
+				var op = '<option value="'+gg+'">'+gg+'</option>';
+			    $("#gg").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+
+//药剂规格改变事件
+function getyjgg(){
+	var ykmc = $("#ykmc option:selected").val();
+	var yjmc = $("#yjmc option:selected").val();
+	var yjpp = $("#yjpp option:selected").val();
+	var yjgg = $("#gg option:selected").val();
+	if(yjgg!="请选择"){
+		//获取药剂规格
+		$.ajax({
+			url:'${ctxPath}/cangchugl/findYjkucun',
+			type:'post',
+			data:{"kdbm":ykmc,"yjmc":yjmc,"pp":yjpp,"gg":yjgg},
+			dataType:'json',
+			success:function(data){
+				$("#danwei").empty();
+				$("#danwei").append('<option value="请选择">请选择</option>');
+				$("#cj").empty();
+				$("#cj").append('<option value="请选择">请选择</option>');
+				for(var i = 0; i < data.list.length; i++){
+					var danwei = data.list[i].danwei;
+					var op = '<option value="'+danwei+'">'+danwei+'</option>';
+				    $("#danwei").append(op);
+				    var cj = data.list[i].cj;
+					var op1 = '<option value="'+cj+'">'+cj+'</option>';
+				    $("#cj").append(op1);
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+}
+
+function getdanwei(){
+	var ykmc = $("#ykmc option:selected").val();
+	var yjmc = $("#yjmc option:selected").val();
+	var yjpp = $("#yjpp option:selected").val();
+	var yjgg = $("#gg option:selected").val();
+	var danwei = $("#danwei option:selected").val();
+	if(ykmc!="请选择"&&yjmc!="请选择"&&yjpp!="请选择"&&yjgg!="请选择"&&danwei!="请选择"){
+		//获取药剂库存
+		$.ajax({
+			url:'${ctxPath}/cangchugl/findYjkucun',
+			type:'post',
+			data:{"kdbm":ykmc,"yjmc":yjmc,"pp":yjpp,"gg":yjgg,"danwei":danwei},
+			dataType:'json',
+			success:function(data){
+				$(".shuliang").text("损耗数量(瓶):剩余"+data.list[0].kcsl+"瓶");
+				shuliang = data.list[0].kcsl;
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	
+}
+
+
+$(function(){
+	$("#xzqydm").select2();
+	$("#qyzzjgdm").select2();
+	$("#kdbm").select2();
+	
+	//获取药库名称
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findyaoku',
+		type:'post',
+		data:{"name":'${session.userinfo.area.name}'},
+		dataType:'json',
+		success:function(data){
+				 var op = '<option value="'+data[0].cfkudian+'">'+data[0].cfkudian+'</option>';
+			     $("#ykmc").append(op);
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	//获取药剂名称
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findYjkucun',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				
+				var yjmc = data.list[i].yjmc;
+				if(!yjmcs.in_array(yjmc)){
+					var op = '<option value="'+data.list[i].yjmc+'">'+data.list[i].yjmc+'</option>';
+				    $("#yjmc").append(op);
+				}
+				yjmcs.push(yjmc);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	/* 行政区划代码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data,function(i, n){
+				if(n.xzqhdm=="${obj.xzqydm}" || n.name == area){
+					$("#xzqydm").append("<option value="+n.xzqhdm+"  selected>"+n.name+"</option>");
+				}else{
+					$("#xzqydm").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				}	
+			});
+			 
+			 var xzqydm = $("#xzqydm option:selected").val();
+			 if("${array.contain(session.userinfo.auth,'auth_county')}"=="true" || "${array.contain(session.userinfo.auth,'auth_company')}"=="true"){
+				 $("#xzqydm").attr("disabled",true);
+			 }
+			 
+			 /* 企业组织机构代码初始化 */
+			$.ajax({
+				 url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+				 type:'post',
+				 data:{"quyu":xzqydm},
+				 dataType:'json',
+				 success:function(data){
+					 //$("#xzqydm").val(data[0].xzqhdm);
+					 $.each(data.list,function(i, n){
+							if(n.qyzzjgdm=="${obj.qyzzjgdm}" || n.qymc == qymc){
+								$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+							}else{
+								$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+							}
+						});
+					 var qyzzjgdm = $("#qyzzjgdm option:selected").val();
+					 if("${array.contain(session.userinfo.auth,'auth_company')}"=="true"){
+						 $("#qyzzjgdm").attr("disabled",true);
+					 }
+			
+					 /* 库点编码初始化 */
+						$.ajax({
+							 url:'${ctxPath}/shouchukeshihua/querykudian.do',
+							 type:'post',
+							 data:{"xzqhdm":xzqydm,"qyzzjgdm":qyzzjgdm},
+							 dataType:'json',
+							 success:function(data){
+								 //$("#xzqydm").val(data[0].xzqhdm);
+								 $.each(data.list,function(i, n){
+										if(n.kdbm=="${obj.kdbm}"){
+											$("#kdbm").append("<option value="+n.kdbm+"  selected>"+n.kdmc+"</option>");
+										}else{
+											$("#kdbm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+										}
+									});
+							 }
+						});
+					 
+					 
+					 
+				 }
+			});
+			 
+		 }
+	});
+	
+	
+	
+	
+	
+	
+	$('.form_xzsj').datetimepicker({  
+        language:  'zh',  
+        weekStart: 1,  
+        todayBtn:  1,  
+        autoclose: 1,  
+        todayHighlight: 1,  
+        startView: 2,  
+        forceParse: 0,  
+        showMeridian: 1  
+    }).on('changeDate', function (ev) {  
+        $(this).datetimepicker('hide');  
+    });  
+	
+	
+	
+	 $(".form_xzsj").datetimepicker({format: 'yyyy-mm-dd'});
+	 
+	
+});
+
+</script>
+
+</body>
+</html>

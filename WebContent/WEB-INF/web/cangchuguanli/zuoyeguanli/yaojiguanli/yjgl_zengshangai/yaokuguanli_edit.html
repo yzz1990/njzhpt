@@ -1,0 +1,92 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addYaoku",title="新增药库管理";
+	if (isNotEmpty(parameter.id)) {
+		var ykgl = @com.zkzy.njzhpt.dao.CangchuglDao.findYaoku({"id":parameter.id,"page":"1","rows":"100"});
+		obj = ykgl.list[0];
+		url = ctxPath+"/cangchugl/upYaoku";
+		title = "编辑药库管理";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="xuhao">序号</label>
+							<input type="text" class="form-control" name="xuhao" id="xuhao" placeholder="序号" value="${obj.xuhao}" >
+						</div>
+						<div class="form-group">	
+							<label for="shiqu">市区</label>
+							<input type="text" class="form-control" name="shiqu" id="shiqu" placeholder="市区" value="${obj.shiqu}" >
+						</div>
+						 <div class="form-group">	
+							<label for="cfkudian">存放库点名称</label>
+							<input type="text" class="form-control" name="cfkudian" id="cfkudian" placeholder="存放库点名称" value="${obj.cfkudian}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="dizhi">地址</label>
+							<input type="text" class="form-control" name="dizhi" id="dizhi" placeholder="地址" value="${obj.dizhi}"  >
+						</div>
+						<div class="form-group">	
+							<label for="fuzeren">负责人</label>
+							<input type="text" class="form-control" name="fuzeren" id="fuzeren" placeholder="负责人" value="${obj.fuzeren}" >
+						</div>
+						<div class="form-group">	
+							<label for="baoguanren">保管员</label>
+							<input type="text" class="form-control" name="baoguanren" id="baoguanren" placeholder="保管员" value="${obj.baoguanren}" >
+						</div>
+						 <div class="form-group">	
+							<label for="jianguanren">监管员</label>
+							<input type="text" class="form-control" name="jianguanren" id="jianguanren" placeholder="监管员" value="${obj.jianguanren}"  >
+						</div>	
+						 <div class="form-group">	
+							<label for="lianxifs">联系方式</label>
+							<input type="text" class="form-control" name="lianxifs" id="lianxifs" placeholder="联系方式" value="${obj.lianxifs}"  >
+						</div>
+						 <div class="form-group">	
+							<label for="beizhu">备注</label>
+							<input type="text" class="form-control" name="beizhu" id="beizhu" placeholder="备注" value="${obj.beizhu}"  >
+						</div>
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaokuguanli.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaokuguanli.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

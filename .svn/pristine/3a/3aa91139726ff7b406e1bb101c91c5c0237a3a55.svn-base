@@ -1,0 +1,204 @@
+ <%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+	//================================仓房状态===================================
+	var cfztmc = ["完好可用","需大修","待报废","待拆除","死角库","其他"];
+	var qscfzt = [0,0,0,0,0,0];
+	$.ajax({
+		url:'${ctxPath}/zonghe/findcfzt',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i ++){
+				if("合计" == data.list[i].name){
+					
+					qscfzt[0] = Math.round(data.list[i].whky);
+					qscfzt[1] = Math.round(data.list[i].xdx);
+					qscfzt[2] = Math.round(data.list[i].dbf);
+					qscfzt[3] = Math.round(data.list[i].dcc);
+					qscfzt[4] = Math.round(data.list[i].sjk);
+					qscfzt[5] = Math.round(data.list[i].qt);
+				}
+			}
+			
+			var qscf = [{name:"完好可用",value:qscfzt[0]},{name:"需大修",value:qscfzt[1]},{name:"待报废",value:qscfzt[2]},{name:"待拆除",value:qscfzt[3]},{name:"死角库",value:qscfzt[4]},{name:"其他",value:qscfzt[5]}];
+			//仓房状态饼状图
+			option2 = {
+				    title : {
+				        text: '                    全市仓房状态统计',
+				        textStyle:{
+				        	fontSize:20
+				        }
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨({d}%)"
+				    },
+				    legend: {
+				    	 orient : 'vertical',
+					        y:'center',
+					        x:'left',
+				        data:cfztmc
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            //dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            //restore : {show: true},
+				            //saveAsImage : {show: true}
+				        }
+				    },
+				    
+				    calculable : true,
+				    series : [
+				              {
+				                  name:'仓房类型占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['70%', '65%'],
+				                  itemStyle:{
+				                	  normal:{
+				                		  label:{
+				                			  show: false 
+				                		  },
+				                		  labelLine:{
+				                			  show: false
+				                		  }
+				                	  }
+				                  },
+				                  data:qscf
+				              }
+				          ]
+				};
+			echarts.init(document.getElementById('container2')).setOption(option2);	
+			
+		},
+		error:function(){
+			
+		}
+	});
+	
+	//===================================保粮类型======================================
+	var cfsymc = ["已装粮","闲置","季节性暂时空置","占地作用"];
+	var qscfsy = [0,0,0,0];
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findcfsy',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i ++){
+				if("合计" == data.list[i].name){
+					
+					qscfsy[0] = Math.round(data.list[i].yzl);
+					qscfsy[1] = Math.round(data.list[i].xz);
+					qscfsy[2] = Math.round(data.list[i].jjxzskz);
+					qscfsy[3] = Math.round(data.list[i].zdzy);		
+					
+				}
+			}
+			var qscf = [{name:"已装粮",value:qscfsy[0]},{name:"闲置",value:qscfsy[1]},{name:"季节性暂时空置",value:qscfsy[2]},{name:"占地作用",value:qscfsy[3]}];
+			//仓房使用饼状图
+			option3 = {
+				    title : {
+				        text: '                    全市仓房使用统计',
+				        textStyle:{
+				        	fontSize:20
+				        }
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨({d}%)"
+				    },
+				    legend: {
+				    	 orient : 'vertical',
+					        y:'center',
+					        x:'left',
+				        data:cfsymc
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            //dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            //restore : {show: true},
+				            //saveAsImage : {show: true}
+				        }
+				    },
+				    
+				    calculable : true,
+				    series : [
+				              {
+				                  name:'仓房类型占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['70%', '65%'],
+				                  itemStyle:{
+				                	  normal:{
+				                		  label:{
+				                			  show: false 
+				                		  },
+				                		  labelLine:{
+				                			  show: false
+				                		  }
+				                	  }
+				                  },
+				                  data:qscf
+				              }
+				          ]
+				};
+			echarts.init(document.getElementById('container3')).setOption(option3);	
+			
+		},
+		error:function(){
+			
+		}
+	});
+	
+	
+	
+});	
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%; width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="container2" style="width: 50%; height: 100%; margin: 0 auto;margin-left: 0px;float: left;"></div>
+          <div id="container3" style="width: 50%; height: 100%; margin: 0 auto;float: left;margin-left: 0px;margin-top:0px;"></div>
+        </div>
+	</div>		
+</div>  

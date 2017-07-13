@@ -1,0 +1,176 @@
+package com.zkzy.njzhpt.dao;
+
+import java.util.HashMap;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+
+public class AppDao {
+
+	public static Page<Record> getQyInfo(HashMap<String, Object> param) throws Exception {
+		Param p = new Param();
+		p.put("and a.jyywlxbh = ?", "jyywlxbh");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(Integer.valueOf(String
+				.valueOf(param.get("page"))), Integer.valueOf(String
+				.valueOf(param.get("rows"))), 
+				"select sum(CAST(a.zdmj as FLOAT)) as zdmj,sum(CAST(a.yxcr as FLOAT)) as yxcr,sum(CAST(a.cfzcr as FLOAT)) as cfzcr,a.jyywlxbh as jyywlxbh,count(a.jyywlxbh) as num ,a.jyywlxmc as jyywlxmc ",
+				"from  tz_qiye a where 1=1 " + s.getSql()+" GROUP BY a.jyywlxbh,a.jyywlxmc", 
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	
+	public static Page<Record> searchlscrk(HashMap<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		Param p = new Param();
+		p.put("and vSwiftNumber = ?", "vSwiftNumber");
+		p.put("and vCustomerIdentificationId = ?", "vCustomerIdentificationId");
+		p.put("and vWareHouseCode = ?","vWareHouseCode" );
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from crk_Purchase where qyzzjgdm = '134967559' and kdbm = '003' and vDirection = '入库' " + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+
+	public static Page<Record> searchlscf(HashMap<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		Param p = new Param();
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select cfbm,cfmc ",
+				"from tz_cangfang where qyzzjgdm = '134967559' and kdbm = '003'" + s.getSql(),
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+	
+	public static Page<Record> findQiyexinxi(HashMap<String, Object> queryparam) throws Exception {
+		Param p = new Param();
+		p.put("and a.ID = ?", "ID");
+		p.put("and a.qyzzjgdm = ?", "qyzzjgdm");
+		p.put("and a.xian = ?", "xian");
+		p.put("and a.xzqhdm = ?", "xzqhdm");
+		p.put("and a.qymc = ?", "qymc");
+		p.put("and a.qyxzmc = ?", "qyxzmc");
+		p.put("and a.jyywlxbh = ?", "jyywlxbh");
+		SqlAndParam s = SqlUtil.buildSql(p, queryparam);
+		Page<Record> page = Db.paginate(Integer.valueOf(String
+				.valueOf(queryparam.get("page"))), Integer.valueOf(String
+				.valueOf(queryparam.get("rows"))), 
+				"select a.* ",
+				"from tz_qiye a where a.qyzzjgdm in(select qyzzjgdm from tz_kudian where kdlxbh<>'06')  " + s.getSql(), 
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+	public static Page<Record> findQyba(HashMap<String, Object> param) throws Exception {
+	
+		String sql=" and  SUBSTRING(a.status, 0, 2)>=f.jiedian ";
+		Param p = new Param();
+		p.put("and a.id = ?", "id");
+		p.put("and f.shenpiren = ?", "shenpiren");
+		p.put("and d.xzqhdm= ?", "quyu");
+		p.put("and a.beianbianhao like ?", "beianbianhao","%%%s%%");
+		p.put("and a.liuchengid = ?", "liuchengid");
+		p.put("and a.status = ?", "status");
+		p.put("and a.qiyeid = ?", "qiyeid");
+		p.put("and b.qyzzjgdm=?", "qymc");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select a.*, b.qymc as qymc,d.areaid as areaid,e.name as quyu,f.jiedian as jiedian",
+				"from oa_qiyebeian a,tz_qiye b,fw_dep c,njpt_diqu d,fw_area e,oa_shenpiliucheng f where a.qiyeid=b.ID and b.ID=c.id and c.areaid=d.areaid and e.id=d.areaid and f.liuchenghao=a.liuchengid and e.parentid !='root' " + s.getSql()+sql+" ORDER BY e.orderno ",
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+	public static Page<Record> findXzba(HashMap<String, Object> param) throws Exception {
+		String sql=" and  SUBSTRING(a.status, 0, 2)>=f.jiedian ";
+		Param p = new Param();
+		p.put("and a.id = ?", "id");
+		p.put("and a.beianbianhao like ?", "beianbianhao","%%%s%%");
+		p.put("and a.liuchenghao = ?", "liuchenghao");
+		p.put("and a.status = ?", "status");
+		p.put("and a.qiyeid = ?", "qiyeid");
+		p.put("and f.shenpiren = ?", "shenpiren");
+		p.put("and d.xzqhdm=?","quyu");
+		p.put("and b.qyzzjgdm=?", "qymc");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select a.*, b.qymc as qymc,d.areaid as areaid,e.name as quyu ",
+				"from oa_xunzhengbeian a,tz_qiye b,fw_dep c ,njpt_diqu d,fw_area e,oa_shenpiliucheng f  where a.qiyeid=b.ID and b.ID=c.id and c.areaid=d.areaid and e.id=d.areaid and f.liuchenghao=a.liuchenghao  and e.parentid !='root' " + s.getSql()+sql+" ORDER BY e.orderno ",
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+	public static boolean  updateQyba(HashMap<String, Object> param) {
+		int flag=Db.update("update oa_qiyebeian set status=? , shenpiren=? where id=?",param.get("status"),param.get("shenpiren"),param.get("id"));
+		return flag==1?true:false;
+	}
+
+	
+	
+	public static Page<Record> findYjba(HashMap<String, Object> param) throws Exception {
+		String sql=" and  SUBSTRING(a.status, 0, 2)>=f.jiedian ";
+		Param p = new Param();
+		p.put("and a.id = ?", "id");
+		p.put("and a.beianbianhao like ?", "beianbianhao","%%%s%%");
+		p.put("and a.liuchenghao = ?", "liuchenghao");
+		p.put("and a.status = ?", "status");
+		p.put("and a.qiyeid = ?", "qiyeid");
+		p.put("and f.shenpiren = ?", "shenpiren");
+		p.put("and d.xzqhdm=?","quyu");
+		p.put("and b.qyzzjgdm=?", "qymc");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select a.*, b.qymc as qymc,d.areaid as areaid,e.name as quyu ",
+				"from oa_yaojibeian a,tz_qiye b,fw_dep c ,njpt_diqu d,fw_area e,oa_shenpiliucheng f  where a.qiyeid=b.ID and b.ID=c.id and c.areaid=d.areaid and e.id=d.areaid  and f.liuchenghao=a.liuchenghao and e.parentid !='root' " + s.getSql()+sql+" ORDER BY e.orderno ",
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+
+	/**
+	 * 获取企业备案信息
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	public static Page<Record> findQiyebeian(HashMap<String, Object> param) throws Exception {
+		Param p = new Param();
+		
+		p.put("and a.id = ?", "id");
+		p.put("and a.beianbianhao like ?", "beianbianhao","%%%s%%");
+		p.put("and a.liuchengid = ?", "liuchengid");
+		p.put("and a.status = ?", "status");
+		p.put("and a.qiyeid = ?", "qiyeid");
+		p.put("and d.xzqhdm=?", "quyu");
+		p.put("and b.qyzzjgdm =?", "qymc");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(param.get("page"))),
+				Integer.valueOf(String.valueOf(param.get("rows"))),
+				"select a.*, b.qymc as qymc,d.areaid as areaid,e.name as quyu ",
+				"from oa_qiyebeian a,tz_qiye b,fw_dep c ,njpt_diqu d,fw_area e where a.qiyeid=b.ID and b.ID=c.id and c.areaid=d.areaid and e.id=d.areaid " + s.getSql()+ " ORDER BY d.orderno ASC",
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	
+	
+	
+}

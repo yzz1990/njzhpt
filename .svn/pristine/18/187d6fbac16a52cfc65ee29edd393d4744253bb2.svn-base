@@ -1,0 +1,344 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+ <!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    
+}
+
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+}
+.table-bordered {
+    border: 1px solid #7CBDF7;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+	    margin-bottom: 0px;
+}
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+</style>
+<div class="row">
+  		 <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 250px;">
+		   				<div id="container" style="min-width: 300px; max-width: 500px; height: 200px; margin: 0 auto;float: left;margin-left: 50px"></div>
+	              	    <hr size=100 width="1" color="#A9B2B8" style="position: absolute;margin-left: 550px;border: 2px;height: 220px;margin-top: -10px;">
+		                <div id="container1" style="min-width: 300px; max-width: 500px; height: 200px; margin: 0 auto;float: left;margin-left: 300px;"></div>
+
+		            </div>
+		   		</div>		
+		   </div>
+ 		 <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 250px;">
+		   				<div id="container2" style="min-width: 300px; max-width: 500px; height: 200px; margin: 0 auto;float: left;margin-left: 50px"></div>
+	              	    <hr size=100 width="1" color="#A9B2B8" style="position: absolute;margin-left: 550px;border: 2px;height: 220px;margin-top: -10px;">
+		                <div id="container3" style="min-width: 300px; max-width: 500px; height: 200px; margin: 0 auto;float: left;margin-left: 300px;"></div>
+
+		            </div>
+		   		</div>		
+		   </div>	
+ </div>
+	   
+<script>
+window.setInterval(randomData(),1000);
+
+function randomData(){
+	option = {
+		    title : {
+		        text: "${decode(parameter.index,'4','临储','3','区储','2','市储','1','省储','商品粮')}-分品种统计"
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}万吨 ({d}%)"
+		    },
+		    legend: {
+		    	orient : 'vertical',
+		        y:'center',
+		        x:'left',
+		        data:['小麦','稻谷','玉米','大豆']
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '25%',
+		                        width: '50%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    color:['#99CC33','#FF6666','#0099CC','#CC6600'],
+		    calculable : true,
+		    series : [
+		        {
+		            name:'分品种统计',
+		            type:'pie',
+		            radius : '55%',
+		            center: ['60%', '50%'],
+		            itemStyle:{
+	                	  normal:{
+	                		  label:{
+	                			  show: false 
+	                		  },
+	                		  labelLine:{
+	                			  show: false
+	                		  }
+	                	  }
+	                  },
+		            data:[
+		                {value:2.26, name:'小麦'},
+		                {value:0.34, name:'稻谷'},
+		                {value:2.60, name:'玉米'},
+		                {value:2.17, name:'大豆'}
+		            ]
+		        }
+		    ]
+		};
+	myChart = echarts.init(document.getElementById('container1')).setOption(option);	
+	
+	
+	option1 = {
+		    title : {
+		        text: "${decode(parameter.index,'4','临储','3','区储','2','市储','1','省储','商品粮')}-分地区统计"
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}万吨 ({d}%)"
+		    },
+		    legend: {
+		    	orient : 'vertical',
+		        y:'center',
+		        x:'left',
+		        data:['市区','江宁区','浦口区','六合区','溧水区','高淳区']
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '25%',
+		                        width: '50%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+		    calculable : true,
+		    series : [
+		        {
+		            name:'分品种统计',
+		            type:'pie',
+		            radius : '55%',
+		            center: ['60%', '50%'],
+		            itemStyle:{
+	                	  normal:{
+	                		  label:{
+	                			  show: false 
+	                		  },
+	                		  labelLine:{
+	                			  show: false
+	                		  }
+	                	  }
+	                  },
+		            data:[
+		                {value:1.32, name:'市区'},
+		                {value:3.25, name:'江宁区'},
+		                {value:2.60, name:'浦口区'},
+		                {value:3.21, name:'六合区'},
+		                {value:2.10, name:'溧水区'},
+		                {value:3.32, name:'高淳区'}
+		                
+		            ]
+		        }
+		    ]
+		};
+	myChart = echarts.init(document.getElementById('container')).setOption(option1);	
+	
+	option2 = {
+		    title : {
+		        text: "${decode(parameter.index,'4','临储','3','区储','2','市储','1','省储','商品粮')}-分等级统计"
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c} 万吨({d}%)"
+		    },
+		    legend: {
+		    	orient : 'vertical',
+		        y:'center',
+		        x:'left',
+		        data:['一等','二等','三等','四等','五等','等外级']
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '25%',
+		                        width: '50%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    color : ['#FFCC00', '#99CC33', '#66CCCC','#CC3399','#666699', '#666633'],
+		    calculable : true,
+		    series : [
+		        {
+		            name:'分等级统计',
+		            type:'pie',
+		            radius : '55%',
+		            center: ['60%', '50%'],
+		            itemStyle:{
+	                	  normal:{
+	                		  label:{
+	                			  show: false 
+	                		  },
+	                		  labelLine:{
+	                			  show: false
+	                		  }
+	                	  }
+	                  },
+		            data:[
+		                {value:0, name:'一等'},
+		                {value:0, name:'二等'},
+		                {value:2.37, name:'三等'},
+		                {value:0.19, name:'四等'},
+		                {value:0, name:'五等'},
+		                {value:0, name:'等外级'}
+		            ]
+		        }
+		    ]
+		};
+	myChart = echarts.init(document.getElementById('container2')).setOption(option2);		
+	
+	option3 = {
+		    title : {
+		        text: "${decode(parameter.index,'4','临储','3','区储','2','市储','1','省储','商品粮')}-分年份统计"
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c} 万吨({d}%)"
+		    },
+		    legend: {
+		    	orient : 'vertical',
+		        y:'center',
+		        x:'left',
+		        data:['2014','2015','2016']
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '25%',
+		                        width: '50%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    color : ['#FF9900',  '#666699','#66CCCC'],
+		    calculable : true,
+		    series : [
+		        {
+		            name:'分年份统计',
+		            type:'pie',
+		            radius : '55%',
+		            center: ['60%', '50%'],
+		            itemStyle:{
+	                	  normal:{
+	                		  label:{
+	                			  show: false 
+	                		  },
+	                		  labelLine:{
+	                			  show: false
+	                		  }
+	                	  }
+	                  },
+		            data:[
+		                
+		                {value:4.20, name:'2014'},
+		                {value:3.21, name:'2015'},
+		                {value:5.19, name:'2016'}
+		            ]
+		        }
+		    ]
+		};
+	myChart = echarts.init(document.getElementById('container3')).setOption(option3);		
+}
+
+	
+
+
+</script>
+
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

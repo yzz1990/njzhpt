@@ -1,0 +1,133 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+ <!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    
+}
+
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+}
+.table-bordered {
+    border: 1px solid #7CBDF7;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+	    margin-bottom: 0px;
+}
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+</style>
+<div class="row">
+	<div class="row">
+   		<div class="col-lg-12" >
+   			<div class="well" style="height: 100%;">
+   				<div id="container" style="min-width: 500px; max-width: 800px; height: 400px; margin: 0 auto;float: left;margin-left: 50px"></div>
+            </div>
+   		</div>		
+   </div>
+</div>
+<script>
+window.setInterval(randomData(),1000);
+
+function randomData(){
+	//全市自有仓容
+	$.ajax({
+		url:'${ctxPath}/zonghe/findzycr',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			var leixin = ["库存","空仓","其它"];
+			var xian = [];
+			var kucun = [];
+			var kongc = [];
+			var qt = [];
+			for(var i = 0; i < data.kucun.length; i++){
+				xian.push(data.kucun[i].xian);
+				kucun.push(Math.round(data.kucun[i].SUM/1000));
+				kongc.push(Math.round(data.kongc[i].kongc));
+				qt.push(Math.round(data.qt[i].shjcr));
+			}
+			var num = ${parameter.index};
+			var qu = xian[num];
+			var kc = kucun[num];
+			var kong = kongc[num];
+			var q = qt[num];
+			var shuju = [{"name":"库存","value":kc},{"name":"空仓","value":kong},{"name":"其它","value":q}];
+			//alert(shuju);
+			
+			option = {
+				    title : {
+				    	x:'center',
+				        text: qu+"自有仓容统计(单位：吨)"
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨 ({d}%)"
+				    },
+				    legend: {
+				    	orient : 'vertical',
+				    	
+				        y:'center',
+				        x:'left',
+				        data:leixin,
+				    },
+				    //color:['#99CC33','#FF6666','#0099CC','#CC6600','#666699'],
+				    calculable : true,
+				    series : [
+				        {
+				            name:'数量',
+				            type:'pie',
+				            radius : '55%',
+				            center: ['60%', '50%'],
+				            itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+				            data:shuju
+				        }
+				    ]
+				};
+			myChart = echarts.init(document.getElementById('container')).setOption(option);	
+		},
+		error:function(){	
+		}
+	});
+}
+</script>
+
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

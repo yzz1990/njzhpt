@@ -1,0 +1,1140 @@
+package com.zkzy.njzhpt.bo;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.dao.JiageDAO;
+import com.zkzy.njzhpt.dao.ShouchukeshihuaDAO;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class JiageBO {
+	/**
+	 *寻找商品
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querypinzhong(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querypinzhong(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *寻找采购点未对照品种
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querywdzpz(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querywdzpz(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *寻找未填报采价点
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querywtbcaijia(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querywtbcaijia(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *寻找粮食品种
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret graintype(HashMap<String, Object> map) throws Exception {
+		if("0".equals(map.get("vCode"))){
+			Page<Record> userPageRecord = JiageDAO.graintypeall(map);
+			Ret ret = Ret.create("list", userPageRecord);
+			return ret;
+		}else{
+			Page<Record> userPageRecord = JiageDAO.graintype(map);
+			Ret ret = Ret.create("list", userPageRecord);
+			return ret;
+		}
+		
+	}
+
+	/*
+	 * 保存粮食品种
+	 */
+	public Ret savepz(HashMap<String, Object> param) {
+	
+		String uuid = SqlUtil.uuid();
+		Record record = new Record().setColumns(param).set("id", uuid);
+		boolean result = Db.save("jg_pinzhong", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+	/**
+	 *寻找采集点
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querycaijiadian(HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> param = map;
+		Page<Record> userPageRecord = JiageDAO.querycaijiadian(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *寻找职员
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret queryzhiyuan(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryzhiyuan(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历价格类型
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryjglx(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryjglx(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历可选商品价格类型
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryyxsp(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryyxsp(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历临时对照表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querylsconflix(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querylsconflix(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *价格表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querycjdjg(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querycjdjg(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *寻找该采价点的价格品种
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findjgpz(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.findjgpz(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/*
+	 * 保存采价点
+	 */
+	public Ret savecjd(HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		param.put("id", uuid);
+		param.put("state", 1);
+		Record record = new Record().setColumns(param);
+		
+		//删除临时表脏数据
+		String delsql = "Delete jg_conflixls where jglxid = ?";
+		Db.update(delsql, "55555");
+		String upsql = "update jg_conflixls set cjdid = ? where cjdid = ?";
+		Db.update(upsql,uuid,"55555");
+		//新增采价点临时商品对照表
+		String insql = "insert into jg_conflix select * from jg_conflixls where cjdid = ?";
+		Db.update(insql,uuid); 
+		
+		boolean result = Db.save("jg_caijiadian", "id", record);
+
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/*
+	 * 保存职员
+	 */
+	public Ret savezy(HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		param.put("id", uuid);
+		Record record = new Record().setColumns(param);
+		boolean result = Db.save("tz_caijiazhiyuan", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/*
+	 * 删除品种
+	 */
+	public Ret deletepz(HashMap<String, Object> param) {
+		String sql = "update jg_pinzhong set state = 0 where id = ?";
+		int result = Db.update(sql, param.get("id"));
+		if (result > 0) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+
+	/*
+	 * 删除采价点
+	 */
+	public Ret deletecjd(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		String sql = "update jg_caijiadian set state = 0 where id = ?";
+		int result = Db.update(sql, param.get("id"));
+		if (result > 0) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+
+	/*
+	 * 删除职员
+	 */
+	public Ret deleteZy(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		boolean result = Db.deleteById("tz_caijiazhiyuan", param.get("id"));
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}	
+	}
+	
+	/**
+	 *遍历职员类型
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret queryzylx(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryzylx(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历职员类别
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret queryzylb(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryzylb(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历价格类型
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret queryjiagelx(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryjiagelx(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍采价点品种
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querycjdpz(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querycjdpz(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍采价品种等级
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querygrade(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querygrade(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历企业类型
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret queryqylx(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryqylx(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历报送频率
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querybspl(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querybspl(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历报送日
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querybsr(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querybsr(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历联系人
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querylxr(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querylxr(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历采价点商品对照
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querycjdsp(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querycjdsp(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历采价点商品对照
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querydzcjdsp(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querydzcjdsp(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历年周数
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret findzhous(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.findzhous(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历计量单位
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret queryjldw(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryjldw(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 *遍历采价商品对照表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querycaijiasp(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querycaijiasp(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	
+	/**
+	 *寻找需要采价的商品
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querycaijia(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querycaijia(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 查询报价单
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querybaojia(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querybaojia(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 查询价格指数
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findzhishu(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.findzhishu(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取所有及同比环比的价格指数
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryzhishu(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.findzhishu(map);
+		//选中年份
+		String niandu = (String) map.get("year");
+		//选中周数
+		String zhou = (String) map.get("week");
+		int year = Integer.parseInt(niandu);
+		int week = Integer.parseInt(zhou);
+		int qyear = year - 1;
+		int qweek;
+		if(week == 1){
+			qweek = 52;
+			year = qyear;
+		}else{
+			qweek = week - 1;
+		}
+		
+		//循环遍历增加同比和环比
+		for(Record userRecord:userPageRecord.getList()){
+			String pzcode = userRecord.getStr("pzcode");
+			String jglxcode = userRecord.getStr("jglxcode");
+			//加载去年同期
+			HashMap<String, Object> tparam = new HashMap<>();
+			tparam.put("year", qyear);
+			tparam.put("week", week);
+			tparam.put("pzcode", pzcode);
+			tparam.put("jglxcode", jglxcode);
+			tparam.put("page", 1);
+			tparam.put("rows", 1);
+			Record record = null;
+			double tzhishu = 0;
+			HashMap<String,Object> tb = new HashMap<>();
+			if(!JiageDAO.findzhishu(tparam).getList().isEmpty()){
+				record = JiageDAO.findzhishu(tparam).getList().get(0);
+				tzhishu = record.getDouble("zhishu");
+			}
+			tb.put("tzhishu", tzhishu);
+			userRecord.setColumns(tb);
+			
+			//加载上期
+			HashMap<String, Object> hparam = new HashMap<>();
+			hparam.put("year", year);
+			hparam.put("week", qweek);
+			hparam.put("pzcode", pzcode);
+			hparam.put("jglxcode", jglxcode);
+			hparam.put("page", 1);
+			hparam.put("rows", 1);
+			double hzhishu = 0;
+			if(!JiageDAO.findzhishu(hparam).getList().isEmpty()){
+				record = JiageDAO.findzhishu(hparam).getList().get(0);
+				hzhishu = record.getDouble("zhishu");
+			}
+			HashMap<String, Object> hb = new HashMap<>();
+			hb.put("hzhishu", hzhishu);
+			userRecord.setColumns(hb);
+		}
+		
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 寻找价格指数列表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret coverzhishu(HashMap<String, Object> map) throws Exception {
+		//选中年份
+		String niandu = (String) map.get("year");
+		//选中周数
+		String zhou = (String) map.get("week");
+		//选中周期
+		String nn = (String) map.get("num");
+		//beginday
+		String ibeginday = (String) map.get("beginday");
+		//endday
+		String iendday = (String) map.get("endday");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		Date beginday = sdf.parse(ibeginday);
+		Date endday = sdf.parse(iendday);
+		int year = Integer.parseInt(niandu);
+		int week = Integer.parseInt(zhou);
+		int num = Integer.parseInt(nn);
+		long time = beginday.getTime();
+		
+		
+		long begintime = time - ((num-1) * 7 * 24 * 3600 * 1000L);
+		Date ifirstday = new Date(begintime);
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");  
+		String firstday = sf.format(ifirstday);
+		
+		
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("endday", iendday);
+		param.put("firstday", firstday);
+		param.put("page", 1);
+		param.put("rows", 10000);
+		System.out.println("year"+year+"week"+week+"endday"+iendday+"firstday"+firstday+"num"+(num - 1)+"begintime"+(begintime - time));
+		Page<Record> userPageRecord = JiageDAO.coverzhishu(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+		
+	}
+	
+	
+	
+	
+
+	/**
+	 * 修改品种
+	 */
+	public Ret updatepz(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("jg_pinzhong", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+
+	/*
+	 * 修改采价点
+	 */
+	public Ret updatecjd(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		
+		Record record = new Record().setColumns(param);
+		
+		
+		String cjdid = (String) param.get("id");
+		//该采价点删除商品对照表
+		String delsql = "Delete jg_conflix where cjdid = ?";
+		Db.update(delsql, cjdid);
+		//删除脏数据
+		String dells = "delete jg_conflixls where jglxid = ?";
+		Db.update(dells,"55555");
+		//新增采价点临时商品对照表
+		String insql = "insert into jg_conflix select * from jg_conflixls";
+		Db.update(insql); 
+		
+		
+		boolean result = Db.update("jg_caijiadian", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+
+	/*
+	 * 修改职员
+	 */
+	public Ret updatezy(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("tz_caijiazhiyuan", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+	
+	/**
+	 * 获取市内价格明细
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findshinei(HashMap<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		//选中年份
+		String niandu =  (String) param.get("year");
+		int year = Integer.parseInt(niandu);
+		//选中周数
+		String zhou = (String) param.get("iweek");
+		int week = Integer.parseInt(zhou);
+		//选中年份上一年用于求同比
+		int qyear = year - 1;
+		//选中周数上一周用于求环比
+		int qweek;
+		if(week == 1){
+			qweek = 52;
+			year = qyear;
+		}else{
+			qweek = week - 1;
+		}
+		
+		Page<Record> userPageRecord = JiageDAO.findshinei(param);
+		//循环遍历增加同比和环比
+		for(Record userRecord:userPageRecord.getList()){
+			String pzcode = userRecord.getStr("typecode");
+			String jglxcode = userRecord.getStr("jglxcode");
+			//加载去年同期
+			HashMap<String, Object> tparam = new HashMap<>();
+			tparam.put("year", qyear);
+			tparam.put("iweek", week);
+			tparam.put("pzcode", pzcode);
+			tparam.put("jglxcode", jglxcode);
+			tparam.put("page", 1);
+			tparam.put("rows", 1);
+			double tprice = 0;
+			Record record = null;
+			HashMap<String,Object> tb = new HashMap<>();
+			if(!JiageDAO.findshinei(tparam).getList().isEmpty()){
+				record = JiageDAO.findshinei(tparam).getList().get(0);
+				tprice = record.getDouble("avprice");
+			}
+			tb.put("tprice", tprice);
+			userRecord.setColumns(tb);
+			//加载上期
+			HashMap<String, Object> hparam = new HashMap<>();
+			hparam.put("year", year);
+			hparam.put("iweek", qweek);
+			hparam.put("pzcode", pzcode);
+			hparam.put("jglxcode", jglxcode);
+			hparam.put("page", 1);
+			hparam.put("rows", 1);
+			double hprice = 0;
+			if(!JiageDAO.findshinei(hparam).getList().isEmpty()){
+				record = JiageDAO.findshinei(hparam).getList().get(0);
+				hprice = record.getDouble("avprice");
+			}
+			HashMap<String, Object> hb = new HashMap<>();
+			hb.put("hprice", hprice);
+			userRecord.setColumns(hb);
+			}	
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+		
+	}
+	
+	
+	
+	
+	/**
+	 * 保存国内报价
+	 * @param param
+	 * @return
+	 */
+	public Ret savegnbj(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		String uuid = SqlUtil.uuid();
+		param.put("id", uuid);
+		Record record = new Record().setColumns(param);
+		boolean result = Db.save("tz_baojiaguonei", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 获取国内价格明细
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findguonei(HashMap<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		int year = Integer.parseInt((String)param.get("year"));
+		int week = Integer.parseInt((String)param.get("iweek"));
+		//选中年份上一年用于求同比
+		int qyear = year - 1;
+		//选中周数上一周用于求环比
+		int qweek;
+		if(week == 1){
+			qweek = 52;
+			year = qyear;
+		}else{
+			qweek = week - 1;
+		}
+		
+		Page<Record> userPageRecord = JiageDAO.findguonei(param);
+		//循环遍历增加同比和环比
+		for(Record userRecord:userPageRecord.getList()){
+			String pzcode = userRecord.getStr("typecode");
+			String jglxcode = userRecord.getStr("jglxcode");
+			//加载去年同期
+			HashMap<String, Object> tparam = new HashMap<>();
+			tparam.put("year", qyear);
+			tparam.put("iweek", week);
+			tparam.put("pzcode", pzcode);
+			tparam.put("jglxcode", jglxcode);
+			tparam.put("page", 1);
+			tparam.put("rows", 1);
+			double tprice = 0;
+			Record record = null;
+			HashMap<String,Object> tb = new HashMap<>();
+			if(!JiageDAO.findshinei(tparam).getList().isEmpty()){
+				record = JiageDAO.findshinei(tparam).getList().get(0);
+				tprice = record.getDouble("avprice");
+			}
+			tb.put("tprice", tprice);
+			userRecord.setColumns(tb);
+			//加载上期
+			HashMap<String, Object> hparam = new HashMap<>();
+			hparam.put("year", year);
+			hparam.put("iweek", qweek);
+			hparam.put("pzcode", pzcode);
+			hparam.put("jglxcode", jglxcode);
+			hparam.put("page", 1);
+			hparam.put("rows", 1);
+			double hprice = 0;
+			if(!JiageDAO.findshinei(tparam).getList().isEmpty()){
+				record = JiageDAO.findshinei(hparam).getList().get(0);
+				hprice = record.getDouble("avprice");
+			}
+			HashMap<String, Object> hb = new HashMap<>();
+			hb.put("hprice", hprice);
+			userRecord.setColumns(hb);
+			}	
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+
+	/**
+	 * 保存期货价格
+	 * @param map
+	 * @return
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret saveqihuo(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(map);
+		boolean result = Db.save("tz_qihuoguonei", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 查找期货价格
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findqihuo(HashMap<String, Object> param) throws Exception {
+		int year = Integer.parseInt((String)param.get("year"));
+		int month = Integer.parseInt((String)param.get("month"));
+		//上一年用于求同比
+		int qyear = year - 1;
+		int qmonth;
+		if(month == 1){
+			qmonth = 12;
+			year = qyear;
+		}else{
+			qmonth = month - 1;
+		}
+		
+		Page<Record> userPageRecord = JiageDAO.findqihuo(param);
+		
+		//循环遍历增加同比和环比
+		for(Record userRecord:userPageRecord.getList()){
+			String pinzhong = userRecord.getStr("pinzhong");
+			//加载去年同期
+			HashMap<String, Object> tparam = new HashMap<>();
+			tparam.put("year", qyear);
+			tparam.put("month", month);
+			tparam.put("pinzhong", pinzhong);
+			tparam.put("page", 1);
+			tparam.put("rows", 1);
+			double tprice = 0;
+			Record record = null;
+			HashMap<String,Object> tb = new HashMap<>();
+			if(!JiageDAO.findqihuo(tparam).getList().isEmpty()){
+				record = JiageDAO.findqihuo(tparam).getList().get(0);
+				tprice = record.getDouble("price");
+			}
+			tb.put("tprice", tprice);
+			userRecord.setColumns(tb);
+			//加载上期
+			HashMap<String, Object> hparam = new HashMap<>();
+			hparam.put("year", year);
+			hparam.put("month", qmonth);
+			hparam.put("pinzhong", pinzhong);
+			hparam.put("page", 1);
+			hparam.put("rows", 1);
+			double hprice = 0;
+			if(!JiageDAO.findqihuo(tparam).getList().isEmpty()){
+				record = JiageDAO.findqihuo(hparam).getList().get(0);
+				hprice = record.getDouble("price");
+			}
+			HashMap<String, Object> hb = new HashMap<>();
+			hb.put("hprice", hprice);
+			userRecord.setColumns(hb);
+			}	
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+		
+	}
+	
+	/**
+	 * 查找连续期货
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryqihuo(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.queryqihuo(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取一年的价格变动
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret covershineiprice(HashMap<String, Object> param) throws Exception {
+		//获取去年这周的起始日期
+		String syear = param.get("year").toString();
+		int qyear = Integer.parseInt(syear) - 1;
+		String sweek = param.get("week").toString();
+		int qweek = Integer.parseInt(sweek);
+		String sql = "select * from tz_nianzhou where year = ? and iweek = ?";
+		Record qrecord = Db.findFirst(sql,qyear,qweek);
+		String qday = qrecord.getStr("beginday");
+		param.put("qday", qday);
+		Record record = Db.findFirst(sql,(qyear+1),qweek);
+		String day = record.getStr("endday");
+		param.put("day", day);
+		
+		Page<Record> userPageRecord = JiageDAO.covershineiprice(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret coverguoneiprice(HashMap<String, Object> param) throws Exception {
+		//获取去年这周的起始日期
+		String syear = param.get("year").toString();
+		int qyear = Integer.parseInt(syear) - 1;
+		String sweek = param.get("week").toString();
+		int qweek = Integer.parseInt(sweek);
+		String sql = "select * from tz_nianzhou where year = ? and iweek = ?";
+		Record qrecord = Db.findFirst(sql,qyear,qweek);
+		String qday = qrecord.getStr("beginday");
+		param.put("qday", qday);
+		Record record = Db.findFirst(sql,(qyear+1),qweek);
+		String day = record.getStr("endday");
+		param.put("day", day);
+		
+		Page<Record> userPageRecord = JiageDAO.coverguoneiprice(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	
+	/**
+	 * 查找连续外盘期货
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querywpqihuo(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.querywpqihuo(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历品种
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findpinzhong(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord = JiageDAO.findpinzhong(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+
+	/**
+	 * 获取外盘期货数据
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findwpqihuo(HashMap<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		int year = Integer.parseInt((String)param.get("year"));
+		int month = Integer.parseInt((String)param.get("month"));
+		//上一年用于求同比
+		int qyear = year - 1;
+		int qmonth;
+		if(month == 1){
+			qmonth = 12;
+			year = qyear;
+		}else{
+			qmonth = month - 1;
+		}
+		
+		Page<Record> userPageRecord = JiageDAO.findwpqihuo(param);
+		
+		//循环遍历增加同比和环比
+		for(Record userRecord:userPageRecord.getList()){
+			String pinzhong = userRecord.getStr("pinzhong");
+			//加载去年同期
+			HashMap<String, Object> tparam = new HashMap<>();
+			tparam.put("year", qyear);
+			tparam.put("month", month);
+			tparam.put("pinzhong", pinzhong);
+			tparam.put("page", 1);
+			tparam.put("rows", 1);
+			double tprice = 0;
+			Record record = null;
+			HashMap<String,Object> tb = new HashMap<>();
+			if(!JiageDAO.findwpqihuo(tparam).getList().isEmpty()){
+				record = JiageDAO.findwpqihuo(tparam).getList().get(0);
+				tprice = record.getDouble("price");
+			}
+			tb.put("tprice", tprice);
+			userRecord.setColumns(tb);
+			//加载上期
+			HashMap<String, Object> hparam = new HashMap<>();
+			hparam.put("year", year);
+			hparam.put("month", qmonth);
+			hparam.put("pinzhong", pinzhong);
+			hparam.put("page", 1);
+			hparam.put("rows", 1);
+			double hprice = 0;
+			if(!JiageDAO.findwpqihuo(tparam).getList().isEmpty()){
+				record = JiageDAO.findwpqihuo(hparam).getList().get(0);
+				hprice = record.getDouble("price");
+			}
+			HashMap<String, Object> hb = new HashMap<>();
+			hb.put("hprice", hprice);
+			userRecord.setColumns(hb);
+			}	
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+		
+	}
+
+	/**
+	 * 寻找年周数
+	 * @param param
+	 * @return
+	 */
+	public Ret findnianzhou(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		String year = param.get("year").toString();
+		String day = param.get("day").toString();
+		String sql = "select * from tz_nianzhou where "
+				+ "beginday <= ? and endday >= ?";
+		Record record = Db.findFirst(sql,day,day);
+		Ret ret = Ret.create("list", record);
+		return ret;
+	}
+
+	/**
+	 * 保存国外期货价格
+	 * @param map
+	 * @return
+	 */
+	public Ret savewpqihuo(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(map);
+		boolean result = Db.save("tz_qihuogw", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+	
+	/**
+	 * 保存国内月期货价格
+	 * @param map
+	 * @return
+	 */
+	public Ret savegnqihuo(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(map);
+		boolean result = Db.save("tz_qihuogn", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+}

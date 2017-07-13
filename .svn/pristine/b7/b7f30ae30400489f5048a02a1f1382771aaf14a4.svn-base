@@ -1,0 +1,80 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+
+	var obj={},url=ctxPath+"/cangchugl/addAqjyshiti",title="新增企业教育试题";
+	if (isNotEmpty(parameter.id)) {
+		var qyaqsp = @com.zkzy.njzhpt.dao.CangchuglDao.findAqjyshiti({"id":parameter.id,"page":"1","rows":"100"});
+		obj = qyaqsp.list[0];
+		url = ctxPath+"/cangchugl/upAqjyshiti";
+		title = "编辑企业教育试题";
+	};
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">${title}
+    </div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				
+				<div class="panel-body">
+					<form id="contentform" role="form" action="${url}" method="post">
+						<input type="hidden" name="id" value="${obj.id}"/>
+						<div class="form-group">	
+							<label for="tihao">题号</label>
+							<input type="text" class="form-control" name="tihao" id="tihao" placeholder="题号" value="${obj.tihao}" >
+						</div>
+						<div class="form-group">	
+							<label for="timu">题目</label>
+							<input type="text" class="form-control" name="timu" id="timu" placeholder="题目" value="${obj.timu}" >
+						</div>
+						 <div class="form-group">	
+							<label for="xuanxiangA">选项Ａ</label>
+							<input type="text" class="form-control" name="xuanxiangA" id="xuanxiangA" placeholder="选项Ａ" value="${obj.xuanxiangA}"  >
+						</div>	
+						<div class="form-group">	
+							<label for="xuanxiangB">选项B</label>
+							<input type="text" class="form-control" name="xuanxiangB" id="xuanxiangB" placeholder="选项B" value="${obj.xuanxiangB}" >
+						</div>
+						 <div class="form-group">	
+							<label for="xuanxiangC">选项C</label>
+							<input type="text" class="form-control" name="xuanxiangC" id="xuanxiangC" placeholder="选项C" value="${obj.xuanxiangC}"  >
+						</div>
+						<div class="form-group">	
+							<label for="truedaan">正确答案</label>
+							<input type="text" class="form-control" name="truedaan" id="truedaan" placeholder="正确答案" value="${obj.truedaan}" >
+						</div>
+					</form>
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn1-s" class="btn btn-primary submit"><em class="fa fa-check fa-fw"></em>提交</button>
+					<a class="btn btn-danger back" href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_jiaoyu_tiku.html"><em class="fa fa-mail-reply fa-fw"></em>返回</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$("#btn1-s").on('click', function(event) {
+	var form = $(".panel-body form");
+	
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				window.location.href = "${ctxPath}/cangchuguanli/anquanshengchan/anquan_jiaoyu_tiku.html";
+			}
+		}
+	});
+});
+
+</script>
+
+
+<%}%>

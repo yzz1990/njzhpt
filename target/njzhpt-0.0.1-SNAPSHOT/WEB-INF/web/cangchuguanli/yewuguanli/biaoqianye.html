@@ -1,0 +1,76 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+%>
+<body>
+
+<!-- <ul id="myTab" class="nav nav-tabs">
+	<li class="active">
+		<a href="#home" data-toggle="tab">
+			简介
+		</a>
+	</li>
+	<li>
+		<a href="#ios" data-toggle="tab">
+			基本情况
+		</a>
+	</li>
+	<li>
+		<a href="#ios" data-toggle="tab">
+			主要人员
+		</a>
+	</li>
+	<li>
+		<a href="${ctxPath}/cangchuguanli/qiyeguanli/cangchusb.html" data-toggle="tab">
+			仓储设备
+		</a>
+	</li> -->
+	<ul role="tablist" class="nav nav-tabs nav-justified">
+                  <li role="presentation" class="active">
+                     <a href="#crk"  aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+                        出入库</a>
+                  </li>
+                  <li role="presentation" class="" >
+                     <a href="#tfzy" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                       通风作业</a>
+                  </li>
+                  <li role="presentation" class="" >
+                     <a href="#lqzy" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                       冷却作用</a>
+                  </li>
+                   <li role="presentation" class="" >
+                     <a href="#xzzy" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                       熏蒸作业</a>
+                  </li>
+               </ul>
+	<!-- <li class="dropdown">
+		<a href="#" id="myTabDrop1" class="dropdown-toggle" 
+		   data-toggle="dropdown">Java 
+			<b class="caret"></b>
+		</a>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+			<li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>
+			<li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>
+		</ul>
+	</li> -->
+</ul>
+<div id="myTabContent" class="tab-content" style="padding: 0;">
+	<div class="tab-pane fade in active" id="crk">
+		<iframe id="if1" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/yewuguanli/bqy_churuku.html?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="tfzy">
+		<iframe id="if2" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/bqy_tongfengxinxi.html?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="lqzy">
+		<iframe id="if3" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/bqy_lengquexinxi.html?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="xzzy">
+		<iframe id="if4" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/bqy_xunzhengxinxi.html?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+</div>
+<script type="text/javascript">
+
+</script>
+<%
+	}
+%>

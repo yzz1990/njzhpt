@@ -1,0 +1,116 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+					<label>地区:</label>
+					<input class="form-control input-sm" name="diqu" id="diqu" placeholder="地区" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>库点:</label>
+					<input class="form-control input-sm" name="kudian" id="kudian" placeholder="库点" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+					<a class="btn btn-primary btn-sm pull-right" type="button"
+							href="${ctxPath}/cangchuguanli/shishixinxi/shishiliangqing_edit.html">新增实时粮情</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findShisliangq" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "diqu",
+				"title" : "地区"
+			},{
+				"data" : "kudian",
+				"title" : "库点"
+			},{
+				"data" : "xingzhi",
+				"title" : "粮食性质"
+			},{
+				"data" : "zhandimianji",
+				"title" : "占地面积",
+			},{
+				"data" : "cangrong",
+				"title" : "总仓容",
+			},{
+				"data" : "kucun",
+				"title" : "实时库存"
+			},{
+				"data" : "shipin",
+				"title" : "对应视频",
+			},{
+				"title" : "汇总",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="lslqqushi()" class="btn btn-sm btn-info pjax">粮食粮情趋势</a>';								
+					return chakan;
+					}
+				},
+				 {"title":"操作",
+                	"render": function (data,type,row,meta) {
+	                   	var bianji = '<a href="${ctxPath}/cangchuguanli/shishixinxi/shishiliangqing_edit.html?id='+row["id"]+'" class="btn btn-sm btn-info pjax"><em class="fa fa-pencil"></em></a>';
+	                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delShishiliangqing(\''+row["id"]+'\')"><em class="fa fa-trash"></em></button>';
+	               		return bianji + " " + shanchu;
+                	}
+                }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var diqu = $("#diqu").val();
+	var kudian = $("#kudian").val();
+	document.querySelector('.datatables').dataset.queryparam="diqu="+diqu+"&kudian="+kudian;
+	datatable.ajax.reload(null,false);
+}
+	
+function delShishiliangqing(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delShisliangq',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+	
+function lslqqushi(){
+	dialog1=BootstrapDialog.show({
+	    title: '粮食粮情趋势',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/shishixinxi/lslqqushi.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+	});
+}
+
+
+</script>
+<%
+	}
+%>

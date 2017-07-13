@@ -1,0 +1,211 @@
+﻿<html>
+<head>
+<script src="${ctxPath}/resource/jquery.js"></script>
+</head>
+<body style="margin: 0px; padding: 0px;">
+	<div id="main_plugin" style=""  ></div>
+	</body>
+<script>
+	var tongdao = window.location.search.split('=')[1];
+	if (!tongdao) {
+		alert("没有通道号");
+	}
+	function checkPlugin(iType, szInfo, iWndType, szPlayMode) {
+		if (navigator.appName == "Netscape" || navigator.appName == "Opera") {
+			var bInstalled = false;
+			var len = navigator.mimeTypes.length;
+			//可能是IE
+			if(len==0){
+				$("#main_plugin")
+						.html(
+								"<object classid='clsid:E7EF736D-B4E6-4A5A-BA94-732D71107808' codebase='' standby='Waiting...' id='PreviewActiveX' width='550' height='100%' name='ocx' align='center' ><param name='wndtype' value='"+iWndType+"'><param name='playmode' value='"+szPlayMode+"'></object>");
+				var previewOCX = document.getElementById("PreviewActiveX");
+				if (previewOCX == null || previewOCX.object == null) {
+					if ((navigator.platform == "Win32")
+							|| (navigator.platform == "Windows")) {
+						$("#main_plugin")
+								.html(
+										"<label name='laPlugin' onclick='window.open(\"../../codebase/WebComponents.exe\",\"_self\")' class='pluginLink' onMouseOver='this.className =\"pluginLinkSel\"' onMouseOut='this.className =\"pluginLink\"'>"
+												+ szInfo + "<label>");
+					} else if (navigator.platform == "Mac68K"
+							|| navigator.platform == "MacPPC"
+							|| navigator.platform == "Macintosh") {
+						$("#main_plugin")
+								.html(
+										"<label name='laPlugin' onclick='' class='pluginLink' onMouseOver='' onMouseOut=''>"
+												+ szInfo + "<label>");
+					} else {
+						$("#main_plugin")
+								.html(
+										"<label name='laPlugin' onclick='' class='pluginLink' onMouseOver='' onMouseOut=''>"
+												+ szInfo + "<label>");
+					}
+
+					return false;
+				}else{
+					return true;
+				}
+			}
+			for ( var i = 0; i < len; i++) {
+				if (navigator.mimeTypes[i].type.toLowerCase() == "application/hwp-webvideo-plugin") {
+					bInstalled = true;
+					if (iType == '0') {
+						$("#main_plugin")
+								.html(
+										"<embed type='application/hwp-webvideo-plugin' id='PreviewActiveX' width='1' height='1' name='PreviewActiveX' align='center' wndtype='"+iWndType+"' playmode='"+szPlayMode+"'>");
+						setTimeout(function() {
+							$("#PreviewActiveX").css('height', '0px');
+						}, 10); // 避免插件初始化不完全
+					} else if (iType == '1') {
+						$("#main_plugin")
+								.html(
+										"<embed type='application/hwp-webvideo-plugin' id='PreviewActiveX' width='352' height='288' name='PreviewActiveX' align='center' wndtype='"+iWndType+"' playmode='"+szPlayMode+"'>");
+					} else {
+						$("#main_plugin")
+								.html(
+										"<embed type='application/hwp-webvideo-plugin' id='PreviewActiveX' width='100%' height='100%' name='PreviewActiveX' align='center' wndtype='"
+												+ iWndType
+												+ "' playmode='"
+												+ szPlayMode + "'>");
+					}
+					$("#PreviewActiveX").css('width', '700px');
+					break;
+				}
+			}
+			if (!bInstalled) {
+				if (g_bSupportMjpegPreview && iType !== '0' && iType !== '1') {
+					$("#main_plugin")
+							.html(
+									"<div id='mjpegPlugin' style='width:100%; height:100%; position: relative;'></div>");
+					$("#mjpegPlugin").css('height', $("#main_plugin").height());
+				} else {
+					if (navigator.platform == "Win32") {
+						$("#main_plugin")
+								.html(
+										"<label name='laPlugin' onclick='window.open(\"../../codebase/WebComponents.exe\",\"_self\")' class='pluginLink' onMouseOver='this.className =\"pluginLinkSel\"' onMouseOut='this.className =\"pluginLink\"'>"
+												+ szInfo + "<label>");
+					} else if (navigator.platform == "Mac68K"
+							|| navigator.platform == "MacPPC"
+							|| navigator.platform == "Macintosh") {
+						$("#main_plugin")
+								.html(
+										"<label name='laPlugin' onclick='' class='pluginLink' onMouseOver='' onMouseOut=''>"
+												+ szInfo + "<label>");
+					} else {
+						$("#main_plugin")
+								.html(
+										"<label name='laPlugin' onclick='' class='pluginLink' onMouseOver='' onMouseOut=''>"
+												+ szInfo + "<label>");
+					}
+				}
+				return false;
+			}
+		} else {
+			$("#main_plugin")
+					.html(
+							"<object classid='clsid:E7EF736D-B4E6-4A5A-BA94-732D71107808' codebase='' standby='Waiting...' id='PreviewActiveX' width='100%' height='100%' name='ocx' align='center' ><param name='wndtype' value='"+iWndType+"'><param name='playmode' value='"+szPlayMode+"'></object>");
+			var previewOCX = document.getElementById("PreviewActiveX");
+			if (previewOCX == null || previewOCX.object == null) {
+				if ((navigator.platform == "Win32")
+						|| (navigator.platform == "Windows")) {
+					$("#main_plugin")
+							.html(
+									"<label name='laPlugin' onclick='window.open(\"../../codebase/WebComponents.exe\",\"_self\")' class='pluginLink' onMouseOver='this.className =\"pluginLinkSel\"' onMouseOut='this.className =\"pluginLink\"'>"
+											+ szInfo + "<label>");
+				} else if (navigator.platform == "Mac68K"
+						|| navigator.platform == "MacPPC"
+						|| navigator.platform == "Macintosh") {
+					$("#main_plugin")
+							.html(
+									"<label name='laPlugin' onclick='' class='pluginLink' onMouseOver='' onMouseOut=''>"
+											+ szInfo + "<label>");
+				} else {
+					$("#main_plugin")
+							.html(
+									"<label name='laPlugin' onclick='' class='pluginLink' onMouseOver='' onMouseOut=''>"
+											+ szInfo + "<label>");
+				}
+
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	checkPlugin(2, "请点击此处下载插件，安装时请关闭浏览器", 1, undefined);
+	setTimeout("run()",1000);
+	var szURL = "rtsp://112.24.104.70:9001/PSIA/streaming/channels/" +${parameter.tongdao};
+	function run(){
+		document.getElementById("PreviewActiveX").HWP_Play(szURL,'YWRtaW46MTIzNDU=', 0, '', "");	
+	}
+	//SetPTZUpStart();
+	//document.getElementById("PreviewActiveX").PTZCtrlStart(14,4)
+	function SetPTZUpStart() {
+		var iChannel = 2;
+		var m_iPtzSpeed = 60;
+		var m_szUserPwdValue = "YWRtaW46MTIzNDU=";
+		var szSetXml = "<?xml version='1.0' encoding='UTF-8'?><PTZData version='1.0' xmlns='urn:psialliance-org'>"
+				+ "<pan>"
+				+ 0
+				+ "</pan>"
+				+ "<tilt>"
+				+ (m_iPtzSpeed)
+				+ "</tilt>"
+				+ "</PTZData>";
+		var xmlDoc = parseXmlFromStr(szSetXml);
+		szXmlhttp = getXMLHttpRequest();
+		var szURL = "http://58.215.3.210:16888/PSIA/PTZ/channels/" + iChannel
+				+ "/continuous";
+		szXmlhttp.open("PUT", szURL, false);
+		szXmlhttp.setRequestHeader("If-Modified-Since", "0");
+		szXmlhttp
+				.setRequestHeader("Authorization", "Basic " + m_szUserPwdValue);
+		szXmlhttp.send(xmlDoc);
+		SetPTZCallback();
+	}
+	function parseXmlFromStr(szXml) {
+		if (null == szXml || '' == szXml) {
+			return null;
+		}
+		var xmlDoc = new createxmlDoc();
+		if (navigator.appName == "Netscape" || navigator.appName == "Opera") {
+			var oParser = new DOMParser();
+			xmlDoc = oParser.parseFromString(szXml, "text/xml");
+		} else {
+			xmlDoc.loadXML(szXml);
+		}
+		return xmlDoc;
+	}
+	function createxmlDoc() {
+		var xmlDoc;
+		var aVersions = [ "MSXML2.DOMDocument", "MSXML2.DOMDocument.5.0",
+				"MSXML2.DOMDocument.4.0", "MSXML2.DOMDocument.3.0",
+				"Microsoft.XmlDom" ];
+
+		for ( var i = 0; i < aVersions.length; i++) {
+			try {
+				xmlDoc = new ActiveXObject(aVersions[i]);
+				break;
+			} catch (oError) {
+				xmlDoc = document.implementation.createDocument("", "", null);
+				break;
+			}
+		}
+		xmlDoc.async = "false";
+		return xmlDoc;
+	}
+	function getXMLHttpRequest() {
+		var xmlHttpRequest = null;
+		if (window.XMLHttpRequest) {
+			xmlHttpRequest = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			xmlHttpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		return xmlHttpRequest;
+	}
+	//新安58.215.3.210
+	//惠山58.214.8.238
+	//锡山58.215.22.154
+	//宜兴58.215.225.10
+</script>
+</html>

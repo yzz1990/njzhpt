@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>地区信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/jibenxinxi/addDiquniandu",title="新增年度地区信息";
+	var id = parameter.id;
+	if (isNotEmpty(parameter.id)) {
+	
+		var diqu = @com.zkzy.njzhpt.dao.JibenxinxiDao.findDiquniandu({"id":parameter.id,"page":"1","rows":"100"});
+		obj = diqu.list[0];
+		url = ctxPath+"/jibenxinxi/upDiqu";
+		title = "编辑年度地区信息";
+	};
+	if (isNotEmpty(parameter.quxian)){
+		var diqu = @com.zkzy.njzhpt.dao.JibenxinxiDao.findDiquniandu({"quyu":parameter.quxian,"page":"1","rows":"100"});
+		obj = diqu.list[0];
+		title = "新增地区信息";
+	}
+	
+%>
+
+ <body>
+ 	
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+	<!-- 
+	<div>
+		<a onclick="insertDiqu()" class="btn btn-sm btn-info" style="float:right"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;导入该区最近年度数据</a>
+	</div>
+	 -->
+	<br><br>
+        <form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+			<input type="hidden" name="id" class="form-control quxianid" value="${obj.id}">
+			<input type="hidden" name="quyu" id="quyu" class="form-control " value="${obj.quyu}">
+            	<div class="row">
+              		<div class="col-lg-12 col-md-12">
+                		<div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	地区信息           
+                        	                           
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="niandu">统计年度:</label>
+										<input id="niandu" name="niandu" class="form-control" placeholder="统计年度"  value="${obj.niandu}">
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xzqhdm">区域名称:</label>
+											<select id="xzqhdm" name="xzqhdm" class="form-control" onchange="changquyu()">
+												
+											</select>
+									</div>
+								</div>	
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="hushu">全区总户数:</label>
+										<input id="hushu" name="hushu" class="form-control" placeholder="全区总户数"  value="${obj.hushu}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="hujirenkou">户籍总人口:</label>
+										<input id="hujirenkou" name="hujirenkou" class="form-control" placeholder="户籍总人口" value="${obj.hujirenkou}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="czrk">常住人口:</label>
+										<input id="czrk" name="czrk" class="form-control" placeholder="常住人口" value="${obj.czrk}">
+									</div>
+								</div>
+							</div>
+						</div>
+                  </div>
+                
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	地区粮食信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="mj_xytd">现有土地面积(亩):</label>
+										<input id="mj_xytd" name="mj_xytd" class="form-control" placeholder="现有土地面积" value="${obj.mj_xytd}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="mj_gengdi">耕地面积(亩):</label>
+										<input id="mj_gengdi" name="mj_gengdi" class="form-control" placeholder="耕地面积" value="${obj.mj_gengdi}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="mj_bozhong">农作物播种面积(亩):</label>
+										<input id="mj_bozhong" name="mj_bozhong" class="form-control" placeholder="农作物播种面积" value="${obj.mj_bozhong}">
+									</div>	
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="mj_liangshi">粮食作物面积(亩):</label>
+										<input id="mj_liangshi" name="mj_liangshi" class="form-control" placeholder="粮食作物面积" value="${obj.mj_liangshi}">
+									</div>	
+								</div>
+								
+							</div>
+							
+							<div class="row">
+								
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zc_liangshi">粮食总产量(吨):</label>
+										<input id="zc_liangshi" name="zc_liangshi" class="form-control" placeholder="粮食总产量" value="${obj.zc_liangshi}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zc_daogu">稻谷产量(吨):</label>
+										<input id="zc_daogu" name="zc_daogu" class="form-control" placeholder="稻谷产量" value="${obj.zc_daogu}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zc_xiaomai">小麦产量(吨):</label>
+										<input id="zc_xiaomai" name="zc_xiaomai" class="form-control" placeholder="小麦产量" value="${obj.zc_xiaomai}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qsxdbzmj">夏收小麦播种面积(亩):</label>
+										<input id="xsxmbzmj" name="xsxmbzmj" class="form-control" placeholder="夏收小麦播种面积" value="${obj.xsxmbzmj}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="xsxmzcl">夏收小麦总产量(吨):</label>
+										<input id="xsxmzcl" name="xsxmzcl" class="form-control" placeholder="夏收小麦总产量" value="${obj.xsxmzcl}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qnlsxfl">年粮食消费量(吨):</label>
+										<input id="qnlsxfl" name="qnlsxfl" class="form-control" placeholder="去年粮食消费量" value="${obj.qnlsxfl}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qnlsxfl">口粮粮食消费量(吨):</label>
+										<input id="kllsxfl" name="kllsxfl" class="form-control" placeholder="口粮粮食消费量(吨)" value="${obj.kllsxfl}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qsxdbzmj">秋收籼稻播种面积(亩):</label>
+										<input id="qsxdbzmj" name="qsxdbzmj" class="form-control" placeholder="秋收籼稻播种面积" value="${obj.qsxdbzmj}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qsxdzcl">秋收籼稻总产量(吨):</label>
+										<input id="qsxdzcl" name="qsxdzcl" class="form-control" placeholder="秋收籼稻总产量" value="${obj.qsxdzcl}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qsjdbzmj">秋收粳稻播种面积(亩):</label>
+										<input id="qsjdbzmj" name="qsjdbzmj" class="form-control" placeholder="秋收粳稻播种面积" value="${obj.qsjdbzmj}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qsjdzcl">秋收粳稻总产量(吨):</label>
+										<input id="qsjdzcl" name="qsjdzcl" class="form-control" placeholder="秋收粳稻总产量" value="${obj.qsjdzcl}">
+									</div>
+								</div>
+							</div>
+							
+                  	</div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业粮食局信息                                        
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+	                 
+	                 		<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_gy">国有及国有控股企业数量:</label>
+										<input id="qy_gy" name="qy_gy" class="form-control" placeholder="国有及国有控股企业数量" value="${obj.qy_gy}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_nz">内资非国有企业数量:</label>
+										<input id="qy_nz" name="qy_nz" class="form-control" placeholder="内资非国有企业数量" value="${obj.qy_nz}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_ws">外商企业数量:</label>
+										<input id="qy_ws" name="qy_ws" class="form-control" placeholder="外商企业数量" value="${obj.qy_ws}">
+									</div>
+								</div>
+							</div>
+	                 
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_shougou">收储企业数量:</label>
+										<input id="qy_shougou" name="qy_shougou" class="form-control" placeholder="收储企业数量" value="${obj.qy_shougou}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_jiagong">粮油加工企业数量:</label>
+										<input id="qy_jiagong" name="qy_jiagong" class="form-control" placeholder="粮油加工企业数量" value="${obj.qy_jiagong}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_xiaoshou">销售企业数量:</label>
+										<input id="qy_xiaoshou" name="qy_xiaoshou" class="form-control" placeholder="销售企业数量" value="${obj.qy_xiaoshou}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_peisong">运输企业数量:</label>
+										<input id="qy_peisong" name="qy_peisong" class="form-control" placeholder="运输企业数量" value="${obj.qy_peisong}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_jck">进出口企业数量:</label>
+										<input id="qy_jck" name="qy_jck" class="form-control" placeholder="进出口企业数量" value="${obj.qy_jck}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qy_qt">其他转化用粮企业数量:</label>
+										<input id="qy_qt" name="qy_qt" class="form-control" placeholder="其他转化用粮企业数量" value="${obj.qy_qt}">
+									</div>
+								</div>
+							</div>
+							
+							
+                  		</div>
+               		 </div>
+               	 </div>
+              </div>
+       
+        </form>
+    
+    </div>
+
+
+<script type="text/javascript">
+
+(function ($) {
+	
+   $.getUrlParam = function (name) {
+         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+         var r = window.location.search.substr(1).match(reg);
+         if (r != null) return unescape(r[2]); return null;
+     }
+  })(jQuery);
+  
+$(function(){
+	var flag = $.getUrlParam("flag");
+	if(flag != 1){
+		$(".btn-info").hide();
+	}
+	
+	
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				if(n.xzqhdm=="${obj.xzqhdm}"){		
+					$("#xzqhdm").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+				}else{
+					$("#xzqhdm").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				}
+			});
+		 }
+	});
+	
+});
+
+
+
+function changquyu(){
+	
+	var name=$("#xzqhdm").find("option:selected").text();
+	$("#quyu").val(name);
+	
+}
+
+
+function saveDiqu() {
+	var form = $(".dashboard-wrapper-lg form");
+	//var form = $('#if1')[0].contentWindow.$("form");
+	$.ajax({
+		url: form.attr("action"),
+		type:"post",
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		},
+		error:function(){
+			alert("保存失败，检查是否地区和行政区划代码重复");
+		}
+	});
+}
+
+function insertDiqu(){
+	var quxian = $("#quyu option:selected").text();
+	window.location.href="${ctxPath}/oa/jibenxinxi/quxianniandu_zsg.html?quxian="+quxian;
+	$(".quxianid").text("");
+}
+
+</script>
+
+</body>
+</html>

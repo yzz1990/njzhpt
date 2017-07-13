@@ -1,0 +1,88 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+					<label>操作人员:</label>
+					<input class="form-control input-sm" name="caozuorenyuan" id="caozuorenyuan" placeholder="操作人员" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+					<a class="btn btn-primary btn-sm pull-right" type="button"
+							href="${ctxPath}/cangchuguanli/zuoyeguanli/lengquexinxi_edit.html">新增冷却信息</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findLengque" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "zuoyefangshi",
+				"title" : "作业方式"
+			},{
+				"data" : "caozuorenyuan",
+				"title" : "操作人员"
+			},{
+				"data" : "cangao",
+				"title" : "仓廒"
+			},{
+				"data" : "starttime",
+				"title" : "开始时间",
+			},{
+				"data" : "endtime",
+				"title" : "结束时间",
+			},
+			 {"title":"操作",
+            	"render": function (data,type,row,meta) {
+                   	var bianji = '<a href="${ctxPath}/cangchuguanli/zuoyeguanli/lengquexinxi_edit.html?id='+row["id"]+'" class="btn btn-sm btn-info pjax"><em class="fa fa-pencil"></em></a>';
+                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delLengque(\''+row["id"]+'\')"><em class="fa fa-trash"></em></button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var caozuorenyuan = $("#caozuorenyuan").val();
+	document.querySelector('.datatables').dataset.queryparam="caozuorenyuan="+caozuorenyuan;
+	datatable.ajax.reload(null,false);
+}
+	
+function delLengque(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delLengque',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+	
+	
+</script>
+<%
+	}
+%>

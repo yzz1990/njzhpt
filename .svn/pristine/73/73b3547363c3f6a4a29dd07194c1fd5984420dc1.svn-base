@@ -1,0 +1,451 @@
+package com.zkzy.njzhpt.bo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.dao.ChuBeiLiangJHDAO;
+import com.zkzy.njzhpt.dao.LunHuanGuanLiDAO;
+import com.zkzy.njzhpt.dao.RenyuanDao;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class LunHuanGuanLiBO {
+	
+
+@Before(AutoPageInterceptor.class)
+public Ret querybylhsqwh(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.querybylhsqwh(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+
+@Before(AutoPageInterceptor.class)
+public Ret querylinshi(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.querylinshi(map);
+	for(Record record:list.getList()){
+		String qyzzjgdm=record.getStr("qyzzjgdm");
+		String kdbm=record.getStr("kdbm");
+		String cfbm=record.getStr("cfbm");
+		String pz=record.getStr("pz");
+		Record qymc= Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+		if(qymc!=null){
+			record.set("qyzzjgdm", qymc.getStr("qymc"));
+		}
+		Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+		if(kdmc!=null){
+			record.set("kdbm", kdmc.getStr("kdmc"));
+		}
+		Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+		if(cfmc!=null){
+			record.set("cfbm", cfmc.getStr("cfmc"));
+		}
+		Record lspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",pz);
+		if(lspzmc!=null){
+			record.set("pz", lspzmc.getStr("vName"));
+		}
+	}
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+public Ret saveLunHuanB(HashMap<String, Object> map) throws Exception {
+		boolean bool= LunHuanGuanLiDAO.saveLunHuanB(map);
+		Ret ret = Ret.create("ret", bool);
+		return ret;
+}
+public Ret LunHuanSQTJ(HashMap<String, Object> map) throws Exception {
+	boolean bool= LunHuanGuanLiDAO.LunHuanSQTJ(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret LunHuanSQSC(HashMap<String, Object> map) throws Exception {
+	Ret ret= LunHuanGuanLiDAO.LunHuanSQSC(map);
+	return ret;
+}
+/**
+ * 轮换批准（状态改为4）
+ * @param map
+ * @return
+ * @throws Exception
+ */
+public Ret saveLunHuanPZ(HashMap<String, Object> map) throws Exception {
+	boolean bool= LunHuanGuanLiDAO.saveLunHuanPZ(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret saveLunHuanQRSQ(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.saveLunHuanQRSQ(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret saveLunHuanQRTZ(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.saveLunHuanQRTZ(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret lunhuanpizhun(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.lunhuanpizhun(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public List<Record> findcompany(HashMap<String, Object> map) {
+	String xian = (String) map.get("xian");
+	String sql;
+	List<Record> list = null;
+	if("请选择区域名称".equals(xian)){
+		sql = "select qymc,qyzzjgdm from tz_qiye";
+		list = Db.find(sql);
+	}else{
+		sql = "select q.qymc,q.qyzzjgdm from tz_qiye q  where  q.xian = ?  order by q.qyzzjgdm ";
+		list = Db.find(sql, xian);
+	}
+	return list;
+}
+public List<Record> findcckd(HashMap<String, Object> map) {
+	String qyzzjgdm = (String) map.get("qyzzjgdm");
+	String sql;
+	List<Record> list = null;
+	if("请选择库点名称".equals(qyzzjgdm)){
+		sql = "select kdmc,kdbm from tz_kudian";
+		list = Db.find(sql);
+	}else{
+		sql = "select kdmc,kdbm from tz_kudian where qyzzjgdm = ?";
+		list = Db.find(sql, qyzzjgdm);
+	}
+	return list;
+}
+public List<Record> findfeikshkd(HashMap<String, Object> map) {
+	String qyzzjgdm = (String) map.get("qyzzjgdm");
+	String sql;
+	List<Record> list = null;
+	if("请选择库点名称".equals(qyzzjgdm)){
+		sql = "select kdmc,kdbm from tz_kudian";
+		list = Db.find(sql);
+	}else{
+		sql = "select kdmc,kdbm from tz_kudian where qyzzjgdm = ? and isksh<>'1' and kdlxbh<>'06' ";
+		list = Db.find(sql, qyzzjgdm);
+	}
+	return list;
+}
+public List<Record> findlunhuanxinxi(HashMap<String, Object> map) {
+	String qyzzjgdm = (String) map.get("qymc");
+	String kdbm = (String) map.get("lhsq_kdmc");
+	String  cfbm= (String) map.get("lhsq_ch");
+	String sql= "select *from njpt_lunhuanshenqingb WHERE 1=1 and qymc=? and lhsq_kdmc=? and lhsq_ch=?";
+	List<Record> list = Db.find(sql, qyzzjgdm,kdbm,cfbm);
+	
+	return list;
+}
+public List<Record> findyjkc(HashMap<String, Object> map) {
+	
+	Record re=Db.findFirst("select xzqhdm from njpt_diqu where 1=1 and areaid=?",UserKit.currentUserInfo().getArea().get("id"));
+	String yjmc = (String) map.get("yjmc");
+	String pp = (String) map.get("pp");
+	int  gg= Integer.parseInt(map.get("gg").toString());
+	String  danwei= (String) map.get("danwei");
+	String  cj= (String) map.get("cj");
+	
+	String sql= "select *from njpt_yaojikucunguanli WHERE 1=1 and xzqydm=? and yjmc=? and pp=? and gg=? and danwei=? and cj=?";
+	List<Record> list = Db.find(sql, re.get("xzqhdm"),yjmc,pp,gg,danwei,cj);
+	
+	return list;
+}
+
+public Ret querytishiByuuid(HashMap<String, Object> map) throws Exception {
+	
+	Record record= LunHuanGuanLiDAO.querytishiByuuid(map);
+	Ret ret = Ret.create("ret", record);
+	return ret;
+}
+public Ret findYearPZ(HashMap<String, Object> map) throws Exception {
+	
+	Record record= LunHuanGuanLiDAO.findYearPZ(map);
+	Ret ret = Ret.create("ret", record);
+	return ret;
+}
+public Ret saveLunHuanB1(HashMap<String, Object> map) throws Exception {
+	boolean bool= LunHuanGuanLiDAO.saveLunHuanB1(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret deleteduotiao(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.deleteduotiao(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret saveLunHuanYanQiB(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.saveLunHuanYanQiB(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret lunhuanpizhunTG(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.lunhuanpizhunTG(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+
+public Ret saveLHSQ(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.saveLHSQ(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret deleteSQ(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.deleteSQ(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+public Ret querenshenqing(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.querenshenqing(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+/**
+ * 轮换管理 批准提示
+ * @param map
+ * @return
+ * @throws Exception
+ */
+public Ret pizhuntishi(HashMap<String, Object> map) throws Exception {
+	
+	Record record=LunHuanGuanLiDAO.pizhuntishi(map);
+	Ret ret = Ret.create("ret", record);
+	return ret;
+}
+public Ret selectlhpz(HashMap<String, Object> map) throws Exception {
+	
+	Record record= LunHuanGuanLiDAO.selectlhpz(map);
+	Ret ret = Ret.create("ret", record);
+	return ret;
+}
+public Ret selectSWKC(HashMap<String, Object> map) throws Exception {
+	
+	Record record= LunHuanGuanLiDAO.selectSWKC(map);
+	Ret ret = Ret.create("ret", record);
+	return ret;
+}
+public Ret selectCCJH(HashMap<String, Object> map) throws Exception {
+	
+	Record record= LunHuanGuanLiDAO.selectCCJH(map);
+	Ret ret = Ret.create("ret", record);
+	return ret;
+}
+
+public Ret querentongzhi(HashMap<String, Object> map) throws Exception {
+	
+	boolean bool= LunHuanGuanLiDAO.querentongzhi(map);
+	Ret ret = Ret.create("ret", bool);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectlunhuanHZ(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectlunhuanHZ(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectlunhuan(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectlunhuan(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectlhsqlb(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectlhsqlb(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+
+@Before(AutoPageInterceptor.class)
+public Ret selectQRSQ(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectQRSQ(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectQRTZ(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectQRTZ(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectQYMC(HashMap<String, Object> map) throws Exception {
+	//判断权限
+//	List<String> auth = UserKit.currentUserInfo().getAuth();
+//	if(auth.contains("auth_select_part")){
+//		String xian = UserKit.currentUserInfo().getArea().getString("name");
+//		map.put("name", xian);
+//	}
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectQYMC(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectQY(HashMap<String, Object> map) throws Exception {
+	Page<Record> list= LunHuanGuanLiDAO.selectQY(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+
+@Before(AutoPageInterceptor.class)
+public Ret selectCH(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectCH(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectAJ(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectAJ(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectKDMC(HashMap<String, Object> map) throws Exception {
+	
+	//判断权限
+//	List<String> auth = UserKit.currentUserInfo().getAuth();
+//	if(auth.contains("auth_select_part")){
+//		String xian = UserKit.currentUserInfo().getArea().getString("name");
+//		map.put("name", xian);
+//	}
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectKDMC(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectKDMCJK(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectKDMCJK(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectquanbuCH(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectquanbuCH(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectpz(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectpz(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectPZ(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectPZ(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret selectXZ(HashMap<String, Object> map) throws Exception {
+	
+	Page<Record> list= LunHuanGuanLiDAO.selectXZ(map);
+	Ret ret = Ret.create("list", list);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret queryLunHuanShenQing(HashMap<String, Object> map) throws Exception {
+	Page<Record> lastPageRecord=LunHuanGuanLiDAO.queryLunHuanShenQing(map);
+	Ret ret = Ret.create("list", lastPageRecord);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret queryLunHuanShenQingQY(HashMap<String, Object> map) throws Exception {
+	Page<Record> lastPageRecord=LunHuanGuanLiDAO.queryLunHuanShenQingQY(map);
+	Ret ret = Ret.create("list", lastPageRecord);
+	return ret;
+}
+@Before(AutoPageInterceptor.class)
+public Ret queryLunHuanShenQingQX(HashMap<String, Object> map) throws Exception {
+	Page<Record> lastPageRecord=LunHuanGuanLiDAO.queryLunHuanShenQingQX(map);
+	Ret ret = Ret.create("list", lastPageRecord);
+	return ret;
+}
+/**
+ * 获取轮换申请
+ * @param param
+ * @return
+ * @throws Exception
+ */
+@Before(AutoPageInterceptor.class)
+public  Ret getlhsp(HashMap<String, Object> param) throws Exception {
+	Page<Record> userPageRecord=LunHuanGuanLiDAO.getlhsp(param);
+	Ret ret = Ret.create("list", userPageRecord);
+	return ret;
+}
+
+/**
+ * 获取轮换申请-审批
+ * @param param
+ * @return
+ * @throws Exception
+ */
+@Before(AutoPageInterceptor.class)
+public  Ret getlhsqbysp(HashMap<String, Object> param) throws Exception {
+	Page<Record> userPageRecord=LunHuanGuanLiDAO.getlhsqbysp(param);
+	Ret ret = Ret.create("list", userPageRecord);
+	return ret;
+}
+
+public Ret findlcbylc(HashMap<String, Object> param) {
+	// TODO Auto-generated method stub
+	Page<Record> userPageRecord=LunHuanGuanLiDAO.findlcbylc(param);
+	Ret ret = Ret.create("list", userPageRecord);
+	return ret;
+}
+
+public Page<Record> findLhsp(HashMap<String, Object> param)throws Exception {
+	Page<Record> page=LunHuanGuanLiDAO.findLhsp(param);
+	int index=1;
+	for(Record record:page.getList()){
+		record.set("xuhao", index);
+		index++;
+		if(record.getStr("shenpiren")!=null){
+			Record redb=Db.findFirst("select *from oa_shenpiliucheng where 1=1 and liuchenghao=? order by jiedian desc", record.getStr("liuchenghao"));
+			Record liucheng=  Db.findFirst("select * from oa_shenpiliucheng where liuchenghao=? and shenpiren=?",record.getStr("liuchenghao"),record.getStr("shenpiren"));
+			if(liucheng!=null){
+				Record dep= Db.findFirst("select * from fw_dep  where id=?",liucheng.getStr("shenpibumen"));
+				if(dep!=null){
+					record.set("jd",redb.get("jiedian"));
+					record.set("depname", dep.getStr("name"));
+					//record.set("jiedian", liucheng.getInt("jiedian"));
+				}
+				
+			}
+		}
+		
+	}
+	return page;
+}
+}

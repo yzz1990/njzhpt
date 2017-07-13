@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>企业信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/fontawesome/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/jibenxinxi/addQiyexinxi",title="新增企业信息";
+	if (isNotEmpty(parameter.ID)) {
+		var qyxx = @com.zkzy.njzhpt.dao.JibenxinxiDao.findQiyexinxi({"ID":parameter.ID,"page":"1","rows":"100"});
+		obj = qyxx.list[0];
+		url = ctxPath+"/jibenxinxi/upQiyexinxi";
+		title = "编辑企业信息";
+	};
+	
+%>
+
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+        	<form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+				<input type="hidden" name="ID" class="form-control" value="${obj.ID}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                
+                  <div class="widget-header">
+                    <div class="title">
+                        	区域信息                                       
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="sheng">省:</label>
+										<select id="sheng" name="sheng" class="form-control">
+											<option value="江苏省" ${obj.sheng=="江苏省"?" selected"}>江苏省</option>
+											<!-- <option value="浙江省" ${obj.sheng=="浙江省"?" selected"}>浙江省</option>
+											<option value="安徽省" ${obj.sheng=="安徽省"?" selected"}>安徽省</option> -->
+										</select>
+									</div>	
+								</div>
+							
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="shi">市:</label>
+										<select id="shi" name="shi" class="form-control">
+											<option value="南京市" ${obj.shi=="南京市"?" selected"}>南京市</option>
+											<!-- <option value="无锡市" ${obj.shi=="无锡市"?" selected"}>无锡市</option>
+											<option value="苏州市" ${obj.shi=="苏州市"?" selected"}>苏州市</option> -->
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xian">区县:</label>
+											<select id="xian" name="xian" class="form-control">
+													<option value="江宁区" ${obj.xian=="江宁区"?" selected"}>江宁区</option>
+													<option value="浦口区" ${obj.xian=="浦口区"?" selected"}>浦口区</option>
+													<option value="六合区" ${obj.xian=="六合区"?" selected"}>六合区</option>
+													<option value="溧水区" ${obj.xian=="溧水区"?" selected"}>溧水区</option>
+													<option value="高淳区" ${obj.xian=="高淳区"?" selected"}>高淳区</option>
+													<option value="市区" ${obj.xian=="市区"?" selected"}>市区</option>
+											</select>
+									</div>	
+								</div>
+							</div>
+                  </div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业基本信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="qymc">企业名称:</label>
+										<input id="qymc" name="qymc" class="form-control" placeholder="企业名称"  value="${obj.qymc}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${obj.qyzzjgdm}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="xzqhdm">行政区划代码:</label>
+										<input id="xzqhdm" name="xzqhdm" class="form-control" placeholder="行政区划代码" value="${obj.xzqhdm}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="yzbm">邮政编码:</label>
+										<input id="yzbm" name="yzbm" class="form-control" placeholder="邮政编码" value="${obj.yzbm}">
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="xxdz">详细地址:</label>
+										<input id="xxdz" name="xxdz" class="form-control" placeholder="详细地址" value="${obj.xxdz}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qyxzmc">企业性质:</label>
+										<input id="qyxzmc" name="qyxzmc" class="form-control" placeholder="企业性质" value="${obj.qyxzmc}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="jyywlxmc">经营业务类型:</label>
+										<input id="jyywlxmc" name="jyywlxmc" class="form-control" placeholder="经营业务类型" value="${obj.jyywlxmc}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="lsgx">隶属关系:</label>
+										<input id="lsgx" name="lsgx" class="form-control" placeholder="隶属关系" value="${obj.lsgx}">
+									</div>
+								</div>
+						
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="fddbr">法定代表人:</label>
+										<input id="fddbr" name="fddbr" class="form-control" placeholder="法定代表人" value="${obj.fddbr}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="lxdh">联系电话:</label>
+										<input id="lxdh" name="lxdh" class="form-control" placeholder="联系电话" value="${obj.lxdh}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="fax">传真:</label>
+										<input id="fax" name="fax" class="form-control" placeholder="传真" value="${obj.fax}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="qyyx">企业邮箱:</label>
+										<input id="qyyx" name="qyyx" class="form-control" placeholder="企业邮箱" value="${obj.qyyx}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tbr">填报人:</label>
+										<input id="tbr" name="tbr" class="form-control" placeholder="填报人" value="${obj.tbr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="shr">审核人:</label>
+										<input id="shr" name="shr" class="form-control" placeholder="审核人" value="${obj.shr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="sjdw">上级单位:</label>
+										<input id="sjdw" name="sjdw" class="form-control" placeholder="上级单位" value="${obj.sjdw}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="sbbs">上报标识:</label>
+										<input id="sbbs" name="sbbs" class="form-control" placeholder="上报标识" value="${obj.sbbs}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="tbsj">填报时间:</label>
+										<input id="tbsj" name="tbsj" class="form-control" placeholder="填报时间" value="${obj.tbsj}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="xgsj">修改时间:</label>
+										<input id="xgsj" name="xgsj" class="form-control" placeholder="修改时间" value="${obj.xgsj}">
+									</div>
+								</div>
+							</div>
+                  </div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业库区基本信息                                        
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zdmj">占地面积:</label>
+										<input id="zdmj" name="zdmj" class="form-control" placeholder="占地面积" value="${obj.zdmj}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="kqh">库区数:</label>
+										<input id="kqh" name="kqh" class="form-control" placeholder="库区数" value="${obj.kqh}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="cfzcr">仓房总容量:</label>
+										<input id="cfzcr" name="cfzcr" class="form-control" placeholder="仓房总容量" value="${obj.cfzcr}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="ygzcr">油罐总罐容:</label>
+										<input id="ygzcr" name="ygzcr" class="form-control" placeholder="油罐总罐容" value="${obj.ygzcr}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="cyry">从业人员:</label>
+										<input id="cyry" name="cyry" class="form-control" placeholder="从业人员" value="${obj.cyry}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="bgy">粮油保管员:</label>
+										<input id="bgy" name="bgy" class="form-control" placeholder="粮油保管员" value="${obj.bgy}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="czlybgy">持证粮油保管员:</label>
+										<input id="czlybgy" name="czlybgy" class="form-control" placeholder="持证粮油保管员" value="${obj.czlybgy}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="jhyy">检化验员:</label>
+										<input id="jhyy" name="jhyy" class="form-control" placeholder="检化验员" value="${obj.jhyy}">
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="czlyzljyy">持证粮油质量检验员:</label>
+										<input id="czlyzljyy" name="czlyzljyy" class="form-control" placeholder="持证粮油质量检验员" value="${obj.czlyzljyy}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="bzzj_gj">"粮安工程"补助资金（是/否）:</label>
+										<select id="bzzj_gj" name="bzzj_gj" class="form-control">
+											<option value="1" ${obj.bzzj_gj=="1"?" selected"}>是</option>
+											<option value="0" ${obj.bzzj_gj=="0"?" selected"}>否</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="bzzj_sheng">是否是临储玉米或最低收购价企业:</label>
+										<select id="bzzj_sheng" name="bzzj_sheng" class="form-control">
+											<option value="1" ${obj.bzzj_sheng=="1"?" selected"}>是</option>
+											<option value="0" ${obj.bzzj_sheng=="0"?" selected"}>否</option>
+										</select>
+									</div>
+								</div>
+							</div>
+                  	</div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业位置信息                                      
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qyjd">企业经度:</label>
+										<input id="qyjd" name="qyjd" class="form-control" placeholder="企业经度" value="${obj.qyjd}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qywd">企业纬度:</label>
+										<input id="qywd" name="qywd" class="form-control" placeholder="企业纬度" value="${obj.qywd}">
+									</div>
+								</div>
+							</div>
+			            	<div class="row">
+			            		<div class="col-xs-6">
+			            			<div class="form-group">
+			            				<label for="qysypath">企业示意图:</label>
+						            	<input id="qysypath" class="qysypath" name="qysypath" type="hidden">
+										<a class="btn btn-sm btn-info"><input class="file_upload_syt " type="file" name="file" /></a>
+										<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+										<div class="imgsyt">
+											<img src=""/>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-6">
+			            			<div class="form-group">
+			            				<label for="qyqmpath">企业全貌图:</label>
+										<input id="qyqmpath" class="qyqmpath" name="qyqmpath" type="hidden">
+										<a class="btn btn-sm btn-info"><input class="file_upload_qmt " type="file" name="file" /></a>
+										<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+										<div class="imgqmt">
+											<img src=""/>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+                	</div>
+                
+              </div>
+            </div>
+            
+            </form>
+        </div>
+
+<!-- uploadifive所需js和css -->
+<script src="${ctxPath}/resource/jquery.uploadifive.min.js"></script>
+<link href='${ctxPath}/resource/uploadifive.css'/>
+
+
+<script type="text/javascript">
+
+
+function saveqyxx() {
+	var form = $(".dashboard-wrapper-lg form");
+	/* var url = form.attr("action");
+	alert(url);
+	var data = form.serialize();
+	alert(data);
+	$.post(url,data,function(msg){
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		},
+		"json"
+	); */
+	$.ajax({
+		type:"post",
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		}
+	}); 
+}
+
+
+$(function(){
+	
+	var qydm = $("#qyzzjgdm").val();
+	
+	 $('.file_upload_syt').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/cangchugl/scqysyt',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传示意图',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.jpg; *.png',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	    	var url = "${ctxPath}/upload/";
+	  	    	url+=data;
+	  	    	var obimg=document.getElementsByTagName("img")[0];
+	  	    	obimg.setAttribute("src",url);
+	  	    	$("#qysypath").val(data);
+	  	    
+	  	    	
+	  	    	
+       }
+  });
+	 
+	 $('.file_upload_qmt').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/cangchugl/scqysyt',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传全貌图',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.jpg; *.png',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	    	var url = "${ctxPath}/upload/";
+	  	    	url+=data;
+	  	    	var obimg=document.getElementsByTagName("img")[1];
+	  	    	obimg.setAttribute("src",url);
+	  	    	$("#qyqmpath").val(data);
+	  	    	
+    }
+});
+	 
+});
+
+
+
+</script>
+
+</body>
+</html>

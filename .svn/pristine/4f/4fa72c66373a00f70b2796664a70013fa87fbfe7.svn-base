@@ -1,0 +1,228 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var obj1={};
+obj1=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.querykudian({"qyzzjgdm":"134967559",page:1,rows:4}).getList().get(0);
+debug(obj1);
+var qyzzjgdm = parameter.qyzzjgdm;
+
+
+
+%>
+ <style type="text/css">
+ 	.datatables td{
+ 		height:35px;
+ 	}
+ 	
+	.table-striped>tbody>tr>td{
+		background-color: #FFFFFF;
+	}
+	.table-striped>tbody>tr>td:nth-of-type(1){
+		 background-color: #E8F2F9;
+	}
+ </style>
+<div class="panel-body">
+	<input id="qyzzjgdm" style="display:none" type="text" value="${qyzzjgdm}">
+		<table  class="table table-striped table-hover table-bordered datatables">
+			<tbody>
+       			<tr>
+          			<td rowspan="1" style="vertical-align:middle;text-align:center;width:24%">内容</td>
+          			<td id="r1-2" rowspan="1" style="vertical-align:middle;text-align:center;width:19%"></td>
+         			<td id="r1-3" rowspan="1" style="vertical-align:middle;text-align:center;width:19%"></td>
+          			<td id="r1-4" rowspan="1" style="vertical-align:middle;text-align:center;width:19%"></td>
+          			<td id="r1-5" rowspan="1" style="vertical-align:middle;text-align:center;width:19%"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">总仓容(万吨)</td>
+          			<td id="r2-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r2-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r2-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r2-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>	
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">总罐容(吨)</td>
+          			<td id="r3-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r3-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r3-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r3-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">建设时间</td>
+          			<td id="r4-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r4-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r4-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r4-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">面积(平方米)</td>
+          			<td id="r5-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r5-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r5-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r5-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">防雨防潮性能</td>
+          			<td id="r6-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r6-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r6-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r6-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">密闭杀虫性能</td>
+          			<td id="r7-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r7-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r7-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r7-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">隔热保冷性能</td>
+          			<td id="r8-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r8-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r8-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r8-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">能否散装储存</td>
+          			<td id="r9-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r9-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r9-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r9-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">有无机械通风设施</td>
+          			<td id="r10-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r10-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r10-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r10-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">能否环流熏蒸杀虫</td>
+          			<td id="r11-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r11-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r11-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r11-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">有无粮情监测设备</td>
+          			<td id="r12-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r12-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r12-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r12-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">仓房使用情况</td>
+          			<td id="r13-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r13-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r13-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r13-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">防洪标准是否不低于50年一遇</td>
+          			<td id="r14-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r14-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r14-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r14-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+      			<tr>
+         			<td rowspan="1" style="vertical-align:middle;text-align:center">仓库离污染源及危险源是否符合安全距离</td>
+          			<td id="r15-2" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r15-3" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r15-4" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+          			<td id="r15-5" rowspan="1" style="vertical-align:middle;text-align:center"></td>
+      			</tr>
+     		</tbody>
+		</table>
+</div>
+
+<script type="text/javascript">
+ 	var qyzzjgdm;
+ 	$(function(){
+ 		qyzzjgdm = $("#qyzzjgdm").val();
+ 		$.ajax({
+ 			url:'${ctxPath}/shouchukeshihua/querykudian.do',
+ 			type:'post',
+ 			data:{"qyzzjgdm":qyzzjgdm,"page":1,"rows":4},
+ 			dataType:'json',
+ 			success:function(data){
+ 				
+ 				for(var i=0; i<data.list.length; i++){
+ 					if(i == 0){
+ 						$("#r1-2").text(data.list[i].kdmc);		//库点名称
+ 						$("#r2-2").text(data.list[i].cfzcr);	//仓容
+ 						$("#r3-2").text(data.list[i].ygzcr);	//罐容
+ 						$("#r4-2").text("");					//建设时间
+ 						$("#r5-2").text(data.list[i].zdmj);			//面积
+ 						$("#r6-2").text();		//防雨防潮性能
+ 						$("#r7-2").text();	//密闭杀虫性能
+ 						$("#r8-2").text();	//隔热保冷性能
+ 						$("#r9-2").text();	//能否散装储存
+ 						$("#r10-2").text();	//有无机械通风设施
+ 						$("#r11-2").text();	//能否环流熏蒸杀虫
+ 						$("#r12-2").text();	//有无粮情监测设备
+ 						$("#r13-2").text();	//仓房使用情况
+ 						$("#r14-2").text();	//防洪标准是否不低于50年一遇
+ 						$("#r15-2").text();	//仓库离污染源及危险源是否符合安全距离
+ 					}
+ 					if(i == 1){
+ 						$("#r1-3").text(data.list[i].kdmc);
+ 						$("#r2-3").text(data.list[i].cfzcr);	//仓容
+ 						$("#r3-3").text(data.list[i].ygzcr);	//罐容
+ 						$("#r4-3").text("");					//建设时间
+ 						$("#r5-3").text(data.list[i].zdmj);			//面积
+ 						$("#r6-3").text();		//防雨防潮性能
+ 						$("#r7-3").text();	//密闭杀虫性能
+ 						$("#r8-3").text();	//隔热保冷性能
+ 						$("#r9-3").text();	//能否散装储存
+ 						$("#r10-3").text();	//有无机械通风设施
+ 						$("#r11-3").text();	//能否环流熏蒸杀虫
+ 						$("#r12-3").text();	//有无粮情监测设备
+ 						$("#r13-3").text();	//仓房使用情况
+ 						$("#r14-3").text();	//防洪标准是否不低于50年一遇
+ 						$("#r15-3").text();	//仓库离污染源及危险源是否符合安全距离
+ 					}
+ 					if(i == 2){
+ 						$("#r1-4").text(data.list[i].kdmc);
+ 						$("#r2-4").text(data.list[i].cfzcr);	//仓容
+ 						$("#r3-4").text(data.list[i].ygzcr);	//罐容
+ 						$("#r4-4").text("");					//建设时间
+ 						$("#r5-4").text(data.list[i].zdmj);			//面积
+ 						$("#r6-4").text();		//防雨防潮性能
+ 						$("#r7-4").text();	//密闭杀虫性能
+ 						$("#r8-4").text();	//隔热保冷性能
+ 						$("#r9-4").text();	//能否散装储存
+ 						$("#r10-4").text();	//有无机械通风设施
+ 						$("#r11-4").text();	//能否环流熏蒸杀虫
+ 						$("#r12-4").text();	//有无粮情监测设备
+ 						$("#r13-4").text();	//仓房使用情况
+ 						$("#r14-4").text();	//防洪标准是否不低于50年一遇
+ 						$("#r15-4").text();	//仓库离污染源及危险源是否符合安全距离
+ 					}
+ 					if(i == 3){
+ 						$("#r1-5").text(data.list[i].kdmc);
+ 						$("#r2-5").text(data.list[i].cfzcr);	//仓容
+ 						$("#r3-5").text(data.list[i].ygzcr);	//罐容
+ 						$("#r4-5").text("");					//建设时间
+ 						$("#r5-5").text(data.list[i].zdmj);			//面积
+ 						$("#r6-5").text();		//防雨防潮性能
+ 						$("#r7-5").text();	//密闭杀虫性能
+ 						$("#r8-5").text();	//隔热保冷性能
+ 						$("#r9-5").text();	//能否散装储存
+ 						$("#r10-5").text();	//有无机械通风设施
+ 						$("#r11-5").text();	//能否环流熏蒸杀虫
+ 						$("#r12-5").text();	//有无粮情监测设备
+ 						$("#r13-5").text();	//仓房使用情况
+ 						$("#r14-5").text();	//防洪标准是否不低于50年一遇
+ 						$("#r15-5").text();	//仓库离污染源及危险源是否符合安全距离
+ 					}
+ 				}
+ 			},
+ 			error:function(){
+ 				alert("error");
+ 			}
+ 		});
+ 	});
+</script>
+
+
+<%
+	}
+%>

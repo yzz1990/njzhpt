@@ -1,0 +1,268 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(4){
+		text-align: left;
+	}
+</style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<!-- 导出 -->
+				<!-- <div class="form-inline pull-left">
+						<a class="btn btn-success btn-sm" type="button" onclick="exportExcel()"><em class="fa fa-upload fa-1x"></em> 导出</a>
+				</div> -->
+				<div class="form-inline" style="float: left">
+					
+					<label>区域:</label>
+					<select id="quyu" class="form-control input-sm" style="width:150px; font-size:14px" onchange="Change()">
+						<option value="" selected="true" >请选择区域</option>
+						<option>${县[1]}</option>
+						<option>${县[2]}</option>
+						<option>${县[3]}</option>
+						<option>${县[4]}</option>
+						<option>${县[5]}</option>
+						<option>${县[0]}</option>
+					</select>
+					<label>企业名称:</label>
+					<select id="qymc" class="js-example-basic-single input-sm" style="width:150px;font-size:14px">
+						<option value="" selected="true" >请选择企业名称</option>
+					</select>
+					<label>备案编号:</label>
+					<input class="form-control input-sm" name="beianbianhao" id="beianbianhao" placeholder="备案编号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text" style="width:150px;font-size:14px">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<a class="btn btn-primary btn-sm pull-right" type="button" onclick="addqiba()"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findQiyebeian" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	});
+
+var datatable;
+$(function(){
+	$.ajax({
+		url: "${ctxPath}/cangchugl/findqiyemc",
+		dataType: "json",
+		success: function(data) {
+			$.each(data.list,function(i, n){
+					$("#qymc").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+			});
+		}
+	});
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "quyu",
+				"title" : "区域"
+			},{
+				"data" : "beianbianhao",
+				"title" : "备案编号"
+			},{
+				"data" : "balx",
+				"title" : "备案类型"
+			},{
+				"data" : "qymc",
+				"title" : "企业名称"
+				/* "render":function(data,type,row,meta){
+					var pz = '<div style="text-align:left;">'+row["qymc"]+'</div>';
+  					return pz;
+				} */
+			},{
+				"data" : "faren",
+				"title" : "法人代表"
+			},{
+				"data" : "crgm",
+				"title" : "仓容规模"
+			},{
+				"data" : "zhuangtai",
+				"title" : "状态",
+				"render":function(data,type,row,meta){
+  					if(data=="0"){
+  						var chakan = '<a class="label label-info">未通过</a>';	
+  					}else if(data=="1"){
+  						var chakan = '<a class="label label-success">通过</a>';	
+  					}
+  					return chakan;
+				}
+			},
+			 {"title":"操作",
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upqyba(\''+row["id"]+'\')" class="btn btn-sm btn-info"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;详情编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delqyba(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var beianbianhao = $("#beianbianhao").val();
+	var qymc = $("#qymc").val();
+	var quyu = $("#quyu").val();
+	document.querySelector('.datatables').dataset.queryparam="&quyu="+quyu+"&qymc="+qymc+"&beianbianhao="+beianbianhao;
+	datatable.ajax.reload(null,false);
+}
+	
+function exportExcel(){
+	 var qiyename= $("#qiyename").val();
+	 var username= $("#username").val();
+	 $.post('${ctxPath}/lsj/export.html?qiyename='+qiyename+"&username="+username+"&status="+$("#status").find("option:selected").val(),function(data){  
+		 //alert(data.file);
+		 	window.location.href='${ctxPath}/lsj/FileUpload?id=' + data.file;	
+		},'json');
+ }
+
+
+/* function beianxq(jzid){
+	dialog1=BootstrapDialog.show({
+	    title: '企业备案详情',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/qiyeguanli/biaoqianye.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+	});
+} */
+
+
+$('.datatables').on( 'draw.dt', function () {
+	Change();
+	var xian = $("#quyu option:selected").text().trim();
+} );
+
+function Change(){
+	$("#qymc").html("");
+	var xian = $("#quyu option:selected").text().trim();
+	var op = '<option value="">请选择企业名称</option>';
+    $("#qymc").append(op);
+	
+    $.ajax({
+		url:'${ctxPath}/cangchugl/findqiyemc',
+		type:'post',
+		data:{"xian":xian},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = "<option value="+data[i].qymc+">"+data[i].qymc+"</option>";
+			     $("#qymc").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+}
+
+
+
+function addqiba(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增企业备案',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeian_zsg.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","540px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveqyba(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-primary'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger'
+       }]
+	});
+}
+
+
+function delqyba(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delQiyebeian',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+function upqyba(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑企业备案',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeian_zsg.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","540px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveqyba(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-primary'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger'
+       }]
+	});
+}
+
+	
+</script>
+<%
+	}
+%>

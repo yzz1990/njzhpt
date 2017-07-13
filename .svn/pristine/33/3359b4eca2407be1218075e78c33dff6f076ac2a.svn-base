@@ -1,0 +1,28 @@
+<%
+ var obj={};
+ var qyzzjgdm = parameter.qyzzjgdm;
+ var kdbm = parameter.kdbm;
+ var cfbm = parameter.cfbm;
+%>
+<script>
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:''
+	})
+	
+	
+</script>
+
+<div class="panel-body">
+	<div class = "">
+		<label>库点:</label>
+		<select class="form-control input-sm input-sm-kudian" style="width:80px;" name="gongdi" style="width:100px;">
+			<option value="请选择">全部</option>
+		</select>
+	</div>
+	<iframe id="if" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/yewu/pingmiantu?qyzzjgdm=783835724&kdbm=001">
+		
+	</iframe>
+	
+</div>

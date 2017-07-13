@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>应急小组信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addxiaozu",title="新增小组信息";
+	if (isNotEmpty(parameter.id)) {
+		var xzgl = @com.zkzy.njzhpt.dao.CangchuglDao.findxiaozu({"id":parameter.id,"page":"1","rows":"100"});
+		obj = xzgl.list[0];
+		url = ctxPath+"/cangchugl/upxiaozu";
+		title = "编辑小组信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	小组信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="jibie">级别:</label>
+										<input id="jibie" name="jibie" class="form-control" placeholder="小组级别" value="${obj.jibie}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="fuzeren">负责人:</label>
+										<input id="fuzeren" name="fuzeren" class="form-control" placeholder="负责人" value="${obj.fuzeren}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="danwei_id">单位:</label> 
+										<select id="danwei_id" name="danwei_id" class="form-control">
+											<option value="">请选择单位</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="chenyuan">成员:</label>
+										<input id="chenyuan" name="chenyuan" class="form-control" placeholder="小组成员" value="${obj.chenyuan}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="ziwei">职位:</label>
+										<input id="ziwei" name="ziwei" class="form-control" placeholder="小组职位" value="${obj.ziwei}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="phone">联系方式:</label>
+										<input id="phone" name="phone" class="form-control" placeholder="联系方式" value="${obj.phone}">
+									</div>	
+								</div>
+								
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="address">联络地址:</label>
+										<input id="address" name="address" class="form-control" placeholder="联络地址" value="${obj.address}">
+									</div>	
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="yuanziwei">所在单位职务:</label>
+										<input id="yuanziwei" name="yuanziwei" class="form-control" placeholder="所在单位职务" value="${obj.yuanziwei}">
+									</div>
+								</div>
+								
+							</div>
+							
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+$(function(){
+	/* 加载部门*/
+	$("#danwei_id").select2();
+	$.ajax({
+		 url:'${ctxPath}/renyuan/findYjdept',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				if(n.id=="${obj.danwei_id}"){
+					$("#danwei_id").append("<option value="+n.id+"  selected>"+n.name+"</option>");
+				}else{
+					$("#danwei_id").append("<option value="+n.id+">"+n.name+"</option>");
+				}
+			
+			});
+		 }
+	});
+});
+function savexiaozu() {
+	var form = $(".widget-body form");
+	var RegExp = /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/;
+	var phone=$("#phone").val();
+	if (RegExp.test(phone) == false) {
+	alert("联系方式格式错误!");
+	}else{
+		$.ajax({
+			url: form.attr("action"),
+			dataType: "json",
+			data: form.serialize(),
+			success: function(msg) {
+				if (!msg.ret) {
+					alert(msg.message);
+				} else {
+					alert("保存成功");
+					parent.window.dialog1.close();
+		        	parent.window.datatable.ajax.reload(null,true);
+				}
+			}
+		});
+	}
+	
+}
+
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+</script>
+
+</body>
+</html>

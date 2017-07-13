@@ -1,0 +1,810 @@
+package com.zkzy.njzhpt.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import com.ggy.common.utils.ParamUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Clear;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.PathKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.bo.CommondBo;
+import com.zkzy.njzhpt.bo.ExcelBo;
+import com.zkzy.njzhpt.bo.ShouchukeshihuaBO;
+import com.zkzy.njzhpt.bo.jibenxinxiBo;
+import com.zkzy.njzhpt.config.interfaces.ICommond;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class ShouchukeshihuaController extends Controller {
+	public void index(){
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) ShouchukeshihuaBO.class.getMethod(method, HashMap.class)
+						.invoke(Duang.duang(ShouchukeshihuaBO.class),
+								ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				renderText("FrameworkController");
+			}
+		} catch (Exception e) {
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+	}
+	/*
+	 * 获取当前的
+	 * 
+	 */
+	public void findndjd(){
+		Date dt = new Date();
+	    SimpleDateFormat matter1=new SimpleDateFormat("yyyy-MM-dd");
+	    String today = matter1.format(dt);
+	    String sql = "select * "
+	    		+ "from njpt_fenqishangbao "
+	    		+ "where convert(date,starttime) <= ? and convert(date,endtime) >= ?";
+	    Record recordt = Db.findFirst(sql, today,today);
+	    String year = recordt.getStr("niandu");
+	    String jidu = recordt.getStr("jidu");
+	    String ndjd = year + jidu;
+	    Ret ret = Ret.create("ndjd",ndjd);
+	    renderJson(ret);
+
+	}
+
+	/**
+	 * 区县
+	 */
+	@Clear
+	public void sshzmingxi(){	
+		setAttr("qymc", getPara("qymc"));
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("churuku/sshzmingxi.html");
+	}
+	
+	/**
+	 * 区县
+	 */
+	@Clear
+	public void biaoqianye(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("biaoqianye.html");
+	}
+	
+	/**
+	 * 区县
+	 */
+	@Clear
+	public void cangfangjiance(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		setAttr("cfbm", getPara("cfbm"));
+		render("kudianxinxi/cangfangjiance.html");
+	}
+	
+	
+	/**
+	 * 区县
+	 */
+	@Clear
+	public void quxianjianjie(){	
+		setAttr("xzqhdm", getPara("xzqhdm"));
+		render("quxianxinxi/quxianjianjie.html");
+	}
+	
+
+	@Clear
+	public void qiye(){	
+		setAttr("xzqhdm", getPara("xzqhdm"));
+		render("quxianxinxi/qiye.html");
+	}
+	
+	
+	@Clear
+	public void renkou(){	
+		setAttr("xzqhdm", getPara("xzqhdm"));
+		render("quxianxinxi/renkou.html");
+	}
+	
+	@Clear
+	public void lschanliang(){
+		setAttr("xzqhdm", getPara("xzqhdm"));
+		render("quxianxinxi/lschanliang.html");
+	}
+	
+	@Clear
+	public void gengdi(){	
+		setAttr("xzqhdm", getPara("xzqhdm"));
+		render("quxianxinxi/gengdi.html");
+	}
+	
+	@Clear
+	public void quxian(){	
+		setAttr("xzqhdm", getPara("xzqhdm"));
+		render("quxianxinxi/quxian.html");
+	}
+	/**
+	 * 库点
+	 */
+	@Clear
+	public void kudian(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("kudianxinxi/kudian.html");
+	}
+	
+	@Clear
+	public void kudianjianjie(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("kudianxinxi/kudianjianjie.html");
+	}
+	
+	@Clear
+	public void jibenqk(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("kudianxinxi/jibenqk.html");
+	}
+	
+	@Clear
+	public void cangfangxx(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("kudianxinxi/cangfangxx.html");
+	}
+	
+	
+	@Clear
+	public void kucunxinxi(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("kudianxinxi/kucunxinxi.html");
+	}
+	/**
+	 * 企业
+	 */
+	@Clear
+	public void qiye1(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		setAttr("kdbm", getPara("kdbm"));
+		render("qiyexinxi/qiye.html");
+	}
+	
+	@Clear
+	public void qiyejianjie(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		render("qiyexinxi/qiyejianjie.html");
+	}
+	@Clear
+	public void qiyejbqk(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		render("qiyexinxi/qiyejbqk.html");
+	}
+	@Clear
+	public void kuquqk(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		render("qiyexinxi/kuquqk.html");
+	}
+	@Clear
+	public void congyery(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		render("qiyexinxi/congyery.html");
+	}
+	@Clear
+	public void cangchusb(){	
+		setAttr("qyzzjgdm", getPara("qyzzjgdm"));
+		render("qiyexinxi/cangchusb.html");
+	}
+	
+	
+	
+	public void queryshougou(){
+		String sql = "select * from crk_Purchase";
+		renderJson(Db.findFirst(sql));
+	}
+	
+	/*疑似无用
+	public void queryfengqushougou(){
+		String sql = "select * from v_PurchasefenquView where xian = ?";
+		Record record = Db.use("intelGrain_Data").findFirst(sql, getPara("xian"));
+		renderJson(record);	
+	}*/
+	
+	public void toHTML() {
+		String url = (String) getAttr("_url_");
+		render(url);
+	}
+	
+	public void queryfengquzongliang() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).queryfengquzongliang(param));
+	}
+	
+	@Clear
+	public void findzhj() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findzhj(param).getData().get("list"));
+	}
+	
+	@Clear
+	public void findqszhj() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findqszhj(param).getData().get("list"));
+	}
+	
+	@Clear
+	public void findqszhjyear() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findqszhjyear(param).getData().get("list"));
+	}
+	
+	@Clear
+	public void findqszhjdl() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findqszhjdl(param).getData().get("list"));
+	}
+	
+	
+	@Clear
+	public void findcangfang() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findcangfang(param));
+	}
+	/**
+	 * 寻找 mysql对接表中的仓房
+	 * @throws Exception
+	 */
+	@Clear
+	public void findmysqlcf() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findmysqlcf(param));
+	}
+	
+	/**
+	 * 根据仓房寻找粮情时间
+	 * @throws Exception
+	 */
+	@Clear
+	public void querylqtime() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).querylqtime(param));
+	}
+	
+	@Clear
+	public void findkcxinxi() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findkcxinxi(param));
+	}
+	
+	public void queryliangkuzongliang(){
+		String sql = "select * from (select top 5 * from v_hwkudianmingxi where v_xian = ?)ts order by v_dmStock";
+		List<Record> records = Db.find(sql,getPara("xian"));
+		renderJson(records);
+	}
+	
+	public void findnian(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findnian(param));
+	
+	}
+	public void findnianyuce(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findnianyuce(param));
+	}
+
+	
+	public void findshuiza() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findshuiza(param));
+	}
+	
+	public void readshiping(){
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("qyzzjgdm", getPara("qyzzjgdm"));
+		param.put("kdbm", getPara("kdbm"));
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).readshiping(param));
+	}
+	
+	
+	private final String UPLOAD_ROOT = "uploadfile";
+	
+	public void FileUpload() throws Exception {
+		String filePath = PathKit.class.getClassLoader().getResource("")
+				.toURI().getPath()
+				+ UPLOAD_ROOT + "/" + "excelfile" + "/";
+		String titlename = "";
+		String id = (String) ParamUtil.getParamMap(this.getParaMap()).get("id");
+		if (id != null) {
+			titlename = "企业信息记录.xls";
+			renderFile(new File(filePath.substring(1) + titlename));
+		} else {
+			renderNull();
+		}
+	}
+	
+	
+	/**
+	 * 上传文件，上传的同时保存jxcxcanshu
+	 * @throws IOException
+	 */
+	public void uploadFile() throws IOException {
+		UploadFile uploadFile = this.getFile();
+		
+		File file = uploadFile.getFile();
+		String filepath = file.getPath();
+		String filename = file.getName();
+		/*String liucid = "cd6096c03a9c42258c3d9b16b6a1e49d";*/
+		String liucid = getPara("liucid");
+		//System.out.println(liucid);
+		Duang.duang(ExcelBo.class).upCanshu(filepath, filename,liucid);
+		/*Ret msg = new Ret();
+		if (file != null) {
+			msg.put("ret", "文件上传成功");
+		}else{
+			msg.put("ret","文件上传失败");
+		}*/
+		int lie = Duang.duang(ExcelBo.class).JiexiExcel(liucid);
+		renderJson(lie);
+	}
+	
+	/**
+	 * 导入excel数据  秋粮五日报表
+	 * @throws IOException
+	 */
+	public void Daorushuju_ql() throws IOException{
+		String liucid = getPara("liucid");
+		Ret ret = Duang.duang(ExcelBo.class).saveExcel_ql(liucid);
+		//System.out.println(ret.getData());
+		renderJson(ret.getData());
+	
+	}
+	
+	/**
+	 * 导入excel数据  夏粮五日报表
+	 * @throws IOException
+	 */
+	public void Daorushuju_xl() throws IOException{
+		String liucid = getPara("liucid");
+		Ret ret = Duang.duang(ExcelBo.class).saveExcel_xl(liucid);
+		//System.out.println(ret.getData());
+		renderJson(ret.getData());
+	}
+	
+	/**
+	 * 区县信息下拉获取
+	 * @throws Exception 
+	 */
+	public void findquxian() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).queryquxian(param).getList());
+	}
+	/**
+	 * 海康视频区县信息下拉获取
+	 * @throws Exception 
+	 */
+	public void findquxianhk() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).queryquxianhk(param).getList());
+	}
+	/**
+	 * 区县信息下拉获取
+	 * @throws Exception 
+	 */
+	
+	public void findyaokuxinxi() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findyaokuxinxi(param).getList());
+	}
+	
+	/**
+	 * 区县信息下拉获取
+	 * @throws Exception 
+	 */
+	
+	public void findcfkudian() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findcfkudian(param).getList());
+	}
+	/**
+	 * 数据表t_property 属性名下拉获取
+	 * @throws Exception 
+	 */
+	
+	public void findpropname() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).querypropname(param).getList());
+	}
+	/**
+	 * 数据表t_property 属性值下拉获取
+	 * @throws Exception 
+	 */
+	
+	public void findpropvalue() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).querypropvalue(param).getList());
+	}
+	/**
+	 * 应急小组负责人信息下拉获取
+	 * @throws Exception 
+	 *//*
+	
+	public void findfuzeren() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).queryfuzeren(param).getList());
+	}*/
+	/**
+	 * 应急小组负责人信息下拉获取
+	 * @throws Exception 
+	 */
+	
+	public void findfuzeren(){
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("danwei_id", getPara("danwei_id"));
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findfuzeren(param));
+	}
+	/**
+	 * 应急小组成员信息下拉获取
+	 * @throws Exception 
+	 *//*
+	
+	public void findchenyuan() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).querychenyuan(param).getList());
+	}*/
+	/**
+	 * 应急小组成员信息下拉获取
+	 * @throws Exception 
+	 */
+	public void findchenyuan(){
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("fuzeren", getPara("fuzeren"));
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findchenyuan(param));
+	}
+	/**
+	 * 视频ip下拉获取
+	 */
+	public void findqymc() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).queryqymc(param).getList());
+	}
+	/**
+	 * 视频ip下拉获取
+	 */
+	public void findcaidanname() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findcaidanname(param).getList());
+	}
+	
+	/**
+	 * 模块下拉获取
+	 */
+	public void findrate() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).queryrate(param).getList());
+	}
+	/**
+	 * 获取密码
+	 */
+	public void findmima() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).querymima(param).getList());
+	}
+	
+	/**
+	 * 用户信息下拉获取
+	 */
+	public void finduserid() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).finduserid(param).getList());
+	}
+	/**
+	 * 人员通讯录绑定账号信息下拉获取
+	 */
+	public void findrenyuanid() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).findrenyuanid(param).getList());
+	}
+	/**
+	 * 企业ip下拉获取
+	 */
+	public void findKDmc() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this
+				.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).queryKDmc(param).getList());
+	}
+	
+	
+	
+	public void findpurchase(){
+		String sql = "select p.* , g.vName as name , t.vGrainProperties as gp from crk_Purchase as p left join "
+				+ "tz_GrainType as g on p.vGrainSubTypeCode = g.vCode left join "
+				+ "tz_GrainProperties as t on p.vGrainPropertyId = t.vCode"
+				+ "  where p.vSwiftNumber = ? and p.qyzzjgdm = ? and p.kdbm = ?";
+		Record record = Db.findFirst(sql, getPara("vSwiftNumber"), getPara("qyzzjgdm"), getPara("kdbm"));
+		renderJson(record);
+	}
+	
+	
+	public void upxialiangwuri(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).upxialiangwuri(param).getData());
+	}
+	
+	public void addxialiangwuri(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).addxialiangwuri(param).getData());
+	}
+	
+	public void upqiuliangwuri(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).upqiuliangwuri(param).getData());
+	}
+	
+	public void addqiuliangwuri(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).addqiuliangwuri(param).getData());
+	}
+	
+	public void upqiujiyuce(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).upqiujiyuce(param).getData());
+	}
+	
+	public void addqiujiyuce(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).addqiujiyuce(param).getData());
+	}
+	
+	public void upxiajiyuce(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).upxiajiyuce(param).getData());
+	}
+	
+	public void addxiajiyuce(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).addxiajiyuce(param).getData());
+	}
+	
+	public void addqiujishebei(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).addqiujishebei(param).getData());
+	}
+	
+	public void upqiujishebei(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).upqiujishebei(param).getData());
+	}
+	
+	public void deletebaobiao(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).deletebaobiao(param).getData());
+	}
+	
+	/**
+	 * 删除五日报表
+	 */
+	public void deletewuribaobiao(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).deletewuribaobiao(param).getData());
+	}
+	
+	
+	
+	/**
+	 * 删除分期
+	 */
+	public void delfenqi(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).delfenqi(param).getData());
+	}
+	
+	public void savefenqi(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(ShouchukeshihuaBO.class).savefenqi(param).getData());
+	}
+	
+	public void findxialiangwuriyear(){
+		String sql = "select distinct year from njpt_xialiangshougouwuribb order by year desc";
+		renderJson(Db.find(sql));
+	}
+	
+	public void findqiuliangwuriyear(){
+		String sql = "select distinct nianfen from njpt_qiuliangshougouwuribb order by nianfen desc";
+		renderJson(Db.find(sql));
+	}
+	
+	/**
+	 * 根据xzqhdm，获取区县示意图
+	 */
+	
+	public void quxiansyt(){
+		String xzqhdm = getPara("xzqhdm");
+		//String kdbm = getPara("kdbm");
+		/*String qyzzjgdm = "135654781";
+		String kdbm = "003";*/
+		//String qumappath = Duang.duang(ShouchukeshihuaBO.class).findquxiantp(xzqhdm).get(0).getStr("qumappath");
+		String qushiyipath = Duang.duang(ShouchukeshihuaBO.class).findquxiantp(xzqhdm).get(0).getStr("qushiyipath");
+		
+		File file=new File(getSession().getServletContext().getRealPath("/")+"\\"+qushiyipath);
+		LogKit.info(String.valueOf(file.exists()));
+		renderFile(file);
+		
+	}
+	
+	/**
+	 * 根据xzqhdm获取企业全貌图
+	 */
+	
+	public void quxianqmt(){
+		String xzqhdm = getPara("xzqhdm");
+		/*String qyzzjgdm = "716290701";*/
+		String qyqmpath = Duang.duang(ShouchukeshihuaBO.class).findquxiantp(xzqhdm).get(0).getStr("qumappath");
+		File file=new File(getSession().getServletContext().getRealPath("/") +"\\"+qyqmpath);
+		LogKit.info(String.valueOf(file.exists()));
+		renderFile(file);
+	}
+	
+	/**
+	 * 获取地理信息弹窗信息
+	 *//*
+	@Clear
+	public void quxianjianjie(){
+		String xzqhdm = getPara("xzqhdm");
+		render ("quxianxinxi/quxianjianjie.html?xzqhdm="+xzqhdm);
+	}*/
+	
+	/**
+	 * 寻找总仓容
+	 */
+	public void findzcr(){
+		String xzqhdm = getPara("xzqhdm");
+		String sql = "select sum(convert (float,cfzcr)) as sum from tz_qiye where xzqhdm = ?";
+		renderJson((Db.findFirst(sql,xzqhdm)));
+	}
+	
+	/**
+	 * 寻找水稻和小麦库存
+	 */
+	public void findxskucun(){
+		String xzqhdm = getPara("xzqhdm");
+		String sql = "select sum(dmStock) as sum, vGrainSubTypeCode as vpc from "
+				+ "kc_CurrentStock as cs left join tz_qiye as qy on cs.qyzzjgdm = qy.qyzzjgdm "
+				+ "where qy.xzqhdm = ? group by vGrainSubTypeCode";
+		renderJson(Db.find(sql,xzqhdm));
+	}
+	
+	/**
+	 * 寻找各企业性质的数量
+	 */
+	public void findqiyexinzhi(){
+		String xzqhdm = getPara("xzqhdm");
+		String sql = "select count(qyxzmc) as co,qyxzmc from tz_qiye where xzqhdm = ? and "
+				+ "qyxzmc is not null group by qyxzmc";
+		renderJson(Db.find(sql,xzqhdm));
+	}
+	
+	/**
+	 * 寻找最近的年份
+	 */
+	public void findyear(){
+		String jidu = getPara("jidu");
+		String sql = "select max(niandu) as niandu from njpt_fenqishangbao where jidu = ?";
+		renderJson(Db.find(sql,jidu));
+	}
+	
+	/**
+	 * 实时库点信息
+	 * @throws Exception
+	 */
+	public void queryshishi() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		if(queryparam.containsKey("isksh")){
+			if(Integer.parseInt(queryparam.get("isksh").toString()) != 1){
+				queryparam.remove("isksh");
+			}
+		}
+		
+		ICommond icommond=	CommondBo.getCommond();
+		renderJson(icommond.queryshishi(queryparam).getData().get("list"));
+	}
+	/**
+	 * 实时库点信息
+	 * @throws Exception
+	 */
+	public void queryxingzhi() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		ICommond icommond=	CommondBo.getCommond();
+		renderJson(icommond.queryxingzhi(queryparam).getData().get("list"));
+	}
+	
+	/**
+	 * 实时库点信息
+	 * @throws Exception
+	 */
+	public void queryshishido() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(jibenxinxiBo.class).querycfhj(queryparam).getData());
+	}
+	
+	/**
+	 * 库点库存汇总信息
+	 * @throws Exception
+	 */
+	public void querykchz() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		ICommond icommond=	CommondBo.getCommond();
+		renderJson(icommond.querykchz(queryparam).getData().get("list"));
+	}
+	
+	
+	
+	/**
+	 * 遍历夏粮预测
+	 * @throws Exception
+	 */
+	public void queryxialiangyuce() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		ICommond icommond=	CommondBo.getCommond();
+		renderJson(icommond.queryxialiangyuce(queryparam).getData().get("list"));
+	}
+	
+	/**
+	 * 遍历秋粮预测
+	 * @throws Exception
+	 */
+	public void queryqiuliangyuce() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		ICommond icommond=	CommondBo.getCommond();
+		renderJson(icommond.queryqiuliangyuce(queryparam).getData().get("list"));
+	}
+	
+	
+}

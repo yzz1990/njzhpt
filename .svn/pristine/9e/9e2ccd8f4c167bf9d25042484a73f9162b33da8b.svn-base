@@ -1,0 +1,56 @@
+<%
+ layout(gisCityHtml){
+%>
+
+<style>
+	.container-fluid {
+	     padding-right: 0px; 
+	     padding-left: 0px; 
+	     margin-right: 0px; 
+	     margin-left: 0px; 
+	}
+	.panel.panel-default {
+    	border-top-width: 3px;
+   	 	margin-top: 0px; 
+	}
+
+</style>
+<script>
+$(function(){
+
+	if("${session.userinfo.auth}".indexOf("auth_manager")>0){
+				$("#ccgl").attr("src","${gisurl}idxKeshihua.jsp?type=2&role=${session.userinfo.role.code}&code=''");
+	 }else if("${session.userinfo.auth}".indexOf("auth_county")>0){
+		 $.ajax({
+			 url:'${ctxPath}/shouchukeshihua/findquxian',
+			 type:'post',
+			 data:{"name":"${session.userinfo.area.name}"},
+			 dataType:'json',
+			 success:function(data){					 
+				 $("#ccgl").attr("src","${gisurl}idxKeshihua.jsp?type=2&role=${session.userinfo.role.code}&code="+data[0].xzqhdm);				 
+			 } 
+		 });
+	 }else if("${session.userinfo.auth}".indexOf("auth_company")>0){		 
+		 $.ajax({
+			 url:'${ctxPath}/jibenxinxi/findQiyexinxi',
+			 type:'post',
+			 dataType:'json',
+			 success:function(data){
+				 //alert(data.list[0].qyzzjgdm);
+	     		$("#ccgl").attr("src","${gisurl}idxKeshihua.jsp?type=2&role=${session.userinfo.role.code}&code="+data.list[0].qyzzjgdm);			 
+			 }
+		 });
+	 }	
+});
+</script>
+<div class="panel panel-default">	
+	<div class="panel-body" >
+		<div class="container-fluid">
+				<iframe id="ccgl" src="" style="position: absolute;margin-top: 0px;"  width="98%" height="750px" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+		</div>
+	</div>
+</div>
+
+<%
+}
+%>

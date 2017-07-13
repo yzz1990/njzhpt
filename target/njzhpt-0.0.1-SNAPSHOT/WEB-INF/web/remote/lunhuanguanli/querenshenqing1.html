@@ -1,0 +1,193 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+#btn{
+float: right;
+}
+div{
+margin-top: 10px;
+}
+table{
+border:none;
+}
+input{
+height:100%;
+width: 100%;
+}
+ td{
+   		    font-size: 14px ! important;
+   			padding: 0px ! important;
+   			line-height: 34px ! important;
+   			text-align: left ! important;
+    	}
+.tt{
+    		text-align: right ! important;
+    	} 
+
+</style>
+
+<div class="panel-body">
+		<form action="" id="sc">
+		<fieldset>
+		<table width="100%" border="1">
+         	<tr>
+         		<td width="160" class="tt">所在区域:</td>
+         		<td width="281"><select id="szqy" name="szqy" class="form-control input-sm" onchange="selectQYMC()">
+					<option>请选择区域名称</option>
+					<option>${县[0]}</option>
+					<option>${县[1]}</option>
+					<option>${县[2]}</option>
+					<option>${县[3]}</option>
+					<option>${县[4]}</option>
+					
+				</select></td>
+         		<td width="160" class="tt">企业名称:</td>
+         		<td width="280">
+         			<select id="qymc" name="qymc" class="form-control input-sm" onchange="selectKDMC()">
+					</select>
+         		<td width="160"></td>
+         		<td width="280"></td>
+         	</tr>
+
+         </table>
+         </fieldset>
+           <fieldset>
+         	<legend>确认申请</legend>
+         	<table width="100%" border="1">
+         	<tr>
+         		<td  width="160" class="tt">申请文号:</td>
+         		<td ><input name="lhsq_sqwh" id="lhsq_sqwh" type="text"></td>
+
+         	</tr>
+         	<tr>
+         		<td class="tt" width="160">库点名称:</td>
+         		<td><select  name="lhsq_kdmc" id="lhsq_kdmc" class="form-control input-sm" onchange="selectCH()"></select></td>
+         		<td class="tt" width="160">仓号:</td>
+         		<td><select  name="lhsq_ch" id="lhsq_ch" class="form-control input-sm"></select></td>
+         		<td class="tt" width="160">品种:</td>
+         		<td><input name="lhsq_pz" id="lhsq_pz" type="text"></td>
+         	</tr>
+         	<tr>
+         		<td class="tt" width="160">生产年限:</td>
+         		<td><input name="lhsq_scnx" id="lhsq_scnx" type="text"></td>
+         		<td class="tt" width="160">轮入数量:</td>
+         		<td><input name="lhsq_lrsl" id="lhsq_lrsl" type="text"></td>
+         		<td class="tt" width="160">质量等级:</td>
+         		<td><input name="lhsq_zldj" id="lhsq_zldj" type="text"></td>
+         	</tr>
+         	<tr>
+         		<td class="tt" width="160">入库均价:</td>
+         		<td><input name="lhsq_rkjj" id="lhsq_rkjj" type="text"></td>
+         	</tr>
+         </table>
+         </fieldset>
+         <fieldset>
+         	<legend>承储计划</legend>
+         	<table width="100%" border="1">
+         	<tr>
+         		<td  width="160" class="tt">小麦:</td>
+         		<td ><input name="ccjh_xm" id="ccjh_xm" type="text"></td>
+         		<td width="160" class="tt">粳稻:</td>
+         		<td><input name="ccjh_jd" id="ccjh_jd" type="text"></td>
+         		<td class="tt" width="160">籼稻:</td>
+         		<td><input name="ccjh_xd" id="ccjh_xd" type="text"></td>
+         	</tr>
+         	</table>
+         </fieldset>
+        
+         </form>
+       </div>
+<div class="panel-footer">
+		<button type="button" class="btn btn-primary" id="btn" onclick="shangchuan()" ><em class="fa fa-check fa-fw"></em> 提交</button>
+</div>
+<script type="text/javascript">
+function shangchuan(){
+	if($("#qymc").val()=="请选择企业名称"){
+		alert("请输入企业名称 ");
+		return false;
+	}
+	if($("#szqy").val()=="请选择区域名称"){
+		alert("请输入区域名称 ");
+		return false;
+	}
+	if($("#lhsq_kdmc").val()=="请选择库点名称"){
+		alert("请输入库点名称 ");
+		return false;
+	}
+	if($("#lhsq_ch").val()=="请选择仓号"){
+		alert("请输入仓号 ");
+		return false;
+	}
+   		 $.ajax({
+   				url: "${ctxPath}/lunhuan/saveLunHuanB.do",
+   				dataType: "json",
+   				data:$("#sc").serialize(),
+   				success: function(msg) {
+   					if (msg.ret) {
+   						alert("轮换申请表提交成功");
+   						
+   					}else{
+   						alert("提交失败");
+   					}
+   				}
+   			});
+	
+}
+function selectQYMC(){
+	$("#qymc").html("");
+	$("#qymc").append("<option>请选择企业名称</option>")
+	var szqy=$("#szqy").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{szqy:szqy},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#qymc").append("<option>"+n.qymc+"</option>");
+				});
+			}
+		});
+	
+		
+}
+function selectKDMC(){
+	$("#lhsq_kdmc").html("");
+	$("#lhsq_kdmc").append("<option>请选择库点名称</option>")
+	var qymc=$("#qymc").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectKDMC.do",
+			dataType: "json",
+			data:{qymc:qymc},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#lhsq_kdmc").append("<option>"+n.kdmc+"</option>");
+				});
+			}
+		});
+	
+		
+}
+function selectCH(){
+	$("#lhsq_ch").html("");
+	$("#lhsq_ch").append("<option>请选择仓号</option>")
+	var lhsq_kdmc=$("#lhsq_kdmc").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectCH.do",
+			dataType: "json",
+			data:{qymc:lhsq_kdmc},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#lhsq_ch").append("<option>"+n.cfmc+"</option>");
+				});
+			}
+		});
+	
+		
+}
+
+</script>
+
+<%
+	}
+%>

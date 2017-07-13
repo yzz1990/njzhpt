@@ -1,0 +1,142 @@
+package com.zkzy.njzhpt.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.alibaba.fastjson.JSON;
+import com.ggy.common.utils.ParamUtil;
+import com.ggy.common.utils.UserInfo;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Clear;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.JsonKit;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.framework.bo.FrameworkBO;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.validator.LoginValidator;
+
+@Clear
+public class LoginController extends Controller {
+
+	public void index() {
+		
+	}
+	
+	
+	public void login(Record record) throws Exception {
+		render("login.html");
+	}
+	
+	@Before(LoginValidator.class)
+	public void doLogin() throws Exception {
+		HashMap<String, Object> queryMap = ParamUtil.getParamMap(this
+				.getParaMap());
+		Ret r = Duang.duang(FrameworkBO.class).queryFwUser(queryMap);
+
+		Page<Record> userPageRecord = r.get("list");
+		if (userPageRecord.getTotalRow() == 1&&(userPageRecord.getList().get(0).getStr("loginname")).equals(queryMap.get("loginname"))&&(userPageRecord.getList().get(0).getStr("password").equals(queryMap.get("password")))) {
+			setAttr("ret", true);
+			setUser(userPageRecord.getList().get(0));
+			setAttr("role",
+					UserKit.currentUserInfo().getRole().getString("code"));
+			renderJson("{\"ret\":true,\"message\":\"12312312\",\"realname\":\""
+					+ UserKit.currentUserInfo().getUser().get("realname")
+					+ "\",\"auth\":\""
+					+ UserKit.currentUserInfo().getAuth()
+					+ "\",\"userid\":\""
+					+ UserKit.currentUserInfo().getUser().getString("id")
+					+ "\"}");
+
+		} else {
+			setAttr("ret", false);
+			renderJson("{\"ret\":false,\"message\":\"用户名或密码错误！\"}");
+		}
+	}
+
+	public void setUser(Record record) throws Exception {
+		UserInfo user = new UserInfo();
+		user.setUser(JSON.parseObject(JsonKit.toJson(record)));
+		List<Record> depList = Db
+				.use("njpt")
+				.find("select * from fw_dep where id in (select depid from fw_user_dep where userid = ?) order by orderno",
+						user.getUser().getString("id"));
+		List<Record> roleList = Db
+				.use("njpt")
+				.find("select * from fw_role where id in (select roleid from fw_user_role where userid = ?) order by orderno",
+						user.getUser().getString("id"));
+		List<Record> amsList = Db
+				.use("njpt")
+				.find("select * from fw_ams where id in (select amsid from fw_role_ams where roleid in (select roleid from fw_user_role where userid = ?)) order by orderno",
+						user.getUser().getString("id"));
+		user.setDeps(JSON.parseArray(JsonKit.toJson(depList)));
+		user.setRoles(JSON.parseArray(JsonKit.toJson(roleList)));
+		user.setAms(JSON.parseArray(JsonKit.toJson(queryAmsByRoot(amsList,
+				"36c3b611a19f496c927e76a4570e1061"))));
+
+		user.setDep(JSON.parseArray(JsonKit.toJson(depList)).getJSONObject(0));
+		user.setRole(JSON.parseArray(JsonKit.toJson(roleList)).getJSONObject(0));
+		List<String> authList = new ArrayList<String>();
+		List<Record> authRecordlist = Db.use("njpt").find(
+				"select * from fw_role_authority where roleid = ?",
+				roleList.get(0).getStr("id"));
+		for (Record r : authRecordlist) {
+			authList.add(r.getStr("authoritycode"));
+		}
+		user.setAuth(authList);
+
+		Record area = Db.use("njpt").findFirst(
+				"select * from fw_area where id = ?",
+				depList.get(0).getStr("areaid"));
+		user.setArea(JSON.parseObject(JsonKit.toJson(area)));
+		setSessionAttr("userinfo", user);
+		LogKit.info(JsonKit.toJson(user));
+		UserKit.buildUser(user);
+	}
+
+	@Clear
+	public void logout() {
+		setSessionAttr("userinfo", null);
+		setSessionAttr("size", null);
+		render("login.html");
+	}
+
+	
+
+	public void toHTML() {
+		String url = (String) getAttr("_url_");
+		render(url);
+	}
+
+	private List<Record> queryAmsByRoot(List<Record> recordList, String root)
+			throws Exception {
+		List<Record> r = new ArrayList<Record>();
+		for (int i = 0; i < recordList.size(); i++) {
+			Record ams = recordList.get(i);
+			if (root.equals(ams.getStr("parentid"))) {
+				int childcount = ams.get("childcount");
+				if (childcount > 0) {
+					List<Record> childret = queryAmsByRoot(recordList,
+							ams.get("id"));
+					ams.set("children", childret);
+				}
+				r.add(ams);
+			}
+		}
+		return r;
+	}
+	
+	/**
+	 * 获取新闻网站
+	 */
+	public void news() {
+		renderJson(Db.paginate(1, 100, "select *", " from t_news"));
+	}
+	
+	
+}

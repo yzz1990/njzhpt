@@ -1,0 +1,166 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var xzqydm = parameter.xzqydm;
+ var kdbm = parameter.kdbm;
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+    </style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<label>药剂名称:</label>
+					<input class="form-control input-sm"  id="yjmc" placeholder="药剂名称"  type="text">	 
+					<label>处理时间:</label>
+					<input class="form-control input-sm"  id="dealtime" placeholder="处理时间"  type="text">
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYjsh?xzqydm=${xzqydm}&kdbm=${kdbm}" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+var datatable;
+$(function(){
+	$("#dealtime").datetimepicker({
+		
+		format : 'yyyy-mm-dd hh:ii:ss',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+	datatable = $('.datatables').DataTable({
+		"columns": [
+			{
+				"data" : "ykmc",
+				"title" : "药库名称"
+			},
+			{
+				"data" : "yjmc",
+				"title" : "药剂名称"
+			},{
+				"data" : "dealday",
+				"title" : "处理时间",
+			},{
+				"data" : "shuliang",
+				"title" : "空瓶数量",
+			},{
+				"data" : "dealman",
+				"title" : "参与人员",
+			},{
+				"data" : "reason",
+				"title" : "理由",
+			}
+			]
+	});
+});
+
+	
+function doSearch(){
+	var yjmc = $("#yjmc").val();
+	var dealtime = $("#dealtime").val();
+	document.querySelector('.datatables').dataset.queryparam="&yjmc="+yjmc+"&dealtime="+dealtime;
+	datatable.ajax.reload(null,true);
+}
+
+
+function addYjsh(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增药剂损耗信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojisunhao_zsg.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveYjsh(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-success btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+
+function upYjsh(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑药剂损耗信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojisunhao_zsg.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveYjsh(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-success btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function delYjsh(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delYjsh',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+</script>
+<%
+	}
+%>

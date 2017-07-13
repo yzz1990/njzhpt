@@ -1,0 +1,134 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:150px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia, #div-baojia{
+	height:500px;
+	overflow-y:auto;
+}
+
+</style>
+<script type="text/javascript">
+
+
+$(window).load(function() {
+	//加载下拉框类型
+	$(".cjd-select").select2();
+});
+
+$(function(){
+	//加载区县下拉框
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findquxian',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			var op = '<option value="全市">全市</option>';
+			$("#quyu").append(op);
+			$.each(data,function(i, n){
+				var op = '<option value="'+n.id+'">'+n.name+'</option>';
+				$("#quyu").append(op);
+			});
+			//初始化区县下拉框
+			$("#quyu").val("");
+		    $("#quyu-div").find(".select2-selection__rendered").text("");
+			$("#quyu-div").find(".select2-selection__rendered").attr("title","");
+		},
+		error:function(){
+			alert("加载区县失败");
+		}
+	});
+		
+});
+
+//查询品类
+function doSearch(){
+	
+}
+
+</script>
+
+<div id="panelDemo10" class="panel panel-info">
+    <div class="panel-heading">
+    	<a class="btn btn-xs" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; font-size:18px"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+    </div>
+</div>
+
+<div id="panelDemo7" class="panel panel-info">
+   <div class="panel-heading">查询条件</div>
+   <div class="panel-body">
+   		<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th >
+	    				<div class="cjd-div quyu-div">
+							<label class="cjd-label">区域:</label>
+							<select id="quyu" class="form-control cjd-select" onchange="">
+							</select>
+						</div>
+	    			</th>
+	     			<th>
+	     				<div class="cjd-div">
+							<label class="cjd-label">表现形式:</label>
+							<select id="bxxs" class="form-control cjd-select" onchange="">
+							</select>
+						</div>
+	     			</th>
+	     			<th >
+	     				<div class="cjd-div djzt-div">
+							<label class="cjd-label">日期范围:</label>
+							<select id="riqi"  class="form-control cjd-select" >
+							</select>
+						</div>
+	     			</th>
+	 			</tr>
+			</thead>	
+		</table>
+   </div>
+</div>
+
+<div id="panelDemo55" class="panel panel-info" style="margin-top:-20px">
+   <div class="panel-heading">查询结果</div>
+   <div id="div-caijia" class="panel-body">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" id="col3" class="" style="vertical-align:middle">周期数</th>
+	     			<th rowspan="1" colspan="1" id="col4" class="" style="vertical-align:middle">日期</th>
+	     			<th rowspan="1" colspan="1" id="col5" style="vertical-align:middle">综合指数</th>
+	     			<th rowspan="1" colspan="1" id="col6" style="vertical-align:middle">小麦</th>
+	     			<th rowspan="1" colspan="1" id="col7" style="vertical-align:middle">稻谷</th>
+	     			<th rowspan="1" colspan="1" id="col8" style="vertical-align:middle">面粉</th>
+	     			<th rowspan="1" colspan="1" id="col9" style="vertical-align:middle">大米</th>
+	 			</tr>
+			</thead>	
+		</table>
+   </div>
+</div>
+
+
+<%}%>

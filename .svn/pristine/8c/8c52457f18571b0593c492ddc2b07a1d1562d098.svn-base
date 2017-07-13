@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>视频信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addShipin",title="新增视频信息";
+	if (isNotEmpty(parameter.id)) {
+		var spgl = @com.zkzy.njzhpt.dao.CangchuglDao.findShiping({"id":parameter.id,"page":"1","rows":"100"});
+		obj = spgl.list[0];
+		url = ctxPath+"/cangchugl/upShipin";
+		title = "编辑视频信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	视频信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<!-- <div class="col-xs-6">	
+									<div class="form-group">
+										<label for="kdbm">库点编码:</label>
+										<input id="kdbm" name="kdbm" class="form-control" placeholder="视频所属库编码" value="${obj.kdbm}">
+									</div>	
+								</div> -->
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="name">视频点位名:</label>
+										<input id="name" name="name" class="form-control" placeholder="视频点位名" value="${obj.name}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="ip">内网地址:</label>
+										<input id="ip" name="ip" class="form-control" placeholder="视频内网地址" value="${obj.ip}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="outterip">外网地址:</label>
+										<input id="outterip" name="outterip" class="form-control" placeholder="视频外网地址" value="${obj.outterip}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="channel">通道号:</label>
+										<input id="channel" name="channel" class="form-control" placeholder="通道号" value="${obj.channel}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="contro">contro:</label>
+										<input id="contro" name="contro" class="form-control" placeholder="contro" value="${obj.contro}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="username">用户名:</label>
+										<input id="username" name="username" class="form-control" placeholder="用户名" value="${obj.username}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="password">密码:</label>
+										<input id="password" name="password" class="form-control" placeholder="密码" value="${obj.password}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4">
+										<div class="form-group">
+										<label for="qyzzjgdm">企业名称:</label> 
+										<select id="qyzzjgdm" name="qyzzjgdm" class="form-control">
+											<option value="">请选择</option>
+										</select>
+									</div>	
+									<!-- <div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${obj.qyzzjgdm}">
+									</div> -->
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="kdbm">库点名称:</label> 
+										<select id="kdbm" name="kdbm" class="form-control">
+											<option value="">请选择</option>
+										</select>
+									</div>	
+									<!-- <div class="form-group">
+										<label for="kdmc">库点名称:</label>
+										<input id="kdmc" name="kdmc" class="form-control" placeholder="库点名称" value="${obj.kdmc}">
+									</div> -->	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="spid">视频id:</label>
+										<input id="spid" name="spid" class="form-control" placeholder="视频id" value="${obj.spid}">
+									</div>	
+								</div>
+							</div>
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+$(function(){
+	/* 加载企业*/
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findqymc',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				if(n.qyzzjgdm=="${obj.qyzzjgdm}"){
+					$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+				}else{
+					$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				}
+			
+			});
+		 }
+	});
+});
+$(function(){
+	/* 加载库点*/
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findKDmc',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				if(n.kdmc=="${obj.kdmc}"){
+					$("#kdbm").append("<option value="+n.kdbm+"  selected>"+n.kdmc+"</option>");
+				}else{
+					$("#kdbm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+				}
+			
+			});
+		 }
+	});
+});
+
+function saveykgl() {
+	var form = $(".widget-body form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		}
+	});
+}
+
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+</script>
+
+</body>
+</html>

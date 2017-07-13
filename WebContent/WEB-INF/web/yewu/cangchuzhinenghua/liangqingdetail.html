@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<head>
+<title>SVG-VML-3D-Example - Function Plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<META HTTP-EQUIV="expires" CONTENT="Wed,26 Feb 1997 08:21:57 GMT">
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+<link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<script src="${ctxPath}/js/bootstrap.min.js"></script>  
+<style>
+v\:* {
+	behavior: url(#default#VML);
+}
+
+* {
+	maigin: 0px;
+	padding: 0px;
+	/* font-size: 16px; */
+}
+
+p {
+	margin: 5px 0;
+}
+</style>
+<script>
+$(function() {
+		var xmax = parent.x;
+		var ymax = parent.y;
+		var zmax = parent.z;
+		$('#show3D').attr('src','${ctxPath}/yewu/cangchuzhinenghua/svgvml3d/show3D.html');
+});
+function searchtime(){
+	var time=$('#shijian').val();
+	returnsql(time);
+}
+function getQueryString(name) {
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+	var r = window.location.search.substr(1).match(reg);
+	if (r != null)
+		return decodeURI(r[2]);
+	return null;
+}
+function checkshow(id) {
+	show3D.window.checkshow(id);
+
+}
+function ZoomPicture(vv) {
+	show3D.window.ZoomPicture(vv);
+}
+function ChangeViewer(ttheta, ffi) {
+	show3D.window.ChangeViewer(ttheta, ffi);
+}
+function clickxuanzhuan() {
+	show3D.window.clickxuanzhuan();
+}	
+</script>
+</head>
+<body style="background-color:#F9F9F9; overflow:hidden;font-family: 微软雅黑;" >
+<iframe src="" id="show3D"  frameborder="0" name="show3D" style="width:520px;height:525px;border:none;margin-top: -84px;overflow: hidden;"></iframe>
+<div style="float: right;margin-right: 60px;margin-top: 30px;background-color: #F9F9F9" >
+	<div align="center">
+		<span style="font-weight: bold;font-size: 25px">粮库三维立体展示</span>
+	</div>
+	<div style="margin-left: 40px;margin-top: 10px">
+		<a href="javascript:void(0);" onclick="ZoomPicture(1)" title="放大" ><span class="glyphicon glyphicon-zoom-in" style="font-size: 20px;width: 30px;" aria-hidden="true"></span></a> 
+		<a href="javascript:void(0);" onclick="ZoomPicture(-1)" title="缩小"><span class="glyphicon glyphicon-zoom-out" style="font-size: 20px;width: 30px;" aria-hidden="true"></span></a> 
+		<a href="javascript:void(0);" onclick="ChangeViewer(0,5)" title="左旋转" ><span class="glyphicon glyphicon-chevron-left" style="font-size: 20px;width: 30px;" aria-hidden="true"></span></a>
+		<a href="javascript:void(0);" onClick="ChangeViewer(-10,0)" title="上旋转"><span class="glyphicon glyphicon-chevron-up" style="font-size: 20px;width: 30px;" aria-hidden="true"></span></a>
+		<a href="javascript:void(0);" onClick="ChangeViewer(10,0)" title="下旋转"><span class="glyphicon glyphicon-chevron-down" style="font-size: 20px;width: 30px;" aria-hidden="true"></span></a>
+		<a href="javascript:void(0);" onClick="ChangeViewer(0,-5)" title="右旋转"><span class="glyphicon glyphicon-chevron-right" style="font-size: 20px;width: 30px;" aria-hidden="true"></span></a>
+		<a href="javascript:void(0);" id="xuanzhuan" onClick="clickxuanzhuan()" ><span class="glyphicon glyphicon-repeat" title="旋转" style="font-size: 20px;width: 30px;" aria-hidden="true"></span></a>
+	</div>
+	<div style="margin-top: 10px;">
+	    <table>
+	    	<tr align="center" style="font-size: 18px">
+	    		<td align="center"><b>显示控制</b></td>
+	    		<td align="center" style="margin-left: 20px;width: 80px"><b>平均温</b></td>
+	    		<td align="center" style="color: red;width: 80px"><b>最高温</b></td>
+	    		<td align="center" style="color: blue;width: 80px"><b>最低温</b></td>
+    		</tr>
+    		<%
+    		 for(var i=0;i<= parseInt(parameter.z)-1;i++){
+    		%>
+	    		<tr align="center" style="font-size: 16px;font-family: 微软雅黑;">
+		    		<td align="center"><input type="checkbox" checked="checked" id="show${parseInt(parameter.z)-i}" style="width: 20px;" onclick="checkshow(this.id);" />第${i+1}层</td>
+		    		<td align="center" style="margin-left: 20px" id="avg${i}"><script>document.write(parent.layers[${i}].avg);</script></td>
+		    		<td align="center" style="margin-left: 35px;color: red;" id="max${i}"><script>document.write(parent.layers[${i}].max);</script></td>
+		    		<td align="center" style="margin-left: 15px;color: blue;" id="min${i}"><script>document.write(parent.layers[${i}].min);</script></td>
+	    		</tr>
+    		<%
+    			}
+    		%>
+	    </table>
+	</div>
+	
+	
+</div>				
+</body>
+</html>

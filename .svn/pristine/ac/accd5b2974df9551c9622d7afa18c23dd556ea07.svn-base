@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>${市}智慧粮食管理平台</title>
+		<!-- =============== VENDOR STYLES ===============-->
+		<!-- FONT AWESOME-->
+		<link rel="stylesheet" href="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/fontawesome/css/font-awesome.min.css">
+		<script src="${resourcePath}/jquery/js/jquery.min.js"></script>
+
+		<!-- =============== BOOTSTRAP STYLES ===============-->
+		<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" id="bscss">
+		<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<!-- =============== APP STYLES ===============-->
+		<link rel="stylesheet" href="${ctxPath}/css/app.css" id="maincss">
+		<link rel="stylesheet" href="${ctxPath}/css/theme-e.css">
+		<!----------select-------------->
+		<link rel="stylesheet" href="${resourcePath}/vendor/select2/dist/css/select2.css">
+		<link rel="stylesheet" href="${resourcePath}/vendor/select2-bootstrap-theme/dist/select2-bootstrap.css">
+		<script src="${resourcePath}/vendor/select2/dist/js/select2.js"></script>
+		<!----------echarts-------------->
+		<script src="${resourcePath}/echarts/js/echarts.min.js"></script>
+		<!----------uploadifive-------------->
+		<script src="${ctxPath}/web/jquery.uploadifive.min.js"></script>
+		<link href='${ctxPath}/web/uploadifive.css' />
+		<!----------bootstrapdialog-------------->
+		<link href="${resourcePath}/bootstrap-dialog/bootstrap-dialog.min.css" rel="stylesheet">
+		<script src="${resourcePath}/bootstrap-dialog/bootstrap-dialog.min.js"></script>
+		<!----------dataTables-------------->
+		<link href='http://cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.css' rel='stylesheet'>
+		<script src="${resourcePath}/jquery/js/jquery.dataTables.min.js"></script>
+	    <script type="text/javascript" language="javascript" src="http://cdn.datatables.net/1.10-dev/js/jquery.dataTables.min.js"></script>
+	    <script type="text/javascript" language="javascript" src="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+		<script src='${ctxPath}/resource/datagrid.js'></script>
+		<!----------dataTables-------------->
+		<!---------kindeditor--------->
+		<script src='${resourcePath}/kindeditor-4.1.11/kindeditor/kindeditor-all-min.js'></script>
+		<script src='${resourcePath}/kindeditor-4.1.11/kindeditor/lang/zh-CN.js'></script>
+		<link rel="stylesheet" href='${resourcePath}/kindeditor-4.1.11/kindeditor/themes/default/default.css'>
+		<link rel="stylesheet" href='${resourcePath}/kindeditor-4.1.11/kindeditor/plugins/code/prettify.css'>
+		<!------ datetimepicker ------>
+		<link rel="stylesheet" href="${resourcePath}/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+		<script src="${resourcePath}/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+		<script src="//cdn.bootcss.com/smalot-bootstrap-datetimepicker/2.3.4/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+		<!------ datetimepicker ------>
+		<style type="text/css">
+			div.dataTables_info{
+				padding-top: 4px;
+				padding-left: 4px;
+			}
+			.nav>li>a:focus, .nav>li>a:hover{
+				background-color: transparent;
+			}
+			.CT-icon1 {
+				margin-right: 10px;
+			}
+			
+			#list-city-area {
+				position: relative;
+				left: -35px;
+			}
+			
+			#CT-exit {
+				width: 70px;
+				height: 70px;
+				background-color: #01AFEC;
+				float: right;
+				right: 0px;
+				padding: 21px;
+				padding-top: 15px;
+			}
+			
+			#head {
+				float: right;
+				margin-top: 14px;
+				margin-right: 25px;
+			}
+			
+			.CT-title-text {
+				font-family: 微软雅黑;
+				font-size: 14px;
+				color: #fff;
+			}
+			
+			#userName {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-time {
+				float: right;
+				margin-top: 20px;
+				margin-right: 20px;
+			}
+			
+			#CT-weather {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-date {
+				float: right;
+				margin-top: 20px;
+				margin-right: 13px;
+			}
+			
+			#CT-icon-weather {
+				float: right;
+				margin-top: 15px;
+				margin-right: 13px;
+			}
+			
+			#CT-ptbt {
+				font-family: 微软雅黑;
+				font-size: 30px;
+				color: #fff;
+				height: 70px;
+				line-height: 70px;
+			}
+		</style>
+	</head>
+
+	<body id="boss">
+		<div class="wrapper">
+			<!-- Page content-->
+			<div class="row">
+				<div class="col-md-12"> ${layoutContent}</div>
+			</div>
+		</div>
+		<!-- =============== VENDOR SCRIPTS ===============-->
+		<!-- MODERNIZR-->
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/modernizr/modernizr.custom.js"></script>
+		<!-- BOOTSTRAP-->
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+		<!--highchart -->
+		<script src="${resourcePath}/highchart/js/highcharts.js"></script>
+		<!-- JQUERY EASING-->
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/jquery.easing/js/jquery.easing.js"></script>
+		<!-- ANIMO-->
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/animo.js/animo.js"></script>
+		<!-- SLIMSCROLL-->
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/slimScroll/jquery.slimscroll.min.js"></script>
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/vendor/jQuery-Storage-API/jquery.storageapi.js"></script>
+		<!-- =============== APP SCRIPTS ===============-->
+		<script src="${resourcePath}/theme/angle/v3.2/backend-jquery/app/js/app.js"></script>
+
+		<script type="text/javascript">
+			/* $.fn.select2.defaults.set("theme", "bootstrap");
+						$(".select2").select2();
+						$(".submit").on('click', function(event) {
+							var form = $(".panel-body form");
+							$.ajax({
+								url: form.attr("action"),
+								dataType: "json",
+								data: form.serialize(),
+								success: function(msg) {
+									if (!msg.ret) {
+										alert(msg.msg);
+									} else {
+										alert(msg.msg);
+										window.location.href = "";
+									}
+								}
+							});
+						}); */
+
+			//点击区域按钮样式切换
+			$(".city").click(function(e) {
+
+				$.post("${ctxPath}/juece/changecity", {
+					city: $(this).text()
+				}, function(obj) {
+
+					window.location.reload();
+
+				});
+			});
+
+			var url = window.location.href;
+			$('#fontsize').slider({
+				formatter: function(value) {
+					var size;
+					if(value == 12) {
+						size = "小";
+					} else if(value == 14) {
+						size = "中";
+					} else if(value == 16) {
+						size = "大";
+					} else if(value == 18) {
+						size = "特大";
+					}
+					return size;
+				}
+			});
+
+			$("#fontsize").on("slideStop", function(slideEvt) {
+				$.post("${ctxPath}/login/changeFontSize", {
+					size: slideEvt.value,
+					url: url
+				}, function(obj) {
+					if(obj.ret) {
+						$("#boss").css("font-size", obj.size);
+						$("li").css("font-size", obj.size);
+
+						$("a").css("font-size", obj.size);
+					} else {
+						$("#error").html(obj.message);
+					}
+				}, 'jsonp');
+			})
+			$("#boss").css("font-size", '${fontsize}');
+			$("li").css("font-size", '${fontsize}');
+
+			$("a").css("font-size", '${fontsize}');
+
+			//获取系统时间  hh-mm-ss
+			function Curenthhmmss() {
+				var now = new Date();
+				var hh = now.getHours(); //时
+				var mm = (now.getMinutes() % 60); //分
+				if(now.getMinutes() / 60 > 1) {
+					hh += Math.floor(now.getMinutes() / 60);
+				}
+				var ss = now.getSeconds();
+				var clock = "";
+				if(hh < 10)
+					clock += "0";
+				clock += hh + ":";
+				if(mm < 10)
+					clock += '0';
+				clock += mm + ":";
+				if(ss < 10)
+					clock += '0';
+				clock += ss;
+				return(clock);
+			}
+			//获取年月日
+			function Curentyymmdd() {
+
+				var now = new Date();
+				var year = now.getFullYear(); //年  
+				var month = now.getMonth() + 1; //月  
+				var day = now.getDate();
+				var clock = year + "年";
+				if(month < 10)
+					clock += "0";
+				clock += month + "月";
+				if(day < 10)
+					clock += "0";
+				clock += day + "日";
+				return(clock);
+			}
+			var flag = true;
+			//刷新天气
+			function changefeather() {
+				if(flag) {
+					$("#CT-weather").text("阴转小雨　10~20°");
+					$("#CT-icon-weather").attr("src",
+						"${imagesPath}/img/newpage/weather2.png");
+					flag = false;
+				} else {
+					$("#CT-weather").text("晴转多云　12~23°");
+					$("#CT-icon-weather").attr("src",
+						"${imagesPath}/img/newpage/weather1.png");
+					flag = true;
+				}
+			}
+
+			$(function() {
+				var date = new Date();
+				//alert(date.getDay());
+				var day = date.getDay();
+				var wmffWeek;
+				var arr_wmffWeek = new Array("星期天", "星期一", "星期二", "星期三", "星期四",
+					"星期五", "星期六");
+				wmffWeek = arr_wmffWeek[day];
+				// alert(wmffWeek);
+				$("#CT-date").text("今天是：" + Curentyymmdd() + "　" + wmffWeek);
+			});
+
+			setInterval(function() {
+				$("#CT-time").text(Curenthhmmss());
+			}, 1000);
+			if(typeof contentinit == "function") {
+				contentinit();
+			}
+			$("a[href*='${servletPath}']").parent().addClass("active");
+		</script>
+	</body>
+
+</html>

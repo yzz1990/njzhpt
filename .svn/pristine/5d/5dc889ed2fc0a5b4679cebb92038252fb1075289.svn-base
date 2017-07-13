@@ -1,0 +1,284 @@
+<%
+var obj={},title;
+	if(isEmpty(parameter.vSwiftNumber)){
+		title = "查看详情";
+	}else{
+		
+		title = "查看详情";
+		obj = @com.zkzy.njzhpt.dao.ZhiLiangGLDAO.selectZLXQ({"vSwiftNumber":parameter.vSwiftNumber,"page":1,"rows":15}).getList().get(0);	 
+		debug(obj);
+	}
+%>
+<style type="text/css">
+#btn{
+float: right;
+}
+div{
+margin-top: 10px;
+}
+table{
+border:none;
+}
+input{
+height:100%;
+width: 100%;
+}
+ td{
+   		    font-size: 14px ! important;
+   			padding: 0px ! important;
+   			line-height: 34px ! important;
+   			text-align: left ! important;
+    	}
+.tt{
+    		text-align: right ! important;
+    	} 
+
+</style>
+ <fieldset>
+    <legend>进出详情</legend>
+        <table width="100%" >
+         	<tr>
+         		<td  width="160" class="tt">流水号　:</td>
+         		<td ><input name="vSwiftNumber" id="vSwiftNumber" type="text" value="${obj.vSwiftNumber}"></td>
+         		<td  width="160" class="tt">报港时间　:</td>
+         		<td ><input name="dtRegistrateTime" id="dtRegistrateTime" type="text" value="${obj.dtRegistrateTime}"></td>
+         		<td  width="160" class="tt">运送方式　:</td>
+         		<td ><input name="vTrasnportType" id="vTrasnportType" type="text" value="${obj.vTrasnportType}"></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">农户编码　:</td>
+         		<td ><input name="vCustomerCode" id="vCustomerCode" type="text" value="${obj.vCustomerCode}"></td>
+         		<td  width="160" class="tt">农户身份证号　:</td>
+         		<td ><input name="vCustomerIdentificationId" id="vCustomerIdentificationId" type="text" value="${obj.vCustomerIdentificationId}"></td>
+         		<td  width="160" class="tt">车辆编号　:</td>
+         		<td ><input name="vViechelNumber" id="vViechelNumber" type="text" value="${obj.vViechelNumber}"></td>
+         	
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">是否多车　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsUseMulitViechle" ${obj.bIsUseMulitViechle==true?" checked"}/>是 
+					<input type="radio" style="width: 15px;height: 15px; margin-left: 20px;" name="bIsUseMulitViechle" ${obj.bIsUseMulitViechle==false?" checked" }/>否
+         		</td>
+         		<td  width="160" class="tt">是否多次称重　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsMultiWeight" ${obj.bIsMultiWeight==true?" checked"}/>是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsMultiWeight" ${obj.bIsMultiWeight==false?" checked"} />否
+         		</td> 
+         		<td  width="160" class="tt">是否标准流程　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsStandardProgress" ${obj.bIsStandardProgress==true?" checked"}/>是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsStandardProgress" ${obj.bIsStandardProgress==false?" checked"} />否
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">出入库标识　:</td>
+         		<td ><input name="vDirection" id="vDirection" type="text" value="${obj.vDirection}"></td>
+         		<td  width="160" class="tt">交易类型　:</td>
+         		<td ><input name="vExchangeType" id="vExchangeType" type="text" value="${obj.vExchangeType}"></td>
+         		<td  width="160" class="tt">计划类型　:</td>
+         		<td ><input name="vPlanType" id="vPlanType" type="text" value="${obj.vPlanType}"></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">文件号　:</td>
+         		<td ><input name="vFileNumber" id="vFileNumber" type="text" value="${obj.vFileNumber}"></td>
+         		<td  width="160" class="tt">包装类型　:</td>
+         		<td ><input name="vPackageTypeCode" id="vPackageTypeCode" type="text" value="${obj.vPackageTypeCode}"></td>
+         		<td  width="160" class="tt">报港结束　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsRegistrateFinished" ${obj.bIsRegistrateFinished==true?" checked"}/>是 
+					<input type="radio"  style="width: 15px;height: 15px;margin-left: 20px;" name="bIsRegistrateFinished" ${obj.bIsRegistrateFinished==false?" checked"} />否
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">包装数量　:</td>
+         		<td ><input name="dmPackageNumber" id="dmPackageNumber" type="text" value="${obj.dmPackageNumber}"></td>
+         		<td  width="160" class="tt">发货单位　:</td>
+         		<td ><input name="vDispatchCompany" id="vDispatchCompany" type="text" value="${obj.vDispatchCompany}"></td>
+         		<td  width="160" class="tt">售粮证号　:</td>
+         		<td ><input name="vGrainSaleID" id="vGrainSaleID" type="text" value="${obj.vGrainSaleID}"></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">保管员ID　:</td>
+         		<td ><input name="vKeeperId" id="vKeeperId" type="text" value="${obj.vKeeperId}"></td>
+         		<td  width="160" class="tt">使用车辆的类型　:</td>
+         		<td ><input name="vUseViechle" id="vUseViechle" type="text" value="${obj.vUseViechle}"></td>
+         		<td  width="160" class="tt">车　主　:</td>
+         		<td ><input name="vViechleOwner" id="vViechleOwner" type="text" value="${obj.vViechleOwner}"></td>
+         	</tr>
+        </table>
+  </fieldset>
+   <fieldset>
+    <legend>粮食详情</legend>
+        <table width="100%" >
+         	<tr>
+         		<td width="160" class="tt">地　区　:</td>
+         		<td><input name="xzqhdm" id=""xzqhdm"" type="text" value="${obj.xzqhdm}"></td>
+         		<td class="tt" width="160">企　业　:</td>
+         		<td><input name="qyzzjgdm" id="qyzzjgdm" type="text" value="${obj.qyzzjgdm}"></td>
+         		<td class="tt" width="160">库　点　:</td>
+         		<td><input name="kdbm" id="kdbm" type="text" value="${obj.kdbm}"></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">仓　房　:</td>
+         		<td ><input name="vWareHouseCode" id="vWareHouseCode" type="text" value="${obj.vWareHouseCode}"></td>
+         	</tr>
+         	<tr>
+         		<td  width="160" class="tt">粮食品种　:</td>
+         		<td ><input name="vGrainSubTypeCode" id="vGrainSubTypeCode" type="text" value="${obj.vGrainSubTypeCode}"></td>
+         		<td  width="160" class="tt">粮食性质　:</td>
+         		<td ><input name="vGrainPropertyId" id="vGrainPropertyId" type="text" value="${obj.vGrainPropertyId}"></td>
+         		<td  width="160" class="tt">粮食年限　:</td>
+         		<td ><input name="vHarvestPeriod" id="vHarvestPeriod" type="text" value="${obj.vHarvestPeriod}"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">原始水扣　:</td>
+         		<td ><input name="dmOriginalMoisture" id="dmOriginalMoisture" type="text" value="${obj.dmOriginalMoisture}"></td>
+         		<td  width="160" class="tt">原始杂扣　:</td>
+         		<td ><input name="dmOriginalImpurity" id="dmOriginalImpurity" type="text" value="${obj.dmOriginalImpurity}"></td>
+         		<td  width="160" class="tt">原始矿物质扣　:</td>
+         		<td ><input name="dmOriginalMineral" id="dmOriginalMineral" type="text" value="${obj.dmOriginalMineral}"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">原始容重　:</td>
+         		<td ><input name="dmOriginalGamma" id="dmOriginalGamma" type="text" value="${obj.dmOriginalGamma}"></td>
+         		<td  width="160" class="tt">原始不完善扣　:</td>
+         		<td ><input name="dmOriginalUnsoundKernel" id="dmOriginalUnsoundKernel" type="text" value="${obj.dmOriginalUnsoundKernel}"></td>
+         		<td  width="160" class="tt">原始黄米粒扣　:</td>
+         		<td ><input name="dmOriginalYellowRiceKernel" id="dmOriginalYellowRiceKernel" type="text" value="${obj.dmOriginalYellowRiceKernel}"></td>
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">原始整粳米率　:</td>
+         		<td ><input name="dmOriginalMilledRice" id="dmOriginalMilledRice" type="text" value="${obj.dmOriginalMilledRice}"></td>
+         		<td  width="160" class="tt">原始出糙率　:</td>
+         		<td ><input name="dmOriginalBRRatio" id="dmOriginalBRRatio" type="text" value="${obj.dmOriginalBRRatio}"></td>
+         		<td  width="160" class="tt">原始赤霉病粒　:</td>
+         		<td ><input name="dmOriginalMildew" id="dmOriginalMildew" type="text" value="${obj.dmOriginalMildew}"></td>
+        	 </tr>
+        	   <tr>
+         		<td  width="160" class="tt">原始谷外糙米　:</td>
+         		<td ><input name="dmOriginalVBRRatio" id="dmOriginalVBRRatio" type="text" value="${obj.dmOriginalVBRRatio}"></td>
+         		<td  width="160" class="tt">原始色泽气味　:</td>
+         		<td ><input name="dmOriginalOdor" id="dmOriginalOdor" type="text" value="${obj.dmOriginalOdor}"></td>
+         		<td  width="160" class="tt">原始赤霉病粒　:</td>
+         		<td ><input name="dmOriginalFr" id="dmOriginalFr" type="text" value="${obj.dmOriginalFr}"></td>
+        	 </tr>
+        	   <tr>
+         		<td  width="160" class="tt">原始面筋吸水率　:</td>
+         		<td ><input name="dmOriginalWaterAbsorption" id="dmOriginalWaterAbsorption" type="text" value="${obj.dmOriginalWaterAbsorption}"></td>
+         		<td  width="160" class="tt">原始互混率　:</td>
+         		<td ><input name="dmOriginalMixingRatio" id="dmOriginalMixingRatio" type="text" value="${obj.dmOriginalMixingRatio}"></td>
+         		<td  width="160" class="tt">原始脂肪酸　:</td>
+         		<td ><input name="dmOriginalFattyAcid" id="dmOriginalFattyAcid" type="text" value="${obj.dmOriginalFattyAcid}"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">水　分　:</td>
+         		<td ><input name="dmMoisture" id="dmMoisture" type="text" value="${obj.dmMoisture}"></td>
+         		<td  width="160" class="tt">杂　质　:</td>
+         		<td ><input name="dmImpurity" id="dmImpurity" type="text" value="${obj.dmImpurity}"></td>
+         		<td  width="160" class="tt">容　重　:</td>
+         		<td ><input name="dmGamma" id="dmGamma" type="text" value="${obj.dmGamma}"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">不完善粒　:</td>
+         		<td ><input name="dmUnsoundKernel" id="dmUnsoundKernel" type="text" value="${obj.dmUnsoundKernel}"></td>
+         		<td  width="160" class="tt">黄粒米　:</td>
+         		<td ><input name="dmYellowRiceKernel" id="dmYellowRiceKernel" type="text" value="${obj.dmYellowRiceKernel}"></td>
+         		<td  width="160" class="tt">整粳米率　:</td>
+         		<td ><input name="dmMilledRice" id="dmMilledRice" type="text" value="${obj.dmMilledRice}"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">出糙率　:</td>
+         		<td ><input name="dmBRRatio" id="dmBRRatio" type="text" value="${obj.dmBRRatio}"></td>
+         		<td  width="160" class="tt">霉　变　:</td>
+         		<td ><input name="dmMildew" id="dmMildew" type="text" value="${obj.dmMildew}"></td>
+         		<td  width="160" class="tt">谷外糙米　:</td>
+         		<td ><input name="dmVBRRatio" id="dmVBRRatio" type="text" value="${obj.dmVBRRatio}"></td>
+        	 </tr>
+        	    <tr>
+         		<td  width="160" class="tt">色泽气味　:</td>
+         		<td ><input name="dmOdor" id="dmOdor" type="text" value="${obj.dmOdor}"></td>
+         		<td  width="160" class="tt">赤霉病粒　:</td>
+         		<td ><input name="dmFr" id="dmFr" type="text" value="${obj.dmFr}"></td>
+         		<td  width="160" class="tt">面筋吸水率　:</td>
+         		<td ><input name="dmWaterAbsorption" id="dmWaterAbsorption" type="text" value="${obj.dmWaterAbsorption}"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">互混率　:</td>
+         		<td ><input name="dmMixingRatio" id="dmMixingRatio" type="text" value="${obj.dmMixingRatio}"></td>
+         		<td  width="160" class="tt">脂肪酸　:</td>
+         		<td ><input name="dmFattyAcid" id="dmFattyAcid" type="text" value="${obj.dmFattyAcid}"></td>
+         		<td  width="160" class="tt">粮食等级　:</td>
+         		<td ><input name="vGrainLevel" id="vGrainLevel" type="text" value="${obj.vGrainLevel}"></td>
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">质检员ID　:</td>
+         		<td ><input name="vInspector" id="vInspector" type="text" value="${obj.vInspector}"></td>
+         		<td  width="160" class="tt">单　价　:</td>
+         		<td ><input name="dmPrice" id="dmPrice" type="text" value="${obj.dmPrice}"></td>
+         		<td  width="160" class="tt">质检时间　:</td>
+         		<td ><input name="dtQualityTime" id="dtQualityTime" type="text" value="${obj.dtQualityTime}"></td>
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">矿物质　:</td>
+         		<td ><input name="dmMineral" id="dmMineral" type="text" value="${obj.dmMineral}"></td>
+         		<td  width="160" class="tt">硬　度　:</td>
+         		<td ><input name="dmHardness" id="dmHardness" type="text" value="${obj.dmHardness}"></td>
+         		<td  width="160" class="tt">是否质检结束　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsQualityFinished" ${obj.bIsQualityFinished==true?" checked"}/>是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsQualityFinished" ${obj.bIsQualityFinished==false?" checked" }/>否
+        	 </tr>
+        	  <tr>
+         		<td  width="160" class="tt">毛　重　:</td>
+         		<td ><input name="dmGW" id="dmGW" type="text" value="${obj.dmGW}"></td>
+         		<td  width="160" class="tt">皮　重　:</td>
+         		<td ><input name="dmPW" id="dmPW" type="text" value="${obj.dmPW}"></td>
+         		<td  width="160" class="tt">净　重　:</td>
+         		<td ><input name="dmNW" id="dmNW" type="text" value="${obj.dmNW}"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算重量　:</td>
+         		<td ><input name="vGrainSubTypeCode" id="vGrainSubTypeCode" type="text" value="${obj.vGrainSubTypeCode}"></td>
+         		<td  width="160" class="tt">毛重称重时间　:</td>
+         		<td ><input name="dtGWTime" id="dtGWTime" type="text" value="${obj.dtGWTime}"></td>
+         		<td  width="160" class="tt">皮重称重时间　:</td>
+         		<td ><input name="dtPWTime" id="dtPWTime" type="text" value="${obj.dtPWTime}"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">是否称重结束　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsGwFinished" ${obj.bIsGwFinished==true?" checked"}/>是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bIsGwFinished" ${obj.bIsGwFinished==false?" checked" }/>否
+         		<td  width="160" class="tt">确认入库　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bEnsureStocked" ${obj.bEnsureStocked==true?" checked"}/>是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bEnsureStocked" ${obj.bEnsureStocked==false?" checked" }/>否
+         		<td  width="160" class="tt">结算时间　:</td>
+         		<td ><input name="dtCheckTime" id="dtCheckTime" type="text" value="${obj.dtCheckTime}"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算金额　:</td>
+         		<td ><input name="dmCheckNumber" id="dmCheckNumber" type="text" value="${obj.dmCheckNumber}"></td>
+         		<td  width="160" class="tt">结算者　:</td>
+         		<td ><input name="vCheckerID" id="vCheckerID" type="text" value="${obj.vCheckerID}"></td>
+         		<td  width="160" class="tt">结算状态　:</td>
+         		<td >
+         			<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bCheckState" ${obj.bCheckState==true?" checked"}/>是 
+					<input type="radio" style="width: 15px;height: 15px;margin-left: 20px;" name="bCheckState" ${obj.bCheckState==false?" checked" }/>否
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算类型　:</td>
+         		<td ><input name="vCheckType" id="vCheckType" type="text" value="${obj.vCheckType}"></td>
+         		<td  width="160" class="tt">结算银行　:</td>
+         		<td ><input name="vCheckBank" id="vCheckBank" type="text" value="${obj.vCheckBank}"></td>
+         		<td  width="160" class="tt">结算银行帐号　:</td>
+         		<td ><input name="vCheckBankAccount" id="vCheckBankAccount" type="text" value="${obj.vCheckBankAccount}"></td>
+        	 </tr>
+        	 <tr>
+         		<td  width="160" class="tt">结算单据打印次数　:</td>
+         		<td ><input name="iVouchPrintTimes" id="iVouchPrintTimes" type="text" value="${obj.iVouchPrintTimes}"></td>
+         		<td  width="160" class="tt">视频追溯地址　:</td>
+         		<td ><input name="shipinUrl" id="shipinUrl" type="text" value="${obj.shipinUrl}"></td>
+         	 </tr>
+        	
+        </table>
+  </fieldset>         	

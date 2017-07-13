@@ -1,0 +1,333 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: right;
+	}
+	.table-striped>tbody>tr>td:nth-child(8){
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(1){
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(2){
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(9){
+		width: 140px;
+	}
+	.heji{
+		text-align:right;
+		font-weight:bold;
+		font-size:20px
+	}
+	
+    </style>
+<div class="panel panel-default">
+<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>区县年度信息</b></span>
+				</div>
+	<div class="panel-heading">
+		<div class="form-inline">
+	<!-- 一个页面导入对应一个liucid -->
+			<input type="hidden" id="liucid" name="liucid" value="60711bbe59a9479fa670eb0e83d82028">
+		<label>年份:</label>
+		<select class="form-control input-sm input-smnjpt" style="width:150px;font-size:12pt">
+	
+		</select>
+		<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		<!--  
+		<a class="btn btn-success btn-xs pull-right" style="margin-left: 5px" type="button" onclick="daoru()"><i class="fa fa-indent" aria-hidden="true"></i>&nbsp;导入</a>
+		-->
+		<a class="btn btn-success btn-xs pull-right" style="margin-left: 5px" type="button" onclick="addDiqu()" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+	</div>
+			
+			
+		
+	</div>
+	
+	<div class="panel-body">
+		<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/jibenxinxi/findDiquniandupx?isedit=2" >
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" style="vertical-align:middle">年度</th>
+	    			<th rowspan="1" colspan="1" style="vertical-align:middle">区域名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">常住人口(人)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">粮食总产量(吨)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">稻谷产量(吨)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">小麦产量(吨)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">操作</th>
+	     		</tr>
+     			<tr>
+					<td rowspan="1" class="heji" colspan="2"	style="text-align:center;">合计</td>
+					<td rowspan="1" class="heji" colspan="1" id="czrk"  style=""></td>
+					<td rowspan="1" class="heji" colspan="1" id="lszcl" style=""></td>
+				<!--<td rowspan="1" class="heji" colspan="1" id="qqzhs" style=""></td> -->
+					<td rowspan="1" class="heji" colspan="1" id="dgcl"  style=""></td>
+					<td rowspan="1" class="heji" colspan="1" id="xmcl"  style=""></td>
+					<td rowspan="1" class="heji" colspan="1" style=""></td>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="text/javascript">
+var datatable;
+var date=new Date;
+var year=parseInt(date.getFullYear());
+var czrk = 0;
+var lszcl = 0;
+//var qqzhs = 0;
+var dgcl = 0;
+var xmcl = 0;
+$(function(){
+	$(".input-smnjpt").select2();
+	$(".input-smnjpt").append("<option value=''>请选择</option>");
+	for(var i = 0; i < 5; i++){
+		$(".input-smnjpt").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+	}
+	
+	//$(".datatables").attr("data-queryparam","&niandu="+year);
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "niandu",
+				"render": function (data,type,row,meta) {	
+					return '<a href="javascript:void(0)" onclick="chakan(\''+row["id"]+'\')" style="text-decoration: none;" >'+data+'</a>';
+				}
+			},{
+				"data" : "quyu",
+				"render": function (data,type,row,meta) {	
+					return '<a href="javascript:void(0)" onclick="chakan(\''+row["id"]+'\')" style="text-decoration: none;" >'+data+'</a>';
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					
+					return '<a href="javascript:void(0)" style="text-decoration: none;" >'+row["czrk"]+'</a>';
+				}
+			},{
+				"render": function (data,type,row,meta) {	
+					return '<a href="javascript:void(0)" style="text-decoration: none;" >'+row["zc_liangshi"]+'</a>';
+					
+				}
+			},/* {
+				"render": function (data,type,row,meta) {	
+					if(row["hushu"] != null && row["hushu"] != ""){
+						qqzhs += parseFloat(row["hushu"]);
+					}else{
+						qqzhs += 0;
+					}
+					return '<a href="javascript:void(0)" style="text-decoration: none;" >'+row["hushu"]+'</a>';
+					
+				}
+			}, */{
+				"render": function (data,type,row,meta) {	
+					return '<a href="javascript:void(0)" style="text-decoration: none;" >'+row["zc_daogu"]+'</a>';
+					
+				}
+			},{
+				"render": function (data,type,row,meta) {	
+					return '<a href="javascript:void(0)" style="text-decoration: none;" >'+row["zc_xiaomai"]+'</a>';
+					
+				}
+			},{
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upDiqu(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delDiqu(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+			]
+	});
+	$('.datatables').on( 'draw.dt', function () {
+		var niandu=$(".input-smnjpt").val();
+		$.ajax({
+			url:'${ctxPath}/jibenxinxi/findDiquniandupx',
+			data:{"page":1,"rows":1000,"niandu":niandu},
+			type:'post',			
+			dataType:'json',
+			success:function(data){
+				var czrk = 0;
+				var lszcl = 0;
+				var dgcl = 0;
+				var xmcl = 0;
+				for(var i = 0; i < data.list.length; i++){
+					var czrk1=data.list[i].czrk!=null ? data.list[i].czrk:0;
+					var lszcl1 = data.list[i].zc_liangshi!=null ? data.list[i].zc_liangshi:0;
+					var dgcl1 = data.list[i].zc_daogu!=null ? data.list[i].zc_daogu:0;
+					var xmcl1 = data.list[i].zc_xiaomai!=null ? data.list[i].zc_xiaomai:0;
+					czrk=czrk+parseFloat(czrk1);
+					lszcl = lszcl + parseFloat(lszcl1);
+					dgcl = dgcl + parseFloat(dgcl1);
+					xmcl = xmcl + parseFloat(xmcl1);
+				}
+				$("#czrk").text(czrk);
+				$("#lszcl").text(lszcl);
+				//$("#qqzhs").text(qqzhs);
+				$("#dgcl").text(dgcl);
+				$("#xmcl").text(xmcl);
+
+			},
+			error:function(){
+				alert("计算合计错误");
+			}
+			
+		});
+		
+	});
+	
+});
+
+function addDiqu(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增地区信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/jibenxinxi/qxniandu_zsg.html?flag=1"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveDiqu(); 
+        	  
+           },
+          cssClass: 'btn-success btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+
+function upDiqu(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑地区信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/jibenxinxi/qxniandu_zsg.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveDiqu(); 
+        	   
+           },
+          cssClass: 'btn-success btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+
+function chakan(id){
+	dialog1=BootstrapDialog.show({
+	    title: '查看地区信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/jibenxinxi/qxniandu_zsg.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+	
+}
+
+function delDiqu(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/jibenxinxi/delDiquniandu',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+function daoru(){
+	var liucid = $("#liucid").val();
+	alert(liucid);
+	dialog1=BootstrapDialog.show({
+	    title: '导入',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/oa/daoru/biaoqianye_quxian.html?liucid='+liucid+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+function doSearch(){
+	czrk = 0;
+	lszcl = 0;
+	//qqzhs = 0;
+	dgcl = 0;
+	xmcl = 0;
+	var niandu = $(".input-smnjpt option:selected").val();
+	var queryparam;
+	if(niandu == "请选择"){
+		queryparam = "";
+	}else{
+		queryparam = "&niandu="+niandu;
+	}
+	$(".datatables").attr("data-queryparam",queryparam);
+	datatable.ajax.reload(null,true);
+	
+}
+</script>
+<%
+	}
+%>

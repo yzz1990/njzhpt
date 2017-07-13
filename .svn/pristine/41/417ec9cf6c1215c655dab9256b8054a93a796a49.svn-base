@@ -1,0 +1,135 @@
+package com.zkzy.njzhpt.dao;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+public class ZhiLiangGLDAO {
+	public static Page<Record> selectZLXQ(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		p.put("and pu.vSwiftNumber=?", "vSwiftNumber");	
+		p.put("and d.xzqhdm=?", "xzqhdm");				//行政区划代码
+		p.put("and pu.qyzzjgdm=?", "qyzzjgdm");			//企业组织机构代码
+		p.put("and pu.kdbm=?", "kdbm");					//库点编码
+		p.put("and pu.vWareHouseCode=?", "vWareHouseCode");	//仓房编码
+		p.put("and pu.dtQualityTime like ?", "dtQualityTime","%%%s%%");	//质检时间
+		p.put("and pu.vDirection=?", "vDirection");		//出入库标示
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select fw.name,q.qymc,pu.* ",
+				"from crk_Purchase pu INNER JOIN tz_qiye q on pu.qyzzjgdm=q.qyzzjgdm LEFT JOIN njpt_diqu d ON q.xzqhdm= d.xzqhdm LEFT JOIN fw_area fw on d.areaid=fw.id where 1=1 " + s.getSql()+" order by d.orderno,pu.qyzzjgdm,pu.kdbm,pu.vWareHouseCode,pu.dtQualityTime desc",
+				s.getParam().toArray(new Object[0]));
+		
+		
+		for(Record r:page.getList()){
+//			Object xzqhdm=r.get("xzqhdm");
+			Object qyzzjgdm=r.get("qyzzjgdm");
+			Object kdbm=r.get("kdbm");
+			Object cfbm=r.get("vWareHouseCode");
+			Object vGrainSubTypeCode=r.get("vGrainSubTypeCode");
+			Object vGrainPropertyId=r.get("vGrainPropertyId");
+			
+			Record  liangshiXZ= Db.findFirst("select vGrainProperties from tz_GrainProperties where vCode=?",vGrainPropertyId);
+			if(liangshiXZ!=null){
+				r.set("vGrainPropertyId", liangshiXZ.getStr("vGrainProperties"));
+			}
+			Record  liangshiPZ= Db.findFirst("select vName from tz_GrainType where vCode=?",vGrainSubTypeCode);
+			if(liangshiPZ!=null){
+				r.set("vGrainSubTypeCode", liangshiPZ.getStr("vName"));
+			}
+/*			Record quyu= Db.findFirst("select quyu from njpt_diqu where xzqhdm=?",xzqhdm);
+			if(quyu!=null){
+				r.set("xzqhdm", quyu.getStr("quyu"));
+			}*/
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("kdbm", kdmc.getStr("kdmc"));
+			}
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("vWareHouseCode", cfmc.getStr("cfmc"));
+			}
+			//将数据库numeric类型为空时转成0
+			BigDecimal dmYellowRiceKernel=r.get("dmYellowRiceKernel",new BigDecimal(0));
+			r.set("dmYellowRiceKernel", dmYellowRiceKernel.doubleValue());
+			BigDecimal dmOriginalMoisture=r.get("dmOriginalMoisture",new BigDecimal(0));
+			r.set("dmOriginalMoisture", dmOriginalMoisture.doubleValue());
+			BigDecimal dmOriginalImpurity=r.get("dmOriginalImpurity",new BigDecimal(0));
+			r.set("dmOriginalImpurity", dmOriginalImpurity.doubleValue());
+			BigDecimal dmOriginalMineral=r.get("dmOriginalMineral",new BigDecimal(0));
+			r.set("dmOriginalMineral", dmOriginalMineral.doubleValue());
+			BigDecimal dmOriginalGamma=r.get("dmOriginalGamma",new BigDecimal(0));
+			r.set("dmOriginalGamma", dmOriginalGamma.doubleValue());
+			BigDecimal dmOriginalUnsoundKernel=r.get("dmOriginalUnsoundKernel",new BigDecimal(0));
+			r.set("dmOriginalUnsoundKernel", dmOriginalUnsoundKernel.doubleValue());
+			BigDecimal dmOriginalYellowRiceKernel=r.get("dmOriginalYellowRiceKernel",new BigDecimal(0));
+			r.set("dmOriginalYellowRiceKernel", dmOriginalYellowRiceKernel.doubleValue());
+			BigDecimal dmOriginalMilledRice=r.get("dmOriginalMilledRice",new BigDecimal(0));
+			r.set("dmOriginalMilledRice", dmOriginalMilledRice.doubleValue());
+			BigDecimal dmOriginalBRRatio=r.get("dmOriginalBRRatio",new BigDecimal(0));
+			r.set("dmOriginalBRRatio", dmOriginalBRRatio.doubleValue());
+			BigDecimal dmOriginalMildew=r.get("dmOriginalMildew",new BigDecimal(0));
+			r.set("dmOriginalMildew", dmOriginalMildew.doubleValue());
+			BigDecimal dmOriginalVBRRatio=r.get("dmOriginalVBRRatio",new BigDecimal(0));
+			r.set("dmOriginalVBRRatio", dmOriginalVBRRatio.doubleValue());
+			
+			BigDecimal dmOriginalOdor=r.get("dmOriginalOdor",new BigDecimal(0));
+			r.set("dmOriginalOdor", dmOriginalOdor.doubleValue());
+			BigDecimal dmOriginalFr=r.get("dmOriginalFr",new BigDecimal(0));
+			r.set("dmOriginalFr", dmOriginalFr.doubleValue());
+			BigDecimal dmOriginalWaterAbsorption=r.get("dmOriginalWaterAbsorption",new BigDecimal(0));
+			r.set("dmOriginalWaterAbsorption", dmOriginalWaterAbsorption.doubleValue());
+			BigDecimal dmOriginalMixingRatio=r.get("dmOriginalMixingRatio",new BigDecimal(0));
+			r.set("dmOriginalMixingRatio", dmOriginalMixingRatio.doubleValue());
+			BigDecimal dmOriginalFattyAcid=r.get("dmOriginalFattyAcid",new BigDecimal(0));
+			r.set("dmOriginalFattyAcid", dmOriginalFattyAcid.doubleValue());
+			BigDecimal dmMoisture=r.get("dmMoisture",new BigDecimal(0));
+			r.set("dmMoisture", dmMoisture.doubleValue());
+			BigDecimal dmImpurity=r.get("dmImpurity",new BigDecimal(0));
+			r.set("dmImpurity", dmImpurity.doubleValue());
+			BigDecimal dmGamma=r.get("dmGamma",new BigDecimal(0));
+			r.set("dmGamma", dmGamma.doubleValue());
+			BigDecimal dmUnsoundKernel=r.get("dmUnsoundKernel",new BigDecimal(0));
+			r.set("dmUnsoundKernel", dmUnsoundKernel.doubleValue());
+			
+			BigDecimal dmMilledRice=r.get("dmMilledRice",new BigDecimal(0));
+			r.set("dmMilledRice", dmMilledRice.doubleValue());
+			BigDecimal dmBRRatio=r.get("dmBRRatio",new BigDecimal(0));
+			r.set("dmBRRatio", dmBRRatio.doubleValue());
+			BigDecimal dmMildew=r.get("dmMildew",new BigDecimal(0));
+			r.set("dmMildew", dmMildew.doubleValue());
+			BigDecimal dmVBRRatio=r.get("dmVBRRatio",new BigDecimal(0));
+			r.set("dmVBRRatio", dmVBRRatio.doubleValue());
+			BigDecimal dmOdor=r.get("dmOdor",new BigDecimal(0));
+			r.set("dmOdor", dmOdor.doubleValue());
+			BigDecimal dmFr=r.get("dmFr",new BigDecimal(0));
+			r.set("dmFr", dmFr.doubleValue());
+			BigDecimal dmWaterAbsorption=r.get("dmWaterAbsorption",new BigDecimal(0));
+			r.set("dmWaterAbsorption", dmWaterAbsorption.doubleValue());
+			BigDecimal dmMixingRatio=r.get("dmMixingRatio",new BigDecimal(0));
+			r.set("dmMixingRatio", dmMixingRatio.doubleValue());
+			BigDecimal dmFattyAcid=r.get("dmFattyAcid",new BigDecimal(0));
+			r.set("dmFattyAcid", dmFattyAcid.doubleValue());
+			BigDecimal dmMineral=r.get("dmMineral",new BigDecimal(0));
+			r.set("dmMineral", dmMineral.doubleValue());
+			BigDecimal dmHardness=r.get("dmHardness",new BigDecimal(0));
+			r.set("dmHardness", dmHardness.doubleValue());
+			BigDecimal dmGW=r.get("dmGW",new BigDecimal(0));
+			r.set("dmGW", dmGW.doubleValue());
+			BigDecimal dmPW=r.get("dmPW",new BigDecimal(0));
+			r.set("dmPW", dmPW.doubleValue());
+			BigDecimal dmNW=r.get("dmNW",new BigDecimal(0));
+			r.set("dmNW", dmNW.doubleValue());
+		}
+		return page;
+		
+	}
+}

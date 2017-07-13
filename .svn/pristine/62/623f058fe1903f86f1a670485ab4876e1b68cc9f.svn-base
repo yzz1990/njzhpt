@@ -1,0 +1,802 @@
+package com.zkzy.njzhpt.bo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.ZongHeDao;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class ZongHeBo {
+
+	
+	
+	/**
+	 * 仓房利用率
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret findzcr(HashMap<String, Object> param) throws Exception {
+		Ret ret=new Ret();
+		Page<Record> page=ZongHeDao.findcflyl(param);
+		if(page.getList().size()>0){
+			ret.put("zcr",page.getList().get(0).getDouble("zcr"));
+			ret.put("lyl",page.getList().get(0).getDouble("lyl"));
+		}else{
+			ret.put("zcr",0);
+			ret.put("lyl",0);
+		}
+		return ret;
+	}
+
+	
+	/**
+	 * 仓房类型统计
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret cflxtj(HashMap<String, Object> param) throws Exception {
+		Ret ret=new Ret();
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		Page<Record> cflist=  ZongHeDao.finCf(param);
+		Page<Record> cflx=  ZongHeDao.finCflx(param);
+		List<HashMap<String, Object>> param1 = new ArrayList<HashMap<String, Object>>();
+		for(Record lx:cflx.getList()){
+			List list=new ArrayList();
+			HashMap<String, Object>  hashmap1=new HashMap<String, Object>();
+			for(Record qy:quyu){
+				Record numbers=Db.findFirst("select count(*) num from  tz_cangfang a where a.qyzzjgdm in (select b.qyzzjgdm from tz_qiye b where b.xzqhdm=? GROUP BY b.qyzzjgdm) and a.cflxbh=? ",qy.getStr("xzqhdm"),lx.getStr("BH"));
+				list.add(numbers.getInt("num"));
+			}
+			//hashmap1.put(lx.getStr("MC"), list);
+			hashmap1.put("name", lx.getStr("MC"));
+			hashmap1.put("data",list);
+			param1.add(hashmap1);
+		}
+		List quxianlist=new ArrayList();
+		for(Record qy:quyu){
+			quxianlist.add(qy.getStr("name"));
+		}
+		ret.put("quyu", quxianlist);
+		ret.put("list", param1);
+		return ret;
+	}
+
+
+
+	/**
+	 * 全市仓房总仓容占比
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findcfcrzb(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		List param1 = new ArrayList();
+		Ret ret =new Ret();
+		for(Record record:quyu){
+			HashMap<String, Object> queryparam=new HashMap<String, Object>();
+			queryparam.put("xzqhdm", record.getStr("xzqhdm"));
+			queryparam.put("page", 1);
+			queryparam.put("rows", 1000);
+			
+			Page<Record>  page=ZongHeDao.findcflyl(queryparam);
+			if(page.getList().size()>0){
+				param1.add(ZongHeDao.findcflyl(queryparam).getList().get(0).getDouble("zcr"));				
+			}else{
+				param1.add(0);	
+			}
+		}
+		ret.put("quyu", quyu);
+		ret.put("list", param1);
+		return ret;
+	}
+
+	/**
+	 * 全市仓房类型仓容占比
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findcflxzcrzb(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		Page<Record> cflx=	ZongHeDao.finCflx(param);
+		List list=null;
+		Ret ret =new Ret();
+		List listMap=new ArrayList();
+		List listhj=new ArrayList();
+		List cflxlist=new ArrayList();
+		List<HashMap<String,Object>> hashmap=new ArrayList<HashMap<String,Object>>();
+		for(int i=0;i<quyu.size();i++){
+			 list=new ArrayList();
+			 list.add(i+2);
+			 list.add(quyu.get(i).getStr("name"));
+				for(Record lx:cflx.getList()){	
+					//按地区汇总仓房类型
+					  HashMap<String,Object> queryParam=new HashMap<String, Object>();
+					  queryParam.put("xzqhdm", quyu.get(i).getStr("xzqhdm"));
+					  queryParam.put("cflxbh", lx.getStr("BH"));
+					  queryParam.put("page", 1);
+					  queryParam.put("rows", 10000);
+					  Page<Record>  page= ZongHeDao.findcfInfo(queryParam);
+					  list.add(page.getList().size()); 
+				}
+				listMap.add(list);
+		}
+		
+		//全市仓房雷类型合计统计
+		listhj.add(1);
+		listhj.add("合计");
+		for(Record lx:cflx.getList()){
+			HashMap<String,Object> map=new HashMap<String, Object>();
+			 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("cflxbh", lx.getStr("BH"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 10000);
+			  Page<Record>  page= ZongHeDao.findcfInfo(queryParam);
+			  listhj.add(page.getList().size());
+			  cflxlist.add(lx.getStr("MC"));
+			  map.put("value", page.getList().size());
+			  map.put("name", lx.getStr("MC"));
+			  hashmap.add(map);
+		}
+
+		ret.put("list", listMap);
+		ret.put("listhj", listhj);
+		ret.put("cflx", cflxlist);
+		ret.put("cflxbz", hashmap);
+		return ret;
+	}
+
+
+	/**
+	 * 仓房储粮技术
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret cfcljs(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		Page<Record> bljs=	ZongHeDao.findBljs(param);
+		Ret ret =new Ret();
+		List list=null;
+		List list1=null;
+		List listMap=new ArrayList();
+		List listMap1=new ArrayList();
+		List listhj=new ArrayList();
+		List bljslist=new ArrayList();
+		List qy=new ArrayList();
+		List<HashMap<String,Object>> hashmap=new ArrayList<HashMap<String,Object>>();
+		for(int i=0;i<quyu.size();i++){
+			qy.add(quyu.get(i).getStr("name"));
+			 list=new ArrayList();
+			 list1=new ArrayList();
+			 list.add(i+2);
+			 list.add(quyu.get(i).getStr("name"));
+			 for(Record js: bljs.getList()){
+				 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+				  queryParam.put("xzqhdm", quyu.get(i).getStr("xzqhdm"));
+				  queryParam.put(js.getStr("fieldname"), "1");
+				  queryParam.put("page", 1);
+				  queryParam.put("rows", 10000);
+				  Page<Record>  page= ZongHeDao.findcfInfo(queryParam);
+				  list.add(page.getList().size()); 
+			 }
+			 listMap.add(list);
+			 
+			 for(Record js: bljs.getList()){
+				 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+				  queryParam.put("xzqhdm", quyu.get(i).getStr("xzqhdm"));
+				  queryParam.put(js.getStr("fieldname"), "1");
+				  queryParam.put("page", 1);
+				  queryParam.put("rows", 10000);
+				  Page<Record>  page= ZongHeDao.findcfInfo(queryParam);
+				  list1.add(page.getList().size()); 
+			 }
+			 listMap1.add(list1);
+			 
+		}
+		listhj.add(1);
+		listhj.add("合计");
+		for(Record js:bljs.getList()){
+			HashMap<String,Object> map=new HashMap<String, Object>();
+			 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put(js.getStr("fieldname"), 1);
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 10000);
+			  Page<Record>  page= ZongHeDao.findcfInfo(queryParam);
+			  listhj.add(page.getList().size());
+			  bljslist.add(js.getStr("name"));
+			  map.put("value", page.getList().size());
+			  map.put("name", js.getStr("name"));
+			  hashmap.add(map);
+		}
+		
+		ret.put("list", listMap);
+		ret.put("listhj", listhj);
+		ret.put("bljs", bljslist);
+		ret.put("bljsbz", hashmap);
+		ret.put("qy", qy);
+		ret.put("bljsqxt", listMap1);
+		return ret;
+	}
+
+
+	/**
+	 * 库存占比
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findkczb(HashMap<String, Object> param) throws Exception {
+		Ret ret=new Ret();
+		Page<Record> page=ZongHeDao.findcflyl(param);
+		Page<Record> zkucun= ZongHeDao.findzcrk(param);
+		if(page.getList().size()>0){
+			ret.put("zcr", page.getList().get(0).getDouble("zcr"));
+		}else{
+			ret.put("zcr", 0);
+		}
+		if(zkucun.getList().size()>0){
+			ret.put("dmStock", zkucun.getList().get(0).getBigDecimal("dmStock").doubleValue());
+		}else{
+			ret.put("dmStock", 0);
+		}
+		
+		return ret;
+	}
+
+	
+	/**
+	 * 分区域库存统计
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findfqck(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		List qylist=new ArrayList();
+		List cklist=new ArrayList();	
+		Ret ret=new Ret();
+		for(int i=0;i<quyu.size();i++){
+			qylist.add(quyu.get(i).getStr("name"));
+			HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("xian", quyu.get(i).getStr("name"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 1);
+			  Page<Record>  page= ZongHeDao.findzcrk(queryParam);
+			  if(page.getList().size()>0){		  
+				  cklist.add(page.getList().get(0).getBigDecimal("dmStock").doubleValue());
+			  }else{
+				  cklist.add(0);
+			  }
+		}
+		ret.put("qylist", qylist);
+		ret.put("cklist", cklist);
+		return ret;
+	}
+
+
+
+	/**
+	 * 分区品种统计库存
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findpzck(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		List<Record>  lspz=  ZongHeDao.findlspz();
+		List pzlist=new ArrayList();
+		List btlist=new ArrayList();
+		List listhj=new ArrayList();//合计
+		List pzzcklist=new ArrayList();
+		List hjzck=new ArrayList();
+		double hj=0;
+		List<HashMap<String,Object>> pzzck=new ArrayList<HashMap<String,Object>>();
+		Ret ret=new Ret();
+		btlist.add("编号");
+		btlist.add("区域");
+		btlist.add("合计");
+		hjzck.add(1);
+		hjzck.add("合计");
+		for(int i=0;i<quyu.size();i++){
+			List pzcklist=new ArrayList();
+			pzcklist.add(i+2);
+			pzcklist.add(quyu.get(i).getStr("name"));
+			//按区域获取库存总和
+			HashMap<String,Object> Param=new HashMap<String, Object>();
+			  Param.put("xian", quyu.get(i).getStr("name"));
+			  Param.put("page", 1);
+			  Param.put("rows", 1);
+			  Page<Record> page1=  ZongHeDao.findzcrk(Param);
+			  if(page1.getList().size()>0){
+			    	pzcklist.add(String.format("%.2f",page1.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));				    	
+			    }else{
+			    	pzcklist.add(0);
+			    }
+			  
+			for(Record record:lspz){
+				HashMap<String,Object> queryParam=new HashMap<String, Object>();
+				  queryParam.put("xian", quyu.get(i).getStr("name"));
+				  queryParam.put("vCode",record.getStr("code"));
+				  queryParam.put("page", 1);
+				  queryParam.put("rows", 1);
+				  Page<Record> page=  ZongHeDao.findzcrk(queryParam);
+				  
+				  if(page.getList().size()>0){
+				    	hj+=page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000;
+				    	pzcklist.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));				    	
+				    }else{
+				    	pzcklist.add(0);
+				    }	    
+			}
+			pzzcklist.add(pzcklist);
+		}
+		hjzck.add(String.format("%.2f", hj));
+		for(Record record: lspz){
+			btlist.add(record.getStr("name"));
+			pzlist.add(record.getStr("name"));
+			HashMap<String,Object> pzckMap=new HashMap<String, Object>();
+			 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("vCode",record.getStr("code"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 1);
+			  Page<Record>  page= ZongHeDao.findzcrk(queryParam);
+			  pzckMap.put("name", record.getStr("name"));
+			 
+			  if(page.getList().size()>0){
+				  pzckMap.put("value",  String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+				  hjzck.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+			  }else{
+				  pzckMap.put("value",0);
+				  hjzck.add(0);
+			  }
+			  pzzck.add(pzckMap);
+		 }
+		
+		ret.put("pzlist", pzlist);//品种
+		ret.put("btlist", btlist);//表头
+		ret.put("pzzcklist", pzzcklist);//列表品种库存
+		ret.put("hjzck", hjzck);//列表合计
+		ret.put("pzzck", pzzck);//饼状图分品种合计
+		return ret;
+	}
+
+
+	/**
+	 * 分区性质库存统计
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findxzck(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		List<Record>  lsxz=  ZongHeDao.findlsxz();
+		List pzlist=new ArrayList();
+		List btlist=new ArrayList();
+		List qylist=new ArrayList();
+		List listhj=new ArrayList();//合计
+		List pzzcklist=new ArrayList();
+		List pzzcklist1=new ArrayList();
+		List hjzck=new ArrayList();
+		double hj=0;
+		List<HashMap<String,Object>> pzzck=new ArrayList<HashMap<String,Object>>();
+		Ret ret=new Ret();
+		btlist.add("编号");
+		btlist.add("区域");
+		btlist.add("合计");
+		hjzck.add(1);
+		hjzck.add("合计");
+		for(int i=0;i<quyu.size();i++){
+			List pzcklist=new ArrayList();
+			List pzcklist1=new ArrayList();
+			qylist.add(quyu.get(i).getStr("name"));
+			pzcklist.add(i+2);
+			pzcklist.add(quyu.get(i).getStr("name"));
+			
+			HashMap<String,Object> Param=new HashMap<String, Object>();
+			  Param.put("xian", quyu.get(i).getStr("name"));
+			  Param.put("page", 1);
+			  Param.put("rows", 1);
+			  Page<Record> page1=  ZongHeDao.findzcrk(Param);
+			  if(page1.getList().size()>0){
+			    	pzcklist.add(String.format("%.2f",page1.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));				    	
+			    }else{
+			    	pzcklist.add(0);
+			    }
+			
+			
+			for(Record record:lsxz){
+				HashMap<String,Object> queryParam=new HashMap<String, Object>();
+				  queryParam.put("xian", quyu.get(i).getStr("name"));
+				  queryParam.put("vGrainPropertyCode",record.getStr("code"));
+				  queryParam.put("page", 1);
+				  queryParam.put("rows", 1);
+				  Page<Record> page=  ZongHeDao.findzcrk(queryParam);
+				    if(page.getList().size()>0){
+				    	hj+=page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000;
+				    	pzcklist.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000)); 	
+				    	pzcklist1.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000)); 	
+				    }else{
+				    	pzcklist.add(0);    	
+				    	pzcklist1.add(0);    	
+				    }	    
+			}
+			pzzcklist.add(pzcklist);
+			pzzcklist1.add(pzcklist1);
+		}
+		hjzck.add(String.format("%.2f", hj));
+		for(Record record: lsxz){
+			btlist.add(record.getStr("name"));
+			pzlist.add(record.getStr("name"));
+			HashMap<String,Object> pzckMap=new HashMap<String, Object>();
+			 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("vGrainPropertyCode",record.getStr("code"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 1);
+			  Page<Record>  page= ZongHeDao.findzcrk(queryParam);
+			  pzckMap.put("name", record.getStr("name"));
+			  if(page.getList().size()>0){
+				  pzckMap.put("value",  String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+				  hjzck.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+			  }else{
+				  pzckMap.put("value",0);
+				  hjzck.add(0);
+			  }
+			  pzzck.add(pzckMap);
+		 }
+		
+		ret.put("pzlist", pzlist);//性质
+		ret.put("btlist", btlist);//表头
+		ret.put("pzzcklist", pzzcklist);//列表性质库存
+		ret.put("hjzck", hjzck);//列表合计
+		ret.put("pzzck", pzzck);//饼状图分性质合计
+		ret.put("pzzcklist1", pzzcklist1);//折线图分性质合计
+		ret.put("qylist", qylist);//折线图分性质合计
+		
+		return ret;
+	}
+
+
+
+	/**
+	 * 分区粮食等级库存统计
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret finddjck(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		Page<Record>  lsdj=  ZongHeDao.findlsdj(param);//粮食等级
+		List pzlist=new ArrayList();
+		List btlist=new ArrayList();
+		List qylist=new ArrayList();
+		List listhj=new ArrayList();//合计
+		List pzzcklist=new ArrayList();
+		List pzzcklist1=new ArrayList();
+		List hjzck=new ArrayList();
+		List<HashMap<String,Object>> pzzck=new ArrayList<HashMap<String,Object>>();
+		Ret ret=new Ret();
+		btlist.add("编号");
+		btlist.add("区域");
+		hjzck.add(1);
+		hjzck.add("合计");
+		for(int i=0;i<quyu.size();i++){
+			List pzcklist=new ArrayList();
+			List pzcklist1=new ArrayList();
+			qylist.add(quyu.get(i).getStr("name"));
+			pzcklist.add(i+2);
+			pzcklist.add(quyu.get(i).getStr("name"));
+			for(Record record:lsdj.getList()){
+				HashMap<String,Object> queryParam=new HashMap<String, Object>();
+				  queryParam.put("xian", quyu.get(i).getStr("name"));
+				  queryParam.put("vCode",record.getStr("vCode"));
+				  queryParam.put("page", 1);
+				  queryParam.put("rows", 10000);
+				  Page<Record> page=  ZongHeDao.finddjck(queryParam);
+				    if(page.getList().size()>0){
+				    	double dmStock=0;
+				    	for(Record record1:page.getList()){
+				    		dmStock+=record1.getBigDecimal("dmStock").doubleValue();
+				    	}
+				    	pzcklist.add(String.format("%.2f",dmStock/10000000)); 	
+				    	pzcklist1.add(String.format("%.2f",dmStock/10000000)); 	
+				    }else{
+				    	pzcklist.add(0);    	
+				    	pzcklist1.add(0);    	
+				    }	    
+			}
+			pzzcklist.add(pzcklist);
+			pzzcklist1.add(pzcklist1);
+		}
+		
+		for(Record record: lsdj.getList()){
+			btlist.add(record.getStr("vLevelName"));
+			pzlist.add(record.getStr("vLevelName"));
+			HashMap<String,Object> pzckMap=new HashMap<String, Object>();
+			 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			 queryParam.put("vCode",record.getStr("vCode"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 10000);
+			  Page<Record>  page= ZongHeDao.finddjck(queryParam);
+			  pzckMap.put("name", record.getStr("vLevelName"));
+			  if(page.getList().size()>0){
+				  double dmStock=0;
+				  for(Record record1:page.getList()){
+			    		dmStock+=record1.getBigDecimal("dmStock").doubleValue();
+			    	}
+				  pzckMap.put("value",  String.format("%.2f",dmStock/10000000));
+				  hjzck.add(String.format("%.2f",dmStock/10000000));
+			  }else{
+				  pzckMap.put("value",0);
+				  hjzck.add(0);
+			  }
+			  pzzck.add(pzckMap);
+		 }
+		
+		ret.put("pzlist", pzlist);//性质
+		ret.put("btlist", btlist);//表头
+		ret.put("pzzcklist", pzzcklist);//列表性质库存
+		ret.put("hjzck", hjzck);//列表合计
+		ret.put("pzzck", pzzck);//饼状图分性质合计
+		ret.put("pzzcklist1", pzzcklist1);//折线图分性质合计
+		ret.put("qylist", qylist);//折线图分性质合计
+
+		return ret;
+	}
+
+	/**
+	 * 品种性质综合分析
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findpzxzfx(HashMap<String, Object> param) throws Exception {
+		
+		List<Record>  lspz=  ZongHeDao.findlspz();
+		List<Record>  lsxz=  ZongHeDao.findlsxz();
+		List pzlist=new ArrayList();
+		List btlist=new ArrayList();
+		List qylist=new ArrayList();
+		List listhj=new ArrayList();//合计
+		List pzzcklist=new ArrayList();
+		List pzzcklist1=new ArrayList();
+		List hjzck=new ArrayList();
+		List<HashMap<String,Object>> pzzck=new ArrayList<HashMap<String,Object>>();
+		List<HashMap<String,Object>> xzzck=new ArrayList<HashMap<String,Object>>();
+		Ret ret=new Ret();
+		btlist.add("编号");
+		btlist.add("区域");
+		hjzck.add(1);
+		hjzck.add("合计");
+		for(int i=0;i<lspz.size();i++){
+			List pzcklist=new ArrayList();
+			List pzcklist1=new ArrayList();
+			pzlist.add(lspz.get(i).getStr("name"));
+			qylist.add(lspz.get(i).getStr("name"));
+			pzcklist.add(i+2);
+			pzcklist.add(lspz.get(i).getStr("name"));
+			for(Record record:lsxz){
+				HashMap<String,Object> queryParam=new HashMap<String, Object>();
+				  queryParam.put("vGrainSubTypeCode", lspz.get(i).getStr("code"));
+				  queryParam.put("vGrainPropertyCode",record.getStr("code"));
+				  queryParam.put("page", 1);
+				  queryParam.put("rows", 1);
+				  Page<Record> page=  ZongHeDao.findzcrk(queryParam);
+				    if(page.getList().size()>0){
+				    	pzcklist.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000)); 	
+				    	pzcklist1.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000)); 	
+				    }else{
+				    	pzcklist.add(String.format("%.2f",0.00));    	
+				    	pzcklist1.add(String.format("%.2f",0.00));    	
+				    }	    
+			}
+			pzzcklist.add(pzcklist);
+			pzzcklist1.add(pzcklist1);
+		}
+		
+		for(Record record:lspz){
+			HashMap<String,Object> xzckMap=new HashMap<String, Object>();
+			HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("vGrainSubTypeCode", record.getStr("code"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 1);
+			  Page<Record> page=  ZongHeDao.findzcrk(queryParam);
+			  xzckMap.put("name", record.getStr("name"));
+			    if(page.getList().size()>0){
+			    		xzckMap.put("value",  String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+			    	}else{
+			    		xzckMap.put("value",String.format("%.2f",0.00));     	
+			    }
+			    xzzck.add(xzckMap); 
+		}
+		
+		
+		for(Record record: lsxz){
+			btlist.add(record.getStr("name"));
+			pzlist.add(record.getStr("name"));
+			HashMap<String,Object> pzckMap=new HashMap<String, Object>();
+			 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("vGrainPropertyCode",record.getStr("code"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 1);
+			  Page<Record>  page= ZongHeDao.findzcrk(queryParam);
+			  pzckMap.put("name", record.getStr("name"));
+			  if(page.getList().size()>0){
+				  pzckMap.put("value",  String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+				  hjzck.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+			  }else{
+				  pzckMap.put("value",String.format("%.2f",0.00));
+				  hjzck.add(String.format("%.2f",0.00));
+			  }
+			  pzzck.add(pzckMap);
+		 }
+		
+		ret.put("pzlist", pzlist);//性质
+		ret.put("btlist", btlist);//表头
+		ret.put("pzzcklist", pzzcklist);//列表性质库存
+		ret.put("hjzck", hjzck);//列表合计
+		ret.put("pzzck", pzzck);//饼状图分性质合计
+		ret.put("pzzcklist1", pzzcklist1);//折线图分性质合计
+		ret.put("qylist", qylist);//折线图分性质合计
+		ret.put("xzzck", xzzck);//折线图分性质合计
+		
+		return ret;
+	}
+
+
+	/**
+	 * 品种等级综合分析
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findpzdjfx(HashMap<String, Object> param) throws Exception {
+		List<Record>  lspz=  ZongHeDao.findlspz();
+		Page<Record>  lsdj=  ZongHeDao.findlsdj(param);//粮食等级
+		List pzlist=new ArrayList();
+		List btlist=new ArrayList();
+		List qylist=new ArrayList();
+		List listhj=new ArrayList();//合计
+		List pzzcklist=new ArrayList();
+		List pzzcklist1=new ArrayList();
+		List hjzck=new ArrayList();
+		List<HashMap<String,Object>> pzzck=new ArrayList<HashMap<String,Object>>();
+		List<HashMap<String,Object>> xzzck=new ArrayList<HashMap<String,Object>>();
+		Ret ret=new Ret();
+		btlist.add("编号");
+		btlist.add("区域");
+		hjzck.add(1);
+		hjzck.add("合计");
+		for(int i=0;i<lspz.size();i++){
+			List pzcklist=new ArrayList();
+			List pzcklist1=new ArrayList();
+			pzlist.add(lspz.get(i).getStr("name"));
+			qylist.add(lspz.get(i).getStr("name"));
+			pzcklist.add(i+2);
+			pzcklist.add(lspz.get(i).getStr("name"));
+			for(Record record:lsdj.getList()){
+				HashMap<String,Object> queryParam=new HashMap<String, Object>();
+				  queryParam.put("vGrainSubTypeCode", lspz.get(i).getStr("code"));
+				  queryParam.put("vCode",record.getStr("vCode"));
+				  queryParam.put("page", 1);
+				  queryParam.put("rows", 1);
+				  Page<Record> page=  ZongHeDao.finddjck(queryParam);
+				    if(page.getList().size()>0){
+				    	pzcklist.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000)); 	
+				    	pzcklist1.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000)); 	
+				    }else{
+				    	pzcklist.add(String.format("%.2f",0.00));    	
+				    	pzcklist1.add(String.format("%.2f",0.00));    	
+				    }	    
+			}
+			pzzcklist.add(pzcklist);
+			pzzcklist1.add(pzcklist1);
+		}
+		
+		for(Record record:lspz){
+			HashMap<String,Object> xzckMap=new HashMap<String, Object>();
+			HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("vGrainSubTypeCode", record.getStr("code"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 1);
+			  Page<Record> page=  ZongHeDao.finddjck(queryParam);
+			  xzckMap.put("name", record.getStr("name"));
+			    if(page.getList().size()>0){
+			    		xzckMap.put("value",  String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+			    	}else{
+			    		xzckMap.put("value",String.format("%.2f",0.00));     	
+			    }
+			    xzzck.add(xzckMap); 
+		}
+		
+		
+		for(Record record: lsdj.getList()){
+			btlist.add(record.getStr("vLevelName"));
+			pzlist.add(record.getStr("vLevelName"));
+			HashMap<String,Object> pzckMap=new HashMap<String, Object>();
+			 HashMap<String,Object> queryParam=new HashMap<String, Object>();
+			  queryParam.put("vCode",record.getStr("vCode"));
+			  queryParam.put("page", 1);
+			  queryParam.put("rows", 1);
+			  Page<Record>  page= ZongHeDao.finddjck(queryParam);
+			  pzckMap.put("name", record.getStr("vLevelName"));
+			  if(page.getList().size()>0){
+				  pzckMap.put("value",  String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+				  hjzck.add(String.format("%.2f",page.getList().get(0).getBigDecimal("dmStock").doubleValue()/10000000));
+			  }else{
+				  pzckMap.put("value",String.format("%.2f",0.00));
+				  hjzck.add(String.format("%.2f",0.00));
+			  }
+			  pzzck.add(pzckMap);
+		 }
+		
+		ret.put("pzlist", pzlist);//性质
+		ret.put("btlist", btlist);//表头
+		ret.put("pzzcklist", pzzcklist);//列表性质库存
+		ret.put("hjzck", hjzck);//列表合计
+		ret.put("pzzck", pzzck);//饼状图分性质合计
+		ret.put("pzzcklist1", pzzcklist1);//折线图分性质合计
+		ret.put("qylist", qylist);//折线图分性质合计
+		ret.put("xzzck", xzzck);//折线图分性质合计
+		
+		return ret;
+	}
+
+
+	/**
+	 * 烘干能力统计分析
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret findhgnl(HashMap<String, Object> param) throws Exception {
+		List<Record> quyu=	ZongHeDao.findQuyu(param);
+		List btlist=new ArrayList();
+		List hjzck=new ArrayList();
+		List qylist=new ArrayList();
+		List hgnlz=new ArrayList();
+		btlist.add("编号");
+		btlist.add("区域");
+		btlist.add("烘干能力");
+		hjzck.add(1);
+		hjzck.add("合计");
+		double sumV=0;
+		Ret ret=new Ret();
+		List<HashMap<String,Object>> hgnlzck=new ArrayList<HashMap<String,Object>>();
+		for(int i=0;i<quyu.size();i++){
+			List hgnllist=new ArrayList();
+			hgnllist.add(i+2);
+			hgnllist.add(quyu.get(i).getStr("name"));
+			qylist.add(quyu.get(i).getStr("name"));
+			HashMap<String,Object> mapparam=new HashMap<String, Object>();
+			HashMap<String,Object>  map=new HashMap<String,Object>();			
+			map.put("xian", quyu.get(i).getStr("name"));
+			map.put("page", 1);
+			map.put("rows", 1);
+			double hgnl=0;
+			if(ZongHeDao.finHgnlV(map).getDouble("hgnl")!=null){
+				hgnl=ZongHeDao.finHgnlV(map).getDouble("hgnl");
+			}
+			mapparam.put("value", hgnl);
+			hgnllist.add(hgnl);
+			sumV+=hgnl;
+			mapparam.put("name",quyu.get(i).getStr("name"));
+			hgnlzck.add(mapparam);
+			hgnlz.add(hgnllist);
+		}
+		hjzck.add(sumV);
+		
+		ret.put("btlist",btlist);//列表表头
+		ret.put("hjzck",hjzck);//列表合计表头
+		ret.put("hgnlz",hgnlz);//列表所需数据
+		ret.put("qylist",qylist);//区域列表
+		ret.put("hgnlzck",hgnlzck);//饼状图所需数据
+		return ret;
+	}
+	
+	
+}

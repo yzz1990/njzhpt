@@ -1,0 +1,71 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+
+
+<SCRIPT type=text/javascript>
+	function tanchu(){
+		
+		var index=1;
+		$("#mark").modal({
+			show:true,
+		});
+		$("#mark2").modal({
+			show:true,
+		});
+		$('.modal-backdrop').each(function() {
+			$(this).attr('id', 'id_' + index);
+			index++;
+		});
+		$("#boss").css("padding-right","0px");
+	}
+	function guanbi(){
+		$("#mark").modal('hide');
+		$("#mark2").modal('hide');
+		$("#boss").css("padding-right","0px");
+	}
+</SCRIPT>
+
+<STYLE type=text/css>
+#id_1{
+	right: 84%;
+	background-color: rgba(238, 238, 238, 0.52);
+}
+#id_2{
+	bottom: 91%;
+	left: 16%;
+	background-color: rgba(238, 238, 238, 0.52);
+}
+.modal-open{
+	overflow: visible;
+}
+</STYLE>
+<META name=GENERATOR content="MSHTML 11.00.9600.16428">
+</HEAD>
+<BODY>
+	<div class="panel panel-default">
+		<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+			<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+			<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>工作安排</b></span>
+		</div>
+	</div>
+	 <div id="mark" style="display: none; ">
+		
+	</div>
+	 <div id="mark2" style="display: none; ">
+		
+	</div>  
+	<div style="height:760px;">
+	 <iframe frameborderno="0"  style="width:100%;height:100%;  overflow-y:hidden" frameborder="0" scrolling="yes"  src="${ctxPath}/oa/workplan/workplan1.html"></iframe>
+	</div>
+</BODY>
+</HTML>
+<%
+ }
+%>

@@ -1,0 +1,71 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+<script type="text/javascript">
+$(function () {
+	//全市自有仓容
+	$.ajax({
+		url:'${ctxPath}/zonghe/findzycr',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			var leixin = ["库存","空仓","其它"];
+			var shuju = [{"name":"库存","value":data.list[0].sum.toFixed(0)},{"name":"空仓","value":data.list[0].kongc.toFixed(0)},{"name":"其它","value":data.list[0].qt.toFixed(0)}];
+			optionx = {
+				title : {
+					x:'center',
+					text: "全市"+"自有仓容统计(单位：吨)"
+				},
+				tooltip : {
+					trigger: 'item',
+					formatter: "{a} <br/>{b} : {c}吨 ({d}%)"
+				},
+				legend: {
+					orient : 'vertical',
+					y:'center',
+					x:'left',
+					data:leixin,
+				},
+				calculable : true,
+				series : [
+					{
+						name:'数量',
+						type:'pie',
+						radius : '55%',
+						center: ['60%', '50%'],
+						itemStyle:{
+							normal:{
+								label:{
+									show: false
+								},
+								labelLine:{
+									show: false
+								}
+							}
+						},
+						data:shuju
+					}
+				]
+			};
+			echarts.init(document.getElementById('containerx')).setOption(optionx);
+		}
+	});
+});
+
+
+
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%; width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="containerx" style="width: 50%; height: 100%; margin: 0 auto;"></div>
+        </div>
+	</div>		
+</div>  

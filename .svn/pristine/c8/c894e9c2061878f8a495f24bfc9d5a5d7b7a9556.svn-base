@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet"
+	href="${ctxPath}/css/font-awesome.min.css">
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+</head>
+<% 
+	var obj={}, url=ctxPath+"/securityedu/addOrUpdateKnowledgePoint",title="新增";
+	if(isNotEmpty(parameter.id)) {
+		debug(parameter.id);
+		obj=@com.zkzy.njzhpt.dao.SecurityEducationDao.findknowledgePoint({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+		debug(parameter.obj);
+		title = "编辑知识点";
+	}; 
+%>
+<style type="text/css">
+.select2-container--default .select2-selection--single{
+	    height: 32px;
+}
+</style>
+<body>
+	<div class="dashboard-wrapper-lg" style="min-height:0px;margin-bottom:0px;padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget" style="margin-bottom: 0px;">
+					<div class="widget-header">
+						<div class="title">知识点信息</div>
+					</div>
+					<div class="widget-body">
+						<form id="contentform" role="form" action="${url}" method="post"
+							style="overflow: hidden;">
+							<input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="knowledgePointName"><font color="red" style="font-size:large;">*</font>知识点名称:</label>
+										<input 	id="knowledgePointName" name="knowledgePointName" class="form-control" placeholder="知识点名称" value="${obj.knowledgePointName}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="creater"><font color="red" style="font-size:large;">*</font>创建者:</label>
+										<%if(isEmpty(parameter.id)){%>
+										<input 	id="creater" readonly name="creater" class="form-control" placeholder="创建者" value="${session.userinfo.user.realname}">
+										<%}else{%>
+										<input 	id="creater" readonly name="creater" class="form-control" placeholder="创建者" value="${obj.creater}">
+										<%}%>
+									</div>
+								</div>
+								
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		function saveKnowledge() {
+			var form = $(".widget-body form");
+			$("#qiyeid").attr("disabled",false);
+			$.ajax({
+				url : form.attr("action"),
+				dataType : "json",
+				data : form.serialize(),
+				success : function(msg) {
+					console.log(msg);
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("保存成功");
+						parent.window.dialog1.close();
+		        	    parent.window.datatable1.ajax.reload(null,true);
+					}
+				}
+			});
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+* {margin:0;padding:0;font-size:12px;} 
+html,body {height:100%;width:100%;}
+.whole{
+	/*width: 1000px;*/
+	height: 525px;		
+	float: left;  
+	background-color: #FEEEBD;
+}
+.leftDIV{
+	width: 700px;
+	float: left;		 
+	margin-right: 1px;
+	background-color: #FEEEBD;
+}
+.rightDIV{
+	position:absolute;
+	margin-left:700px;
+	/*width: 395px;
+	background-color: #FEEEBD;*/
+}
+.top{
+	height : 25px;
+	background-color: #FEEEBD;
+	background:url(undercolor.png) repeat-x;
+}
+.top img{
+	margin-top: 6px;
+	margin-left: 6px;
+	width: 13px;height: 13px;
+}
+.top2{
+	height : 25px;
+	background-color: #FEEEBD;
+	margin-bottom: 0px;
+}
+.top2 img{
+	margin-top: 6px;
+	margin-left: 6px;
+	width: 13px;height: 13px;
+}
+.center{
+	height:350px;
+}
+.bottom{
+	height:150px;
+	margin-top:0px;
+	margin-left:0px;
+}
+.content {
+	width:150px;
+	height:350px;
+	float:left;
+	background-color: #FEEEBD;
+	margin-left:20px;
+	height:100%;
+}
+.entity01{
+	margin-left:25px;
+	margin-top:5px;
+	width:150px;height:300px;
+}
+.entity02{
+	margin-left:25px;
+	margin-top:5px;
+	width:150px;height:50px;
+}
+.video01{
+	/*width:396px;*/
+	height:497.9px;
+}
+.video02{
+	height:497.9px;
+}
+
+	.button1{ 
+		font-family: "tahoma", "����"; /*www.52css.com*/ 
+	    font-size: 9pt; color: #003366; 
+	    border: 0px #93bee2 solid; 
+	    border-bottom: #93bee2 1px solid; 
+	    border-left: #93bee2 1px solid; 
+	    border-right: #93bee2 1px solid; 
+	    border-top: #93bee2 1px solid;*/ 
+	    background-image:url(blue_button_bg.gif); 
+	    background-color: #ffffff; 
+	    cursor: hand; 
+	    font-style: normal ; 
+    } 
+    
+    #run0Img{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;   
+        background:url(run01.png) 0 0 no-repeat;
+        }
+        
+    #stop0Img{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;     
+        background:url(stop01.png) 0 0 no-repeat;
+        }
+        #stop0Img:active{
+        	background-position:0 -28px;
+        }
+     #runImg{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;   
+        background:url(run01.png) 0 0 no-repeat;
+        }
+        #runImg:active{
+        	background-position:0 -28px;
+        }
+     #stopImg{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;       
+        background:url(stop01.png) 0 0 no-repeat;
+        }
+        #stopImg:active{
+        	background-position:0 -28px;
+        }
+    #pauseImg{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;     
+        background:url(pause.png) 0 0 no-repeat;
+        }
+        #pauseImg:active{
+        	background-position:0 -28px;
+        }
+        
+    #tempImg{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;        
+        background:url(temp+.png) 0 0 no-repeat;
+        }
+        #tempImg:active{
+        background-position:0 -28px;
+        }
+        
+    #temp-Img{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;      
+        background:url(temp-.png) 0 0 no-repeat;
+        }
+        #temp-Img:active{
+        background-position:0 -28px;
+        }  
+      
+    #windImg{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;       
+        background:url(wind+.png) 0 0 no-repeat;
+        }
+        #windImg:active{
+        background-position:0 -28px;
+        }
+        
+    #wind-Img{
+        display:block;
+        widht:75px;
+        height:28px;
+        line-height:28px;        
+        background:url(wind-.png) 0 0 no-repeat;
+        }
+        #wind-Img:active{
+        background-position:0 -28px;
+        }

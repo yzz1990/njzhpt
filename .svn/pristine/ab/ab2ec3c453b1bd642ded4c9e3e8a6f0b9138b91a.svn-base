@@ -1,0 +1,118 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/web/showBo.css"/>
+<script src="${ctxPath}/web/showBo.js" type="text/javascript" charset="utf-8"></script>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="form-inline">
+			<label>日期:</label>
+			<input size="16" type="text"  readonly class="starttime">
+			<label>至</label>
+			<input size="16" type="text" readonly class="endtime">
+			<label>季度</label>
+			<select class="form-control input-sm input-smjidu" style="width:150px; font-size:12pt">
+				<option>请选择</option>	
+				<option>夏季</option>	
+				<option>秋季</option>	
+			</select>
+				<a class="btn btn-success btn-sm " type="button" onclick="fenqi()">生成分期</a>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="panel-body">
+					
+			</div>
+		
+	</div>
+		
+<script type="text/javascript">
+
+Date.prototype.Format = function (fmt) { //author: meizz  
+    var o = {  
+        "M+": this.getMonth() + 1, //月份  
+        "d+": this.getDate(), //日  
+        "h+": this.getHours(), //小时  
+        "m+": this.getMinutes(), //分  
+        "s+": this.getSeconds(), //秒  
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度  
+        "S": this.getMilliseconds() //毫秒  
+    };  
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+    for (var k in o)  
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));  
+    return fmt;  
+};  
+
+
+$(function(){
+	$(".starttime").datetimepicker({format: 'yyyy-mm-dd'});
+	$(".endtime").datetimepicker({format: 'yyyy-mm-dd'});
+});
+
+function fenqi(){
+	var start = $(".starttime").val();
+	var endl = $(".endtime").val();
+	var end = (new Date(endl)).getTime();
+	var datetime = (new Date(start)).getTime();
+	var qi = 1;
+	var starttime = new Date(start).Format("yyyy-MM-dd");
+	var endtime = new Date(end).Format("yyyy-MM-dd");
+	var niandu = start.substring(0,4);
+	var jidu = $(".input-smjidu option:selected").text();
+	
+	if(start == "" || start == null){
+		alert("起始时间不能为空");
+		return;
+	}else if(endl == "" || endl == null){
+		alert("终止时间不能为空");
+		return;
+	}else if(jidu == "请选择"){
+		alert("季度不能为空");
+		return;
+	}else{
+		//判断数据库中是否已经存在
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/querywuri.do',
+			type:'post',
+			data:{"niandu":niandu,"jidu":jidu,"page":1,"rows":10},
+			success:function(data){
+				if(data.list.length==0){
+					//保存分期
+					while(datetime < (end+5*60*60*1000*24)){
+						var fenqistarttime = new Date(datetime).Format("yyyy-MM-dd");
+						var fenqiendtime = new Date((datetime+4*60*60*1000*24)).Format("yyyy-MM-dd");
+						$.ajax({
+							url:'${ctxPath}/shouchukeshihua/savefenqi',
+							type:'post',
+							data:{"niandu":niandu,"starttime":starttime,"endtime":endtime,"fenqistarttime":fenqistarttime,"fenqiendtime":fenqiendtime,"qishu":qi,"jidu":jidu},
+							dataType:'json',
+							success:function(data){
+								//$(".panel-body").append('<p>"起始："'+new Date(datetime).Format("yyyy-MM-dd")+'",结束："'+new Date((datetime+4*60*60*1000*24)).Format("yyyy-MM-dd")+'"期数:"'+qi+'</p>');
+								
+							},
+							error:function(){
+								alert("保存分期失败");
+							}
+						});
+						datetime += 5*60*60*1000*24;
+						qi += 1;
+					}
+					alert(niandu+"年"+jidu+"五日分期生成成功,共："+qi+"期");
+				}else{
+					alert(niandu+"年"+jidu+"五日分期已存在，请仔细检查，或删除重新存");
+				}
+			},
+			error:function(){
+				alert("querywuri error");
+			}
+			
+		});
+		
+	}
+
+}
+
+</script>
+<%}%>

@@ -1,0 +1,905 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:150px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia, #div-baojia{
+	height:500px;
+	overflow-y:auto;
+}
+.panel-info{
+	width:48%;
+	float:left;
+	margin-top:10px;
+	height:180px;
+}
+
+.panel-right{
+	margin-left:50px;
+}
+
+.datatables tr td, .datatables tr th{
+	background-color:#F8F8FF;
+	text-align:center;
+}
+
+.panel-infotwo{
+	height:380px;
+}
+
+.panel-zhishu{
+	border:1px solid #E6E6FA;
+	width:100%;
+	height:350px;
+}
+
+.purchasemx{
+	width:80px;
+	height:25px;
+	margin-top:0px;
+}
+
+
+
+</style>
+
+<script type="text/javascript">
+var mydate = new Date();
+var day = mydate.toLocaleDateString();
+var year = mydate.getFullYear();
+var week;
+var beginday;
+
+$(window).load(function() {
+	
+	
+	
+	
+	
+});
+
+$(function(){
+
+	//获取当天的年周数
+	$.ajax({
+		url:'${ctxPath}/jiage/findnianzhou',
+		type:'post',
+		data:{"day":day,"year":year},
+		dataType:'json',
+		success:function(data){
+			week = data.iweek;
+			beginday = data.beginday;
+			endday = data.endday;
+			
+			//折线图
+			$.ajax({
+				url:'${ctxPath}/jiage/coverzhishu.do',
+				type:'post',
+				data:{"year":year,"week":week,"num":6,"beginday":beginday,"endday":endday},
+				dataType:'json',
+				success:function(data){
+					var myChart = echarts.init(document.getElementById('sg_zhishu')); 	//收购指数
+					var myChart1 = echarts.init(document.getElementById('ch_zhishu'));	//出货指数
+					var myChart2 = echarts.init(document.getElementById('pf_zhishu')); 	//收购指数
+					var myChart3 = echarts.init(document.getElementById('ls_zhishu'));	//出货指数
+					var myChart4 = echarts.init(document.getElementById('jg_zhishu')); 	//收购指数
+					var jdsg = [];
+					var jdch = [];
+					var xdsg = [];
+					var xdch = [];
+					var xmsg = [];
+					var xmch = [];
+					var jmpf = [];
+					var jmls = [];
+					var jmjg = [];
+					var xianmpf = [];
+					var xianmls = [];
+					var mfpf = [];
+					var mfls = [];
+					var mfjg = [];
+					var yzjg = [];
+					var zhouqi = [];
+					var zhou = data.list[0].week;
+					zhouqi.push(zhou+"周");
+					$.each(data.list,function(i, n){
+						if(n.week != zhou){
+							zhou = n.week;
+							zhouqi.push(zhou+"周");
+						}
+						if(n.pzcode == "1132"){
+							if(n.jglxcode == "001"){
+								jdsg.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "002"){
+								jdch.push(n.zhishu.toFixed(2));
+							}
+						}
+						if(n.pzcode == "1131"){
+							if(n.jglxcode == "001"){
+								xdsg.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "002"){
+								xdch.push(n.zhishu.toFixed(2));
+							}
+						}
+						if(n.pzcode.substring(0,3) == "111"){
+							if(n.jglxcode == "001"){
+								xmsg.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "002"){
+								xmch.push(n.zhishu.toFixed(2));
+							}
+						}
+						if(n.pzcode == "2362"){
+							if(n.jglxcode == "005"){
+								jmpf.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "006"){
+								jmls.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "004"){
+								jmjg.push(n.zhishu.toFixed(2));
+							}
+						}
+						if(n.pzcode == "2361"){
+							if(n.jglxcode == "005"){
+								xianmpf.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "006"){
+								xianmls.push(n.zhishu.toFixed(2));
+							}
+						}
+						if(n.pzcode.substring(0,3) == "231"){
+							if(n.jglxcode == "005"){
+								mfpf.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "006"){
+								mfls.push(n.zhishu.toFixed(2));
+							}
+							if(n.jglxcode == "004"){
+								mfjg.push(n.zhishu.toFixed(2));
+							}
+						}
+						if(n.pzcode.substring(0,3) == "141"){
+							if(n.jglxcode == "004"){
+								yzjg.push(n.zhishu.toFixed(2));
+							}
+						}
+						
+					});
+					
+					
+					//画折线图
+					option = {
+						    tooltip: {
+						        trigger: 'axis'
+						    },
+						    legend: {
+						        data:["粳稻","籼稻","小麦"]
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    toolbox: {
+						        feature: {
+						            saveAsImage: {}
+						        }
+						    },
+						    xAxis: {
+						        type: 'category',
+						        boundaryGap: false,
+						        data: zhouqi
+						    },
+						    yAxis: {
+						        type: 'value'
+						    },
+						    series: [
+						        {
+						            name:'粳稻',
+						            type:'line',
+						            stack: '总量',
+						            data:jdsg
+						        },
+						        {
+						            name:'籼稻',
+						            type:'line',
+						            stack: '总量',
+						            data:xdsg
+						        },
+						        {
+						            name:'小麦',
+						            type:'line',
+						            stack: '总量',
+						            data:xmsg
+						        }
+						    ]
+						};
+					
+					myChart.setOption(option);
+					
+					option1 = {
+						    tooltip: {
+						        trigger: 'axis'
+						    },
+						    legend: {
+						        data:["粳稻","籼稻","小麦"]
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    toolbox: {
+						        feature: {
+						            saveAsImage: {}
+						        }
+						    },
+						    xAxis: {
+						        type: 'category',
+						        boundaryGap: false,
+						        data: zhouqi
+						    },
+						    yAxis: {
+						        type: 'value'
+						    },
+						    series: [
+						        {
+						            name:'粳稻',
+						            type:'line',
+						            stack: '总量',
+						            data:jdch
+						        },
+						        {
+						            name:'籼稻',
+						            type:'line',
+						            stack: '总量',
+						            data:xdch
+						        },
+						        {
+						            name:'小麦',
+						            type:'line',
+						            stack: '总量',
+						            data:xmch
+						        }
+						    ]
+						};
+					
+					myChart1.setOption(option1);
+					
+					option2 = {
+						    tooltip: {
+						        trigger: 'axis'
+						    },
+						    legend: {
+						        data:["粳米","籼米","面粉"]
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    toolbox: {
+						        feature: {
+						            saveAsImage: {}
+						        }
+						    },
+						    xAxis: {
+						        type: 'category',
+						        boundaryGap: false,
+						        data: zhouqi
+						    },
+						    yAxis: {
+						        type: 'value'
+						    },
+						    series: [
+						        {
+						            name:'粳米',
+						            type:'line',
+						            stack: '总量',
+						            data:jmpf
+						        },
+						        {
+						            name:'籼米',
+						            type:'line',
+						            stack: '总量',
+						            data:xianmpf
+						        },
+						        {
+						            name:'面粉',
+						            type:'line',
+						            stack: '总量',
+						            data:mfpf
+						        }
+						    ]
+						};
+					
+					myChart2.setOption(option2);
+					
+					
+					option3 = {
+						    tooltip: {
+						        trigger: 'axis'
+						    },
+						    legend: {
+						        data:["粳米","籼米","面粉"]
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    toolbox: {
+						        feature: {
+						            saveAsImage: {}
+						        }
+						    },
+						    xAxis: {
+						        type: 'category',
+						        boundaryGap: false,
+						        data: zhouqi
+						    },
+						    yAxis: {
+						        type: 'value'
+						    },
+						    series: [
+						        {
+						            name:'粳米',
+						            type:'line',
+						            stack: '总量',
+						            data:jmls
+						        },
+						        {
+						            name:'籼米',
+						            type:'line',
+						            stack: '总量',
+						            data:xianmls
+						        },
+						        {
+						            name:'面粉',
+						            type:'line',
+						            stack: '总量',
+						            data:mfls
+						        }
+						    ]
+						};
+					
+					myChart3.setOption(option3);
+					
+					option4 = {
+						    tooltip: {
+						        trigger: 'axis'
+						    },
+						    legend: {
+						        data:["粳米","面粉","油脂"]
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    toolbox: {
+						        feature: {
+						            saveAsImage: {}
+						        }
+						    },
+						    xAxis: {
+						        type: 'category',
+						        boundaryGap: false,
+						        data: zhouqi
+						    },
+						    yAxis: {
+						        type: 'value'
+						    },
+						    series: [
+						        {
+						            name:'粳米',
+						            type:'line',
+						            stack: '总量',
+						            data:jmjg
+						        },
+						        {
+						            name:'面粉',
+						            type:'line',
+						            stack: '总量',
+						            data:mfjg
+						        },
+						        {
+						            name:'油脂',
+						            type:'line',
+						            stack: '总量',
+						            data:yzjg
+						        }
+						    ]
+						};
+					
+					myChart4.setOption(option4);
+
+					
+					
+					
+					
+					
+					
+					
+				},
+				error:function(){
+					alert("生成折线图失败");
+				}
+			});
+			
+			//获取当期数据，及当期的环比同比价格指数数据
+			$.ajax({
+				url:'${ctxPath}/jiage/queryzhishu.do',
+				type:'post',
+				data:{"year":year,"week":week},
+				dataType:'json',
+				success:function(data){
+					$.each(data.list,function(i, n){
+						//粳稻
+						if(n.pzcode == "1132"){
+							if(n.jglxcode == "001"){
+								$("#jd_bq_sg").text((n.zhishu).toFixed(2));
+								$("#jd_hb_sg").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#jd_tb_sg").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "002"){
+								$("#jd_bq_ch").text((n.zhishu).toFixed(2));
+								$("#jd_hb_ch").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#jd_tb_ch").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+						}
+						//籼稻
+						if(n.pzcode == "1131"){
+							if(n.jglxcode == "001"){
+								$("#xd_bq_sg").text((n.zhishu).toFixed(2));
+								$("#xd_hb_sg").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#xd_tb_sg").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "002"){
+								$("#xd_bq_ch").text((n.zhishu).toFixed(2));
+								$("#xd_hb_ch").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#xd_tb_ch").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+						}
+						//小麦
+						if(n.pzcode.substring(0,3) == "111"){
+							if(n.jglxcode == "001"){
+								$("#xm_bq_sg").text((n.zhishu).toFixed(2));
+								$("#xm_hb_sg").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#xm_tb_sg").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "002"){
+								$("#xm_bq_ch").text((n.zhishu).toFixed(2));
+								$("#xm_hb_ch").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#xm_tb_ch").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+						}
+						//粳米
+						if(n.pzcode == "2362"){
+							if(n.jglxcode == "005"){
+								$("#jm_bq_pf").text((n.zhishu).toFixed(2));
+								$("#jm_hb_pf").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#jm_tb_pf").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "006"){
+								$("#jm_bq_ls").text((n.zhishu).toFixed(2));
+								$("#jm_hb_ls").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#jm_tb_ls").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "004"){
+								$("#jm_bq_jg").text((n.zhishu).toFixed(2));
+								$("#jm_hb_jg").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#jm_tb_jg").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+						}
+						//籼米
+						if(n.pzcode == "2361"){
+							if(n.jglxcode == "005"){
+								$("#xianm_bq_pf").text((n.zhishu).toFixed(2));
+								$("#xianm_hb_pf").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#xianm_tb_pf").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "006"){
+								$("#xianm_bq_ls").text((n.zhishu).toFixed(2));
+								$("#xianm_hb_ls").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#xianm_tb_ls").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+						}
+						//面粉
+						if(n.pzcode.substring(0,3) == "231"){
+							if(n.jglxcode == "005"){
+								$("#mf_bq_pf").text((n.zhishu).toFixed(2));
+								$("#mf_hb_pf").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#mf_tb_pf").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "006"){
+								$("#mf_bq_ls").text((n.zhishu).toFixed(2));
+								$("#mf_hb_ls").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#mf_tb_ls").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+							if(n.jglxcode == "004"){
+								$("#mf_bq_jg").text((n.zhishu).toFixed(2));
+								$("#mf_hb_jg").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#mf_tb_jg").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+						}
+						//油脂
+						if(n.pzcode.substring(0,3) == "141"){
+							if(n.jglxcode == "004"){
+								$("#yz_bq_jg").text((n.zhishu).toFixed(2));
+								$("#yz_hb_jg").text(((n.zhishu / n.hzhishu - 1) * 100).toFixed(2) + "%");
+								$("#yz_tb_jg").text(((n.zhishu / n.tzhishu - 1) * 100).toFixed(2) + "%");
+							}
+						}
+						
+					});
+					
+					
+				},
+				error:function(){
+					alert("寻找价格指数失败");
+				}
+			});
+			
+		},
+		error:function(){
+			alert("获取年周数失败");
+		}
+		
+	});
+	
+		
+});
+
+
+
+//打开原粮页面
+function getyl(){
+	$(".yuanliang").css('display','block');
+	$(".chengpinliang").css('display','none');
+	$(".jiagong").css('display','none');
+}
+//打开成品粮页面
+function getcp(){
+	$(".yuanliang").css('display','none');
+	$(".chengpinliang").css('display','block');
+	$(".jiagong").css('display','none');
+}
+
+//打开加工粮页面
+function getjg(){
+	$(".yuanliang").css('display','none');
+	$(".chengpinliang").css('display','none');
+	$(".jiagong").css('display','block');
+}
+
+function readmx(e,f,g){
+	
+	dialog1=BootstrapDialog.show({
+		
+	    title: g+'价格指数明细列表',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/jiageshuju/pinzhongmx.html?pzcode='+e+'&jglxcode='+f+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons: [{
+	        label: '关闭',
+	        cssClass: 'btn-xs btn-danger',
+	        action: function(dialog) {
+	        	dialog.close();
+	        }
+	    }]
+	});
+	
+}
+
+
+</script>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px;" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>品种价格指数</b></span>
+	</div>
+	<div class="panel-heading">
+		<div class="form-inline">
+			<p>
+				<a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="getyl()">原粮</a>
+				<a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="getcp()">成品粮</a>
+				<a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="getjg()">加工</a>
+				
+			</p>
+			
+					<div class="clearfix"></div>
+	</div>
+</div>
+<div class="panel-body">
+<!-- 原粮 -->
+<div class="yuanliang">
+<div id="panelDemo7" class="panel panel-info">
+   <div class="panel-heading">收购价格指数</div>
+   <div class="panel-body">
+   		<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th>品种</th>
+	     			<th>本期指数</th>
+	     			<th>环比</th>
+	     			<th>同比</th>
+	     			<th>操作</th>
+	 			</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>粳稻</td>
+					<td id="jd_bq_sg"></td>
+					<td id="jd_hb_sg"></td>
+					<td id="jd_tb_sg"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('1132','001','粳稻收购')">查看</a></td>
+				</tr>
+				<tr>
+					<td>籼稻</td>
+					<td id="xd_bq_sg"></td>
+					<td id="xd_hb_sg"></td>
+					<td id="xd_tb_sg"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('1131','001','籼稻收购')">查看</a></td>
+				</tr>
+				<tr>
+					<td>小麦</td>
+					<td id="xm_bq_sg"></td>
+					<td id="xm_hb_sg"></td>
+					<td id="xm_tb_sg"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('1112','001','小麦收购')">查看</a></td>
+				</tr>
+			</tbody>	
+		</table>
+   </div>
+</div>
+
+<div id="panelDemo55" class="panel panel-info panel-right" style="">
+   <div class="panel-heading">出货价格指数</div>
+   <div id="div-caijia" class="panel-body">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" id="col3" class="" style="vertical-align:middle">品种</th>
+	     			<th rowspan="1" colspan="1" id="col4" class="" style="vertical-align:middle">本期指数</th>
+	     			<th rowspan="1" colspan="1" id="col5" style="vertical-align:middle">环比</th>
+	     			<th rowspan="1" colspan="1" id="col6" style="vertical-align:middle">同比</th>
+	     			<th rowspan="1" colspan="1" id="col7" style="vertical-align:middle">操作</th>
+	 			</tr>
+			</thead>	
+			<tbody>
+				<tr>
+					<td>粳稻</td>
+					<td id="jd_bq_ch"></td>
+					<td id="jd_hb_ch"></td>
+					<td id="jd_tb_ch"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('1132','002','粳稻出货')">查看</a></td>
+				</tr>
+				<tr>
+					<td>籼稻</td>
+					<td id="xd_bq_ch"></td>
+					<td id="xd_hb_ch"></td>
+					<td id="xd_tb_ch"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('1131','002','籼稻出货')">查看</a></td>
+				</tr>
+				<tr>
+					<td>小麦</td>
+					<td id="xm_bq_ch"></td>
+					<td id="xm_hb_ch"></td>
+					<td id="xm_tb_ch"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('1112','002','小麦出货')">查看</a></td>
+				</tr>
+			</tbody>	
+		</table>
+   </div>
+</div>
+
+<div id="panelDemo10" class="panel panel-info panel-infotwo">
+   <div class="panel-heading">收购价格指数走势图</div>
+   <div id="sg_zhishu" class="panel-body panel-zhishu">
+   		
+   </div>
+</div>
+
+<div id="panelDemo50" class="panel panel-info panel-infotwo panel-right">
+   <div class="panel-heading">出货价格指数走势图</div>
+   <div id="ch_zhishu" class="panel-body panel-zhishu">
+   		
+   </div>
+</div>
+</div>
+
+
+<!-- 成品粮 -->
+<div class="chengpinliang" style="display:none">
+<div id="panelDemo1" class="panel panel-info ">
+   <div class="panel-heading">批发价格指数</div>
+   <div class="panel-body">
+   		<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th>品种</th>
+	     			<th>本期指数</th>
+	     			<th>环比</th>
+	     			<th>同比</th>
+	     			<th>操作</th>
+	 			</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>粳米</td>
+					<td id="jm_bq_pf"></td>
+					<td id="jm_hb_pf"></td>
+					<td id="jm_tb_pf"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2362','005','粳米批发')">查看</a></td>
+				</tr>
+				<tr>
+					<td>籼米</td>
+					<td id="xianm_bq_pf"></td>
+					<td id="xianm_hb_pf"></td>
+					<td id="xianm_tb_pf"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2361','005','籼米批发')">查看</a></td>
+				</tr>
+				<tr>
+					<td>面粉</td>
+					<td id="mf_bq_pf"></td>
+					<td id="mf_hb_pf"></td>
+					<td id="mf_tb_pf"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2311','005','面粉批发')">查看</a></td>
+				</tr>
+			</tbody>	
+		</table>
+   </div>
+</div>
+
+<div id="panelDemo2" class="panel panel-info panel-right" style="">
+   <div class="panel-heading">零售价格指数</div>
+   <div id="div-caijia" class="panel-body">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" id="col3" class="" style="vertical-align:middle">品种</th>
+	     			<th rowspan="1" colspan="1" id="col4" class="" style="vertical-align:middle">本期指数</th>
+	     			<th rowspan="1" colspan="1" id="col5" style="vertical-align:middle">环比</th>
+	     			<th rowspan="1" colspan="1" id="col6" style="vertical-align:middle">同比</th>
+	     			<th rowspan="1" colspan="1" id="col7" style="vertical-align:middle">操作</th>
+	 			</tr>
+			</thead>	
+			<tbody>
+				<tr>
+					<td>粳米</td>
+					<td id="jm_bq_ls"></td>
+					<td id="jm_hb_ls"></td>
+					<td id="jm_tb_ls"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2362','006','粳米零售')">查看</a></td>
+				</tr>
+				<tr>
+					<td>籼米</td>
+					<td id="xianm_bq_ls"></td>
+					<td id="xianm_hb_ls"></td>
+					<td id="xianm_tb_ls"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2361','006','籼米零售')">查看</a></td>
+				</tr>
+				<tr>
+					<td>面粉</td>
+					<td id="mf_bq_ls"></td>
+					<td id="mf_hb_ls"></td>
+					<td id="mf_tb_ls"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2311','006','面粉零售')">查看</a></td>
+				</tr>
+			</tbody>	
+		</table>
+   </div>
+</div>
+
+
+<div id="panelDemo3" class="panel panel-info panel-infotwo">
+   <div class="panel-heading">批发价格指数走势图</div>
+   <div  class="panel-body panel-zhishu">
+   	<div id="pf_zhishu" style="width:650px;height:350px">
+   	</div>
+   		
+   </div>
+</div>
+
+<div id="panelDemo4" class="panel panel-info panel-infotwo panel-right">
+   <div class="panel-heading">零售价格指数走势图</div>
+   <div class="panel-body panel-zhishu">
+   
+   	<div id="ls_zhishu" style="width:650px;height:350px">
+   	</div>
+   	
+   </div>
+</div>
+
+ 
+</div>
+
+<!-- 加工粮 -->
+<div class="jiagong" style="display:none">
+<div id="panelDemo1" class="panel panel-info  panel-third"  style="width:90%">
+   <div class="panel-heading">出厂价格指数</div>
+   <div class="panel-body">
+   		<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables" data-url="" >	 
+			<thead>
+				<tr>
+	    			<th>品种</th>
+	     			<th>本期指数</th>
+	     			<th>环比</th>
+	     			<th>同比</th>
+	     			<th>操作</th>
+	 			</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>粳米</td>
+					<td id="jm_bq_jg"></td>
+					<td id="jm_hb_jg"></td>
+					<td id="jm_tb_jg"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2362','004','粳米出厂')">查看</a></td>
+				</tr>
+				<tr>
+					<td>面粉</td>
+					<td id="mf_bq_jg"></td>
+					<td id="mf_hb_jg"></td>
+					<td id="mf_tb_jg"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('2311','004','面粉出厂')">查看</a></td>
+				</tr>
+				<tr>
+					<td>油脂</td>
+					<td id="yz_bq_jg"></td>
+					<td id="yz_hb_jg"></td>
+					<td id="yz_tb_jg"></td>
+					<td><a href="javascript:void(0)" target="_black"  onclick="readmx('1411','004','油脂出厂')">查看</a></td>
+				</tr>
+			</tbody>	
+		</table>
+   </div>
+</div>
+
+<div id="panelDemo5" class="panel panel-info panel-infotwo" style="width:90%">
+   <div class="panel-heading">批发价格指数走势图</div>
+   <div  class="panel-body panel-zhishu" style="width:100%">
+   	<div id="jg_zhishu" style="width:1200px;height:350px">
+   	</div>
+   </div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<%}%>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>称重记录</title>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/css/icon.css">
+    <script type="text/javascript" src="${ctxPath}/js/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/easyui-lang-zh_CN.js"></script>
+    <style type="text/css">
+        #table_id{
+            border: 1px solid #999;
+            text-align: center;
+            background-color: white;
+            margin: 20px;
+        }
+        #nbk{
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        $.fn.datagrid.defaults.fit=true;
+        $.fn.datagrid.defaults.pagination=true;
+        $.fn.datagrid.defaults.rownumbers=true;
+        $.fn.datagrid.defaults.singleSelect=true;
+        $.fn.datagrid.defaults.pageSize=15;
+        $.fn.datagrid.defaults.pageList=[15,50,100];
+        $.fn.combobox.defaults.panelHeight='auto';
+    </script>
+</head>
+
+<body class="easyui-layout" id="table_id">
+<div data-options="region:'center',noheader:true, border:false,fit:true" style="padding: 30px;">
+    <div class="easyui-layout" fit="true">
+        <div data-options="region:'north',border:false"
+             style="padding: 5px 10px; height: 100px;">
+            <div id="nbk">
+                <h2><font size="5px">称重记录</font></h2>
+            </div>
+            <div style="float: right; margin-right: 25px;" id="cha">
+				<span id="hideline"><label id="bianhao" style="margin-top:5px">仓号:</label>
+				<input style="width:100px" name="vWareHouseCode" id="input_ch" class="easyui-combobox"
+                       >
+	
+				</span>
+               <a href="javascript:void(0);" class="easyui-linkbutton" onclick="doSearch()" iconCls="icon-search" id="idchaxun">查询</a>
+                <a href="javascript:void(0);" class="easyui-linkbutton" onclick="qingk()" id="qingk">清空</a>
+            </div>
+        </div>
+
+        <div data-options="region:'center',noheader:true, border:false"id="id4">
+            <table class="easyui-datagrid" fitcolumns="true" id="szlk"
+                   data-options="url:'${ctxPath}/app/searchlscrk'">
+                <thead>
+                <tr>
+                    <th data-options="field:'vSwiftNumber'">流水号</th>
+                    <th data-options="field:'vWareHouseCode',width:120">所入仓号 </th>
+                    <th data-options="field:'vViechleOwner',width:120">农户姓名 </th>
+                    <th data-options="field:'vViechelNumber',width:200">车牌号  </th>
+                    <th data-options="field:'dtRegistrateTime',width:200">报港时间 </th>
+                    <th data-options="field:'SubTypeName',width:200">粮食类别 </th>
+                    <th data-options="field:'vGrainLevel',width:200">等级 </th>
+                    <th data-options="field:'dmGW',width:200">毛重  </th>
+                    <th data-options="field:'dmPW',width:200">皮重</th>
+                    <th data-options="field:'dmNW',width:200">净重</th>
+                    <th data-options="field:'dtGWTime',width:200">毛重时间</th>
+                    <th data-options="field:'dtPWTime',width:200">皮重时间 </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <script type="text/javascript">
+		$("#input_ch").combobox({
+					panelHeight:300,
+					valueField: 'cfbm',
+					textField:'cfmc',
+					url:'${ctxPath}/app/searchlscf',
+				});
+            function doSearch(){
+                var input_ch=$('#input_ch').combobox("getValue");
+                console.log(input_ch);
+                var param = {'vWareHouseCode':input_ch};
+                $("#szlk").datagrid("load",param);
+            }
+            function qingk(){
+                $('#input_ch').textbox({
+                    value:''
+                });
+                doSearch();
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+</style>
+
+
+<script type="text/javascript">
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+});
+
+
+$(function() {
+	//加载区县
+	$.ajax({
+		url : '${ctxPath}/shouchukeshihua/findquxian',
+		type : 'post',
+		dataType : 'json',
+		success : function(data) {
+			$.each(data,
+					function(i, n) {
+						var op = '<option value="'+n.id+'">' + n.name
+								+ '</option>';
+						$("#quyu").append(op);
+					});
+			//初始化区县下拉框
+			$("#quyu").val("");
+			$("#quyu-div").find(".select2-selection__rendered").text("");
+			$("#quyu-div").find(".select2-selection__rendered").attr("title", "");
+		},
+		error : function() {
+			alert("加载区县失败");
+		}
+	});
+	//加载企业
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+			
+			//初始化区县下拉框
+			$("#qiye").val("");
+			$("#qiye-div").find(".select2-selection__rendered").text("");
+			$("#qiye-div").find(".select2-selection__rendered").attr("title", "");
+			
+		},
+		error:function(){
+			alert("加载企业失败");
+		}
+	});
+	
+	//加载列表
+	datatable = $('.datatables').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["swiftnumber"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chechuanhao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var baogang = row["baogang"];
+					if(baogang == null || baogang == ""){
+						baogang = "无视频"
+					}
+					var div = '<div>'+baogang+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var huayan = row["baogang"];
+					if(huayan == null || huayan == ""){
+						huayan = "无视频"
+					}
+					var div = '<div>'+huayan+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var chengmaozhong = row["chengmaozhong"];
+					if(chengmaozhong == null || chengmaozhong == ""){
+						chengmaozhong = "无视频"
+					}
+					var div = '<div>'+chengmaozhong+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var chengpizhong = row["chengpizhong"];
+					if(chengpizhong == null || chengpizhong == ""){
+						chengpizhong = "无视频"
+					}
+					var div = '<div>'+chengpizhong+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var ruku = row["ruku"];
+					if(ruku == null || ruku == ""){
+						ruku = "无视频"
+					}
+					var div = '<div>'+ruku+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var jiesuan = row["jiesuan"];
+					if(jiesuan == null || jiesuan == ""){
+						jiesuan = "无视频"
+					}
+					var div = '<div>'+jiesuan+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var wanzhengshiping = row["wanzhengshiping"];
+					if(wanzhengshiping == null || wanzhengshiping == ""){
+						wanzhengshiping = "无视频"
+					}
+					var div = '<div>'+wanzhengshiping+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var luxian = row["luxian"];
+					var div = '<a href="javascript:void(0)" class="btn-xs btn-success" target="_black"  onclick="readlx(\''+luxian+'\')">详细</a>';
+					return div;								
+				}
+			}
+			]
+	});
+	
+	
+	
+});
+
+//跳转到库点的质量追溯页面
+function readlx(e){
+	dialog1=top.BootstrapDialog.show({
+	    title: '路径信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0" name="editKudian" style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/zhiliangzs/lujingmx.html?imgurl='+e+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","600px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+       },
+       
+	});
+	
+	
+}
+
+function Change(){
+	
+}
+
+//查询列表
+function doSearch(){
+	
+}
+
+
+</script>
+
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>视频检索与追溯</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+		 <div class="caozuo">
+		 <!--  
+		 	<div class="cjd-div niandu-div">
+				<label class="cjd-label">区县:</label>
+				<select id="quyu"  class="form-control cjd-select" onchange="Change()" style="width: 200px;">
+				</select>
+			</div>
+			<div class="cjd-div nianzs-div">
+				<label class="cjd-label">企业:</label>
+				<select id="qiye" class="form-control cjd-select" style="width: 200px;">
+				</select>
+			</div>
+		
+		 	<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		 	-->
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px">
+   <div id="div-caijia" class="panel-body">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover table-bordered  datatables table-caijia" data-url="${ctxPath}/zhiliangzs/queryshipingzs.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" style="vertical-align:middle">流水号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">车船号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">报港</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">化验</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">称毛重</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">称皮重</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">入库</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">结算</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">完整视频信息</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">路线示意</th>
+	 			</tr>
+			</thead>
+		</table>
+   </div>
+</div>
+</div>
+</div>
+
+<%}%>

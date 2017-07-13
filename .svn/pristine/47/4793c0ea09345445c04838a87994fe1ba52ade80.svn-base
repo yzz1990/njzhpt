@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>模块信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addchenpinliangCBJH",title="新增模块信息";
+	if (isNotEmpty(parameter.id)) {
+		var spgl = @com.zkzy.njzhpt.dao.ChengPinLiangDAO.selectCPLCBJH({"id":parameter.id,"page":"1","rows":"100"});
+		obj = spgl.list[0];
+		url = ctxPath+"/cangchugl/upchenpinliangCBJH";
+		title = "编辑模块信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	应急储备计划信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="niandu">年度:</label>
+										<select id="niandu" name="niandu" class="form-control">
+											<option value="">请选择</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="quming">区域:</label>
+										<select id="quming" name="quming" class="form-control" onchange="Changequyu()">
+											<option value="">请选择</option>
+										</select>
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="ccqy">承储企业:</label>
+										<select id="ccqy" name="ccqy" class="form-control" onchange="selectKDMC()">
+											<option value="">请选择</option>
+										</select>
+										<!-- <input id="code" name="code" class="form-control" placeholder="模块名称" value="${obj.code}"> -->
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cckddm">承储库点:</label>
+										<select id="cckddm" name="cckddm" class="form-control" onchange="ChangeKd()">
+											<option value="">请选择</option>
+										</select>
+										
+										<input id="cckdmc" name="cckdmc" class="form-control" type="hidden">
+									</div>	
+								</div>
+								
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cpl_dm">大米(吨):</label>
+										<input id="cpl_dm" name="cpl_dm" class="form-control" placeholder="大米" value="${obj.cpl_dm}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cpl_xm">籼米(吨):</label>
+										<input id="cpl_xm" name="cpl_xm" class="form-control" placeholder="籼米" value="${obj.cpl_xm}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cpl_mf">面粉(吨):</label>
+										<input id="cpl_mf" name="cpl_mf" class="form-control" placeholder="面粉" value="${obj.cpl_mf}">
+									</div>	
+								</div>	
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cpy_szy">散装油(吨):</label>
+										<input id="cpy_szy" name="cpy_szy" class="form-control" placeholder="散装油" value="${obj.cpy_szy}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="cpy_bzy">包装油(吨):</label>
+										<input id="cpy_bzy" name="cpy_bzy" class="form-control" placeholder="包装油" value="${obj.cpy_bzy}">
+									</div>	
+								</div>
+							</div>
+					</form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+<script type="text/javascript">
+$(function(){
+	if($("#cpl_dm").val()!=""){
+		var cpl_dm=$("#cpl_dm").val();
+		$("#cpl_dm").val((cpl_dm*1000/1000).toFixed(3));
+	}
+	if($("#cpl_xm").val()!=""){
+		var cpl_xm=$("#cpl_xm").val();
+		$("#cpl_xm").val((cpl_xm*1000/1000).toFixed(3));
+	}
+	if($("#cpl_mf").val()!=""){
+		var cpl_mf=$("#cpl_mf").val();
+		$("#cpl_mf").val((cpl_mf*1000/1000).toFixed(3));
+	}
+	if($("#cpy_szy").val()!=""){
+		var cpy_szy=$("#cpy_szy").val();
+		$("#cpy_szy").val((cpy_szy*1000/1000).toFixed(3));
+	}
+	if($("#cpy_bzy").val()!=""){
+		var cpy_bzy=$("#cpy_bzy").val();
+		$("#cpy_bzy").val((cpy_bzy*1000/1000).toFixed(3));
+	}
+	
+});
+var date=new Date;
+var year=parseInt(date.getFullYear());
+for(var i = 0; i < 5; i++){
+	if("${obj.niandu}"==(year - i)){
+		$("#niandu").append("<option value='"+(year - i)+"' selected>"+(year - i)+"</option>");
+	}else{
+		$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");
+	}
+}
+$(function(){
+	/* 加载模块*/
+	$("#quming").select2();
+	$("#niandu").select2();
+	$("#ccqy").select2();
+	$("#cckddm").select2();
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 //data:{"page":1,"rows":10},
+		 dataType:'json',
+		 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		 success:function(data){
+			$.each(data,function(i, n){
+				if("${obj.quming}"==n.name){
+					$("#quming").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+				}else{
+					$("#quming").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				}
+				
+			});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+		
+	  });
+	$.ajax({
+		url: "${ctxPath}/lunhuan/selectQYMC.do",
+		dataType: "json",
+		data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if("${obj.ccqy}"==n.qyzzjgdm){
+					$("#ccqy").append("<option value="+n.qyzzjgdm+" selected>"+n.qymc+"</option>");
+				}else{
+					$("#ccqy").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				}
+					
+			});
+		}
+	});	
+	$.ajax({
+		url: "${ctxPath}/lunhuan/selectKDMC.do",
+		dataType: "json",
+		data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+			,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if("${obj.cckdmc}"==n.kdmc){
+					$("#cckddm").append("<option value="+n.kdbm+" selected>"+n.kdmc+"</option>");
+				}else{
+					$("#cckddm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+				}
+				
+				
+			});
+		}
+	});
+	
+	$('#cpl_dm').keyup(function(){  
+	    var c=$(this); 
+	    var dotIdx = c.val().indexOf('.'), dotLeft, dotRight;
+	    if (dotIdx >= 0) {
+	        dotLeft = c.val().substring(0, dotIdx);
+	        dotRight = c.val().substring(dotIdx + 1);
+	        if (dotRight.length > 3) {
+	            dotRight = dotRight.substring(0, 3);
+	        }
+	        $(this).val(dotLeft + '.' + dotRight);
+	    }else if(/[^\d]/.test(c.val())){//替换非数字字符  
+	     	 var temp_amount=c.val().replace(/[^\d]/g,'');  
+	      	$(this).val(temp_amount);  
+	    } 
+	});
+	$('#cpl_mf').keyup(function(){  
+	    var c=$(this); 
+	    var dotIdx = c.val().indexOf('.'), dotLeft, dotRight;
+	    if (dotIdx >= 0) {
+	        dotLeft = c.val().substring(0, dotIdx);
+	        dotRight = c.val().substring(dotIdx + 1);
+	        if (dotRight.length > 3) {
+	            dotRight = dotRight.substring(0, 3);
+	        }
+	        $(this).val(dotLeft + '.' + dotRight);
+	    }else if(/[^\d]/.test(c.val())){//替换非数字字符  
+	     	 var temp_amount=c.val().replace(/[^\d]/g,'');  
+	      	$(this).val(temp_amount);  
+	    } 
+	});
+	$('#cpy_szy').keyup(function(){  
+	    var c=$(this); 
+	    var dotIdx = c.val().indexOf('.'), dotLeft, dotRight;
+	    if (dotIdx >= 0) {
+	        dotLeft = c.val().substring(0, dotIdx);
+	        dotRight = c.val().substring(dotIdx + 1);
+	        if (dotRight.length > 3) {
+	            dotRight = dotRight.substring(0, 3);
+	        }
+	        $(this).val(dotLeft + '.' + dotRight);
+	    }else if(/[^\d]/.test(c.val())){//替换非数字字符  
+	     	 var temp_amount=c.val().replace(/[^\d]/g,'');  
+	      	$(this).val(temp_amount);  
+	    } 
+	});
+	$('#cpy_bzy').keyup(function(){  
+	    var c=$(this); 
+	    var dotIdx = c.val().indexOf('.'), dotLeft, dotRight;
+	    if (dotIdx >= 0) {
+	        dotLeft = c.val().substring(0, dotIdx);
+	        dotRight = c.val().substring(dotIdx + 1);
+	        if (dotRight.length > 3) {
+	            dotRight = dotRight.substring(0, 3);
+	        }
+	        $(this).val(dotLeft + '.' + dotRight);
+	    }else if(/[^\d]/.test(c.val())){//替换非数字字符  
+	     	 var temp_amount=c.val().replace(/[^\d]/g,'');  
+	      	$(this).val(temp_amount);  
+	    } 
+	});
+});
+function ChangeKd(){
+	var mc=$("#cckddm option:selected").text();
+	$("#cckdmc").val(mc);
+}
+function selectKDMC(){
+	$("#cckddm").html("");
+	$("#cckddm").append("<option value=''>请选择</option>")
+	var qyzzjgdm=$("#ccqy").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectKDMC.do",
+			dataType: "json",
+			data:{qyzzjgdm:qyzzjgdm,"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+				,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					$("#cckddm").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+					
+				});
+			}
+		});
+}
+function Changequyu(){
+	$("#ccqy").empty();
+	$("#ccqy").append("<option value=''>请选择</option>");
+	$("#cckddm").html("");
+	$("#cckddm").append("<option value=''>请选择</option>")
+	var szqy=$("#quming").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{"xzqhdm":szqy,"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#ccqy").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				});
+			}
+		});	
+	
+}
+function saveykgl() {
+	
+	var form = $(".widget-body form");
+	var mc=$("#cckddm option:selected").text();
+	$("#cckdmc").val(mc);
+	if($("#niandu").val()==""){
+		alert("请选择年度!");
+		return false;
+	}else if($("#quming").val()==""){
+		alert("请选择区域!");
+		return false;
+	}else if($("#ccqy").val()==""){
+		alert("请选择承储企业!");
+		return false;
+	}else if($("#cckddm").val()==""){
+		alert("请选择承储库点!");
+		return false;
+	}else if($("#cpl_dm").val()==""||$("#cpl_xm").val()==""||$("#cpl_mf").val()==""||$("#cpy_szy").val()==""||$("#cpy_bzy").val()==""){
+		alert("请完善大米、籼米、面粉、散装油、包装油数量!");
+		return false;
+	}else{
+		$.ajax({
+			url: form.attr("action"),
+			dataType: "json",
+			data: form.serialize(),
+			success: function(msg) {
+				if (!msg.ret) {
+					alert(msg.message);
+				} else {
+					alert("保存成功");
+					 parent.window.dialog1.close();
+		        	  parent.window.datatable.ajax.reload(null,true);
+				}
+			}
+		});
+		
+	}
+	
+}
+
+
+
+</script>
+
+</body>
+</html>

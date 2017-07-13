@@ -1,0 +1,112 @@
+package com.zkzy.njzhpt.controller;
+
+import java.util.HashMap;
+
+import com.ggy.common.utils.ParamUtil;
+import com.jfinal.aop.Clear;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.zkzy.njzhpt.bo.AppBo;
+import com.zkzy.njzhpt.bo.CangchuglBo;
+import com.zkzy.njzhpt.bo.EmergencyBO;
+import com.zkzy.njzhpt.bo.jibenxinxiBo;
+
+@Clear
+public class AppController extends Controller {
+	public void index() {
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) AppBo.class.getMethod(method, HashMap.class)
+						.invoke(Duang.duang(AppBo.class),
+								ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				render("login.html");
+			}
+		} catch (Exception e) {
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+
+	}
+	
+	
+	
+	/**
+	 * app中根据企业经营类型分类统计
+	 * @throws Exception 
+	 */
+	
+	public void GetQyInfo() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(AppBo.class).getQyInfo(param));
+		
+	}
+	
+	/**
+	 * 地区信息 --- 查删增改
+	 * @throws Exception
+	 */
+	
+	public void findDiqu() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(AppBo.class).findDiqu(queryparam));
+	}
+	
+	/**
+	 * 企业信息---查删增改
+	 * @throws Exception
+	 */
+	
+	public void findQiyexinxi() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(jibenxinxiBo.class).findQiyexinxi(queryparam));
+	}
+	
+	
+	/**
+	 * 库点信息 --- 查删增改
+	 * @throws Exception
+	 */
+	
+	public void findKudian() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(jibenxinxiBo.class).findKudian(queryparam));
+	}
+	
+
+	/**
+	 * 查找视频（带参）
+	 * @throws Exception 
+	 */
+	
+	public void findshipinTree() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).findShipin(queryparam).getList());
+	}
+	
+	
+	/**
+	 * 获取人员通讯录
+	 * @throws Exception 
+	 */
+	
+	public void querytongxun() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(EmergencyBO.class).querytongxun(param));
+	}
+	
+	
+	
+}

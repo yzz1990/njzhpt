@@ -1,0 +1,101 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline">
+					<a class="btn btn-primary btn-sm pull-right" type="button"
+							href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_jiaoyu_tiku_edit.html">新增安全教育试题</a>
+				</div>
+				
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findAqjyshiti" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "tihao",
+				"title" : "题号",
+			},{
+				"data" : "timu",
+				"title" : "题目",
+			},{
+				"data" : "xuanxiangA",
+				"title" : "选项A"
+			},{
+				"data" : "xuanxiangB",
+				"title" : "选项B",
+			},{
+				"data" : "xuanxiangC",
+				"title" : "选项C",
+			},{
+				"data" : "truedaan",
+				"title" : "正确答案",
+			},{"title":"操作",
+                	"render": function (data,type,row,meta) {
+	                   	var bianji = '<a href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_jiaoyu_tiku_edit.html?id='+row["id"]+'" class="btn btn-sm btn-info pjax"><em class="fa fa-pencil"></em></a>';
+	                   	var shanchu = '<button type="button" class="btn btn-sm btn-danger" onclick="delanquantj(\''+row["id"]+'\')"><em class="fa fa-trash"></em></button>';
+	               		return bianji + " " + shanchu;
+                	}
+                }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var qiye = $("#qiye").val();
+	var kudian = $("#kudian").val();
+	document.querySelector('.datatables').dataset.queryparam="qiye="+qiye+"&kudian="+kudian;
+	datatable.ajax.reload(null,false);
+}
+	
+function delanquantj(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delAqjyshiti',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+function chakanshipin(){
+	dialog1=BootstrapDialog.show({
+	    title: '企业安全视频',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeianxq.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+	});
+}
+	
+</script>
+<%
+	}
+%>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+   
+
+
+<title>秋粮预测</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+    
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+ 	<script type="text/javascript">
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+    
+    $(document).ready(function() {
+    	var id = $.getUrlParam("id");
+    	if(id == 1){
+    		$("#quming").attr("readonly",true);
+    		$("#year").attr("readonly",true);
+    		$("#qishu").attr("readonly",true);
+    		$("#qiye").attr("readonly",true);
+    	}
+    });
+    
+    function saveyuce() {
+    	$("#diqu").attr("disabled",false);
+    	var form = $("#contentform");
+    	if($("#heji_mianji").val()==""){
+    		alert("总面积不能为空！");
+    		return false;
+    	}else if($("#heji_danchan").val()==""){
+    		alert("单产不能为空!");
+    		return false;
+    	}else if($("#heji_zongchan").val()==""){
+    		alert("总产不能为空！");
+    		return false;
+    	}else{
+    		$.ajax({
+        		url: form.attr("action"),
+        		type:"post",
+        		dataType: "json",
+        		data: form.serialize(),
+        		success: function(msg) {
+        			if (!msg.ret) {
+        				alert(msg.message);
+        			} else {
+        				alert("保存成功");
+        				 parent.window.dialog1.close();
+        	        	   parent.window.datatable.ajax.reload(null,true);
+        			}
+        		},
+        		error:function(){
+        			alert("保存失败,注意年度地区是否重复");
+        		}
+        	});
+    	}
+    	
+    }
+    
+    </script>
+ 	
+
+</head>
+
+<%
+	var obj={},url=ctxPath+"/shouchukeshihua/addxiajiyuce";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.queryxialiangyuce({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/shouchukeshihua/upxiajiyuce";
+	};
+%>
+
+<script type="text/javascript">
+var xian;
+var date=new Date;
+var year = parseInt(date.getFullYear());
+year = year + 2;
+$(window).load(function() { 
+	xian = "${session.userinfo.area.name}";
+	var objyear = parseInt("${obj.niandu}");
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findquxian',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			$.each(data,function(i, n){
+				if(n.name==xian || n.name == "${obj.diqu}"){
+					$("#diqu").append("<option value="+n.name+"  selected>"+n.name+"</option>");
+				}else{
+					$("#diqu").append("<option value="+n.name+">"+n.name+"</option>");
+				}
+			});
+			if("${array.contain(session.userinfo.auth,'auth_county')}"=="true"){
+				$("#diqu").attr("disabled",true);
+			}
+		},
+		error:function(){
+			alert("加载区县失败");
+		}
+	});
+	
+	for(var i = 0; i < 7; i++){
+		if((year - i) == objyear){
+			$("#niandu").append("<option value='"+(year - i)+"' selected>"+(year - i)+"</option>");	
+		}else{
+			$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+		}
+	}
+});
+
+
+
+</script>
+
+
+<body>
+	 <div class="dashboard-wrapper-lg" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+	 		<input type="hidden"  name="id" class="form-control" placeholder="id" value="${obj.id}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	夏粮合计                              
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       
+							<div class="row">
+								
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="niandu"><font color="red" style="font-size:large;">*</font>年度:</label>
+										<!--  
+										<input id="niandu" name="niandu" class="form-control" placeholder="年度" value="${obj.niandu}">
+										-->
+										<select id="niandu" name="niandu" class="form-control">
+										</select>
+									</div>	
+								</div>
+								
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="diqu"><font color="red" style="font-size:large;">*</font>地区:</label>
+										
+										<select id="diqu" name="diqu" class="form-control">
+											
+										</select>
+									</div>	
+								</div>
+							
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="heji_mianji"><font color="red" style="font-size:large;">*</font>面积（万亩）:</label>
+										<input id="heji_mianji" name="heji_mianji" class="form-control" placeholder="面积（万亩）" value="${obj.heji_mianji}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="heji_danchan"><font color="red" style="font-size:large;">*</font>单产（斤/亩）:</label>
+										<input id="heji_danchan" name="heji_danchan" class="form-control" placeholder="单产（斤/亩）" value="${obj.heji_danchan}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,1}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,1}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="heji_zongchan"><font color="red" style="font-size:large;">*</font>总产（万吨）:</label>
+										<input id="heji_zongchan" name="heji_zongchan" class="form-control" placeholder="总产（万吨）" value="${obj.heji_zongchan}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	其中：小麦                              
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				      
+							<div class="row">
+								<div class="col-xs-2">
+									<div class="form-group">
+										<label for="xm_minaji">面积（万亩）:</label>
+										<input id="xm_minaji" name="xm_minaji" class="form-control" placeholder="面积（万亩）" value="${obj.xm_minaji}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="xm_mj_hongmai">红麦（万亩）:</label>
+										<input id="xm_mj_hongmai" name="xm_mj_hongmai" class="form-control" placeholder="红麦（万亩）" value="${obj.xm_mj_hongmai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								<div class="col-xs-2">
+									<div class="form-group">
+										<label for="xm_danchan">单产（斤/亩）:</label>
+										<input id="xm_danchan" name="xm_danchan" class="form-control" placeholder="单产（斤/亩）" value="${obj.xm_danchan}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,1}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,1}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="xm_zongchan">总产（万吨）:</label>
+										<input id="xm_zongchan" name="xm_zongchan" class="form-control" placeholder="总产（万吨）" value="${obj.xm_zongchan}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								<div class="col-xs-2">	
+									<div class="form-group">
+										<label for="xm_zc_hongmai">红麦（万吨）:</label>
+										<input id="xm_zc_hongmai" name="xm_zc_hongmai" class="form-control" placeholder="红麦（万吨）" value="${obj.xm_zc_hongmai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	油菜籽                               
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				      
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="youcaizi_mianji">面积（万亩）:</label>
+										<input id="youcaizi_mianji" name="youcaizi_mianji" class="form-control" placeholder="面积（万亩）" value="${obj.youcaizi_mianji}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,3}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="youcaizi_danchan">单产（斤/亩）:</label>
+										<input id="youcaizi_danchan" name="youcaizi_danchan" class="form-control" placeholder="单产（斤/亩）" value="${obj.youcaizi_danchan}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,1}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,1}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="youcaizi_zongchan">产量（万吨）:</label>
+										<input id="youcaizi_zongchan" name="youcaizi_zongchan" class="form-control" placeholder="产量（万吨）" value="${obj.youcaizi_zongchan}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	收购情况预计商品量                               
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				     
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="spl_xiamai">小麦（万吨）:</label>
+										<input id="spl_xiamai" name="spl_xiamai" class="form-control" placeholder="小麦（万吨）" value="${obj.spl_xiamai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="spl_xm_hongmai">红麦（万吨）:</label>
+										<input id="spl_xm_hongmai" name="spl_xm_hongmai" class="form-control" placeholder="红麦（万吨）" value="${obj.spl_xm_hongmai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="spl_youzicai">油菜籽（万吨）:</label>
+										<input id="spl_youzicai" name="spl_youzicai" class="form-control" placeholder="油菜籽（万吨）" value="${obj.spl_youzicai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	收购情况预计国有企业收购量                       
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				    
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="guoyou_xiaomai">小麦（万吨）:</label>
+										<input id="guoyou_xiaomai" name="guoyou_xiaomai" class="form-control" placeholder="小麦（万吨）" value="${obj.guoyou_xiaomai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="guoyou_xm_hongmai">红麦（万吨）:</label>
+										<input id="guoyou_xm_hongmai" name="guoyou_xm_hongmai" class="form-control" placeholder="红麦（万吨）" value="${obj.guoyou_xm_hongmai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="guoyou_youzicai">油菜籽（万吨）:</label>
+										<input id="guoyou_youzicai" name="guoyou_youzicai" class="form-control" placeholder="油菜籽（万吨）" value="${obj.guoyou_youzicai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	收购情况预计托市收购数量                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				     
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="tssg_xm">小麦（万吨）:</label>
+										<input id="tssg_xm" name="tssg_xm" class="form-control" placeholder="小麦（万吨）" value="${obj.tssg_xm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="tssg_xm_hm">红麦（万吨）:</label>
+										<input id="tssg_xm_hm" name="tssg_xm_hm" class="form-control" placeholder="红麦（万吨）" value="${obj.tssg_xm_hm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="tssg_ycz">油菜籽（万吨）:</label>
+										<input id="tssg_ycz" name="tssg_ycz" class="form-control" placeholder="油菜籽（万吨）" value="${obj.tssg_ycz}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	收购器材准备情况                      
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				      
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="shougouqczb_zongshu">准备收购器材台（套）总数:</label>
+										<input id="shougouqczb_zongshu" name="shougouqczb_zongshu" class="form-control" placeholder="准备收购器材台（套）总数" value="${obj.shougouqczb_zongshu}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,0}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,0}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="shougouqczb_jianhuaqicai">检化验器材（台）:</label>
+										<input id="shougouqczb_jianhuaqicai" name="shougouqczb_jianhuaqicai" class="form-control" placeholder="检化验器材（台）" value="${obj.shougouqczb_jianhuaqicai}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,0}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,0}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="shougouqczb_bangcheng">其中磅秤（台）:</label>
+										<input id="shougouqczb_bangcheng" name="shougouqczb_bangcheng" class="form-control" placeholder="其中磅秤（台）" value="${obj.shougouqczb_bangcheng}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,0}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,0}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>	
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="shougouqczb_qita">其他 :</label>
+										<input id="shougouqczb_qita" name="shougouqczb_qita" class="form-control" placeholder="其他 " value="${obj.shougouqczb_qita}">
+									</div>	
+								</div>	
+							</div>
+					
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	仓容情况                       
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				    
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="youxiaocangrong_xm">现有有效仓容_小麦（万吨）:</label>
+										<input id="youxiaocangrong_xm" name="youxiaocangrong_xm" class="form-control" placeholder="现有有效仓容_小麦（万吨）" value="${obj.youxiaocangrong_xm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="youxiaocangrong_yg">现有有效仓容_油罐罐容（万吨）:</label>
+										<input id="youxiaocangrong_yg" name="youxiaocangrong_yg" class="form-control" placeholder="现有有效仓容_油罐罐容（万吨）" value="${obj.youxiaocangrong_yg}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="kongcangrong_xm">现有空仓容_小麦（万吨）:</label>
+										<input id="kongcangrong_xm" name="kongcangrong_xm" class="form-control" placeholder="现有空仓容_小麦（万吨）" value="${obj.kongcangrong_xm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>	
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="kongcangrong_yg">现有空仓容_油罐罐容（万吨）:</label>
+										<input id="kongcangrong_yg" name="kongcangrong_yg" class="form-control" placeholder="现有空仓容_油罐罐容（万吨）" value="${obj.kongcangrong_yg}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>	
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="keliyongcangrong_xm">5月底前可利用空仓容_小麦（万吨）:</label>
+										<input id="keliyongcangrong_xm" name="keliyongcangrong_xm" class="form-control" placeholder="5月底前可利用空仓容_小麦（万吨）" value="${obj.keliyongcangrong_xm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="keliyongcangrong_yg">5月底前可利用空仓容_油罐罐容（万吨）:</label>
+										<input id="keliyongcangrong_yg" name="keliyongcangrong_yg" class="form-control" placeholder="5月底前可利用空仓容_油罐罐容（万吨）" value="${obj.keliyongcangrong_yg}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="cangrongquekou_xm">预计仓容缺口_小麦（万吨）:</label>
+										<input id="cangrongquekou_xm" name="cangrongquekou_xm" class="form-control" placeholder="预计仓容缺口_小麦（万吨）" value="${obj.cangrongquekou_xm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>	
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="cangrongquekou_yg">预计仓容缺口_油罐罐容（万吨）:</label>
+										<input id="cangrongquekou_yg" name="cangrongquekou_yg" class="form-control" placeholder="预计仓容缺口_油罐罐容（万吨）" value="${obj.cangrongquekou_yg}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,4}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>	
+							</div>
+					
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	目前市场价格                    
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				     
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="jg_xm_hm">红麦（元/百斤）:</label>
+										<input id="jg_xm_hm" name="jg_xm_hm" class="form-control" placeholder="红麦（元/百斤）" value="${obj.jg_xm_hm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="jg_xm_bm">白麦（元/百斤）:</label>
+										<input id="jg_xm_bm" name="jg_xm_bm" class="form-control" placeholder="白麦（元/百斤）" value="${obj.jg_xm_bm}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="jg_ycz">油菜籽（元/百斤）:</label>
+										<input id="jg_ycz" name="jg_ycz" class="form-control" placeholder="油菜籽（元/百斤）" value="${obj.jg_ycz}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>	
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="jg_czy">菜籽油（元/百斤）:</label>
+										<input id="jg_czy" name="jg_czy" class="form-control" placeholder="菜籽油（元/百斤）" value="${obj.jg_czy}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>	
+								</div>	
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	预计开秤收购价格                   
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="jg_yjkaicheng_xm_hm">红麦（元/百斤）:</label>
+									<input id="jg_yjkaicheng_xm_hm" name="jg_yjkaicheng_xm_hm" class="form-control" placeholder="红麦（元/百斤）" value="${obj.jg_yjkaicheng_xm_hm}"
+									onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+								</div>
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="jg_yjkaicheng_xm_bm">白麦（元/百斤）:</label>
+									<input id="jg_yjkaicheng_xm_bm" name="jg_yjkaicheng_xm_bm" class="form-control" placeholder="白麦（元/百斤）" value="${obj.jg_yjkaicheng_xm_bm}"
+									onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+								</div>
+							</div>
+							<div class="col-xs-4">	
+								<div class="form-group">
+									<label for="jg_yjkaicheng_ycz">油菜籽（元/百斤）:</label>
+									<input id="jg_yjkaicheng_ycz" name="jg_yjkaicheng_ycz" class="form-control" placeholder="油菜籽（元/百斤）" value="${obj.jg_yjkaicheng_ycz}"
+									onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+								</div>	
+							</div>	
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+            <!-- Row End -->
+</body>
+
+
+</html>

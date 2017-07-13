@@ -1,0 +1,213 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+ var kdbm = parameter.kdbm;
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+    </style>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="form-inline" style="float: left;">
+			<!-- <label>流水号:</label>
+			<input class="form-control input-sm" name="vSwiftNumber" id="vSwiftNumber" placeholder="流水号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+			 -->
+			<label>出入库标识:</label>
+			<select class="form-control input-sm" name="vDirection" id="vDirection" placeholder="出入库标识" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">
+				<option value="">全部</option>
+				<option value="入库">入库</option>
+				<option value="出库">出库</option>
+				<option value = "出库损耗">出库损耗</option>
+				<option value = "收购">收购</option>
+				<option value = "销售">销售</option>
+				<option value = "倒仓">倒仓</option>
+				<option value = "定性">定性</option>
+			</select>	
+			<label>粮食品种:</label>
+			<select id="lslb" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" >
+					<option value="">全部</option>
+					<option value = "111">小麦</option>
+					<option value = "113">稻谷</option>
+					<option value = "112">玉米</option>
+					<option value = "1132">粳稻</option>
+					<option value = "1131">籼稻</option>
+			</select>
+			<label>粮食性质:</label>
+			<select id="lsxz" class="js-example-basic-single input-sm" style="width:150px;font-size:14px">
+				<option value="全部">全部</option>
+					<option value = "11">中央储备粮</option>
+					<option value = "121">省级储备粮</option>
+					<option value = "122">市级储备粮</option>
+					<option value = "123">县级储备粮</option>
+					<option value = "32">临时储备粮</option>
+					<option value = "2">商品粮</option>
+					<option value = "31">最低价收购</option>
+					<option value = "99">其他储备粮</option>
+			</select>
+			
+			<!-- <label>产地:</label>
+			<input class="form-control input-sm" name="vProvinceCode" id="vProvinceCode" placeholder="产地" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+			<label>报港时间:</label>
+			<input class="form-control input-sm" name="dtRegistrateTime" id="dtRegistrateTime" placeholder="报港时间" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+			<label>车船号:</label>
+			<input class="form-control input-sm" name="vViechelNumber" id="vViechelNumber" placeholder="车船号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+			<label>货主名:</label>
+			<input class="form-control input-sm" name="vCustomerCode" id="vCustomerCode" placeholder="货主名" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+			 -->
+			<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+			
+	<div class="panel-body" style="padding:0">
+		<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findChuruku?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}&isedit=2" ></table>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	  $("#vDirection").select2();
+	});
+	
+$(document).ready(function () {
+    $('.dropdown-toggle').dropdown();
+});
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "vSwiftNumber",
+				"title" : "流水号"
+			},{
+				"data" : "vDirection",
+				"title" : "出入库标识"
+			},{
+				"data" : "dtRegistrateTime",
+				"title" : "报港时间"
+			},{
+				"data" : "vViechelNumber",
+				"title" : "车船号",
+			},{
+				"data" : "lsxz",
+				"title" : "粮食性质",
+			},{
+				"data" : "lslb",
+				"title" : "粮食品种",
+			},{
+				"data" : "vProvinceCode",
+				"title" : "产地",
+			},{
+				"data" : "vCustomerCode",
+				"title" : "货主名",
+			},{
+				"title" : "出入库详情",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="crkxq(\''+row["vSwiftNumber"]+'\')" class="btn btn-sm btn-info pjax">详情</a>';								
+					return chakan;
+					}
+				}
+			]
+	});
+});
+
+	
+function doSearch(){
+	var vDirection = $("#vDirection option:selected").val();
+	var lsxz = $("#lsxz option:selected").val();
+	var lslb = $("#lslb option:selected").val();
+	var queryparam = "";
+	if(vDirection != "" && vDirection != null && vDirection != "全部"){
+		queryparam += "&vDirection="+vDirection;
+	}
+	if(lsxz != "" && lsxz != null && lsxz != "全部"){
+		queryparam += "&vGraProCode="+lsxz;
+	}
+	if(lslb != "" && lslb != null && lslb != "全部"){
+		queryparam += "&lslb="+lslb;
+	}
+	document.querySelector('.datatables').dataset.queryparam=queryparam;
+	datatable.ajax.reload(null,true);
+}
+
+function crkxq(vSwiftNumber){
+	dialog1=top.BootstrapDialog.show({
+	    title: '出入库详情',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/cangchugl/churukuxq?vSwiftNumber='+vSwiftNumber+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+	
+	//window.open('${ctxPath}/cangchugl/churukuxq?vSwiftNumber='+vSwiftNumber+'','',
+	//'height=600,width=1000,top=100,left=100,toolbar=no,menubar=no,scrollbars=yes, resizable=no,location=no, status=no');
+}
+
+/* $('.datatables').on( 'draw.dt', function () {
+	Changelb();
+} ); */
+
+/* function Changelb(){
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findlslb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option>'+data[i].vName+'</option>';
+			     $("#lslb").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+} */
+
+/*
+$('.datatables').on( 'draw.dt', function () {
+	Changexz();
+} );
+
+function Changexz(){
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findlsxz',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option value="'+data[i].vCode+'">'+data[i].vGrainProperties+'</option>';
+			     $("#lsxz").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+}
+*/
+</script>
+<%
+	}
+%>

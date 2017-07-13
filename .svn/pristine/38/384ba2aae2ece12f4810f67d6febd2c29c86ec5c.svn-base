@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药剂库存信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addxzzy",title="新增熏蒸作业信息";
+	if (isNotEmpty(parameter.id)) {
+		var zzbg = @com.zkzy.njzhpt.dao.CangchuglDao.findxzzy({"xzid":parameter.xzid,"page":"1","rows":"100"});
+		obj = zzbg.list[0];
+		url = ctxPath+"/cangchugl/upxzzy";
+		title = "编辑熏蒸作业信息";
+	};
+	
+%>
+
+<style>
+	body{
+		OVERFLOW-x: hidden;
+	}
+</style>
+
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+        <div class="dashboard-wrapper-lg" style="padding: 0;">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	熏蒸作业信息                                       
+                    </div>
+                  </div>
+                  <div class="widget-body" style="OVERFLOW-Y: auto">
+			       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+				       <input type="hidden" name="id" value="${obj.id}">
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="xzqhdm">*区域:</label>
+									<select id="xzqhdm" name="xzqhdm" class="form-control" onchange="changequxian()">
+										<option value="请选择">请选择</option>
+									</select>
+									<!-- <input id="xzqydm" name="xzqydm" class="form-control" placeholder="行政区域代码" value="${obj.xzqydm}"> -->
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="qyzzjgdm">*企业名称:</label>
+									<select id="qyzzjgdm" name="qyzzjgdm" class="form-control" onchange="changeQiye()">
+										<option value="请选择">请选择</option>
+									</select>
+								</div>	
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="beianbianhao">*熏蒸备案号:</label>
+									<select id="beianbianhao" name="beianbianhao" class="form-control" onchange="changeXzba()">
+										<option value="请选择">请选择</option>
+									</select>
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="kdbm">*熏蒸库点:</label>
+									<input id="kdbm" name="kdbm" class="form-control" placeholder="熏蒸库点" value="${obj.kdbm}" readonly="readonly">
+								</div>	
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="fuzeren">熏蒸负责人:</label>
+									<input id="fuzeren" name="fuzeren" class="form-control" placeholder="熏蒸负责人" value="${obj.fuzeren}">
+								</div>	
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="canyuren">参与人:</label>
+									<input id="canyuren" name="canyuren" class="form-control" placeholder="参与人" value="${obj.canyuren}">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="xunzhengriqi">熏蒸日期:</label>
+									<input id="xunzhengriqi" name="xunzhengriqi" class="form-control" placeholder="熏蒸日期" value="${obj.xunzhengriqi}">
+								</div>	
+							</div>
+						</div>
+						
+						<a class="btn btn-xs btn-success" onclick="appendxzzy()" style="margin-top: 15px;" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;添加仓房</a>
+							<div>
+							<div class="row">
+								<div class="col-xs-12">	
+									<div class="form-group">
+										<input type="hidden" id="cfs" name="cfs" value="${obj.cfs}">
+				       					<input type="hidden" id="yjmcs" name="yjmcs" value="${obj.yjmcs}">
+				      					<input type="hidden" id="yjsls" name="yjsls" value="${obj.yjsls}">
+				      					<input type="hidden" id="lssls" name="lssls" value="${obj.lssls}">
+				      					<input type="hidden" id="xgs" name="xgs" value="${obj.xgs}">
+										<table id="cftable" class="table table-striped table-hover table-bordered datatables" >
+											<thead>
+												<tr>
+													<th style="width:120px;">仓号</th>
+													<th style="width:120px;">药剂名称</th>
+													<th style="width:120px;">药剂数量</th>
+													<th style="width:120px;">粮食数量</th>
+													<th style="width:120px;">效果</th>
+													<th style="width:80px;">操作</th>
+												</tr>
+											</thead>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+<script type="text/javascript">
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+$(function(){
+	
+	$("#xunzhengriqi").datetimepicker({
+		format : 'yyyy-mm-dd',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+
+//新增仓号熏蒸作业
+
+
+//加载区域
+$.ajax({
+	 url:'${ctxPath}/shouchukeshihua/findquxian',
+	 type:'post',
+	 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+	 dataType:'json',
+	 success:function(data){
+		$.each(data,function(i, n){
+			if(n.name == "${obj.xzqhdm}"){
+				$("#xzqhdm").append("<option value="+n.name+" selected>"+n.name+"</option>");
+			}else{
+				$("#xzqhdm").append("<option value="+n.name+">"+n.name+"</option>");
+			}
+		});
+	 },
+	 error:function(){
+		 alert("error");
+	 }	
+});
+
+//加载企业
+$.ajax({
+	url: "${ctxPath}/lunhuan/selectQYMC.do",
+	dataType: "json",
+	data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+		,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+	success: function(data) {
+		$.each(data.list,function(i, n){
+			//$("#qiye").append("<option value="+n.id+">"+n.qymc+"</option>");
+			if("${obj.qyzzjgdm}"==n.qymc){
+				$("#qyzzjgdm").append("<option qyid="+n.id+" qyzzjgdm="+n.qyzzjgdm+" value="+n.qymc+" selected>"+n.qymc+"</option>");
+		 	}else{
+		 		$("#qyzzjgdm").append("<option qyid="+n.id+" qyzzjgdm="+n.qyzzjgdm+" value="+n.qymc+">"+n.qymc+"</option>");
+		 	}
+		});
+	}
+});
+
+//加载备案企业名称
+/*
+$.ajax({
+	url: "${ctxPath}/cangchugl/querybaqy",
+	dataType: "json",
+	success: function(data) {
+		$.each(data,function(i, n){
+			if("${obj.qiye}"==n.qymc){
+				$("#qiye").append("<option qyid="+n.qiyeid+" value="+n.qymc+" selected>"+n.qymc+"</option>");
+		 	}else{
+		 		$("#qiye").append("<option qyid="+n.qiyeid+" value="+n.qymc+">"+n.qymc+"</option>");
+		 	}
+		});
+	}
+});
+*/
+
+//加载备案编号
+$.ajax({
+	url: '${ctxPath}/cangchugl/querybeian',
+	type:'get',
+	dataType: "json",
+	success: function(data) {
+		$.each(data.list,function(i, n){
+			if("${obj.beianbianhao}"==n.beianbianhao){
+				$("#beianbianhao").append("<option value="+n.beianbianhao+" selected>"+n.beianbianhao+"</option>");
+		 	}else{
+		 		$("#beianbianhao").append("<option value="+n.beianbianhao+">"+n.beianbianhao+"</option>");
+		 	}
+		});
+	}
+});
+
+ 
+});
+
+var index = 0;
+
+function appendxzzy(){
+	if(""==$("#kdbm").val() || null == $("#kdbm").val()){
+		alert("请先选择基础数据！");
+		return false;
+	}
+	index++;
+	var linshi=
+	'<tr id="tr'+index+'">'+
+		'<td><select id="cf'+index+'" class="sel2" style="width:100%;height:100%" onchange="getcfmc(\''+index+'\')"><option value="">请选择</option></select></td>'+
+		'<td><select id="yjmc'+index+'" class="sel2" style="width:100%;height:100%"><option value="">请选择</option></select></td>'+
+		'<td><input id="yjsl'+index+'" class="yjsl"  type="text"  style="width:100%;height:100%"/></td>'+
+		'<td><input id="lssl'+index+'" class="lssl"  type="text"  style="width:100%;height:100%"/></td>'+
+		'<td><input id="xg'+index+'" class="xg"  type="text"  style="width:100%;height:100%"/></td>'+
+		'<td  style="text-align: center";><button type="button" class="btn btn-xs btn-success"onclick="shanchu(\''+index+'\')"><i class="fa fa-pencil" aria-hidden="true">&nbsp删除</i></button></td>'+
+	'</tr>';
+	$("#cftable").append(linshi);
+	var qyzzjgdm = $("#qyzzjgdm option:selected").attr("qyzzjgdm");
+	var kdbm = $("#kdbm option:selected").attr("kdbm");
+	loadcangfang(qyzzjgdm,kdbm,index);
+	
+}
+
+
+function getcfmc(index){
+	var beianbianhao = $("#beianbianhao option:selected").val();
+	var qyzzjgdm = $("#qyzzjgdm option:selected").attr("qyzzjgdm");
+	var kdbm = $("#kdbm option:selected").attr("kdbm");
+	var cfmcyj = $("#cfmcyj"+index+" option:selected").val();
+	var yjmcs = [];
+	
+	//初始化仓房
+	$.ajax({
+		url: "${ctxPath}/cangchugl/selectXzch",
+		dataType: "json",
+		data:{"beianbianhao":beianbianhao,"kdbm":kdbm,"qyzzjgdm":qyzzjgdm,"cfmcyj":cfmcyj},
+		success: function(data) {
+			$("#yjmc").empty();
+			$("#yjmc").append("<option value='请选择'>请选择</option>");
+			$.each(data.list,function(i, n){
+				if(!yjmcs.in_array(n.yjmc)){
+					$("#yjmc"+index).append("<option value="+n.yjmc+">"+n.yjmc+"</option>");	
+				}
+				yjmcs.push(n.yjmc);
+			});
+		}
+	});
+}
+
+/*
+ * 获取仓房
+ */
+function loadcangfang(qyzzjgdm,kdbm,index){
+	var cfmcyj = $("#cf option:selected").val();
+	var beianbianhao = $("#beianbianhao option:selected").val();
+	var cfs = [];
+	//初始化仓房
+	$.ajax({
+		url: "${ctxPath}/cangchugl/selectXzch",
+		dataType: "json",
+		data:{"kdbm":kdbm,"qyzzjgdm":qyzzjgdm,"beianbianhao":beianbianhao},
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if(!cfs.in_array(n.cfmcyj)){
+					$("#cf"+index).append("<option value="+n.cfmcyj+">"+n.cfmcyj+"</option>");
+				}
+				cfs.push(n.cfmcyj);
+			});
+		}
+	});
+}
+
+
+/*
+ * 区县改变方法
+ */
+function changequxian(){
+	var xian = $("#xzqhdm option:selected").text();
+	//加载企业
+	if(xian != null && xian != "" && xian != "请选择"){
+		$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{"name": xian},
+			success: function(data) {
+				$("#qyzzjgdm").empty();
+				$("#qyzzjgdm").append("<option value='请选择'>请选择</option>");
+				$.each(data.list,function(i, n){
+					//$("#qiye").append("<option value="+n.id+">"+n.qymc+"</option>");
+					if("${obj.qiye}"==n.qymc){
+						$("#qyzzjgdm").append("<option qyid="+n.id+" qyzzjgdm="+n.qyzzjgdm+" value="+n.qymc+" selected>"+n.qymc+"</option>");
+				 	}else{
+				 		$("#qyzzjgdm").append("<option qyid="+n.id+" qyzzjgdm="+n.qyzzjgdm+" value="+n.qymc+">"+n.qymc+"</option>");
+				 	}	
+				});
+			}
+		});
+	}
+}
+
+function changeQiye(){
+	var qiyeid = $("#qyzzjgdm option:selected").attr("qyid");
+	//加载备案编号
+	$.ajax({
+		url: '${ctxPath}/cangchugl/querybeian',
+		type:'get',
+		data:{"qiyeid":qiyeid},
+		dataType: "json",
+		success: function(data) {
+			$("#beianbianhao").empty();
+			$("#beianbianhao").append("<option value='请选择'>请选择</option>");
+			$.each(data.list,function(i, n){
+				$("#beianbianhao").append("<option value="+n.beianbianhao+">"+n.beianbianhao+"</option>");
+			});
+		}
+	});
+}
+
+function changeXzba(){
+	var xzbabh = $("#beianbianhao option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/cangchugl/queryxzkd',
+		type:'post',
+		data:{"beianbianhao":xzbabh},
+		dataType:'json',
+		success:function(data){
+			$("#kdbm").val(data.list[0].kdmc);
+			$("#kdbm").attr("kdbm",data.list[0].kdbm);
+		},
+		error:function(){
+			alert("获取熏蒸备案详细信息失败");
+		}
+	});
+}
+
+function shanchu(index){
+	$("#tr"+index).remove();
+}
+
+
+$(document).ready(function() {
+	$("#qiye").select2();
+	$("#xzbabh").select2();
+	$("#deal").select2();
+});
+
+
+
+function savexzzy() {
+	var xzqhdm = $("#xzqhdm option:selected").val();
+	var qyzzjgdm = $("#qyzzjgdm option:selected").val();
+	var beianbianhao = $("#beianbianhao option:selected").val();
+	
+	var cfs="";
+	var yjmcs="";
+	var yjsls="";
+	var lssls="";
+	var xgs="";
+	for(var i=1;i<=index;i++){
+		if($("#cf"+i).length>0){
+			if(""==$("#cf"+i).val() || "请选择"==$("#cf"+i).val()){
+				alert("请选择仓房名称！");
+				return false;
+			}
+			cfs+=$("#cf"+i).val()+",";
+			if(""==$("#yjmc"+i).val() || "请选择"==$("#yjmc"+i).val()){
+				alert("请选择药剂名称！");
+				return false;
+			}
+			yjmcs+=$("#yjmc"+i).val()+",";
+			
+			if(""==$("#yjsl"+i).val()){
+				alert("请输入药剂数量");
+				return false;
+			}
+			yjsls+=$("#yjsl"+i).val()+",";
+			if(""==$("#lssl"+i).val()){
+				alert("请输入粮食数量");
+				return false;
+			}
+			lssls+=$("#lssl"+i).val()+",";
+			if(""==$("#xg"+i).val()){
+				alert("请输入效果！");
+				return false;
+			}
+			xgs+=$("#xg"+i).val()+",";
+		}
+		
+	}
+	$("#cfs").val(cfs);
+	$("#yjmcs").val(yjmcs);
+	$("#yjsls").val(yjsls);
+	$("#lssls").val(lssls);
+	$("#xgs").val(xgs);
+	
+	if(xzqhdm == "请选择"){
+		alert("区域不能为空");
+	}else{
+		if(qyzzjgdm == "请选择"){
+			alert("企业不能为空");
+		}else{
+			if(beianbianhao == "请选择"){
+				alert("备案编号不能为空");
+			}else{
+				var form = $(".widget-body form");
+				alert(form.serialize());
+				$.ajax({
+					url: form.attr("action"),
+					dataType: "json",
+					data: form.serialize(),
+					success: function(msg) {
+						if (!msg.ret) {
+							alert(msg.message);
+						} else {
+							alert("保存成功");
+						}
+						parent.window.dialog.close();
+			        	parent.window.datatable.ajax.reload(null,true);
+					}
+				});
+			}
+		}
+	}
+}
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+	<style>
+	.u1128{
+		font-size:16px;
+		width:100px;
+		float:left;
+		display:inline-block;
+		margin-top:0px;
+		color:black;
+		text-align:left;
+	}
+	.kczbtb{
+		float:left;
+	}
+	.uu1124{
+		float:left;
+
+		text-align:right;
+		font-weight:bold;
+		margin-top:0px;
+		width:120px;
+	}
+	.lsmx{
+		float:left;
+		witdh:250px;
+	}
+	.bingtu{
+		float:left;
+		witdh:300px;
+		padding-left:100px;
+	}
+	.liebiao{
+
+		float:right;
+		width:280px;
+		height:250px;
+		border-width: 0 0 0 1px;
+		border-style: solid;
+		border-color: #B0C4DE;
+		padding-left: 30px;
+
+	}
+	
+	</style>
+    
+    <script type="text/javascript">
+    	
+    $(function(){
+ 		//====================================================================
+		var myChart = echarts.init(document.getElementById('lsxzbt')); 	//粮食品种
+		var myChart1 = echarts.init(document.getElementById('lsdjbt'));	//粮食等级
+		var myChart2 = echarts.init(document.getElementById('lspzbt'));	//粮食等级
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryxingzhi.do',
+			type:'post',
+			data:{"page":1,"rows":10000},
+			dataType:'json',
+			success:function(data){
+				//粮食性质
+				var zycb = 0;
+				var sjcb = 0;
+				var shjcb = 0;
+				var xjcb = 0;
+				var lscb = 0;
+				var spl = 0;
+				
+				//粮食品种
+				var pz1 = 0;
+				var pz2 = 0;
+				var pz3 = 0;
+				var pz4 = 0;
+				
+				//粮食等级
+				var dj1 = 0;
+				var dj2 = 0;
+				var dj3 = 0;
+				var dj4 = 0;
+				var dj5 = 0;
+				var dj6 = 0;
+				
+				//粮食性质
+				for(var i = 0; i < data.list.length; i++){
+					if(data.list[i].vGrainPropertyCode == '130'){
+						zycb += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].vGrainPropertyCode == '121'){
+						sjcb += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].vGrainPropertyCode == '122'){
+						shjcb += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].vGrainPropertyCode == '123'){
+						xjcb += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].vGrainPropertyCode == '2'){
+						spl += parseFloat(data.list[i].dmStock)/1000;
+					}else{
+						lscb = lscb + parseFloat(data.list[i].dmStock)/1000;
+					}
+				}
+				//粮食品种
+				for(var i = 0; i < data.list.length; i++){
+					if(data.list[i].vGrainSubTypeCode.substring(0,3) == '111'){
+						pz1 += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].vGrainSubTypeCode.substring(0,4) == '1132'){
+						pz2 += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].vGrainSubTypeCode.substring(0,4) == '1131'){
+						pz3 += parseFloat(data.list[i].dmStock)/1000;
+					}else{
+						pz4 += parseFloat(data.list[i].dmStock)/1000;
+					}
+				}
+				//粮食等级
+				for(var i = 0; i < data.list.length; i++){
+					if(data.list[i].grade == '01'){
+						dj1 += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].grade == '02'){
+						dj2 += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].grade == '03'){
+						dj3 += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].grade == '04'){
+						dj4 += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].grade == '05'){
+						dj5 += parseFloat(data.list[i].dmStock)/1000;
+					}else if(data.list[i].grade == '06'){
+						dj6 += parseFloat(data.list[i].dmStock)/1000;
+					}
+				}
+				
+				
+				
+				
+				//粮食性质
+				$("#uu1124").text(zycb.toFixed(3));
+				$("#uu1126").text(sjcb.toFixed(3));
+				$("#uu1128").text(shjcb.toFixed(3));
+				$("#uu1130").text(xjcb.toFixed(3));
+				$("#uu1132").text(lscb.toFixed(3));
+				$("#uu1134").text(spl.toFixed(3));
+				
+				//粮食品种
+				$("#pz1").text(pz1.toFixed(3));
+				$("#pz2").text(pz2.toFixed(3));
+				$("#pz3").text(pz3.toFixed(3));
+				$("#pz4").text(pz4.toFixed(3));
+				
+				//粮食等级
+				$("#dj1").text(dj1.toFixed(3));
+				$("#dj2").text(dj2.toFixed(3));
+				$("#dj3").text(dj3.toFixed(3));
+				$("#dj4").text(dj4.toFixed(3));
+				$("#dj5").text(dj5.toFixed(3));
+				$("#dj6").text(dj6.toFixed(3));
+				
+				
+				//粮食性质
+				option = {
+						title : {
+					        text: "性质占比",
+					        x:'center',
+					        textStyle:{
+					        	fontSize:15
+					        }
+					    },
+					    tooltip: {
+					        trigger: 'item',
+					        formatter: "{b}<br> ({d}%)"
+					    },
+					    color : ['#89E09C', '#EA998C', '#A95487','#4480EF','#4FC0D9', '#9400D3','#9370DB', '#0000FF', '#c4ccd3'],
+					    normal: {
+					    	 
+		                    position: 'inner'
+		                },
+					    series: [
+					        {
+					            name:'数量(占比)',
+					            type:'pie',
+					            radius: ['1%', '55%'],
+					            avoidLabelOverlap: false,
+					     
+					            label: {
+					                normal: {
+					                	 
+					                    show: false,
+					                    //position: 'center',
+					                    formatter: "{b}: ({d}%)"
+					                },
+					                
+					            },
+					            itemStyle: {
+					                emphasis: {
+					                    shadowBlur: 10,
+					                    shadowOffsetX: 0,
+					                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+					                }
+					            },
+					            
+					            data:[
+					                {value:parseFloat(zycb).toFixed(3), name:'中央储备'},
+					                {value:parseFloat(sjcb).toFixed(3), name:'省级储备'},
+					                {value:parseFloat(shjcb).toFixed(3), name:'市级储备'},
+					                {value:parseFloat(xjcb).toFixed(3), name:'县级储备'},
+					                {value:parseFloat(lscb).toFixed(3), name:'临时储备'},
+					                {value:parseFloat(spl).toFixed(3), name:'商品粮'},
+					            ]
+					        }
+					    ]
+					};
+				
+				
+				myChart.setOption(option);	
+				
+				//粮食等级
+				option1 = {
+						title : {
+					        text: "等级占比",
+					        x:'center',
+					        textStyle:{
+					        	fontSize:15
+					        }
+					    },
+					    tooltip: {
+					        trigger: 'item',
+					        formatter: "{b}:<br> ({d}%)"
+					    },
+					    color : ['#b6a2de', '#2ec7c9', '#f5994e','#59678c','#5ab1ef', '#d87a80','#c05050', '#c14089', '#7eb00a'],
+					    normal: {
+		                    position: 'inner'
+		                },
+					    series: [
+					        {
+					            name:'数量(占比)',
+					            type:'pie',
+					            radius: ['1%', '55%'],
+					            avoidLabelOverlap: false,
+					     
+					            label: {
+					                normal: {
+					                    show: false,
+					                    //position: 'center',
+					                    formatter: "{b}:({d}%)"
+					                },
+					               
+					            },
+					            data:[
+					                {value:dj1.toFixed(3), name:'一级'},
+					                {value:dj2.toFixed(3), name:'二级'},
+					                {value:dj3.toFixed(3), name:'三级'},
+					                {value:dj4.toFixed(3), name:'四级'},
+					                {value:dj5.toFixed(3), name:'五级'},
+					                {value:dj6.toFixed(3), name:'等外级'},
+					            ]
+					        }
+					    ]
+					};
+				myChart1.setOption(option1);	
+				
+				//粮食品种
+				option2 = {
+						title : {
+					        text: "品种占比",
+					        x:'center',
+					        textStyle:{
+					        	fontSize:15
+					        }
+					    },
+					    tooltip: {
+					        trigger: 'item',
+					        formatter: "{b}:<br> ({d}%)"
+					    },
+					    color : ['#89E09C', '#EA998C', '#00FF00','#00FFFF','#A7E3F1', '#9400D3','#9370DB', '#0000FF', '#c4ccd3'],
+					    normal: {
+		                    position: 'inner'
+		                },
+					    series: [
+					        {
+					            name:'数量(占比)',
+					            type:'pie',
+					            radius: ['1%', '55%'],
+					            avoidLabelOverlap: false,
+					     
+					            label: {
+					                normal: {
+					                    show: false,
+					                    //position: 'center',
+					                    formatter: "{b}: ({d}%)"
+					                },
+					           
+					            },
+					            data:[
+					                {value:pz1.toFixed(3), name:'小麦'},
+					                {value:pz2.toFixed(3), name:'粳稻'},
+					                {value:pz3.toFixed(3), name:'籼稻'},
+					                {value:pz4.toFixed(3), name:'其他'},
+					            ]
+					        }
+					    ]
+					};
+				myChart2.setOption(option2);	
+				
+			},
+			
+			
+			error:function(){
+				alert("加载信息失败");
+			}
+		});	
+		
+    });
+    
+    function getxz(){
+    	$("#lsxzbt").css('display','block'); 
+    	$(".lsxzmx").css('display','block'); 
+    	$("#lspzbt").css('display','none'); 
+    	$(".lspzmx").css('display','none'); 
+    	$("#lsdjbt").css('display','none'); 
+    	$(".lsdjmx").css('display','none'); 
+    }
+    function getpz(){
+    	$("#lsxzbt").css('display','none'); 
+    	$(".lsxzmx").css('display','none'); 
+    	$("#lspzbt").css('display','block'); 
+    	$(".lspzmx").css('display','block'); 
+    	$("#lsdjbt").css('display','none'); 
+    	$(".lsdjmx").css('display','none'); 
+    }
+    function getdj(){
+    	$("#lsxzbt").css('display','none'); 
+    	$(".lsxzmx").css('display','none'); 
+    	$("#lspzbt").css('display','none'); 
+    	$(".lspzmx").css('display','none'); 
+    	$("#lsdjbt").css('display','block'); 
+    	$(".lsdjmx").css('display','block'); 
+    }
+    
+    </script>
+    <div>
+    	<div style="margin-left:150px">
+    		<label><input name="liangshi" type="radio" value="xingzhi" onclick="getxz()" checked="checked"/>&nbsp;性质 </label>&nbsp;&nbsp;  
+			<label><input name="liangshi" type="radio" value="pinzhong" onclick="getpz()" />&nbsp;品种 </label>&nbsp;&nbsp; 
+			<label><input name="liangshi" type="radio" value="dengji" onclick="getdj()" />&nbsp;等级 </label> 
+			<p style="float:right">单位：吨</p>
+    	</div>
+    	<div class="bingtu">
+	    	<div id="lsxzbt" style=" width:300px;height:300px" class="kczbtb">
+	    	</div>
+	    	<div id="lspzbt" style=" width:300px;height:300px;display:none" class="kczbtb">
+	    	</div>
+	    	<div id="lsdjbt" style=" width:300px;height:300px;display:none" class="kczbtb">
+	    	</div>
+	    	
+    	</div>
+    	<div class="liebiao">
+	    	<div class="lsxzmx lsmx">
+	    		<h4 style="color:black;">全市各性质粮食库存</h4>
+	    		<p  class="u1128">中央储备粮:</p><p id="uu1124" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">省级储备粮:</p><p id="uu1126" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">市级储备粮:</p><p id="uu1128" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">区级储备粮:</p><p id="uu1130" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">临时储备粮:</p><p id="uu1132" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">商品粮:</p><p id="uu1134" class="uu1124">0.000</p>
+	    	</div>
+	    	
+	    	<div class="lspzmx lsmx" style="display:none">
+	    		<h4 style="color:black;">全市各品种粮食库存</h4>
+	    		<p  class="u1128">小麦:</p><p id="pz1" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">粳稻:</p><p id="pz2" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">籼稻:</p><p id="pz3" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">其他:</p><p id="pz4" class="uu1124">0.000</p><br><br>
+	    	</div>
+	    	
+	    	<div class="lsdjmx lsmx" style="display:none">
+	    		<h4 style="color:black;">全市各等级粮食库存</h4>
+	    		<p  class="u1128">一级:</p><p id="dj1" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">二级:</p><p id="dj2" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">三级:</p><p id="dj3" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">四级:</p><p id="dj4" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">五级:</p><p id="dj5" class="uu1124">0.000</p><br><br>
+				<p  class="u1128">等外级:</p><p id="dj6" class="uu1124">0.000</p><br><br>
+	    	</div>
+    	</div>
+    </div>
+  
+<%
+	}
+%>
+  

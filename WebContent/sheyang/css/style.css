@@ -1,0 +1,12 @@
+
+body { font-family:"微软雅黑","Hiragino Sans GB","Helvetica Neue",Helvetica,tahoma,arial,Verdana,sans-serif,"WenQuanYi Micro Hei","\5B8B\4F53";font-size: 12px;color: #343434;  padding:0; margin:0;  background:url(../images/back.jpg) no-repeat; background-size:100% 100%;}
+html,body{position:absolute;height:100%; width:100%; padding-top:50px; overflow:hidden;}
+.title{ font-size:48px; text-align:center; margin:80px 0;text-shadow:#fff 1px 0 0,#fff 0 1px 0,#fff -1px 0 0,#fff 0 -1px 0;
+-webkit-text-shadow:#fff 1px 0 0,#fff 0 1px 0,#fff -1px 0 0,#fff 0 -1px 0;
+-moz-text-shadow:#fff 1px 0 0,#fff 0 1px 0,#fff -1px 0 0,#fff 0 -1px 0;
+*filter: Glow(color=#fff, strength=1);}
+.back{ width:775px; height:419px;background:url(../images/back.png) no-repeat; margin:0 auto;}
+.input{ width:300px; height:40px; font-size:18px; padding-left:10px; margin-bottom:23px;}
+.form{ width:310px; margin-left:400px; padding-top:80px;}
+.btn{ width:100px; height:46px; border:none; background:url(../images/btn.png) no-repeat; font-size:20px; color:#fff; padding:0; display:block; margin:10px 0 0 36px; float:left; cursor: pointer;}
+.btn span{ display:block; margin-top:-6px; margin-left:-3px;}

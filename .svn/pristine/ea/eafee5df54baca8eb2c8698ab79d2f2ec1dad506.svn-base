@@ -1,0 +1,449 @@
+<% layout("/WEB-INF/web/ui/globalStyle.html"){ %>
+<script type="text/javascript" src="${ctxPath}/web/echarts.js"></script>
+
+<title>SimpleTree</title>
+<link rel="stylesheet" type="text/css"
+	href="${ctxPath}/resource/SimpleTree.css" />
+<script type="text/javascript" src="${ctxPath}/resource/SimpleTree.js"></script>
+
+<style>
+
+.active {
+	background-color: #B0C4DE;
+}
+
+.conttext {
+	border: 1px solid;
+	width: 300px;
+	height: 300px;
+	float: left;
+}
+
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+
+.panel-info {
+	float: left;
+	width: 250px;
+	height: 600px;
+}
+
+.panel-success {
+	margin-left: 30px;
+	float: left;
+	width: 400px;
+	height: 600px;
+}
+.panel{
+	margin-top: 10px;
+}
+
+#panelDemo10,#panelDemo9{
+	 background-color: rgba(217, 237, 247, 0.3);
+}
+
+#panelDemo11{
+	margin-left: 10px;
+}
+.st_tree{
+	height:550px;
+	overflow-y:scroll;
+}
+</style>
+
+<script type="text/javascript">
+var flag = 0;
+var fid;
+$(function(){
+	//加载品类
+	$.ajax({
+		url:'${ctxPath}/jiage/graintype.do',
+		type:'post',
+		data : {
+			"page" : 1,
+			"rows" : 10000,
+		},
+		dataType:'json',
+		success:function(data){
+			var ni = 0;
+			var nj = 0
+			$.each(data.list, function(i, n) {
+				if(n.vCode.trim().length == 3){
+					if(ni == 0){
+						$("#pinlei").append('<option  value="'+n.vCode+'" selected="selected">'
+										+ n.vName + '</option>');
+						//$("#div_pinlei").find(".select2-selection__rendered").text(n.vName);
+						//$("#div_pinlei").find(".select2-selection__rendered").attr("title",n.vName);
+					}else{
+						$("#pinlei").append('<option  value="'+n.vCode+'" >' + n.vName + '</option>');
+					}
+					ni++;
+				}
+				if(n.vCode.trim().length > 3){
+					if(nj == 0){
+						$("#code").append(
+								'<option value="'+n.vCode+'" selected="selected">'+ n.vName + '</option>');
+						$("#div_code").find(".select2-selection__rendered").text("请选择");
+						$("#div_code").find(".select2-selection__rendered").attr("title","请选择");
+					}else{
+						$("#code").append('<option value="'+n.vCode+'">'+ n.vName + '</option>');
+					}
+					nj++;
+				}
+			});
+		},
+		error:function(){
+		}
+	});
+	gettree();
+});
+
+function gettree(){
+	$("#sysp").empty();
+	$
+	.ajax({
+		url : '${ctxPath}/jiage/querypinzhong.do',
+		type : 'post',
+		data : {
+			"page" : 1,
+			"rows" : 10000
+		},
+		dataType : 'json',
+		success : function(data) {
+			//=======================================动态加载tree=================================
+			var num = data.list.length;
+
+			for (var j = 0; j < num; j++) {
+				var li;
+				
+				li = '<li id="'+data.list[j].id+'" level="'+data.list[j].level+'" code="'+data.list[j].code+'" leixing="'+data.list[j].leixing+'" name="'+data.list[j].name+'" ><a href="#" ref="sypz">&nbsp;'
+						+ data.list[j].name
+						+ '('+data.list[j].level+')</a></li>';
+				$("#sysp").append(li);
+				
+			}
+			//=======================================动态加载tree（结束）=================================
+			//=====================================a的单击事件===================================
+
+			$(".st_tree")
+				.SimpleTree(
+					{
+						click : function(a) {
+							if (!$(a).attr("hasChild")) {
+								alert($(a).attr("ref"));
+							}
+							//增加和删除a的选中状态
+							$("a").removeClass("active");
+							$(a).addClass("active")
+									.siblings()
+									.removeClass("active");
+
+							
+							var pinzhong = $(a).parent().attr("name");
+							if(pinzhong == "所有商品"){
+								zhikong();
+							}else{
+								//1为修改
+								flag = 1;
+								fid = $(a).parent().attr("id");
+								var level = $(a).parent().attr("level");
+								var code = $(a).parent().attr("code");
+								var leixing = $(a).parent().attr("leixing");
+								$("#pinzhong").val(pinzhong);
+								$("#level").val(level);
+								$("#pinlei").val(code.substring(0,3));
+								var plname = $("#pinlei option:selected").text();
+								$("#div_pinlei").find(".select2-selection__rendered").text(plname);
+								$("#div_pinlei").find(".select2-selection__rendered").attr("title",plname);
+								$("#code").val(code);
+								var pzname = $("#code option:selected").text();
+								$("#div_code").find(".select2-selection__rendered").text(pzname);
+								$("#div_code").find(".select2-selection__rendered").attr("title",pzname);
+								$("#leixing").val(leixing);
+							}
+						}
+					});
+			//===================================a的单击事件(结束)===================================
+		},
+		error : function() {
+			alert("读取品种失败");
+		}
+	});
+	
+	$(".select-p").select2();
+}
+
+function addPz() {
+	if (confirm("是否添加新的粮食品种")) {
+		flag = 2;
+		//重置品种和等级
+		zhikong();
+	}
+}
+
+function plchange(){
+	var plcode = $("#pinlei option:selected").val();
+	//加载品类
+	$.ajax({
+		url:'${ctxPath}/jiage/graintype.do',
+		type:'post',
+		data : {
+			"page" : 1,
+			"rows" : 10000,
+			"vCode": plcode
+		},
+		dataType:'json',
+		success:function(data){
+			$("#code").val(data.list[0].vCode);
+			$("#div_code").find(".select2-selection__rendered").text(data.list[0].vName);
+			$("#div_code").find(".select2-selection__rendered").attr("title",data.list[0].vName);
+		},
+		error:function(){
+		}
+	});
+}
+
+function savePz() {
+	//品种名称
+	var pinzhong = $("#pinzhong").val();
+	//等级名称
+	var level = $("#level").val();
+	//国标编码
+	var pzcode = $("#code option:selected").val();
+	var leixing = $("#leixing option:selected").val();
+	if(pinzhong != "" && pinzhong != null){
+		if(leixing != "" && leixing != null && leixing != "0"){
+			//新增粮食品种
+			if (flag == 2) {
+				if (confirm("是否保存新粮食品种" + pinzhong)) {
+					$.ajax({
+						url : '${ctxPath}/jiage/savepz',
+						type : 'post',
+						data : {
+							"name" : pinzhong,
+							"level" : level,
+							"code" : pzcode,
+							"state" : 1,
+							"leixing" : leixing,
+						},
+						dataType : 'json',
+						success : function(msg) {
+							if (!msg.ret) {
+								alert(msg.message);
+							} else {
+								alert("保存成功");
+								zhikong();
+							}
+							gettree();
+						},
+						error : function() {
+							alert("新增失败,请寻找数据库管理员查看是否是已删除历史品种");
+						}
+					});
+				}
+			}
+			//修改当前选中的粮食品种
+			if (flag == 1) {
+				
+				if(fid == null || fid == ""){
+					alert("请选择粮食品种修改或新增粮食品种");
+					return false;
+				}
+				//alert(fid+","+pinzhong+","+level+","+pzcode);
+				if (confirm("是否修改当前商品，请谨慎修改，修改将导致所有涉及该商品的报价信息变动")) {
+					$.ajax({
+						url : '${ctxPath}/jiage/updatepz',
+						type : 'post',
+						data : {
+							"id" : fid,
+							"name" : pinzhong,
+							"level" : level,
+							"code" : pzcode,
+							"state" : 1,
+							"leixing" : leixing,
+						},
+						dataType : 'json',
+						success : function(msg) {
+							if (!msg.ret) {
+								alert(msg.message);
+							} else {
+								alert("修改成功");
+								zhikong();
+							}
+							gettree();
+						},
+						error : function() {
+							alert("修改粮食品种失败");
+						}
+					});
+				}
+			}
+		}else{
+			alert("品种类型不能为空");
+		}
+	}else{
+		alert("品种名称不能为空");
+	}
+}
+
+//将右侧详细信息栏置空
+function zhikong(){
+	$("#pinzhong").val("");
+	$("#level").val("");
+	$("#pinlei").val("");
+	$("#div_pinlei").find(".select2-selection__rendered").text("");
+	$("#div_pinlei").find(".select2-selection__rendered").attr("title","");
+	$("#code").val("");
+	$("#div_code").find(".select2-selection__rendered").text("");
+	$("#div_code").find(".select2-selection__rendered").attr("title","");
+	$("#leixing").val("0");
+}
+
+//删除品种
+function deletePz() {
+	var pinzhong = $("#pinzhong").val();
+	if(pinzhong == null || pinzhong == "" || pinzhong == "请选择"){
+		alert("请先选择品种");
+		return false;
+	}
+	if (confirm("是否删除粮食品种" + pinzhong + "将删除该品种的所有报价数据请谨慎删除")) {
+		$.ajax({
+			url : '${ctxPath}/jiage/deletepz',
+			type : 'post',
+			data : {
+				"id" : fid,
+			},
+			dataType : 'json',
+			success : function(msg) {
+				if (!msg.ret) {
+					alert(msg.message);
+				} else {
+					alert("删除成功");
+					zhikong();
+				}
+				gettree();
+			},
+			error : function() {
+				alert("删除失败");
+			}
+		});
+	}
+}
+
+</script>
+</head>
+<body>
+	<div class="panel panel-default">
+		<div
+			style="border: 1px solid #ADD8E6; width: 100%; background-color: #E8F2F9; border-radius: 3px; margin-top: 5px"
+			align="left">
+			<img alt="" src="${ctxPath}/img/titleico.png"
+				style="padding: 5px; position: absolute;"> <span
+				style="height: 50px; font-size: 20px; color: black; padding: 0px; margin-left: 25px;"><b>品种管理</b></span>
+		</div>
+		<div class="panel-heading">
+			<div class="form-inline" >
+				<p class="caozuo">
+					<a class="btn btn-xs btn-success" type="button" onclick="addPz()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-clipboard" aria-hidden="true">&nbsp;新增</i></a> <a
+						class="btn btn-xs btn-success" type="button" onclick="savePz()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-floppy-o" aria-hidden="true">&nbsp;保存</i></a> <a
+						class="btn btn-xs btn-success" type="button" onclick="deletePz()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-times" aria-hidden="true">&nbsp;删除</i>
+					</a> 
+				</p>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="panel-body" >
+			<div id="panelDemo10" class="panel panel-info" style="width:23%;float:left">
+			<div class="panel-heading">商品列表</div>
+			<div class="panel-body" style="width:100%;">
+				<div class="st_tree">
+					<ul class="st_tree_ul">
+						<li id="0" name='所有商品'><a href="#" ref="sypz">&nbsp;所有商品</a></li>
+						<ul id="sysp"></ul>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="panelDemo9" class="panel panel-success" style="width:74%;float:left">
+			<div class="panel-heading">商品详细信息</div>
+			<div class="panel-body" style="margin-top: 20px;">
+			
+				<div class="col-lg-12 col-md-12">
+		        	<div class="widget">
+		        		<div class="widget-header">
+		                </div>
+		                <div class="widget-body">
+		                <div class="row">
+		                	<div class="col-xs-6">	
+								<div class="form-group">
+									<label>品种名称</label>
+									<div id="div_pz">
+										<input type="text" id="pinzhong" class="form-control input-sm"/>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label>质量等级/品牌</label>
+									<div id="div_grade">
+										<input type="text" id="level" class="form-control input-sm"/>
+									</div>
+								</div>
+							</div>	
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label>国标品类</label>
+									<div id="div_pinlei">
+										<select id="pinlei" class="form-control input-sm  select-p" onchange="plchange()">
+											<option value="请选择">请选择</option>
+										</select>
+									</div>
+								</div>
+							</div>	
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label>国标品种</label>
+									<div id="div_code">
+										<select id="code" class="form-control input-sm	select-p">
+											<option value="请选择">请选择</option>
+										</select>
+									</div>
+								</div>
+							</div>	
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label>品种类型</label>
+									<div id="div_code">
+										<select id="leixing" class="form-control input-sm">
+											<option value="0">请选择</option>
+											<option value="1">小麦</option>
+											<option value="2">稻</option>
+											<option value="3">麦麸</option>
+											<option value="4">米</option>
+											<option value="5">面</option>
+											<option value="6">豆</option>
+											<option value="7">油</option>
+											<option value="8">其他</option>
+										</select>
+									</div>
+								</div>
+							</div>								
+		                </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>		
+</div>
+<%}%>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>质检记录</title>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/css/icon.css">
+    <script type="text/javascript" src="${ctxPath}/js/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/easyui-lang-zh_CN.js"></script>
+    <style type="text/css">
+        #table_id{
+            border: 1px solid #999;
+            text-align: center;
+            background-color: white;
+            margin: 20px;
+        }
+        #nbk{
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        $.fn.datagrid.defaults.fit=true;
+        $.fn.datagrid.defaults.pagination=true;
+        $.fn.datagrid.defaults.rownumbers=true;
+        $.fn.datagrid.defaults.singleSelect=true;
+        $.fn.datagrid.defaults.pageSize=15;
+        $.fn.datagrid.defaults.pageList=[15,50,100];
+        $.fn.combobox.defaults.panelHeight='auto';
+    </script>
+</head>
+<body class="easyui-layout" id="table_id">
+<div data-options="region:'center',noheader:true, border:false,fit:true" style="padding: 30px;">
+    <div class="easyui-layout" fit="true">
+        <div data-options="region:'north',border:false"
+             style="padding: 5px 10px; height: 100px;">
+            <div id="nbk">
+                <h2><font size="5px">质量检测</font></h2>
+            </div>
+            <div style="float: right; margin-right: 25px;" id="cha">
+				<span id="hideline"><label id="bianhao" style="margin-top:5px">流水号:</label>
+				<input type="text" id="input_flow_num"  class="easyui-textbox" style="width: 200px;margin-top:5px" name="" />
+				</span>
+                <a href="javascript:void(0);" class="easyui-linkbutton" onclick="doSearch()" iconCls="icon-search" id="idchaxun">查询</a>
+                <a href="javascript:void(0);" class="easyui-linkbutton" onclick="qingk()" id="qingk">清空</a>
+            </div>
+        </div>
+
+        <div data-options="region:'center',noheader:true, border:false"id="id4">
+            <table class="easyui-datagrid" fitcolumns="true" id="szlk"
+                   data-options="url:'${ctxPath}/app/searchlscrk',method:'get'">
+                <thead>
+                <tr>
+                    <th data-options="field:'vSwiftNumber'">流水号</th>
+                    <th data-options="field:'dtRegistrateTime',width:120">检验日期 </th>
+                    <th data-options="field:'SubTypeName',width:120">品种  </th>
+                    <th data-options="field:'dmMoisture',width:200">水份(%) </th>
+                    <th data-options="field:'dmImpurity',width:200">杂质(%)</th>
+                    <th data-options="field:'dmOriginalBRRatio',width:200">出糙(%) </th>
+                    <th data-options="field:'dmGamma',width:200">容重(g/l) </th>
+                    <th data-options="field:'dmUnsoundKernel',width:200">不完善粒(%) </th>
+                    <th data-options="field:'dmYellowRiceKernel',width:200">黄粒(%)</th>
+                    <th data-options="field:'dmVBRRatio',width:200">谷外糙米(%)</th>
+                    <th data-options="field:'dmMilledRice',width:200">整精米粒(%) </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <script type="text/javascript">
+            function doSearch(){
+                var input_flow_num=$("#input_flow_num").val();
+                var param = {'vSwiftNumber':input_flow_num};
+                $("#szlk").datagrid("load",param);
+            }
+            function qingk(){
+                $('#input_flow_num').textbox({
+                    value:''
+                });
+                doSearch();
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

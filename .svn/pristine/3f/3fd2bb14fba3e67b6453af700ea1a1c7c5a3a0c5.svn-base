@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Basic DataGrid - jQuery EasyUI Demo</title>
+		<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+		<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+		<!-- 打钩控件 -->
+		<link rel="stylesheet" href="${ctxPath}/css/JCheck.css">
+		<script src="${ctxPath}/js/JCheck.js"></script>
+		<link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<script src="${ctxPath}/js/bootstrap.min.js"></script>
+		<link href="${ctxPath}/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" />
+		<script src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+		<style>
+			*,
+			*:before,
+			*:after {
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				-ms-box-sizing: border-box;
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+			.modal-body{
+				padding:0px !important;
+			}
+			[class*="radio-group-"],
+			[class*="checkbox-group-"] {
+				padding-left: 20px;
+				margin-top: 20px;
+				margin-bottom: 20px;
+			}
+			
+			[class*="radio-group-"]>h3,
+			[class*="checkbox-group-"]>h3 {
+				margin-bottom: 10px;
+			}
+			
+			.u-radio,
+			.u-checkbox {
+				line-height: 24px;
+			}
+			
+			.u-radio .icon,
+			.u-checkbox .icon {
+				display: inline-block;
+				*zoom: 1;
+				*display: inline;
+				position: relative;
+				top: -2px;
+				width: 24px;
+				height: 24px;
+				vertical-align: middle;
+			}
+			
+			
+			.u-radio .icon {
+				background: url("${ctxPath}/img/icon_radio.png") center no-repeat;
+				-webkit-background-size: contain;
+				background-size: contain;
+			}
+			
+			.u-radio.z-checked .icon {
+				background-image: url("${ctxPath}/images/clicktubiao.png");
+				;
+			}
+			
+			.u-checkbox .icon {
+				background: url("${ctxPath}/img/icon_checkbox.png") center no-repeat;
+				-webkit-background-size: contain;
+				background-size: contain;
+			}
+			
+			.u-checkbox.z-checked .icon {
+				background-image: url("${ctxPath}/images/clicktubiao.png");
+			}
+			
+			.bootstrap-dialog-message {
+				height: 300px;
+			}
+			
+			.modal1 {
+				width: 1000px;
+				margin-left: -500px;
+			}
+			.radio-group-1{
+				background:url("${ctxPath}/images/biaoshibeijin.png") no-repeat;
+			}
+			.u-checkbox .icon7 {
+			    background: url("${ctxPath}/images/07.png") center no-repeat;
+			    background-size: contain;
+			}
+			.u-checkbox .icon6 {
+			    background: url("${ctxPath}/images/06.png") center no-repeat;
+			    background-size: contain;
+			}
+			.u-radio .icon1 {
+			    background: url("${ctxPath}/images/01.png") center no-repeat;
+			    background-size: contain;
+			}
+			.u-radio .icon2 {
+			    background: url("${ctxPath}/images/02.png") center no-repeat;
+			    background-size: contain;
+			}
+			.u-radio .icon3 {
+			    background: url("${ctxPath}/images/03.png") center no-repeat;
+			    background-size: contain;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: #CFDCB1">
+		<div class="radio-group-1" style=" position: absolute; right: 0px; top: -20px; min-width: 200px; z-index: 999; ${isNotEmpty(parameter.method)?" display:none; "}">
+			<h3 style="background:url(${ctxPath}/images/zonghexinxi.png) no-repeat;height:15px;width:100%;margin-bottom: 0px; margin-left: -20px;"></h3>
+			<h3 style="background:url(${ctxPath}/images/xiahuaxian.png) no-repeat;height:15px;width:100%;margin-bottom: 0px;margin-top:0px;"></h3>
+			<ul style="list-style-type: none">
+				<% if((pingmiantu_cangrong!"true")=="true"){ %>
+				<li><label class="u-radio" data-name="radio1"> 
+			<input name="radio1" type="radio" checked="checked" id="crradio" onclick="CrSelected()"> 
+			<i class="icon icon1"></i> 
+			<img class="tubiao" alt="仓容" src="${ctxPath}/images/cangrong.png" style="margin-left: -66px;">
+			
+			</label></li>
+				<% }if((pingmiantu_liangqing!"true")=="true"){ %>
+				<li><label class="u-radio" data-name="radio1"> <input
+					name="radio1" id="lqradio" type="radio" onclick="lqSelected()">
+					<i class="icon icon2" style="color: #39F0AC"></i> 
+					<img class="tubiao" alt="粮情" src="${ctxPath}/images/liangqing.png" style="margin-left: -66px;">
+
+			</label></li>
+				<% }if((pingmiantu_qiti!"true")=="true"){ %>
+				<li><label class="u-radio" data-name="radio1"> <input
+					name="radio1" id="qtradio" type="radio" onclick="qtSelected()">
+					<i class="icon icon3"></i> 
+					<img class="tubiao" alt="气体检测" src="${ctxPath}/images/qitijiance.png" style="">
+					
+			</label></li>
+				<% }if((pingmiantu_shipin!"true")=="true"){ %>
+				<li><label class="u-checkbox"> <input name="checkbox"
+					type="checkbox" id="spbox" style="color: #1622E5"
+					onclick="isSpSelected()"> 
+					<i class="icon icon6"></i> 
+					<img class="tubiao" alt="视频" src="${ctxPath}/images/shiping.png" style="">
+			</label></li>
+				<% }if((pingmiantu_qitixielou!"true")=="true"){ %>
+				<li><label class="u-checkbox"> <input name="checkbox"
+					type="checkbox" id="qtbox" onclick="isqtxlSelected()"> <i
+					class="icon icon7"></i> 
+					<img class="tubiao" alt="气体泄漏检测" src="${ctxPath}/images/qitixieloujiance.png" style="">
+			</label></li>
+				<% } %>
+			</ul>
+			<% if((pingmiantu_cangrong!"true")=="true"){ %>
+			<!--  
+			<div id="bz">
+		
+				<div>
+					<div style="float: left; border: 1px solid #ccc; width: 25px; height: 15px; background: #66DD00; border-radius: 3px;"></div>
+					<div style="float: left; font-size: 13px;">代表库存在80%以上</div>
+				</div>
+				</br>
+				<div>
+					<div style="float: left; border: 1px solid #ccc; width: 25px; height: 15px; background: #FFDD55; border-radius: 3px;"></div>
+					<div style="float: left; font-size: 13px;">代表库存在20%~80%之间</div>
+				</div>
+				</br>
+				<div>
+					<div style="float: left; border: 1px solid #ccc; width: 25px; height: 15px; background: #FF3333; border-radius: 3px;"></div>
+					<div style="float: left; font-size: 13px;">代表库存在20%以下</div>
+				</div>
+			</div>
+			-->
+			
+			<%}%>
+		</div>
+
+		<div>
+			<div id="rq" style="width:${pingmiantu_width!0}px;margin:0 auto;position: relative;">
+				<div style=""></div>
+				<img src="data:image/png;base64,${pictrue!}" id="pmt" />
+			</div>
+		</div>
+		<script type="text/javascript">
+			var parentwindow = window;
+			if(window.top.BootstrapDialog) {
+				parentwindow = window.top;
+			}
+
+			var qyzzjgdm = "${parameter.qyzzjgdm}";
+			var kdbm = "${parameter.kdbm}";
+
+			function isqtxlSelected() {
+				if($("#qtbox").prop("checked")) {
+					getqtxl();
+				} else {
+					$.post("${ctxPath}/yewu/queryQtxlInfo.do", function(data) {
+						$.each(data.rows, function(i, n) {
+							if(n.fValue > 0) {
+								$("#qtxlimg" + n.vCode).css('display', 'none');
+							}
+						});
+					}, 'json');
+					$("#rq .qtxl").remove();
+				}
+			}
+
+			function getqtxl() {
+				$.post("${ctxPath}/yewu/queryQtxlInfo.do", {
+					qyzzjgdm: qyzzjgdm,
+					kdbm: kdbm
+				}, function(data) {
+					$.each(data, function(i, n) {
+						var x = n.pointx.replace("px", "");
+						var y = n.pointy.replace("px", "");
+						var code = i;
+						var name = n.name;
+						$("<div id=qtxl" + n.code + " class=\"qtxl\"  style=\"border-radius:20px;background:rgb(202, 32, 245);left: " + x + "px; top: " + y + "px;\">" +
+							"<div id=qtxl" + code + " class=\"qtxlInfo\" style=\"z-index: 130;\" data-html=\"true\" data-toggle=\"popover\" data-placement=\"bottom\" data-container=\"body\" title=" + name + "气体泄露情况  data-trigger=\"hover\">" + name + "</div>" +
+							"</div>" +
+							"<img class=\"qtxlimg\"    id=qtxlimg" + code + " src=\"${ctxPath}/img/locate.gif\" style=\"left: " + x + "px; top: " + y + "px;\">;").appendTo("#rq");
+
+						var content = "<p>　 泄漏检测值：" + Number(n.value) + " ppm </p>";
+						$("#qtxl" + code).attr("data-content", content);
+					});
+					$(".qtxlInfo").popover();
+				}, 'json');
+			}
+
+			function getSp() {
+				$.post("${ctxPath}/yewu/queryShiPin.do", {
+					qyzzjgdm: qyzzjgdm,
+					kdbm: kdbm
+				}, function(data) {
+					$.each(data, function(i, n) {
+						var x = n.pointx.replace("px", "");
+						var y = n.pointy.replace("px", "");
+						$("<div class=\"shipin\" onclick=\"showSp(\'" + n.name + "\',\'" + n.status + "\',\'" + n.info.ip + "\',\'" +  n.info.channel + "\',\'" + n.info.username + "\',\'" + n.info.password + "\');\" >" +
+							"<img style=\"float:left;\" src=\"${ctxPath}/img/view.png\"/>" +
+							"</div>").css("left", Number(x)).css("top", Number(y)).appendTo("#rq");
+					});
+				}, 'json');
+			}
+
+			function getCr() {
+				$.post("${ctxPath}/yewu/queryCangRongCangFangInfo.do", {
+					qyzzjgdm: qyzzjgdm,
+					kdbm: kdbm
+				}, function(data) {
+					$.each(data, function(i, n) {
+						n.code = n.ajbh;
+						var x = n.pointx.replace("px", "");
+						var y = n.pointy.replace("px", "");
+						var content = "<p>　 粮仓容量(吨)：" + Number(n.congrong) + "</p>" + "<p>　 粮食数量(吨)：" + (Number(n.shuliang) / 1000) + "</p>" + "<p>　　　粮食性质：" + n.xingzhi + "</p>" + "<p>　　　粮食品种：" + n.pinzhong + "</p>" + "<p>　　　粮食等级：" + n.dengji + "</p>";
+						$("<div id=ck" + n.code + " class=\"cangfang\">" +
+							"<div id=cr" + n.code + " class=\"jindutiao\" style=\"height:0%;\"></div>" +
+							"<div id=crInfo" + n.code + " class=\"info\" onclick=\"showlc(\'" + n.cangming + "\',\'" + n.code + "\');\" data-html=\"true\" data-toggle=\"popover\" data-placement=\"bottom\" data-container=\"body\" title=" + n.cangming + "仓储信息  data-trigger=\"hover\">" + n.cangming + "</br>" + n.baifenbi + "%" + "</span>" + "</div>" +
+							"</div>").css("left", Number(x)).css("top", Number(y)).appendTo("#rq");
+						jdtInfo(n.baifenbi, n.code, n.name);
+
+						$("#crInfo" + n.code).attr("data-content", content);
+					});
+					$(".info").popover();
+				}, 'json');
+			}
+
+			function getQt() {
+				$.post("${ctxPath}/yewu/queryCangfangQT.do", {
+					qyzzjgdm: qyzzjgdm,
+					kdbm: kdbm
+				}, function(data) {
+					$.each(data, function(i, n) {
+						//设置仓的点
+						n.code = i;
+						var x = n.pointx.replace("px", "");
+						var y = n.pointy.replace("px", "");
+						var ix = Number(x);
+						var iy = Number(y);
+						var code = i;
+						var name = n.cangming;
+						$("<div id=ck" + code + " class=\"qt\" style=\"border-radius:20px;background:#33FF33;left: " + x + "px; top: " + y + "px;\">" +
+							"<div id=crInfo" + code + " class=\"qtInfo\" style=\"z-index: 130;\" data-html=\"true\" data-toggle=\"popover\" data-placement=\"bottom\" data-container=\"body\" title=" + name + "气体信息  data-trigger=\"hover\">" + name + "</div>" +
+							"</div>" +
+							"<img class=\"jb\" id=bj" + code + " src=\"${ctxPath}/img/locate.gif\" style=\"left: " + ix + "px; top: " + iy + "px;\">;").appendTo("#rq");
+						var content = "<p>　　氧气：" + n.yangqi + "</p>";
+						content = content + "<p>二氧化碳：" + n.eryanghuatan + "</p>";
+						content = content + "<p>　磷化氢：" + n.linhuaqin + "</p>";
+						$("#crInfo" + code).attr("data-content", content);
+						$(".qtInfo").popover();
+					});
+				}, 'json');
+			}
+
+			function getLq() {
+				$.post("${ctxPath}/yewu/queryLiangqingInfo.do", {
+					qyzzjgdm: qyzzjgdm,
+					kdbm: kdbm
+				}, function(data) {
+					$.each(data, function(i, n) {
+						var x = n.pointx.replace("px", "");
+						var y = n.pointy.replace("px", "");
+						var code = n.canghao;
+						$("<div id=ck" + code + " class=\"qt\" style=\"border-radius:20px;background:#39F0AC;left: " + x + "px; top: " + y + "px;\">" +
+							"<div id=crInfo" + code + " class=\"qtInfo\" onclick=\"showlq(\'" + n.cangming + "\',\'" + n.canghao + "\');\" style=\"z-index: 130;\" data-html=\"true\" data-toggle=\"popover\" data-placement=\"bottom\" data-container=\"body\" title=" + n.cangming + "粮情信息  data-trigger=\"hover\">" + n.cangming + "</div>" +
+							"</div>" +
+							"<img class=\"jb\" id=bj" + code + " src=\"${ctxPath}/img/locate.gif\" style=\"left: " + x + "px; top: " + y + "px;\">;").appendTo("#rq");
+						var content = "<p>粮食品种：" + n.pinzhong + "</p>";
+						content = content + "<p>粮食库存：" + Number(n.kucun) + "(公斤)" + "</p>";
+						if(n.qiwen=="null"){
+							content = content + "<p>气温： 0.0℃</p>";
+						}else{
+							content = content + "<p>气温：" + n.qiwen + "℃" + "</p>";
+						}
+						if(n.qishi=="null"){
+							content = content + "<p>气湿：0.0%</p>";
+						}else{
+							content = content + "<p>气湿：" + n.qishi + "%" + "</p>";
+						}
+						
+						content = content + "<p>仓温：" + n.cangwen + "℃" + "</p>";
+						content = content + "<p>仓湿：" + n.cangshi + "%" + "</p>";
+
+						$("#crInfo" + code).attr("data-content", content);
+					});
+					$(".qtInfo").popover();
+				}, 'json');
+			}
+
+			function showlq(name, code) {
+				parentwindow.BootstrapDialog.show({
+					title: name + "粮情信息",
+					size: 'size-wide',
+					message: $('<iframe frameborderno="0"  style="width:100%;height:100%;overflow-x: hidden;border-width:0px;"src= "${ctxPath}/yewu/cangchuzhinenghua/sanweiliangqing.html?qyzzjgdm=${parameter.qyzzjgdm}&kdbm=${parameter.kdbm}&orderno=' + code + '"/>'),
+					onshow: function(dlg) {
+						$(".bootstrap-dialog").addClass("modal1");
+						dlg.$modalDialog.css("width", "1100px"); //modal-dialog
+						$(".bootstrap-dialog-message", dlg.$modalContent).css("height", "600px"); //modal-dialog
+					}
+				});
+			}
+			$(function() {
+				<%
+      		if(isNotEmpty(parameter.method)){
+      			print("get"+parameter.method+"()");
+      		}else{
+      			if((pingmiantu_cangrong!"true")=="true"){
+      				print("getCr();");
+      				print("$('.u-radio').jRadio();");
+      				print("$('.u-checkbox').jCheckbox();");
+      			}else{
+      				print("getLq();");
+      				print("$('.u-radio').jRadio();");
+          			print("$('.u-checkbox').jCheckbox();");
+      			}
+      		}
+      	%>
+			});
+
+			function rgba(c, a) {
+				var c1 = c.split("rgb(");
+				var c2 = c1[1].split(")");
+				var c3 = c2[0].split(",");
+				return "rgba(" + c3[0] + "," + c3[1] + "," + c3[2] + "," + a + ")";
+			}
+
+			function jdtInfo(bfb, code, name) {
+				var ckid = "#ck" + code;
+				var crid = "#cr" + code;
+				var ck = $(ckid);
+				var jdt = $(crid);
+				if(bfb < 3) {
+					jdt.css('height', '2%');
+				} else {
+					jdt.css('height', bfb + '%');
+				}
+				 if(bfb > 100){
+					jdt.css('background', '#F90606');
+				}else if(bfb > 80) {
+					jdt.css('background', '#66DD00');
+				} else if(bfb < 81 && bfb > 20) {
+					jdt.css('background', '#FFDD55');
+				}else {
+					jdt.css('background', '#FF3333');
+				}
+			}
+
+			function getqtxlInfo(code) {
+				$.post("${ctxPath}/yewu/queryQtxlInfo.do", {
+					vCode: code,
+					qyzzjgdm: qyzzjgdm,
+					kdbm: kdbm
+				}, function(data) {
+					var content = "";
+					if(Number(data.rows[0].fValue) > 0) {
+						content += "<p>　 气体泄露：" + parseFloat(data.rows[0].fValue) + " (" + data.rows[0].vUnit + ")" + "</p>";
+						//$("#qtxl" + code).css('background', '#FFFFFF');
+						$("#qtxlimg" + code).css('display', 'block');
+					} else {
+						//alert(parseFloat(data.rows[0].fValue));
+						content += "<p>　 气体泄露：" + data.rows[0].fValue + " (" + data.rows[0].vUnit + ")" + "</p>";
+					}
+
+					$("#qtxl" + code).attr("data-content", content);
+					$(".qtxlInfo").popover();
+
+				}, 'json');
+			}
+
+			function showlc(name, code) {
+				parentwindow.BootstrapDialog.show({
+					title: name,
+					message: $('<iframe frameborderno="0" style="width:100%;height:300px;border-width:0px;"src= "${ctxPath}/yewu/cangchuzhinenghua/cangchuInfo.html?qyzzjgdm=${parameter.qyzzjgdm}&kdbm=${parameter.kdbm}&code=' + code + '"/>')
+				});
+			}
+
+			function CrSelected() {
+				$("#rq .qt").remove();
+				$("#rq .jb").remove();
+				$("#rq .zntf").remove();
+				$("#rq .zncc").remove();
+				$("#rq .cangfang").remove();
+				$("#bz").html("");
+				$("#bz").html("<div><div style=\" float:left; border:1px solid #ccc;width:25px;height:15px;background: #66DD00;border-radius:3px;\"></div>" +
+					"<div style=\" float:left;font-size: 13px;\">代表库存在80%以上</div></div></br>" +
+					"<div><div style=\" float:left;border:1px solid #ccc;width:25px;height:15px;background: #FFDD55;border-radius:3px;\"></div>" +
+					"<div style=\" float:left;font-size: 13px;\">代表库存在20%~80%之间</div></div></br>" +
+					"<div><div style=\" float:left;border:1px solid #ccc;width:25px;height:15px;background: #FF3333;border-radius:3px;\"></div>" +
+					"<div style=\" float:left;font-size: 13px;\">代表库存在20%以下</div></div>");
+				getCr();
+			}
+
+			function lqSelected() {
+				$("#rq .qt").remove();
+				$("#rq .jb").remove();
+				$("#rq .zntf").remove();
+				$("#rq .zncc").remove();
+				$("#rq .cangfang").remove();
+				$("#bz").html("");
+				$("#bz").html("<div><img style=\"float:left;width:30px;height:30px;\" src=\"${ctxPath}/img/locate.gif\">" +
+					"<div style=\"float:left;font-size: 13px;\">代表温度报警</div></div>");
+				getLq();
+			}
+
+			function qtSelected() {
+				$("#rq .qt").remove();
+				$("#rq .jb").remove();
+				$("#rq .zntf").remove();
+				$("#rq .zncc").remove();
+				$("#rq .cangfang").remove();
+				$("#bz").html("");
+				$("#bz").html("<div><img style=\"float:left;width:30px;height:30px;\" src=\"${ctxPath}/img/locate.gif\">" +
+					"<div style=\"float:left;font-size: 13px;\">代表仓库有气体含量超标</div></div>");
+				getQt();
+			}
+
+			function isSpSelected() {
+				if($("#spbox").prop("checked")) {
+					getSp();
+				} else {
+					$("#rq .shipin").remove();
+				}
+			}
+
+			function showSp(name,status,ip,channel,username,password) {
+				var text = "";
+				if(status=="1"){
+					text = '<iframe id="if1" frameborderno="0" width="100%" height="300px" style="border-width:0px;"src= "${ctxPath}/yewu/shipindianjiankong/jiankongBF.html?ip=' + ip + '"/>';
+				}else{
+					text = '<iframe id="if1" frameborderno="0" width="100%" height="300px" style="border-width:0px;"src= "${ctxPath}/yewu/shipindianjiankong/jiankong.html?ip=' + ip + '&channel=' + channel + '&username=' + username + '&password=' + password + '"/>';
+				}
+
+				parentwindow.BootstrapDialog.show({
+					title: name,
+					message: $(text),
+					buttons: [{
+						label: '若不能观看，请点击此处下载最新的插件',
+						action: function() {
+							window.open("http://download.hiddns.com/download/nvrie/std/WebComponents.exe");
+							alert("下载安装后，请重启浏览器！");
+						}
+					}]
+				});
+			}
+		</script>
+		<style type="text/css">
+			* {
+				padding: 0px;
+				margin: 0px;
+			}
+			
+			.cangfang {
+				width: 50px;
+				height: 40px;
+				background: #F2F3ED;
+				border: 1px solid #ccc;
+				position: absolute;
+				font-size: 12px;
+				border-radius: 3px;
+				text-align: center;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			.shipin {
+				border: 0px solid #ccc;
+				position: absolute;
+				font-size: 12px;
+				border-radius: 3px;
+				text-align: center;
+				font-weight: bold;
+			}
+			
+			.jindutiao {
+				width: 50px;
+				position: absolute;
+				left: 0;
+				bottom: 0;
+			}
+			
+			.info {
+				width: 50px;
+				height: 45px;
+				border: 0px solid #ccc;
+				position: absolute;
+				font-size: 12px;
+				text-align: center;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				margin: 0 auto;
+				overflow: hidden;
+				cursor: pointer;
+			}
+			
+			.qt {
+				width: 40px;
+				height: 40px;
+				background: #fafafa;
+				border: 1px solid #ccc;
+				position: absolute;
+				font-size: 12px;
+				border-radius: 3px;
+				text-align: center;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			.zntf {
+				width: 40px;
+				height: 40px;
+				background: #fafafa;
+				border: 1px solid #ccc;
+				position: absolute;
+				font-size: 12px;
+				border-radius: 3px;
+				text-align: center;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			.zncc {
+				width: 40px;
+				height: 40px;
+				background: #fafafa;
+				border: 1px solid #ccc;
+				position: absolute;
+				font-size: 12px;
+				border-radius: 3px;
+				text-align: center;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			.qtxl {
+				width: 40px;
+				height: 40px;
+				background: #fafafa;
+				border: 1px solid #ccc;
+				position: absolute;
+				font-size: 12px;
+				border-radius: 3px;
+				text-align: center;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			.znccInfo {
+				width: 40px;
+				height: 40px;
+				border: 0px solid #ccc;
+				position: absolute;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				overflow: hidden;
+				text-align: center;
+				line-height: 320%;
+				cursor: pointer;
+			}
+			
+			.zntfInfo {
+				width: 40px;
+				height: 40px;
+				border: 0px solid #ccc;
+				position: absolute;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				overflow: hidden;
+				text-align: center;
+				line-height: 320%;
+				cursor: pointer;
+			}
+			
+			.qtxlInfo {
+				width: 40px;
+				height: 40px;
+				border: 0px solid #ccc;
+				position: absolute;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				overflow: hidden;
+				text-align: center;
+				line-height: 320%;
+				cursor: pointer;
+			}
+			
+			.qtInfo {
+				width: 40px;
+				height: 40px;
+				border: 0px solid #ccc;
+				position: absolute;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+				overflow: hidden;
+				text-align: center;
+				line-height: 320%;
+				cursor: pointer;
+			}
+			
+			.jb {
+				width: 40px;
+				height: 40px;
+				cursor: pointer;
+				position: absolute;
+				z-index: 120;
+				display: none;
+			}
+			
+			.qtxlimg {
+				width: 40px;
+				height: 40px;
+				cursor: pointer;
+				position: absolute;
+				z-index: 120;
+				display: none;
+			}
+		</style>
+	</body>
+
+</html>

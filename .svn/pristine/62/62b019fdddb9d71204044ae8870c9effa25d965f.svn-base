@@ -1,0 +1,37 @@
+package com.zkzy.njzhpt.validator;
+
+import java.util.HashMap;
+
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.validate.Validator;
+import com.zkzy.njzhpt.bo.RenyuanBo;
+import com.zkzy.njzhpt.bo.jibenxinxiBo;
+
+public class addYaojirukuValidator extends Validator {
+
+	@Override
+	protected void handleError(Controller arg0) {
+		arg0.keepPara("name");
+		String json = "{\"ret\":false,\"message\":\"" + arg0.getAttr("nameMsg")
+				+ "\"}";
+		arg0.renderJson(json);
+	}
+
+	@Override
+	protected void validate(Controller arg0) {
+		this.setShortCircuit(true);
+		if(arg0.getPara("id")==null||arg0.getPara("id")==""){
+			if ("/cangchugl/addYjrk".equals(this.getActionKey())) {
+				validateRequiredString("xzqydm", "nameMsg", "请选择行政区域！");
+				validateRequiredString("qyzzjgdm", "nameMsg", "请选择企业！");
+				validateRequiredString("kdbm", "nameMsg", "请选择库点！");
+				validateRequiredString("yjmc", "nameMsg", "请填写药剂名称！");
+				validateRequiredString("cfdd", "nameMsg", "请填写存放地点！");
+			}
+		}
+	}
+
+}

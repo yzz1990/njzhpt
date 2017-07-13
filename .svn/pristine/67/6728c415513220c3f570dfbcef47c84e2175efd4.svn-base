@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>企业安全生产自评</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addanquantj",title="新增企业安全标准信息";
+	if (isNotEmpty(parameter.id)) {
+		var qyaq = @com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,"page":"1","rows":"100"});
+		obj = qyaq.list[0];
+		url = ctxPath+"/cangchugl/upanquantj";
+		title = "编辑企业安全标准信息";
+	};
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业安全生产标准化自评报告                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+							<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="sb">行政区域:</label>
+										<!--  
+										<input id="sb" name="sb" class="form-control" placeholder="行政区划" value="${obj.sb}">
+										-->
+										<select id="sb" name="sb" class="form-control" onchange="getxzqhdm()">	
+											<option value="">请选择</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="dbdw">企业名称:</label>
+										<select id="dbdw" name="dbdw" class="form-control" onchange="">
+											<option value="">请选择</option>
+										</select>
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+							<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="dj">等级:</label>
+										<select id="dj" name="dj" class="form-control">
+											<option value="1" ${obj.dj=="1"?" selected"}>一级</option>
+											<option value="2" ${obj.dj=="2"?" selected"}>二级</option>
+											<option value="3" ${obj.dj=="3"?" selected"}>三级</option>
+										</select>
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="zsh">证书号:</label>
+										<input id="zsh" name="zsh" class="form-control" placeholder="证书号" value="${obj.zsh}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+							<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="pddw">评定单位:</label>
+										<input id="pddw" name="pddw" class="form-control" placeholder="评定单位" value="${obj.pddw}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="bz">备注:</label>
+										<input id="bz" name="bz" class="form-control" placeholder="备注" value="${obj.bz}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="zpdf">自评得分:</label>
+										<input id="zpdf" name="zpdf" class="form-control" placeholder="自评得分" value="${obj.zpdf}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zpdj">自评等级:</label>
+										<select id="zpdj" name="zpdj" class="form-control">
+											<option value="1" ${obj.zpdj=="1"?" selected"}>优秀</option>
+											<option value="2" ${obj.zpdj=="2"?" selected"}>良好</option>
+											<option value="3" ${obj.zpdj=="3"?" selected"}>及格</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="zprq">自评日期:</label>
+										<!--  
+										<input id="zprq" name="zprq" class="form-control" placeholder="自评日期" value="${obj.zprq}">
+										-->
+										<input id="zprq" name="zprq"  class="form-control form_zprq" value="${obj.zprq}" readonly="readonly">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="sshy">所属行业:</label>
+										<input id="sshy" name="sshy" class="form-control" placeholder="所属行业" value="${obj.sshy}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="zy">专业:</label>
+										<input id="zy" name="zy" class="form-control" placeholder="专业" value="${obj.zy}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="sfgs">是否在企业内部公示:</label>
+										<select id="sfgs" name="sfgs" class="form-control">
+											<option value="1"  ${obj.sfgs=="1"?" selected"}>是</option>
+											<option value="0"  ${obj.sfgs=="0"?" selected"}>否</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="sfsqps">是否申请评审:</label>
+										<select id="sfsqps" name="sfsqps" class="form-control">
+											<option value="1" ${obj.sfsqps=="1"?" selected"}>是</option>
+											<option value="0" ${obj.sfsqps=="0"?" selected"}>否</option>
+										</select>
+									</div>
+								</div>
+							</div>
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+<script type="text/javascript">
+
+$.fn.datetimepicker.dates['zh'] = {  
+        days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],  
+        daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],  
+        daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],  
+        months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],  
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],  
+        meridiem:    ["上午", "下午"],  
+        //suffix:      ["st", "nd", "rd", "th"],  
+        today:       "今天"  
+};  
+
+function saveaqsc() {
+	var sb = $("#sb option:selected").val();
+	var dbdw = $("#dbdw option:selected").val();
+	var tishi = "";
+	if(sb == null || sb == "" || sb == "请选择"){
+		tishi += "请选择行政区划 ";
+	}
+	if(dbdw == null || dbdw == "" || dbdw == "请选择"){
+		tishi += "请选择企业 ";
+	}
+	if(tishi != ""){
+		alert(tishi);
+	}else{
+		var form = $(".widget-body form");
+		$.ajax({
+			url: form.attr("action"),
+			dataType: "json",
+			data: form.serialize(),
+			success: function(msg) {
+				if (!msg.ret) {
+					alert(msg.message);
+				} else {
+					alert("保存成功");
+				}
+			}
+		});
+	}
+	
+}
+
+//行政区划代码下拉框选择事件
+function getxzqhdm(){
+	$("#dbdw").empty();
+	var xzqhdm = $("#sb option:selected").val();
+	$("#dbdw").append("<option value=''>请选择</option>");
+	/* 企业组织机构代码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/lunhuan/selectQYMC.do',
+		 type:'post',
+		 data:{"quyu":xzqhdm,"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'')}"
+				,"qymc":"${decode(session.userinfo.role.code,'qxlsj','','qiye',session.userinfo.dep.name,'')}"},
+		 dataType:'json',
+		 success:function(data){
+			 $.each(data.list,function(i, n){
+					$("#dbdw").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+			});
+		 }
+	});
+	
+}
+
+$(function(){
+	
+	$("#sb").select2();
+	$("#dbdw").select2();
+	/* 行政区划代码初始化 */
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'')}"},
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data,function(i, n){
+				if(n.xzqhdm=="${obj.sb}"){
+					$("#sb").append("<option value="+n.xzqhdm+"  selected>"+n.name+"</option>");
+				}else{
+					$("#sb").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				}
+			});
+		 }
+	});
+	
+	
+	/* 企业组织机构代码初始化 */
+	/* $.ajax({
+		 url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		 type:'post',
+		 data:{"xzqhdm":"${obj.sb}"},
+		 dataType:'json',
+		 success:function(data){
+			 //$("#xzqydm").val(data[0].xzqhdm);
+			 $.each(data.list,function(i, n){
+				if(n.qyzzjgdm=="${obj.dbdw}"){
+					$("#dbdw").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+				}else{
+					$("#dbdw").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				}
+			});
+		 }
+	}); */
+	 $.ajax({
+			url:'${ctxPath}/lunhuan/selectQYMC.do',
+			type:'post',
+			data:{"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'')}"
+				,"qymc":"${decode(session.userinfo.role.code,'qxlsj','','qiye',session.userinfo.dep.name,'')}"},
+			dataType:'json',
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					if(n.qyzzjgdm=="${obj.dbdw}"){
+						$("#dbdw").append("<option value="+n.qyzzjgdm+"  selected>"+n.qymc+"</option>");
+					}else{
+						$("#dbdw").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+					}
+						
+				});
+			},
+			error:function(){
+				alert("error");
+			}
+			
+			
+		}); 
+	
+	
+	$('.form_zprq').datetimepicker({  
+        language:  'zh',  
+        weekStart: 1,  
+        todayBtn:  1,  
+        autoclose: 1,  
+        todayHighlight: 1,  
+        startView: 2,  
+        forceParse: 0,  
+        showMeridian: 1  
+    }).on('changeDate', function (ev) {  
+        $(this).datetimepicker('hide');  
+    });  
+	
+	
+	 $(".form_zprq").datetimepicker({format: 'yyyy-mm-dd'});
+	
+});
+
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+</script>
+
+</body>
+</html>

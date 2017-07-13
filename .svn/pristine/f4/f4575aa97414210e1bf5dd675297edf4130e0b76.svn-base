@@ -1,0 +1,359 @@
+package com.zkzy.njzhpt.bo;
+
+import com.jfinal.aop.Before;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.PathKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.tx.Tx;
+import com.zkzy.njzhpt.dao.SecurityEducationDao;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by dx
+ * Date: 2017/5/4
+ * Time: 14:09
+ * Description:
+ */
+public class SecurityEducationBo {
+	/**
+	 * * author:dx
+	 * date:2017/5/4
+	 * time:14:26
+	 * description:查找所有tree的节点并组装好数据格式
+	 *
+	 * @param map
+	 * @return
+	 */
+	public Ret getTreeNodes(HashMap<String, Object> map) throws Exception {
+		List<Record> treeNodes = Db.find("select * from njpt_knowledgeStruct");
+		return Ret.create("list", sortData(treeNodes, "root"));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/4
+	 * time:14:33
+	 * description:递归组装好数据格式
+	 *
+	 * @param treeNodes
+	 * @param parentId
+	 * @return
+	 */
+	public List<Record> sortData(List<Record> treeNodes, String parentId) throws Exception {
+		List<Record> resultData = new ArrayList<>();
+		for (Record node : treeNodes) {
+			if (parentId.equals(node.getStr("parentId"))) {
+				List<Record> childs = sortData(treeNodes, node.getInt("id") + "");
+				if (CollectionUtils.isNotEmpty(childs)) {
+					node.set("children", childs);
+				}
+				resultData.add(node);
+			}
+		}
+		return resultData;
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:8:55
+	 * description:树节点添加
+	 *
+	 * @param param
+	 * @return
+	 */
+	public Ret treeNodeInsert(HashMap<String, Object> param) {
+		if (!param.containsKey("parentId") || !param.containsKey("text")) {
+			return Ret.create("message", "参数不完整").put("ret", false);
+		}
+
+		return Ret.create("ret", Db.save("njpt_knowledgeStruct", new Record().setColumns(param)));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:9:29
+	 * description:树节点更新
+	 * @param param
+	 * @return
+	 */
+	public Ret treeNodeUpdate(HashMap<String, Object> param) {
+		if (!param.containsKey("id") || !param.containsKey("text")) {
+			return Ret.create("message", "参数不完整").put("ret", false);
+		}
+		Record node=Db.findById("njpt_knowledgeStruct",param.get("id"));
+		node.set("text",param.get("text"));
+		return Ret.create("ret", Db.update("njpt_knowledgeStruct", node));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:9:37
+	 * description:删除树节点
+	 * @param param
+	 * @return
+	 */
+	public Ret treeNodeDelete(HashMap<String, Object> param) {
+		if (!param.containsKey("id")) {
+			return Ret.create("message", "参数不完整").put("ret", false);
+		}
+		//遍历出此节点下的所有文件
+		Db.find("select * from njpt_knowledgeStructFile where knowLedgeStructId=?",param.get("id")).forEach(currentrecord -> this.deleteFile((HashMap<String,Object>)currentrecord.getColumns()));
+		return Ret.create("ret", Db.deleteById("njpt_knowledgeStruct", param.get("id")));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:16:06
+	 * description:保存上传文件的信息
+	 * @param param
+	 * @return
+	 */
+	public Ret saveFileInfo(HashMap<String, Object> param) {
+		param.put("uploadTime",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		return Ret.create("ret", Db.save("njpt_knowledgeStructFile", new Record().setColumns(param)));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:16:53
+	 * description:查找所有上传的文件
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findFile (HashMap<String, Object> param) throws Exception {
+		return SecurityEducationDao.findFile(param);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/11
+	 * time:8:49
+	 * description:
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findPaperBatch (HashMap<String, Object> param) throws Exception {
+		return SecurityEducationDao.findPaperBatch(param);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/8
+	 * time:13:09
+	 * description:查找知识点
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findknowledgePoint (HashMap<String, Object> param) throws Exception {
+		return SecurityEducationDao.findknowledgePoint(param);
+	}
+	/**
+	 * * author:dx
+	 * date:2017/5/8
+	 * time:17:14
+	 * description:查找题目
+	 * @param param
+	 * @return
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findsubjects(HashMap<String, Object> param) throws Exception
+	{
+		return SecurityEducationDao.findsubjects(param);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/10
+	 * time:17:31
+	 * description:查找试卷
+	 * @param param
+	 * @return
+	 *
+	 * 烹羊宰牛且为乐，会须一饮三百杯
+	 *
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findpaperTest(HashMap<String, Object> param) throws Exception {
+		return SecurityEducationDao.findpaperTest(param);
+	}
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findpaperTestData(HashMap<String, Object> param) throws Exception
+	{
+		return SecurityEducationDao.findpaperTestData(param);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:17:42
+	 * description:删除文件
+	 * @param param
+	 * @return
+	 */
+	public Ret deleteFile(HashMap<String, Object> param){
+		if(!param.containsKey("id")) {
+			return Ret.create("ret",false).put("message","参数不完整");
+		}
+		Record fileRecord=Db.findById("njpt_knowledgeStructFile",param.get("id"));
+		Ret ret=Ret.create("ret", Db.deleteById("njpt_knowledgeStructFile", param.get("id")));
+		//删除目录下的文件
+		File needDeleteFile=new File(PathKit.getWebRootPath() + "\\upload\\safeEducation\\" + fileRecord.get("uuidName"));
+		if(needDeleteFile.exists()&&FileUtils.deleteQuietly(needDeleteFile)){
+			LogKit.info("文件删除成功："+needDeleteFile.getName());
+		}
+		return ret;
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/17
+	 * time:9:00
+	 * description:删除试卷
+	 * @param param
+	 * @return
+	 */
+	@Before(Tx.class)
+	public Ret deletePaper(HashMap<String, Object> param){
+		if(!param.containsKey("id")) {
+			return Ret.create("ret",false).put("message","参数不完整");
+		}
+		//删除试卷表中对应信息
+		Db.deleteById("njpt_paperTest",param.get("id"));
+		//删除试卷-题目表中的题目
+		Db.update("delete from njpt_paper_subject where paperId=?",param.get("id"));
+		//删除试卷批次表中的数据
+		Db.update("delete from njpt_paper_batch where paperId=?",param.get("id"));
+		//删除用户-批次表中的数据
+		Db.update("delete from njpt_user_batch where paperId=?",param.get("id"));
+		return Ret.create("ret",true);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/8
+	 * time:14:15
+	 * description:新增活更新知识点
+	 * @param param
+	 * @return
+	 */
+	public Ret addOrUpdateKnowledgePoint(HashMap<String, Object> param){
+		if(Db.find("select * from njpt_knowledgePoint where njpt_knowledgePoint.knowledgePointName=?",param.get("knowledgePointName")).size()!=0)
+		{
+			return Ret.create("ret",false).put("message","该知识点已经存在");
+		}
+		if(!StrKit.isBlank(String.valueOf(param.get("id"))))
+		{
+			//更新
+			return Ret.create("ret",Db.update("njpt_knowledgePoint",new Record().setColumns(param)));
+		}else{
+			//新增
+			param.put("createTime",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+			param.remove("id");
+			return Ret.create("ret",Db.save("njpt_knowledgePoint",new Record().setColumns(param)));
+		}
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/8
+	 * time:15:14
+	 * description:删除知识点
+	 * @return
+	 */
+	public Ret deleteKnowledge(HashMap<String, Object> param)
+	{
+		if(!param.containsKey("id"))
+		{
+			return Ret.create("ret",false).put("message","参数不全");
+		}else{
+			return Ret.create("ret",Db.deleteById("njpt_knowledgePoint",param.get("id")));
+		}
+	}
+	/**
+	 * * author:dx
+	 * date:2017/5/9
+	 * time:10:40
+	 * description:删除题目
+	 * @param param
+	 * @return
+	 */
+	public Ret deleteSubjects(HashMap<String, Object> param)
+	{
+		if(!param.containsKey("ids"))
+		{
+			return Ret.create("ret",false).put("message","参数不全");
+		}else{
+			//获取Ids
+			JSONArray ids=JSONArray.fromObject(param.get("ids"));
+			for (int i=0;i<ids.size();i++)
+			{
+				//删除id
+				Db.deleteById("njpt_subjects",((JSONObject)ids.get(i)).get("id"));
+			}
+		}
+		return Ret.create("ret",true);
+	}
+
+	/**
+	 * author:dx
+	 * date:2017/5/9
+	 * time:14:40
+	 * description:新增题目
+	 * @param param
+	 * @return
+	 */
+    public Ret addOrUpdateSubject(HashMap<String, Object> param)
+	{
+		if("judge".equals(param.get("type")))
+		{
+			param.remove("A");
+			param.remove("B");
+			param.remove("C");
+			param.remove("D");
+			param.remove("E");
+			param.remove("F");
+			param.remove("SelectCorrect");
+		}else{
+			String multiCorrect="";
+			param.remove("judgeCorrect");
+			if("multi".equals(param.get("type")))
+			{
+				for(String temp:(String [])param.get("multiSelectCorrect"))
+				{
+					multiCorrect+=temp;
+					multiCorrect+=",";
+				}
+				multiCorrect=multiCorrect.substring(0,multiCorrect.length()-1);
+				param.put("SelectCorrect",multiCorrect);
+				param.remove("multiSelectCorrect");
+			}
+		}
+		return Ret.create("ret",Db.save("njpt_subjects",new Record().setColumns(param)));
+	}
+
+
+
+}

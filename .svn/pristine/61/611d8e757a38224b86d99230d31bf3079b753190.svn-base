@@ -1,0 +1,94 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var liucid = parameter.liucid;
+ var qishu = parameter.qishu;
+ var year = parameter.year;
+%>
+<style>
+	#spandr:hover{
+		color: 	#FF4500;
+	}
+</style>
+<div class="panel panel-default">
+   <div class="panel-heading" style="width: 100%;height: 40px;padding: 0">
+		<div style="width: 250px;height: 40px;float: left;text-align: center;font-size: 18px;font-weight:bold;margin-top: 6px;"><img src="${ctxPath}/img/table_edit.png"><span>上传Excel</span></div>
+		<div style="width: 250px;height: 40px;float: left;text-align: center;font-size: 18px;margin-top: 6px;color: #D3D3D3;"><span>预览数据</span></div>
+		<div style="width: 250px;height: 40px;float: right;text-align: center;font-size: 18px;margin-top: 6px;color: #D3D3D3;"><span>导入数据</span></div>
+	</div>
+	<div class="panel-body" style="padding: 0">
+		<div id="myTabContent" class="tab-content" style="padding: 0;">
+			<div class="tab-pane fade in active" id="jj">
+				<!-- 一个页面导入对应一个liucid -->
+				<input type="hidden" id="liucid" name="liucid" value="${liucid}"></br>
+			
+				<label class="control-label label-uploadtitle" title="上传文件" style="text-align:left;width:90px;font-weight:normal;margin-top:-5px;font-size: 16px;font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;Excel表:</label>
+							<a class="btn btn-xs btn-info"><input class="file_upload " type="file" name="file" /></a>
+							<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+					<div class="entity-container">
+					</div>
+			</br>
+			
+			<span style="font-size: 16px;font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;Excel文件请符合以下标准：</span>
+			<ul>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;后缀名为xls</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据请勿放在合并的单元格中</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文件大小请勿超过2MB，导入条数不可超过3000条</li>
+			</ul></br>
+			
+			<span style="font-size: 16px;font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;导入步骤：</span>
+			<ul>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第一步，下载<a href="http://49.65.0.27:8080/WebReport/ReportServer?reportlet=xialiangwuritianbao.cpt&op=write&year=${year}&qishu=${qishu}&format=excel&extype=simple"><span id="spandr" style="font-size:20px;color: #00BFFF;">客户导入模板</span></a>。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第二步，如果是下载的模板，下载后，填写内容，注意，要填写的内容在下边的说明中有详细的说明。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第三步，设置Excel标题字段。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第四步，点击下一步执行导入操作，导入结束之后显示导入结果。</li>
+			</ul></br>
+			
+			<span style="font-size: 16px;font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;注意事项：</span>
+			<ul>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;导入的Excel应只提供一个工作簿(sheet)，系统也只导入第一个工作簿中的数据。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;导入数据时，系统会将第一行的内容作为标题行，因此导入的Excel请务必提供标题行。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;导入的Excel的格式尽量遵循模板中的格式，即只有一个标题行，不要出现复杂的格式。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;一次性导入的记录不要太多，系统规定文件大小控制在2MB以内，导入条数不可超过3000条。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;导入的过程中会判断客户是否重复，如果系统中有相同名字的客户，则会对该客户执行更新操作。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请确保每个单元格的文字长度在100个以内。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;填写导入内容时注意模板中的必填项同时注意特殊字段的格式是否正确，例如：日期类型，数字类型等。</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;系统导入方式为逐行判断导入，所以符合要求的记录将被导入系统，而导入失败的记录会给出相应提示信息。</li>
+			</ul>
+			</div>
+		</div>
+	</div>
+</div>
+ <!-- alert样式 -->
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/resource/showBo.css"/>
+	<script src="${ctxPath}/resource/showBo.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+
+var liucid = $("#liucid").val();
+var qishu="${qishu}";
+var year="${year}";
+$(function(){
+	 $('.file_upload').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/shouchukeshihua/uploadFile?liucid='+liucid+'',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'buttonCursor': 'hand',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传文件',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.xls',   //允许上传文件后缀名
+	  	    'progressData': 'percentage',
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	    //alert(obj[0]+"&"+obj[1]);
+	  	   /* Showbo.Msg.alert("导入成功，点击确定预览数据"); */
+	  	   /* 	alert("导入成功，点击确定预览数据"); */
+	  	   window.location="${ctxPath}/shouchukeshihua/wuri/yulanhsuju_xl.html?liucid="+liucid+"&data="+data+"&qishu="+qishu+"&year="+year+"";
+	  	  /* window.location="${ctxPath}/oa/daoru/daorushuju.html?liucid="+liucid+""; */
+        }
+   });  
+});
+
+</script>
+<%
+	}
+%>

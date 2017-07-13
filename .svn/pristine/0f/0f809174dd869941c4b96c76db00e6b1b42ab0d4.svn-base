@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet"
+	href="${ctxPath}/css/font-awesome.min.css">
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+</head>
+<%
+	var obj={}, url=ctxPath+"/securityedu/addOrUpdateSubject.do",title="新增";
+	if(isNotEmpty(parameter.id)) {
+		debug(parameter.id);
+		obj=@com.zkzy.njzhpt.dao.SecurityEducationDao.findsubjects({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+		debug(parameter.obj);
+		title = "编辑题目";
+	};
+%>
+<style type="text/css">
+.select2-container--default .select2-selection--single{
+	    height: 32px;
+}
+body{
+ overflow-x : hidden;   
+}
+</style>
+<body>
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget" style="margin-bottom: 0px;">
+					<div class="widget-header">
+						<div class="title">添加试题</div>
+					</div>
+					<div class="widget-body">
+                        <form id="contentform" role="form" action="${url}" method="post">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="sub_knowledgePoint" ><font color="red" style="font-size:large;">*</font>知识点:</label>
+                                            <select id="sub_knowledgePoint" name="knowledgePoint" class="form-control input-sm selects" style="width:300px;font-size:14px">
+                                                <option>请选择知识点</option>
+                                            </select>
+                                    </div>
+                                </div>
+                                </div>
+                            <div class="row">
+                            <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="type"><font color="red" style="font-size:large;">*</font>题型:</label>
+                                            <input type="radio" name="type"  value="single" checked onclick="changeType()"/>单选
+                                            <input type="radio" name="type"  value="multi" onclick="changeType()"/>多选
+                                            <input type="radio" name="type" value="judge" onclick="changeType()"/>判断
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="content"><font color="red" style="font-size:large;">*</font>题目:</label>
+                                        <textarea id="content" class="form-control" name="content" rows="5" style="width: 300px"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="selection">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="A"><font color="red" style="font-size:large;">*</font>选项:</label><br>
+                                        A选项:<input 	id="A" name="A" class="form-control" style="width: 300px" placeholder="选项A"/>
+                                        B选项:　<input 	id="B" name="B" class="form-control" style="width: 300px" placeholder="选项B"/>
+                                        C选项:　<input 	id="C" name="C" class="form-control" style="width: 300px" placeholder="选项C"/>
+                                        D选项:　<input 	id="D" name="D" class="form-control" style="width: 300px" placeholder="选项D"/>
+                                        E选项:　<input 	id="E" name="E" class="form-control" style="width: 300px" placeholder="选项E"/>
+                                        F选项:　<input 	id="F" name="F" class="form-control" style="width: 300px" placeholder="选项F"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="singleSelectionAnswer">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="A"><font color="red" style="font-size:large;">*</font>答案:</label><br>
+                                        <input type="radio" class="se" name="SelectCorrect"  value="A" checked/>A
+                                        <input type="radio" class="se" name="SelectCorrect" value="B" style="margin-left: 10px"/>B
+                                        <input type="radio" class="se" name="SelectCorrect" value="C" style="margin-left: 10px"/>C
+                                        <input type="radio" class="se" name="SelectCorrect" value="D" style="margin-left: 10px"/>D
+                                        <input type="radio" class="se" name="SelectCorrect" value="E" style="margin-left: 10px"/>E
+                                        <input type="radio" class="se" name="SelectCorrect" value="F" style="margin-left: 10px"/>F
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="multiSelectionAnswer" style="display: none">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="A"><font color="red" style="font-size:large;">*</font>答案:</label><br>
+                                        <input type="checkbox" class="se" name="multiSelectCorrect"  value="A" />A
+                                        <input type="checkbox" class="se" name="multiSelectCorrect" value="B" style="margin-left: 10px"/>B
+                                        <input type="checkbox" class="se" name="multiSelectCorrect" value="C" style="margin-left: 10px"/>C
+                                        <input type="checkbox" class="se" name="multiSelectCorrect" value="D" style="margin-left: 10px"/>D
+                                        <input type="checkbox" class="se" name="multiSelectCorrect" value="E" style="margin-left: 10px"/>E
+                                        <input type="checkbox" class="se" name="multiSelectCorrect" value="F" style="margin-left: 10px"/>F
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="judgetion" style="display:none">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="judge"><font color="red" style="font-size:large;">*</font>答案:</label>
+                                        <input type="radio" class="se1" name="judgeCorrect"  value="yes" checked/>对
+                                        <input type="radio" class="se1" name="judgeCorrect" value="no"/>错
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+        function changeType(){
+            if($("input[name='type']:checked").val()=='judge'){
+                $('#selection').css("display","none");
+                $("#singleSelectionAnswer").css("display","none");
+                $("#multiSelectionAnswer").css("display","none");
+                $('#judgetion').css("display","block");
+            }else{
+                $('#selection').css("display","block");
+                $('#judgetion').css("display","none");
+                if($("input[name='type']:checked").val()=='single')
+                {
+                    $("#singleSelectionAnswer").css("display","block");
+                    $("#multiSelectionAnswer").css("display","none");
+                }else{
+                    $("#singleSelectionAnswer").css("display","none");
+                    $("#multiSelectionAnswer").css("display","block");
+                }
+            }
+        }
+		$(function(){
+			//显示知识点
+			$.ajax({
+					url:'${ctxPath}/securityedu/findknowledgePoint',
+					data:{page:1,rows:1000},
+					dataType:'json',
+					success: function (data) {
+						$.each(data.list,function(i, n){
+							$("#sub_knowledgePoint").append("<option value="+n.knowledgePointName+">"+n.knowledgePointName+"</option>");
+						});
+					}
+				});
+		})
+
+
+
+		function saveSubject() {
+            if($("#content").val()=='')
+            {
+                alert("请输入题目内容");
+                return;
+            }
+            if($("#sub_knowledgePoint option:selected").val()=='请选择知识点')
+            {
+                alert("请选择知识点");
+                return;
+            }
+            if($("input[name='type']:checked").val()=='multi'||$("input[name='type']:checked").val()=='single'){
+            	 if($("#A").val()==""||$("#B").val()==""||$("#C").val()==""||$("#D").val()==""){
+                 	alert("A,B,C,D为必填项");
+                 	return;
+                 }
+            }
+           
+            //多选至少选择一个两个正确答案
+            if($("input[name='type']:checked").val()=='multi'&&$("input:checkbox:checked").length<2)
+            {
+                alert("多选至少选择一个两个正确答案");
+                return;
+            }
+            var flag=false;
+            //判断答案的选项是否为空
+            $(".se1:checked").each(function(){
+                if($("#"+this.value).val()==""){
+                    alert("答案不能为空！");
+                    flag=true;
+                    return false;
+                }
+            });
+            if(flag){
+                return;
+            }
+			var form = $(".widget-body form");
+			$.ajax({
+				url : form.attr("action"),
+				dataType : "json",
+				data : form.serialize(),
+				success : function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("保存成功");
+						parent.window.dialog1.close();
+		        	    parent.window.datatable2.ajax.reload(null,true);
+					}
+				}
+			});
+		}
+	</script>
+</body>
+</html>

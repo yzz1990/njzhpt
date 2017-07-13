@@ -1,0 +1,64 @@
+<html>
+<head>
+<script src="${ctxPath}/js/jquery-1.7.1.min.js"></script>
+<script src="${ctxPath}/js/jquery_modal.js"></script>
+<script src="${ctxPath}/js/jquery.cookie.js"></script>
+<script src="preview.js?version=3.0.4.150415"></script>
+<script src="common.js?version=3.0.4.150415"></script>
+<script src="${ctxPath}/js/slider_extras.js?version=3.0.4.150415"></script>
+<script src="${ctxPath}/js/stringtest.js?version=3.0.4.150415"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">	
+	<title></title>	
+	<link rel="stylesheet" href="${ctxPath}/css/base.css?version=3.0.4.150415" type="text/css">
+	<link rel="stylesheet" href="${ctxPath}/css/preview.css?version=3.0.4.150415" type="text/css">
+</head>
+<%
+ // debug(parameter.canghao);
+ var spch= @com.zkzy.szlk.dao.JibenDAO.querySpCh({canghao:parameter.canghao});
+ var sp= @com.zkzy.szlk.dao.JibenDAO.querySpByID({id:spch.shipinid});
+ 
+ //debug(sp);
+%>
+<body style="padding:0;" ondragstart="return false">
+	<embed type="application/hwp-webvideo-plugin" id="PreviewActiveX" width="100%" height="100%" name="PreviewActiveX" align="center" wndtype="1" playmode="undefined" style="width: 99.99%;">
+	<script>
+		/* var user = "admin",pwd="a12345678",cameraIndex=${sp.index},old=false;
+		var m="http://${sp.controIp+":"+sp.channel}/SDK/play/"+(33+cameraIndex)+"00/004"; */
+		 var user = "admin",pwd="a12345678",cameraIndex=3,old=false;
+		 var m="http://zglucky002.oicp.io:8002/SDK/play/"+(33+cameraIndex)+"00/004";
+		
+		g_oPreviewInstance.StartRealPlay(base64_encode(old?(user+":"+pwd):(":"+user+":"+pwd)),m);
+		
+		
+		function base64_encode(str){
+			var c1, c2, c3;
+			var base64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";                
+			var i = 0, len= str.length, string = '';
+
+			while (i < len){
+				c1 = str.charCodeAt(i++) & 0xff;
+				if (i == len){
+						string += base64EncodeChars.charAt(c1 >> 2);
+						string += base64EncodeChars.charAt((c1 & 0x3) << 4);
+						string += "==";
+						break;
+				}
+				c2 = str.charCodeAt(i++);
+				if (i == len){
+						string += base64EncodeChars.charAt(c1 >> 2);
+						string += base64EncodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+						string += base64EncodeChars.charAt((c2 & 0xF) << 2);
+						string += "=";
+						break;
+				}
+				c3 = str.charCodeAt(i++);
+				string += base64EncodeChars.charAt(c1 >> 2);
+				string += base64EncodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+				string += base64EncodeChars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+				string += base64EncodeChars.charAt(c3 & 0x3F)
+			}
+			return string;
+        }
+	</script>
+</body>
+</html>

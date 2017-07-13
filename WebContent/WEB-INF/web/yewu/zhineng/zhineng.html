@@ -1,0 +1,1281 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>仓库</title>
+<style type="text/css">
+@charset "utf-8";
+/* CSS Document */
+html {
+	height: 100%
+}
+
+body {
+	margin: 0;
+	height: 100%;
+	padding: 0;
+	font-family: "微软雅黑";
+	background: url(${imgPath}/imgs/beijing.jpg);
+	background-size: 100% 100%;
+	overflow: hidden
+}
+
+img {
+	border: 0;
+	position: absolute
+}
+
+div {
+	position: absolute
+}
+
+a {
+	text-decoration: none;
+	color: inherit
+}
+
+.base {
+	width: 1820px;
+	height: 1080px;
+	left: 50%;
+	top: 50%;
+	margin: -510px 0 0 -1500px
+}
+
+.wuding {
+	width: 1565px;
+	height: 770px;
+	left: 241px;
+	top: 0;
+	background: url(${imgPath}/imgs/wuding.png);
+	z-index: 999
+}
+
+.jianzhu1 {
+	width: 1518px;
+	height: 997px;
+	left: 267px;
+	top: 12px;
+	background: url(${imgPath}/imgs/jianzhu1.png);
+	z-index: 5
+}
+
+.jianzhu2 {
+	width: 1453px;
+	height: 750px;
+	left: 300px;
+	top: 25px;
+	background: url(${imgPath}/imgs/jianzhu2.png);
+	z-index: 2
+}
+
+.yinying {
+	width: 715px;
+	height: 499px;
+	left: 0;
+	top: 570px;
+	background: url(${imgPath}/imgs/yinying.png);
+	z-index: 1
+}
+
+.liangshi {
+	width: 1429px;
+	height: 746px;
+	right: 80px;
+	top: 249px;
+	background: url(${imgPath}/imgs/liangshi.png);
+	z-index: 3
+}
+
+.nols {
+	background: url(${imgPath}/imgs/liangshi_no.png)
+}
+
+.fengjia {
+	width: 136px;
+	height: 100px;
+	background: url(${imgPath}/imgs/fengjia.png);
+	z-index: 4
+}
+
+.fjasbox {
+	display: none;
+	width: 173px;
+	height: 131px;
+	left: 43px;
+	top: 18px
+}
+
+.fengjixa {
+	width: 124px;
+	height: 96px;
+	background: url(${imgPath}/imgs/fengjixa.png);
+	z-index: 4
+}
+
+.fjxasbox {
+	display: none;
+	width: 173px;
+	height: 131px;
+	left: 32px;
+	top: 23px
+}
+
+.fengjib {
+	width: 124px;
+	height: 126px;
+	background: url(${imgPath}/imgs/fengjib.png);
+	z-index: 6
+}
+
+.fjbsbox {
+	display: none;
+	width: 222px;
+	height: 162px;
+	left: -115px;
+	top: -81px
+}
+
+.fengjixb {
+	width: 136px;
+	height: 125px;
+	background: url(${imgPath}/imgs/fengjixb.png);
+	z-index: 6
+}
+
+.kongzhigui {
+	width: 598px;
+	height: 363px;
+	background: url(${imgPath}/imgs/kongzhigui.png);
+	left: 881px;
+	top: 458px;
+	z-index: 7
+}
+
+.kongtiao {
+	width: 1214px;
+	height: 649px;
+	background: url(${imgPath}/imgs/kongtiao.png);
+	left: 436px;
+	top: 98px;
+	z-index: 7
+}
+
+#kts1 {
+	width: 22px;
+	height: 27px;
+	left: 20px;
+	top: 383px
+}
+
+#kts2 {
+	width: 22px;
+	height: 27px;
+	left: 775px;
+	top: 26px
+}
+
+#kts3 {
+	width: 22px;
+	height: 27px;
+	left: 430px;
+	top: 596px
+}
+
+#kts4 {
+	width: 22px;
+	height: 27px;
+	left: 1181px;
+	top: 216px
+}
+
+.chuanga {
+	width: 100px;
+	height: 121px;
+	background: url(${imgPath}/imgs/chuanga1.png);
+	z-index: 8
+}
+
+.guana {
+	background: url(${imgPath}/imgs/chuanga2.png)
+}
+
+.chuangxa {
+	width: 104px;
+	height: 123px;
+	background: url(${imgPath}/imgs/chuangxa1.png);
+	z-index: 8
+}
+
+.guanxa {
+	background: url(${imgPath}/imgs/chuangxa2.png)
+}
+
+.guanxa .cs {
+	display: none
+}
+
+.cs {
+	width: 28px;
+	height: 34px
+}
+
+#cs1, #cs2 {
+	left: 61px;
+	top: 66px
+}
+
+.chuangb {
+	width: 108px;
+	height: 99px;
+	background: url(${imgPath}/imgs/chuangb1.png);
+	z-index: 8
+}
+
+.guanb {
+	background: url(${imgPath}/imgs/chuangb2.png)
+}
+
+.chuangxb {
+	width: 77px;
+	height: 87px;
+	background: url(${imgPath}/imgs/chuangxb1.png);
+	z-index: 8
+}
+
+.guanxb {
+	background: url(${imgPath}/imgs/chuangxb2.png)
+}
+
+.guanxb .cs, .guanxb .cc {
+	display: none
+}
+
+.chuangxb .cc {
+	left: 8px;
+	top: -13px
+}
+
+#cs3, #cs4 {
+	left: 23px;
+	top: 24px
+}
+
+.liu {
+	width: 1820px;
+	height: 1080px;
+	z-index: 9
+}
+
+.kongzhiui {
+	width: 400px;
+	height: 320px;
+	/* background: url(${imgPath}/imgs/kongzhiui.png); */
+	right: 10px;
+	bottom: 0px;
+	z-index: 1000;
+	padding: 10px;
+	background-color: rgb(176, 194, 220);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+
+#shipin {
+	right: 10px;
+	bottom: 320px;
+	z-index: 1000;
+	padding: 10px;
+	background-color: rgb(176, 194, 220);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+
+.tab-pane {
+	width: 560px;
+	height: 350px;
+	background-color: rgb(236, 241, 216);
+}
+
+.nav-tabs>li>a {
+	background-color: rgba(113, 179, 236, 0.5);
+	margin-right: 2px;
+	line-height: 1.42857143;
+	border: 1px solid transparent;
+	border-radius: 4px 4px 0 0;
+}
+
+.nav>li>a {
+	position: relative;
+	display: block;
+	padding: 10px 15px;
+	color: rgba(92, 91, 107, 0.91);
+}
+
+.bz{width:1820px; height:1080px; background:url(${imgPath}/imgs/bz.png); z-index:10}
+.bootstrap-switch {
+	height: 30px;
+    width: 90px !important;
+    margin-left: 30px;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary{
+	width: 45px !important;
+}
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-label{
+	width: 45px !important;
+}
+.bootstrap-switch.bootstrap-switch-on .bootstrap-switch-label{
+	width: 45px !important;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default{
+    width: 45px !important;
+}
+
+.kaihe{
+	-moz-transform:rotate(-90deg); -webkit-transform:rotate(0deg);
+	-webkit-animation-name: kh;
+  	-webkit-animation-duration: 1s;
+ 	 animation-fill-mode:forwards ;
+  	-webkit-animation-iteration-count: 1;
+ 	-webkit-animation-timing-function: linear;
+}
+
+.guanbi{
+	-moz-transform:rotate(-90deg); -webkit-transform:rotate(-90deg);
+	-webkit-animation-name: gb;
+  	-webkit-animation-duration: 1s;
+  	animation-fill-mode:forwards ;
+  	-webkit-animation-iteration-count: 1;
+  	-webkit-animation-timing-function: linear;
+}
+
+
+@-webkit-keyframes gb {
+  from {-webkit-transform:rotate(0deg);}
+  to {-webkit-transform:rotate(-90deg);}
+}
+
+@-webkit-keyframes kh {
+  from {-webkit-transform:rotate(-90deg);}
+  to {-webkit-transform:rotate(0deg);}
+}
+
+#cckz{
+	overflow-y: scroll;
+}
+</style>
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<script src="${ctxPath}/js/bootstrap-switch.min.js"></script>
+<script
+	src="${ctxPath}/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+	<link rel="stylesheet" href="${ctxPath}/css/simple-line-icons.css">
+<link rel="stylesheet"
+	href="${ctxPath}/css/controlIC.css"
+	type="text/css" />
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap-switch.min.css">
+<script type="text/javascript">
+//*****YZPANI*****
+//目前该JS有两个功能：一个是根据一组PNG图片生成动画；另一个是完全由JS创建水流动画，需要HTML5支持。
+
+window.onload=function(){
+	setInterval(showani,60); //控制流速
+}
+
+
+/********************* PNG动画开始***********************/
+
+function aniobj(boxid,op,tp){ //动画对象
+	
+	var obj=null; //装着一组PNG图像的帧序列
+	var pngindex=0; //当前处理着哪一帧
+	var opstep=op; //透明度步进，值范围0~1，如果为1就是完全的帧切换动画，帧与帧之间没有过渡
+	var timestep=tp;  //时间步进，单位为毫秒
+	
+	obj=document.getElementById(boxid).getElementsByTagName("img"); //取得内部图像元素
+	
+	obj[pngindex].style.opacity="1"; //透明度为1也要设一下，不然取不到值
+	
+	for(i=1; i<obj.length; i++){ //把除第一个帧以外的帧全部透明度为0
+		obj[i].style.opacity="0";
+	}
+	
+	this.pngani=function(){
+		
+		function getopn(opn){ //取得透明度的小函数
+			return parseInt(parseFloat(obj[opn].style.opacity)*100)/100;
+		}
+
+		obj[pngindex].style.opacity=getopn(pngindex)-opstep; //减少当前帧的透明度
+	
+		if(pngindex<obj.length-1){ //如果当前帧不是最后一帧
+			obj[pngindex+1].style.opacity=getopn(pngindex+1)+opstep; //增加下一帧的透明度
+		}else{ //如果是最后一帧
+			obj[0].style.opacity=getopn(0)+opstep; //那么增加第一帧的透明度
+		}
+	
+		if(getopn(pngindex)<=0){ //如果当前帧已经完全透明了
+			pngindex+=1; //处理下一帧	
+			if(pngindex==obj.length){ //超过序列长度则归零
+				pngindex=0;
+			}
+		}
+	}
+	
+	setInterval(this.pngani,timestep);
+	
+}
+
+/********************* PNG动画结束***********************/
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/********************* 水流动画开始***********************/
+
+var mfs=new Array;
+
+function crflow(x1,y1,x2,y2,cc,nm){
+	var mff= new flows(x1,y1,x2,y2,cc,nm);
+	mfs.push(mff);
+	//alert(nm);
+}
+
+
+var flows=function(x1,y1,x2,y2,cc,nm){ //x1,y1起点坐标，x2,y2终点坐标，tw是箭头的宽度，th是箭头的高度(底边到顶点的距离)，dt是箭头间的间隔距离，cc是箭头的颜色。这些参数中起终点坐标是必须的，其他都是可选的。
+	if(cc==undefined) cc="#349dff"; //默认三角形颜色
+	tw=5; //默认三角形宽度
+	th=7; //默认三角形高度
+	dt=5; //默认三角形间隔
+	md=1; //移动距离
+	
+	angt=(y2-y1)/(x2-x1); 
+	if(x1<=x2) ang=360*(Math.atan(angt)/(Math.PI*2));
+	else ang=180+360*(Math.atan(angt)/(Math.PI*2));
+	//计算箭头线要旋转的角度
+	
+	w=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)); //求两点间距离
+	tc=Math.ceil(w/(th+dt)); 
+	//计算两点间要生成多少个三角形
+	
+	var newcvs= document.createElement('canvas'); //生成一个画布
+	newcvs.style.position="absolute";
+	newcvs.setAttribute("width",Math.abs(x2-x1)+tw); //即使水平或垂直也不能没有高度或宽度，需要加个tw
+	newcvs.setAttribute("height",Math.abs(y2-y1)+tw);
+	
+	var cxt=newcvs.getContext("2d"); //生成一串箭头的容器
+			
+	if((x1<=x2)&&(y1<=y2)){ //终点在起点的左下
+		newcvs.style.left=x1+"px";
+		newcvs.style.top=y1+"px";
+		cxt.translate(tw,0); 
+	}else if((x1>x2)&&(y1<=y2)){ //终点在起点的右下
+		newcvs.style.left=x2+"px";
+		newcvs.style.top=y1+"px";
+		xdd=x1-x2+tw; 
+		cxt.translate(xdd,tw); 
+	}else if((x1>x2)&&(y1>y2)){  //终点在起点的右上
+		newcvs.style.left=x2+"px";
+		newcvs.style.top=y2+"px";
+		xdd=x1-x2;
+		ydd=y1-y2+tw;
+		cxt.translate(xdd,ydd); 
+	}else if((x1<=x2)&&(y1>y2)){  //终点在起点的左上
+		newcvs.style.left=x1+"px";
+		newcvs.style.top=y2+"px";
+		ydd=y1-y2;
+		cxt.translate(0,ydd); 
+	}
+	
+	cxt.rotate(ang*(Math.PI/180));
+	
+	document.getElementById(nm).appendChild(newcvs);
+	
+	this.stp=-th; //箭头初始位置
+	
+	this.flowani=function(){
+		cxt.clearRect(-th,0,3000,3000);
+		cxt.fillStyle=cc;
+		for(i=0; i<tc+50; i++){ //这个30是个容错数量
+			cxt.beginPath();
+			cxt.moveTo(this.stp+i*(th+dt),0);
+			cxt.lineTo(this.stp+i*(th+dt)+th,tw/2);
+			cxt.lineTo(this.stp+i*(th+dt),tw);
+			cxt.closePath();
+			cxt.fill();		
+		}
+		this.stp+=md;
+		if(this.stp>=dt) this.stp=-th;
+	}
+}
+
+function showani(){
+	for(j=0; j<mfs.length; j++){
+		mfs[j].flowani();
+	}
+}
+
+/********************* 水流动画结束***********************/
+
+</script>
+</head>
+
+<body>
+	<% 
+		var CangClist=@com.zkzy.szlk.bo.YewuBO.loadCangchuan(parameter.orderno);
+		var TongFlist=@com.zkzy.szlk.bo.YewuBO.loadQiben(parameter.orderno); 
+	%>
+	<div class="base" id="aa" onmousewheel="return zoomImg(this)"
+		style="zoom: 50%">
+
+		<!--图像元素的层级是在css里另设的，与下面的div顺序无关-->
+ 		<div class="bz"></div>
+		<div class="wuding"></div>
+		<!--屋顶-->
+		<div class="jianzhu1"></div>
+		<!--建筑外侧-->
+		<div class="jianzhu2"></div>
+		<!--建筑内侧-->
+		<div class="yinying"></div>
+		<!--阴影-->
+		<div class="liangshi"></div>
+		<!--粮食储存，class加上nols是粮食为空-->
+
+		<div class="fengjia" style="left: 241px; top: 629px">
+			<!--风机A1-->
+			<div id="fsbox1" class="fjasbox" hidden>
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjas1.png" /> <img
+					src="${imgPath}/imgs/fjas2.png" /> <img
+					src="${imgPath}/imgs/fjas3.png" />
+			</div>
+		</div>
+
+		<div class="fengjixa" style="left: 490px; top: 508px">
+			<!--风机A2-->
+			<div id="fsbox2" class="fjxasbox" hidden>
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjas1.png" /> <img
+					src="${imgPath}/imgs/fjas2.png" /> <img
+					src="${imgPath}/imgs/fjas3.png" />
+			</div>
+		</div>
+
+		<div class="fengjia" style="left: 638px; top: 435px">
+			<!--风机A3-->
+			<div id="fsbox3" class="fjasbox" hidden>
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjas1.png" /> <img
+					src="${imgPath}/imgs/fjas2.png" /> <img
+					src="${imgPath}/imgs/fjas3.png" />
+			</div>
+		</div>
+
+		<div class="fengjia" style="left: 854px; top: 334px">
+			<!--风机A4-->
+			<div id="fsbox4" class="fjasbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjas1.png" /> <img
+					src="${imgPath}/imgs/fjas2.png" /> <img
+					src="${imgPath}/imgs/fjas3.png" />
+			</div>
+		</div>
+
+		<div class="fengjixa" style="left: 1053px; top: 231px">
+			<!--风机A5-->
+			<div id="fsbox5" class="fjxasbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjas1.png" /> <img
+					src="${imgPath}/imgs/fjas2.png" /> <img
+					src="${imgPath}/imgs/fjas3.png" />
+			</div>
+		</div>
+
+		<div class="fengjia" style="left: 1205px; top: 163px">
+			<!--风机A6-->
+			<div id="fsbox6" class="fjasbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjas1.png" /> <img
+					src="${imgPath}/imgs/fjas2.png" /> <img
+					src="${imgPath}/imgs/fjas3.png" />
+			</div>
+		</div>
+
+		<div class="fengjib" style="left: 735px; top: 886px">
+			<!--风机B1-->
+			<div id="fsbox7" class="fjbsbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjbs1.png" /> <img
+					src="${imgPath}/imgs/fjbs2.png" /> <img
+					src="${imgPath}/imgs/fjbs3.png" />
+			</div>
+		</div>
+
+		<div class="fengjixb" style="left: 858px; top: 819px">
+			<!--风机B2-->
+			<div id="fsbox8" class="fjbsbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjbs1.png" /> <img
+					src="${imgPath}/imgs/fjbs2.png" /> <img
+					src="${imgPath}/imgs/fjbs3.png" />
+			</div>
+		</div>
+
+		<div class="fengjib" style="left: 1079px; top: 705px">
+			<!--风机B3-->
+			<div id="fsbox9" class="fjbsbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjbs1.png" /> <img
+					src="${imgPath}/imgs/fjbs2.png" /> <img
+					src="${imgPath}/imgs/fjbs3.png" />
+			</div>
+		</div>
+
+		<div class="fengjib" style="left: 1295px; top: 591px">
+			<!--风机B4-->
+			<div id="fsbox10" class="fjbsbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjbs1.png" /> <img
+					src="${imgPath}/imgs/fjbs2.png" /> <img
+					src="${imgPath}/imgs/fjbs3.png" />
+			</div>
+		</div>
+
+		<div class="fengjixb" style="left: 1588px; top: 431px">
+			<!--风机B5-->
+			<div id="fsbox11" class="fjbsbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjbs1.png" /> <img
+					src="${imgPath}/imgs/fjbs2.png" /> <img
+					src="${imgPath}/imgs/fjbs3.png" />
+			</div>
+		</div>
+
+		<div class="fengjib" style="left: 1697px; top: 374px">
+			<!--风机B6-->
+			<div id="fsbox12" class="fjbsbox">
+				<!--风扇和风的动画，把这个div隐藏则风机停转-->
+				<img src="${imgPath}/imgs/fjbs1.png" /> <img
+					src="${imgPath}/imgs/fjbs2.png" /> <img
+					src="${imgPath}/imgs/fjbs3.png" />
+			</div>
+		</div>
+
+		<div class="kongzhigui">
+			<!--所有的控制箱柜-->
+			<img src="${imgPath}/imgs/beng.gif" style="left: 254px; top: 198px" />
+			<!--气体控制箱1里震动的泵，把这个img隐藏则泵停止震动-->
+			<img src="${imgPath}/imgs/beng.gif" style="left: 467px; top: 86px" />
+			<!--气体控制箱2里震动的泵，把这个img隐藏则泵停止震动-->
+		</div>
+
+		<div class="kongtiao">
+			<!--四个空调-->
+			<div id="kts1" hidden>
+				<!--空调A1，把这个div隐藏则空调停止运行-->
+				<img src="${imgPath}/imgs/kts1.png" /> <img
+					src="${imgPath}/imgs/kts2.png" /> <img
+					src="${imgPath}/imgs/kts3.png" />
+			</div>
+			<div id="kts2" hidden>
+				<!--空调A2，把这个div隐藏则空调停止运行-->
+				<img src="${imgPath}/imgs/kts1.png" /> <img
+					src="${imgPath}/imgs/kts2.png" /> <img
+					src="${imgPath}/imgs/kts3.png" />
+			</div>
+			<div id="kts3" hidden>
+				<!--空调B1，把这个div隐藏则空调停止运行-->
+				<img src="${imgPath}/imgs/kts1.png" /> <img
+					src="${imgPath}/imgs/kts2.png" /> <img
+					src="${imgPath}/imgs/kts3.png" />
+			</div>
+			<div id="kts4" hidden>
+				<!--空调B2，把这个div隐藏则空调停止运行-->
+				<img src="${imgPath}/imgs/kts1.png" /> <img
+					src="${imgPath}/imgs/kts2.png" /> <img
+					src="${imgPath}/imgs/kts3.png" />
+			</div>
+		</div>
+
+		<div class="chuanga guana" style="left: 284px; top: 464px"></div>
+		<!--窗户A1，class加上guana是窗户的关闭状态-->
+		<div class="chuangxa guanxa" style="left: 510px; top: 358px">
+			<!--窗户A2，class加上guanxa是窗户的关闭状态-->
+			<div id="cs1" class="cs">
+				<img src="${imgPath}/imgs/cs1.png" /> <img
+					src="${imgPath}/imgs/cs2.png" /> <img
+					src="${imgPath}/imgs/cs3.png" />
+			</div>
+		</div>
+		<div class="chuanga guana" style="left: 728px; top: 255px"></div>
+		<!--窗户A3，class加上guana是窗户的关闭状态-->
+		<div class="chuanga guana" style="left: 839px; top: 203px"></div>
+		<!--窗户A4，class加上guana是窗户的关闭状态-->
+		<div class="chuangxa guanxa" style="left: 1044px; top: 106px">
+			<!--窗户A5，class加上guanxa是窗户的关闭状态-->
+			<div id="cs2" class="cs">
+				<img src="${imgPath}/imgs/cs1.png" /> <img
+					src="${imgPath}/imgs/cs2.png" /> <img
+					src="${imgPath}/imgs/cs3.png" />
+			</div>
+		</div>
+		<div class="chuanga guana" style="left: 1241px; top: 14px"></div>
+		<!--窗户A6，class加上guana是窗户的关闭状态-->
+
+		<% if(CangClist.~size>=1&&CangClist[0].vCurPosition>0){ %>
+			<div id="lh7006" class="chuangb" style="left: 722px; top: 706px"></div>
+			<!--窗户B1，class加上guanb是窗户的关闭状态-->
+		<% }else{ %>
+			<div id="lh7006" class="chuangb guanb" style="left: 722px; top: 706px"></div>
+			<!--窗户B1，class加上guanb是窗户的关闭状态-->
+		<% } %> <%if(CangClist.~size>=2&&CangClist[1].vCurPosition>=0){ %>
+
+		<div id="lh7007" class="chuangxb" style="left: 943px; top: 603px">
+			<!--窗户B2，class加上guanxa是窗户的关闭状态-->
+			<div id="cs3" class="cs">
+				<img src="${imgPath}/imgs/cs1.png" /> <img
+					src="${imgPath}/imgs/cs2.png" /> <img
+					src="${imgPath}/imgs/cs3.png" />
+			</div>
+			<img src="${imgPath}/imgs/chuangxb1-c.png" class="cc" />
+		</div>
+		
+
+		<% }else{ %>
+			<div id="lh7007" class="chuangxb guanxb"
+			style="left: 943px; top: 603px">
+			<!--窗户B2，class加上guanxa是窗户的关闭状态-->
+			<div id="cs3" class="cs">
+				<img src="${imgPath}/imgs/cs1.png" /> <img
+					src="${imgPath}/imgs/cs2.png" /> <img
+					src="${imgPath}/imgs/cs3.png" />
+			</div>
+			<img src="${imgPath}/imgs/chuangxb1-c.png" class="cc" />
+		</div>
+		
+
+		<% } %> <% if(CangClist.~size>=3&&CangClist[2].vCurPosition>=0){ %>
+		<div id="lh7008" class="chuangb" style="left: 1167px; top: 477px"></div>
+		<!--窗户B3，class加上guanb是窗户的关闭状态-->
+		
+		<% }else{ %>
+		<div id="lh7008" class="chuangb guanb"
+			style="left: 1167px; top: 477px"></div>
+		<!--窗户B3，class加上guanb是窗户的关闭状态-->
+		<% } if(CangClist.~size>=3&&CangClist[2].vCurPosition>=0){ %>
+		<div id="lh8006" class="chuangb " style="left: 1278px; top: 421px"></div>
+		<!--窗户B4，class加上guanb是窗户的关闭状态-->
+		<div id="lh8007" class="chuangxb " style="left: 1483px; top: 332px">
+			<!--窗户B5，class加上guanxa是窗户的关闭状态-->
+			<div id="cs4" class="cs">
+				<img src="${imgPath}/imgs/cs1.png" /> <img
+					src="${imgPath}/imgs/cs2.png" /> <img
+					src="${imgPath}/imgs/cs3.png" />
+			</div>
+			<img src="${imgPath}/imgs/chuangxb1-c.png" class="cc" />
+		</div>
+		<div id="lh8008" class="chuangb " style="left: 1684px; top: 218px"></div>
+		
+		
+		<% }else{ %>
+			<div id="lh8006" class="chuangb guanb"
+				style="left: 1278px; top: 421px"></div>
+			<!--窗户B4，class加上guanb是窗户的关闭状态-->
+			<div id="lh8007" class="chuangxb guanxb"
+				style="left: 1483px; top: 332px">
+				<!--窗户B5，class加上guanxa是窗户的关闭状态-->
+				<div id="cs4" class="cs">
+					<img src="${imgPath}/imgs/cs1.png" /> <img
+						src="${imgPath}/imgs/cs2.png" /> <img
+						src="${imgPath}/imgs/cs3.png" />
+				</div>
+				<img src="${imgPath}/imgs/chuangxb1-c.png" class="cc" />
+			</div>
+			<div id="lh8008" class="chuangb guanb"
+				style="left: 1684px; top: 218px"></div>
+		<% } %>
+		<!--窗户B6，class加上guanb是窗户的关闭状态-->
+
+		<div id="liu1" class="liu"></div>
+		<div id="liu2" class="liu"></div>
+	</div>
+	<div class="kongzhiui">
+
+		<ul id="myTab" class="nav nav-tabs">
+			<li class="active"><a class="tab-a" href="#home"
+				data-toggle="tab"><b>仓窗控制</b></a></li>
+			<li><a class="tab-a" href="#ios" data-toggle="tab"><b>通风控制</b></a>
+			</li>
+			<li><a class="tab-a" href="#kongtiao" data-toggle="tab"><b>空调控制</b></a>
+			</li>
+		</ul>
+		<div id="myTabContent" class="tab-content">
+			<div class="tab-pane fade in active" id="home"
+				style="width: 380px; height: 260px;">
+				<div id="cckz" style="margin-top: 0px;margin-left:0px; text-align: center; width: 100%; height: 100%;overflow: auto;">
+					
+						<table align="center" id="cangchuang" style="width: 100% ;font-size: 16px;">
+							<tr style="height: 50px" align="center">
+								<td style="width: 55px"><b>仓窗名称</b></td>
+								<td style="width:65px"><b>&nbsp; 开启/关闭</b></td>
+								<td style="width: 55px"><b>运行状态</b></td>
+								<td style="width: 55px"><b>当前角度(°)</b></td>
+							</tr>
+							<% 
+								for(device in CangClist){ 
+							%>
+							<tr align="center" style="height: 60px">
+								<td style="font-size: 16px; width: 55px"><b>${"仓窗"+device.vName}</b></td>
+								<td style="width: 40px;height: 20px;padding-left:9px ">
+								<%
+									if(device.vCurPosition!=0){
+								%>
+									<font style="margin-right: 13px;color: #21E800"><strong>开</strong></font><img alt=""  src="${imgPath}/imgs/kai.png" id="cc${device.index}"  title="开启" onclick="stopCC('${device.vCode}','${device.vName}','${device.index}','cc','${device.CCID}','cc${device.index}')" width="30px" style="cursor: pointer;margin-top: -10px;margin-left: -10px;"><font style="margin-left: 25px;color: #F3061C"><strong>关</strong></font>
+								<%
+									}else{
+								%>
+									<font style="margin-right: 13px;color: #21E800"><strong>开</strong></font><img alt=""    src="${imgPath}/imgs/guan.png" id="cc${device.index}" title="关闭" onclick="runCC('${device.vCode}','${device.vName}','${device.index}','cc','${device.CCID}','cc${device.index}')"  width="30px" style="cursor: pointer;margin-top: -10px;margin-left: -10px;"><font style="margin-left: 25px;color: #F3061C"><strong>关</strong></font>
+								<%
+									}
+								%>
+								</td>
+								<td style="font-size: 16px">
+									<%
+										if(device.vStatus!=1){ 
+										  if(device.vCurPosition!=0){
+									%>
+										<img alt="" src="${imgPath}/imgs/zhengchang.png" title="开启"  width="30px" id="status${device.index}" style="cursor: pointer;margin-top: -17px;margin-left: -10px;">
+									<%
+											}else{
+											 
+									%>
+										<img alt="" src="${imgPath}/imgs/guanbi.png" title="关闭" id="status${device.index}" width="30px" style="cursor: pointer;margin-top: -17px;margin-left: -10px;">
+									<%	
+											}
+										}else{
+									%>
+										<img alt="" src="${imgPath}/imgs/" title="故障" width="30px" id="status${device.index}" style="cursor: pointer;margin-top: -17px;margin-left: -10px;">
+									<%
+											}
+									%>
+									
+								</td>
+								<td style="font-size: 16px" ><b id="jiaodu${device.index}"  style="font-size: 15px;color:blue">${device.vCurPosition}</b></td>
+								<!-- <td><a href="javascript:void(0);" id="stop0Img" onclick="stopCC('${device.vCode}_3','${device.vName}',${device.index},'cc','${device.CCID}')" style="margin-left:30px"></a></td> -->
+							</tr>
+							
+							<% } %>
+						</table>
+						<div style="margin-top:0px; width: 60px;margin-left: 30px"  align="left" >
+							<em class="fa fa-chevron-circle-left fa-2x" style="cursor: pointer;"onclick="hideqita()"></em>
+						</div>
+						<div style="margin-top:0px;width: 60px;margin-left: 280px"  align="right" >
+							<em class="fa fa-chevron-circle-right fa-2x" style="cursor: pointer;" onclick="showqita()"></em>
+						</div>
+				</div>
+				<div id="qitazhonglei" style="display:none;margin-top:10px; margin-left:0px; text-align: center; width: 100%; height: 100%;overflow: auto;">
+					<table align="center" style="width: 100%; ">
+						<tr style="height: 10px" >
+							<td style="width: 55px"><b>仓窗名称</b></td>
+							<td style="width: 45px"><b>&nbsp; 开启/关闭</b></td>
+							<td style="width: 55px"><b>运行状态</b></td>
+						</tr>
+						<tr style="height: 1px" >
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+					<div style="margin-top:200px; width: 60px;margin-left: 30px"  align="left" >
+						<em class="fa fa-chevron-circle-left fa-2x" style="cursor: pointer;"onclick="hideqita()"></em>
+					</div>
+					<div style="margin-top:200px;width: 60px;margin-left: 280px"  align="right" >
+						<em class="fa fa-chevron-circle-right fa-2x" style="cursor: pointer;" onclick="showqita()"></em>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="ios"
+				style="width: 380px; height: 260px;">
+				<div id="qibeng"
+					style="margin-top: 0px;margin-left:5px; text-align: center; width: 100%; height: 100%;overflow: auto;">
+						<table align="center" style="width: 100%;">
+						<tr style="height: 50px" align="center">
+							<td style="width: 55px"><b>气泵名称</b></td>
+							<td style="width: 45px"><b>&nbsp; 开启/关闭</b></td>
+							<td style="width: 55px"><b>运行状态</b></td>
+						</tr>
+						<% 
+							for(a in TongFlist){ 
+						%> 
+								<tr style="height: 60px" align="center">
+									<td style="font-size: 16px;width: 55px;height: 20px"><b>${"气泵"+(parseInt(a.index)+1)}</b></td>
+									<td style="width: 20px;height: 30px; padding-left: 10px; ">
+										<%
+											if(a.vStatus=="1"){  
+										%>
+											<font style="margin-right: 13px;color: #21E800"><strong>开</strong></font> <img alt="" src="${imgPath}/imgs/kai.png" id="ft${a.index}" title="开启" onclick="stopCC('${a.vCode}','${a.vName}','${a.index}','tf','${a.CCID}','ft${a.index}')" width="30px" style="cursor: pointer;margin-top: -10px;margin-left: -10px;"><font style="margin-left: 25px;color: #F3061C"><strong>关</strong></font>
+										<%
+											}else{
+										%>
+											<font style="margin-right: 13px;color: #21E800"><strong>开</strong></font><img alt="" src="${imgPath}/imgs/guan.png" id="ft${a.index}" title="关闭" onclick="runCC('${a.vCode}','${a.vName}','${a.index}','tf','${a.CCID}','ft${a.index}')"  width="30px" style="cursor: pointer;margin-top: -10px;margin-left: -10px;"><font style="margin-left: 25px;color: #F3061C"><strong>关</strong></font>
+										<%
+											}
+										%>
+									</td>
+									<td style="font-size: 16px;width: 20px; padding-left: 4px;">
+										<%
+											if(a.vStatus=="1"){  
+										%>
+											<img alt="" src="${imgPath}/imgs/zhengchang.png" title="开启" id="tfstatus${a.index}"  width="30px" style="cursor: pointer;margin-top: -10px;margin-left: -10px;">
+										<%
+											}else{
+										%>
+											<img alt="" src="${imgPath}/imgs/guanbi.png" title="关闭" id="tfstatus${a.index}"   width="30px" style="cursor: pointer;margin-top: -10px;margin-left: -10px;">
+										<%
+											}
+										%>
+									</td>
+								</tr>
+								<tr style="height: 35px;color: blue;">
+									<td></td>
+									<td align="left" style="padding-left: 60px;"><b>氧气：</b></td>
+									<td  id="yq" colspan="2" align="left" style="padding-left: 35px;"> ${a.yangqi}</td>
+								</tr>
+								<tr style="height: 35px;color: blue;">
+									<td></td>
+									<td align="left" style="padding-left: 60px;"><b>二氧化碳：</b></td>
+									<td colspan="2" align="left" style="padding-left: 36px;">${a.eryanghuatan}</td>
+								</tr>
+								<tr style="height: 35px;color: red;">
+									<td></td>
+									<td align="left" style="padding-left: 60px;"><b>磷化氢：</b></td>
+									<td colspan="2" align="left" style="padding-left: 36px;">${a.linhuaqing}</td>
+								</tr>
+						 <% } %>
+						</table>
+						<div style="margin-bottom: 10px;width: 60px;margin-left: 30px"  align="left" >
+							<em class="fa fa-chevron-circle-left fa-2x" style="cursor: pointer;"onclick="hidefengji()"></em>
+						</div>
+						<div style="margin-bottom: 10px;width: 60px;margin-left: 280px"  align="right" >
+							<em class="fa fa-chevron-circle-right fa-2x" style="cursor: pointer;" onclick="showfengji()"></em>
+						</div>
+				</div>
+				<div id="fengji" style="display:none;margin-top:10px; margin-left:0px; text-align: center; width: 100%; height: 100%;overflow: auto;">
+					<div style="height: 100%;width: 100%;margin-left:0px; ">
+					<table align="center" style="width: 100%; ">
+						<tr style="height: 30px" >
+							<td style="width: 55px"><b>风机名称</b></td>
+							<td style="width: 45px"><b>&nbsp; 开启/关闭</b></td>
+							<td style="width: 55px"><b>运行状态</b></td>
+						</tr>
+						<tr style="height: 50px" >
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+					</div>
+					<div style="margin-top:200px; width: 60px;margin-left: 30px;position: fixed;"  align="left" >
+						<em class="fa fa-chevron-circle-left fa-2x" style="cursor: pointer;"onclick="hidefengji()"></em>
+					</div>
+					<div style="margin-top:200px;width: 60px;margin-left: 280px"  align="right" >
+						<em class="fa fa-chevron-circle-right fa-2x" style="cursor: pointer;" onclick="showfengji()"></em>
+					</div>
+				</div>
+				
+			</div>
+			<div class="tab-pane fade in " id="kongtiao" style="width: 380px; height: 260px;">
+				<div
+					style="margin-top: 10px;margin-left:0px; text-align: center; width: 100%;height:100%; overflow: auto;">
+					<table align="center" style="width: 100%;">
+						<tr style="height: 30px" >
+							<td style="width: 55px"><b>空调名称</b></td>
+							<td style="width: 45px"><b>&nbsp; 开启/关闭</b></td>
+							<td style="width: 55px"><b>运行状态</b></td>
+						</tr>
+						<tr style="height: 1px" >
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+					
+				</div>
+				<div style="margin-top:230px; width: 60px;margin-left: 30px"  align="left" >
+						<em class="fa fa-chevron-circle-left fa-2x" style="cursor: pointer;"onclick="hidefengji()"></em>
+					</div>
+					<div style="margin-top:230px;width: 60px;margin-left: 290px"  align="right" >
+						<em class="fa fa-chevron-circle-right fa-2x" style="cursor: pointer;" onclick="showfengji()"></em>
+					</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="shipin"
+		style="text-align: center; width: 400px; height: 280px">
+		<iframe id="sp" src="" width="380px" height="265px"></iframe>
+	</div>
+
+	<script>
+	
+	$("#qitazhonglei").hide();
+	function showqita(){
+		$("#cckz").hide();
+		$("#qitazhonglei").show();
+	}
+	function hideqita(){
+		$("#cckz").show();
+		$("#qitazhonglei").hide();
+	}
+	
+	function hidefengji(){
+		$("#fengji").hide();
+		$("#qibeng").show();
+	}
+	
+	function showfengji(){
+		$("#fengji").show();
+		$("#qibeng").hide();
+	}
+	setTimeout(function(){
+		$("#sp").attr("src","${ctxPath}/yewu/cangchuzhinenghua/shipin.html?canghao=${parameter.orderno}");
+	},1000);
+	
+		//缩放背景图片
+		function zoomImg(o){ 
+		    var zoom=parseInt(o.style.zoom, 10)||100;   
+		    zoom+=event.wheelDelta/12;
+		    if (zoom>30) o.style.zoom=zoom+'%'; 
+		   
+		    return false; 
+		} 
+	
+		aniobj("fsbox1", 1, 100); //风机A1运转
+		aniobj("fsbox2", 1, 100); //风机A2运转
+		aniobj("fsbox3", 1, 100); //风机A3运转
+		aniobj("fsbox4", 1, 100); //风机A4运转
+		aniobj("fsbox5", 1, 100); //风机A5运转
+		aniobj("fsbox6", 1, 100); //风机A6运转
+		aniobj("fsbox7", 1, 100); //风机B1运转
+		aniobj("fsbox8", 1, 100); //风机B2运转
+		aniobj("fsbox9", 1, 100); //风机B3运转
+		aniobj("fsbox10", 1, 100); //风机B4运转
+		aniobj("fsbox11", 1, 100); //风机B5运转
+		aniobj("fsbox12", 1, 100); //风机B6运转
+		aniobj("kts1", 1, 100); //空调A1运转
+		aniobj("kts2", 1, 100); //空调A2运转
+		aniobj("kts3", 1, 100); //空调A3运转
+		aniobj("kts4", 1, 100); //空调A4运转
+		aniobj("cs1", 1, 100); //窗户A2运转
+		aniobj("cs2", 1, 100); //窗户A5运转
+		aniobj("cs3", 1, 100); //窗户B2运转
+		aniobj("cs4", 1, 100); //窗户B5运转
+
+			//
+<%
+
+	if(TongFlist[0].vStatus=='0'){
+	  if(TongFlist[0].vCode=="tx1001"){	  
+%>			
+		$("#liu1").hide();
+	    $("#liu2").hide();
+<%
+	  }else{
+%>
+	$("#liu1").hide();
+	$("#liu2").hide();
+<%
+	  }}else{
+		  if(TongFlist[0].vCode=="tx1001"){
+%>
+		$("#liu1").show();
+		$("#liu2").hide();
+<%
+		}else{
+%>
+		$("#liu1").hide();
+		$("#liu2").show();
+<%
+     }}
+%>	
+
+crflow(1058,686,1078,697,"#ffffff","liu1"); //这两个是气体控制箱1的气流箭头，注释掉就不显示
+crflow(1078,698,1131,674,"#ffffff","liu1");
+
+crflow(1275,575,1292,584,"#ffffff","liu2"); //这两个是气体控制箱2的气流箭头，注释掉就不显示
+crflow(1292,586,1342,563,"#ffffff","liu2");
+
+		  function bbimg(o){ 
+	        var zoom=parseInt(o.style.zoom, 10)||100;zoom+=event.wheelDelta/12;if (zoom>0) o.style.zoom=zoom+'%'; 
+	        return false; 
+		  }
+		  
+		  $('#myTab a').click(function (e) {
+			 
+			  e.preventDefault()
+			  $(this).tab('show')
+		  })
+
+//仓窗控制  打开		  
+function runCC(kongtiaoid,name,index,mark,ccid,idname){
+	// $('#window'+index).removeClass("guanb");
+	 if(confirm("您确定要执行操作吗？")==true){
+		 $.ajax({
+		    	url: "${ctxPath}/zhineng/singleconnect",
+		    	type:"post",
+		    	data:{"kongtiaoid":kongtiaoid+"_2"},
+		    	dataType:"text",
+		    	success:function(data){
+		    		if("0" == data){
+		    			if(mark=="tf"){
+		    				alert("气泵"+(parseInt(index)+1)+"打开失败");
+		    			}else if(mark=="cc"){
+		    				alert("仓窗"+name+"打开失败");
+		    				
+		    			}
+		    		}else if("1" == data){
+		    			
+		    			 if(mark=="cc"){
+		    				 alert("仓窗"+name+"打开成功");
+		    				 if(index!=1){
+		    					 $('#'+ccid).removeClass("guanb");
+		    				 }else{
+		    					 $('#'+ccid).removeClass("guanxb");
+		    				 }
+		    				var a=0;
+		    				 var timer= window.setInterval(function(){
+		    					 a+=20;
+		    					 //alert(parseInt(index)+1);
+		    					 $("#jiaodu"+index).html(a);
+		    					 if(a==100){
+		    						 clearInterval(timer);  
+		    					 }
+		    				 },2000);
+		    			}else if(mark=="tf"){
+		    				alert("气泵"+(parseInt(index)+1)+"打开成功");
+		    				 if(ccid=="tx1001"){	  
+		    					 $("#liu1").show();
+		    				 }else{
+		    					 $("#liu2").show();
+		    				 }
+		    				
+		    				 $("#tfstatus"+index).attr("src","${imgPath}/imgs/zhengchang.png");
+		    			}
+		    			 $("#"+idname).removeClass("guanbi");
+	    			     $("#"+idname).addClass("kaihe");
+		    			 $("#"+idname).attr("src","${imgPath}/imgs/kai.png");
+	    				 $("#"+idname).attr("title","开启");
+	    				 $("#"+idname).attr("onclick","stopCC('"+kongtiaoid+"','"+name+"','"+index+"','cc','"+ccid+"','"+idname+"')");
+	    				
+		    		}else{
+		    			alert("错误信号:"+data);
+		    		}
+		    	},
+		    	error:function(){
+		    		alert("error");
+		    	}
+		    });
+	 }
+	  
+}
+		
+//仓窗，气泵关闭  
+function stopCC(kongtiaoid,name,index,mark,ccid,idname){
+	 if(confirm("您确定要执行操作吗？")==true){
+		 $.ajax({
+		    	url: "${ctxPath}/zhineng/singleconnect",
+		    	type:"post",
+		    	data:{"kongtiaoid":kongtiaoid+"_3"},
+		    	dataType:"text",
+		    	success:function(data){
+		    		if("0" == data){
+		    			if(mark=="tf"){		    				
+		    				alert("气泵"+(parseInt(index)+1)+"关闭失败");
+		    			}else if(mark=="cc"){
+		    				alert("仓窗"+name+"关闭失败");
+		    			}
+		    		}else if("1" == data){
+		    			 if(mark=="cc"){
+		    			alert("仓窗"+name+"关闭成功");
+		    				 if(index!=1){
+		    					 $('#'+ccid).attr("class","chuangb guanb");
+		    				 }else{
+		    					 $('#'+ccid).attr("class","chuangxb guanxb");
+		    				 }
+		    				 var a=100;
+		    				 var timer= window.setInterval(function(){
+		    					 a-=20;
+		    					 $("#jiaodu"+index).html(a);
+		    					 if(a==0){
+		    						 clearInterval(timer);  
+		    					 }
+		    				 },1500);
+		    				 $("#status"+index).attr("src","${imgPath}/imgs/guanbi.png");
+		    			}else if(mark=="tf"){
+		    				alert("气泵"+(parseInt(index)+1)+"关闭成功");
+		    				if(ccid=="tx1001"){	  
+		    					$("#liu1").hide();
+		    				 }else{
+		    					$("#liu2").hide();
+		    				 }
+		    				$("#tfstatus"+index).attr("src","${imgPath}/imgs/guanbi.png");
+		    			}
+		    			 $("#"+idname).removeClass("kaihe");
+	    				 $("#"+idname).addClass("guanbi");
+	    				 $("#"+idname).attr("title","关闭");
+	    				 $("#"+idname).attr("onclick","runCC('"+kongtiaoid+"','"+name+"','"+index+"','cc','"+ccid+"','"+idname+"')");
+	    				 
+		    		}else{
+		    			alert("错误信号:"+data);
+		    		}
+		    	},
+		    	error:function(){
+		    		alert("error");
+		    	}
+		    });
+	 }
+}
+
+
+var pauseCC = function(cangchuangid){
+	$.messager.prompt('提示', '请输入验证码', function(r){
+        if (r == "a"){
+        	$.messager.confirm("操作提示", "您确定要执行操作吗？", function (r) {
+				if(r){
+					$.post(_rooturl+ '/szlk!ajaxcangchuang',{canghao:canghao2,cangchuang:cangchuangid},function(data) {
+						if(data){
+							var data= eval("("+data+")");
+							//alert(data[0].mingling2);
+							$.post(_rooturl+ '/szlk!cangchuangKz',{command:data[0].mingling2},function(data1) {
+								if(data1.ret == true){
+									alert(json.ret);	
+								}
+				            });
+						}
+		            });
+				}
+        	});
+        }
+    });
+}
+
+function quanxuan(){
+	var doc = document.getElementsByName("fx");
+	for(var i = 0;i<doc.length;i++){
+		doc[i].checked = true; 
+	}
+}
+
+
+function chexiao(){
+	var doc = document.getElementsByName("fx");
+	for(var i = 0;i<doc.length;i++){
+		doc[i].checked = false; 
+	}
+} 
+		  
+		  
+	</script>
+
+</body>
+</html>

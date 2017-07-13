@@ -1,0 +1,30 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<div class="content-wrapper">
+	<div class="content-heading">实时视频
+    </div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="panel panel-default">
+				<div class="row" style="margin-left: 20px">
+					<div class="col-xs-3">
+						<iframe src="${ctxPath}/cangchuguanli/shiping/showshipin.html" height="500px"></iframe>
+					</div>
+					
+					<div id="sp" class="col-xs-8" style="margin-left: 40px">
+						<iframe id="if1" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 98%;" src="${ctxPath}/cangchuguanli/shiping/newjiankong.html?outterip=192.168.50.105:242&channel=0&username=admin&password=yx123456"></iframe>
+						<!-- <iframe id="kongzhiframe" width="80px" height="500px" style="border:0px;position: absolute;right:5px;" scrolling="no" src="${ctxPath}/remote/shipin/kz_jiankong.html?ipandport=112.2.13.26:81&amp;channel=3"></iframe> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	
+	
+	
+</script>
+<%}%>

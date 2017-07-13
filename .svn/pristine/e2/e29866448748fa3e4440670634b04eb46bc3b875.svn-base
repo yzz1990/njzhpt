@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+   
+
+
+<title>人口信息增删</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+
+</head>
+
+<%
+	var obj={},url=ctxPath+"/emergency/addrenkou";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.EmergencyDAO.queryrenkou({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/emergency/uprenkou";
+	};
+%>
+
+
+<script type="text/javascript">
+
+
+
+$(window).load(function() { 
+
+});
+
+</script>
+
+
+<body>
+	 <div class="dashboard-wrapper-lg" style="min-height: 0px" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+	 		<input type="hidden"  name="id" class="form-control" placeholder="id" value="${obj.id}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	基本信息                                  
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="sheng">省:</label>
+									 <select id="sheng" name="sheng" class="form-control selects" onchange="Changeshi()">
+										<option value="">请选择</option>
+									</select> 
+									<!--  <input id="sheng" name="sheng" class="form-control" placeholder="省" value="江苏省">	  -->
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="shi">市:</label>	
+									<select id="shi" name="shi" class="form-control selects" onchange="Changexian()">
+										<option value="">请选择</option>
+									</select>
+									<!--  <input id="shi" name="shi" class="form-control" placeholder="市" value="南京市">	  -->
+									
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="xian">区(县):</label>
+									 <select id="xian" name="xian" class="form-control selects">
+										<option value="">请选择</option>
+									</select> 
+									<!--  <input id="xian" name="xian" class="form-control" placeholder="县" value="${obj.xian}">  -->
+									<!--  
+									<input id="sdescription" type="text" name="sdescription" class="form-control" placeholder="应急状态描述" value="${obj.sdescription}">
+									-->
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="zhen">区域:</label>
+									<input id="zhen" name="zhen" class="form-control" placeholder="区域" value="${obj.zhen}">
+									<!--  
+									<input id="sdescription" type="text" name="sdescription" class="form-control" placeholder="应急状态描述" value="${obj.sdescription}">
+									-->
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="tongjiriqi">统计日期:</label>
+									<input id="tongjiriqi" name="tongjiriqi" class="form-control" placeholder="统计日期" value="${obj.tongjiriqi}">
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="changzhu">常住人口（万）:</label>
+									<input id="changzhu" name="changzhu" class="form-control" placeholder="常住人口（万）" value="${obj.changzhu}">
+									
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="huji">户籍人口（万）:</label>
+									<input id="huji" name="huji" class="form-control" placeholder="户籍人口（万）" value="${obj.huji}">
+								</div>	
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="biaozhun">口粮标准（kg）:</label>
+									<input id="biaozhun" name="biaozhun" class="form-control" placeholder="口粮标准（kg）" value="${obj.biaozhun}">
+									
+								</div>	
+							</div>
+							
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label for="creator">创建人:</label>
+									<input id="creator" name="creator" class="form-control" placeholder="创建人" value="${obj.creator}">
+								</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</form>
+	</div>
+            <!-- Row End -->
+            
+    <script type="text/javascript">
+    $(function(){
+    	$(".selects").select2();
+    	$.ajax({
+			url:'${ctxPath}/renyuan/findcity',
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				
+				$.each(data.list,function(i,n){
+					if("${obj.sheng}"==n.省){
+						$("#sheng").append("<option value="+n.省+" selected>"+n.省+"</option>");
+					}else{
+						$("#sheng").append("<option value="+n.省+">"+n.省+"</option>");
+					}
+				}); 
+			}
+		});
+    	Changeshi();
+    	Changexian();
+		$("#tongjiriqi").datetimepicker({
+			
+			format : 'yyyy-mm-dd',
+			language : 'zh-CN', //这里需要修改
+			weekStart : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			minView : 2,
+			forceParse : 0
+		});
+	})
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+	function Changeshi(){
+		var sheng=$("#sheng").val();
+		$.ajax({
+			url:'${ctxPath}/renyuan/findcity',
+			type:'post',
+			dataType:'json',
+			data:{"sheng":sheng},
+			success:function(data){
+				
+				$.each(data.list,function(i,n){
+					if("${obj.shi}"==n.名称){
+						$("#shi").append("<option value="+n.名称+" selected>"+n.名称+"</option>");
+					}else{
+						$("#shi").append("<option value="+n.名称+">"+n.名称+"</option>");
+					}
+				}); 
+			}
+		});
+		
+	}
+	function Changexian(){
+		var shi=$("#shi").val();
+		$.ajax({
+			url:'${ctxPath}/renyuan/findquyu',
+			type:'post',
+			dataType:'json',
+			data:{"shi":shi},
+			success:function(data){
+				
+				$.each(data.list,function(i,n){
+					if("${obj.xian}"==n.name){
+						$("#xian").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+					}else{
+						$("#xian").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+					}
+				}); 
+			}
+		});
+		
+	} 
+    function saverenkou() {
+    	var form = $("#contentform");
+    	$.ajax({
+    		url: form.attr("action"),
+    		type:"post",
+    		dataType:"json",
+    		data: form.serialize(),
+    		success: function(msg) {
+    			if (!msg.ret) {
+    				alert(msg.message);
+    			} else {
+    				alert("保存成功");
+    			}
+    		},
+    		error:function(){
+    			alert("保存失败,请检查内容是否重复");
+    		}
+    	});
+    }
+    
+    </script>
+            
+</body>
+
+
+</html>

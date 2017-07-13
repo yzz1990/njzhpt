@@ -1,0 +1,145 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+
+<script type="text/javascript">
+
+$(function () {
+	var constructData=[];
+//var ecConfig = require('echarts/config');
+	$.ajax({
+		url:'${ctxPath}/zonghe/findpzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+
+			var temp={};
+			for(var i=0;i<data.hjzck.length;i++){
+					if(i>=3) {
+						((data.hjzck[i] * 1000 / 1000).toFixed(4) * 10000).toFixed(0);
+						temp={};
+						if(i==3){
+							temp.name="小麦";
+						}else if(i==4){
+							temp.name="稻谷";
+
+						}else if(i==5){
+							temp.name="玉米";
+
+						}else if(i==6){
+							temp.name="大豆";
+						}else if(i==7){
+							temp.name="其他";
+						}
+						temp.value=((data.hjzck[i] * 1000 / 1000).toFixed(4) * 10000).toFixed(0);
+                        constructData.push(temp);
+					}
+
+			}
+			option2 = {
+				    title : {
+				        text: '                    全市粮食分品种库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.pzlist
+				    },
+				    color:['#99CC33','#FF6666','#0099CC','#CC6600','#666699'],
+				    calculable : true,
+				    series : [{
+				                  name:'粮食品种占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['70%', '65%'],
+				                  itemStyle:{
+				                	  normal:{			                		  
+						                    label : {
+						                    	show: false 
+						                    },
+						                    labelLine : {
+						                        show : false
+						                    }
+				                	  }
+				                  },
+				                  data:constructData
+				              }
+				          ]
+				};
+			myChart=echarts.init(document.getElementById('container2')).setOption(option2);
+		}
+	});
+	
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findxzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			option4 ={
+					title : {
+				        text: '                    全市粮食分性质统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} 吨({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x : 'left',
+				        data:data.pzlist
+				    },
+				    color : ['#66CCCC', '#99CC33', '#FF9900','#CC3399','#666633', '#666699','#666633', '#666699'],
+				    
+				    calculable : true,
+				    series : [{
+				            name:'分性质占比',
+				            type:'pie',
+				            center: ['70%', '65%'],
+				            radius : ['30%', '55%'],
+				            itemStyle : {
+				                normal : {
+				                    label : {
+				                    	show: false 
+				                    },
+				                    labelLine : {
+				                        show : false
+				                    }
+				                }
+				            },
+				            data:data.pzzck
+				        }
+				    ]
+				};                
+			
+			myChart=echarts.init(document.getElementById('container3')).setOption(option4);	
+		}
+	});
+	
+	
+	
+	
+});	
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%;width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="container2" style="width: 50%;height:100%; margin: 0 auto;margin-left: 0px;float: left;"></div>
+          <div id="container3" style="width: 50%;height:100%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;"></div>
+        </div>
+	</div>		
+</div>  

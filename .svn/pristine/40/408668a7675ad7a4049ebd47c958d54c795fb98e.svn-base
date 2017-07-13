@@ -1,0 +1,164 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    border: 1px solid #ADD8E6;
+    border-bottom: 1px solid #ADD8E6;
+}
+
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+}
+.table-bordered {
+    border: 1px solid #ADD8E6;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+}
+
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+</style>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 400px;">			
+				<span style="width: 200px;font-size: 18px;">烘干能力统计</span><span class="pull-right">单位/万吨</span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+           	<table id="hgnltj"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+				<thead>
+       				
+    			</thead>
+			</table>   
+           <div id="container" style="min-width: 500px; max-width: 600px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+         </div>
+	</div>		
+</div>
+<script>
+$(function () {
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findhgnl',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			
+			var bt="<tr>";	
+			 for(var i=0;i<data.btlist.length;i++){
+				bt+="<th rowspan='1' style='text-align:center;'>"+data.btlist[i]+"</th>";		
+			 } 
+			    bt+="</tr>";
+			$("#hgnltj > thead").append(bt);
+			
+			var htmlstr="<tr>";
+			for(var i=0;i<data.hjzck.length;i++){
+				htmlstr+="<th rowspan='1' style='text-align:center;'>"+data.hjzck[i]+"</th>";	
+			}
+			htmlstr+="</tr>"
+			$("#hgnltj > thead").append(htmlstr);
+			for(var i=0;i<data.hgnlz.length;i++){
+				var trhtml="<tr>";
+				for(var j=0;j<data.btlist.length;j++){
+					trhtml+="<th rowspan='1' style='text-align:center;'>"+data.hgnlz[i][j]+"</th>";	
+				}
+				trhtml+="</tr>"
+				$("#hgnltj > thead").append(trhtml);
+			}
+			option = {
+				    title : {
+				        text: '烘干能力统计分析',
+				        x:'left'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨/小时 ({d}%)"
+				    },
+				    legend: {
+				    	orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.qylist
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel']
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    series : [
+				        {
+				            name:'烘干能力',
+				            type:'pie',
+				            radius : [20, 110],
+				            center : ['55%', '55%'],
+				            roseType : 'radius',
+				            width: '40%',       // for funnel
+				            max: 40,            // for funnel
+				            itemStyle : {
+				                normal : {
+				                    label : {
+				                        show : false
+				                    },
+				                    labelLine : {
+				                        show : false
+				                    }
+				                },
+				                emphasis : {
+				                    label : {
+				                        show : true
+				                    },
+				                    labelLine : {
+				                        show : true
+				                    }
+				                }
+				            },
+				            data:data.hgnlzck
+				        }
+				    ]
+				};
+			 echarts.init(document.getElementById('container')).setOption(option);
+		}
+	})               
+	
+	
+		
+});
+</script>
+ 
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

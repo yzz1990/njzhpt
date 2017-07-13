@@ -1,0 +1,34 @@
+<%
+	layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style>
+	.container-fluid {
+	     padding-right: 0px; 
+	     padding-left: 0px; 
+	     margin-right: 0px; 
+	     margin-left: 0px; 
+	}
+	.panel.panel-default {
+    	border-top-width: 3px;
+   	 	margin-top: 0px; 
+	}
+</style>
+<script>
+
+$(function(){
+	
+	$("#yjbg").attr("src","${gisurl}index_yjbz.jsp?username="+encodeURI(encodeURI("${session.userinfo.user.realname}")));
+	
+});
+
+</script>
+<div class="panel panel-default">	
+	<div class="panel-body" >
+		<div class="container-fluid">
+			<iframe id="yjbg" src="" width="98%" height="635px" style="position: absolute;margin-top: 0px;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+		</div>
+	</div>
+</div>
+<%
+	}
+%>

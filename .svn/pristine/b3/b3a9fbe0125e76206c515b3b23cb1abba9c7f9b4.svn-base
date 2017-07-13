@@ -1,0 +1,282 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(10){
+		width: 140px;
+	}
+	.table-striped>tbody>tr>td:nth-child(3){
+		text-align: left;
+	}
+</style>
+<div class="panel panel-default">
+		<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>药剂入库</b></span>
+		</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<label>所属辖区:</label>
+					<select id="shiqu" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="Changequyu()">
+						<option value="" selected="true" >选择区域</option>	
+					</select>
+					<label>存放库点:</label>
+					<select id="cfkudian" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="Changeyaoku()">
+						<option value="" selected="true" >选择药库</option>	
+					</select>
+
+					<label>管理员:</label>
+					<input class="form-control input-sm" name="fuzeren" id="fuzeren" placeholder="负责人" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+
+					<label>管理员:</label>
+					<input class="form-control input-sm" name="gly" id="fuzeren" placeholder="管理员" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<a class="btn btn-success btn-xs pull-right" type="button" onclick="addYjrk()"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYjrk" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+var datatable;
+$(function(){
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'')}"},
+		 success:function(data){
+			 $.each(data,function(i, n){
+					$("#shiqu").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findyaoku',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option value='+data[i].kdbm+'>'+data[i].cfkudian+'</option>';
+			     $("#cfkudian").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+	datatable = $('.datatables').DataTable({
+		"columns": [
+					{
+						"data" : "yjmc",
+						"title" : "药剂名称"
+					},{
+						"data" : "gg",
+						"title" : "规格"
+					},{
+						"data" : "sccj",
+						"title" : "生产厂家",
+					},{
+						"data" : "gmdw",
+						"title" : "购买单位",
+					},{
+						"data" : "rksj",
+						"title" : "入库时间",
+					},{
+						"data" : "yxqz",
+						"title" : "有效期至",
+					},{
+						"data" : "sl",
+						"title" : "数量",
+					},{
+						"data" : "cfdd",
+						"title" : "存放地点",
+					},{
+						"data" : "gly",
+						"title" : "管理员",
+					},
+					  {"title":"操作",
+		            	"render": function (data,type,row,meta) {
+		            		var url = 'javascript:void(0)';
+		                   	var bianji = '<a href='+url+' onclick="upYjrk(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+		                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delYjrk(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+		               		return bianji + " " + shanchu;
+		            	}
+		          }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var shiqu = $("#shiqu").val();
+	var cfkudian = $("#cfkudian").val();
+	var fuzeren = $("#fuzeren").val();
+	document.querySelector('.datatables').dataset.queryparam="&shiqu="+shiqu+"&cfkudian="+cfkudian+"&gly="+fuzeren;
+	datatable.ajax.reload(null,false);
+}
+
+$(document).ready(function() {
+	  $("#shiqu").select2();
+});
+
+/* $('.datatables').on( 'draw.dt', function () {
+	Changequyu();
+} ); */
+
+function Changequyu(){
+	/* $("#shiqu").empty(); */
+	
+	/* $.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 $.each(data,function(i, n){
+					$("#shiqu").append("<option value="+n.name+">"+n.name+"</option>");
+				});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  }); */
+}
+
+$(document).ready(function() {
+	  $("#cfkudian").select2();
+});
+
+/* $('.datatables').on( 'draw.dt', function () {
+	Changeyaoku();
+} ); */
+
+function Changeyaoku(){
+	/* $("#cfkudian").empty();
+	var op = '<option value="">请选择药库</option>';
+    $("#cfkudian").append(op); */
+	
+	/* $.ajax({
+		url:'${ctxPath}/cangchugl/findyaoku',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option>'+data[i].cfkudian+'</option>';
+			     $("#cfkudian").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	}); */
+}
+
+
+function addYjrk(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增药剂入库信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojiruku_zsg.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveYjrk(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-success btn-xs '
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs '
+       }]
+	});
+}
+
+
+function upYjrk(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑药剂入库信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojiruku_zsg.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveYjrk(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-success btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs '
+       }]
+	});
+}
+
+function delYjrk(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delYjrk',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+</script>
+<%
+	}
+%>

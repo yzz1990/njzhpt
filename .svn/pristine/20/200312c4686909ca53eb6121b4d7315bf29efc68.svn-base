@@ -1,0 +1,74 @@
+<html>
+<%
+	var ip;
+	var outterip=parameter.outterip;
+	var channel = parameter.channel;
+	var username = parameter.username;
+	var password = parameter.password;
+	if(spnet!"1"=="0"){
+		ip=parameter.ip;
+	}else{
+		ip=outterip;
+	}
+%>
+<head>
+<script src="${ctxPath}/css/shipin/jquery-1.7.1.min.js"></script>
+<script src="${ctxPath}/css/shipin/jquery_modal.js"></script>
+<script src="${ctxPath}/css/shipin/jquery.cookie.js"></script>
+<script src="${ctxPath}/css/shipin/preview.js?version=3.0.4.150415"></script>
+<script src="${ctxPath}/css/shipin/commonshipin.js?version=3.0.4.150415"></script>
+<script src="${ctxPath}/css/shipin/slider_extras.js?version=3.0.4.150415"></script>
+<script src="${ctxPath}/css/shipin/stringtest.js?version=3.0.4.150415"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">	
+<title></title>	
+	<link rel="stylesheet" href="${ctxPath}/css/shipin/base.css?version=3.0.4.150415" type="text/css">
+	<link rel="stylesheet" href="${ctxPath}/css/shipin/preview.css?version=3.0.4.150415" type="text/css">
+</head>
+<body style="padding:0;" ondragstart="return false">
+	<embed type="application/hwp-webvideo-plugin" id="PreviewActiveX" width="100%" height="100%" name="PreviewActiveX" align="center" wndtype="1" playmode="undefined" style="width: 99.99%;display:none;" >
+	<script>
+		setTimeout("shipin()",1000);
+		
+		function shipin(){
+			$("#PreviewActiveX").show();
+			var g_oPreviewInstance = new Preview;
+			var controIp='${ip}';
+			
+			var user = "${username}",pwd="${password}",cameraIndex=${channel},old=true;
+			var m="http://${ip}/SDK/play/"+(33+cameraIndex)+"00/004";
+			var a=base64_encode(old?(user+":"+pwd):(":"+user+":"+pwd));
+			g_oPreviewInstance.StartRealPlay(a,m);
+		}
+		
+		function base64_encode(str){
+			var c1, c2, c3;
+			var base64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";                
+			var i = 0, len= str.length, string = '';
+
+			while (i < len){
+				c1 = str.charCodeAt(i++) & 0xff;
+				if (i == len){
+						string += base64EncodeChars.charAt(c1 >> 2);
+						string += base64EncodeChars.charAt((c1 & 0x3) << 4);
+						string += "==";
+						break;
+				}
+				c2 = str.charCodeAt(i++);
+				if (i == len){
+						string += base64EncodeChars.charAt(c1 >> 2);
+						string += base64EncodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+						string += base64EncodeChars.charAt((c2 & 0xF) << 2);
+						string += "=";
+						break;
+				}
+				c3 = str.charCodeAt(i++);
+				string += base64EncodeChars.charAt(c1 >> 2);
+				string += base64EncodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+				string += base64EncodeChars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+				string += base64EncodeChars.charAt(c3 & 0x3F)
+			}
+			return string;
+        }
+	</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<script type="text/javascript">
+var id;
+var year;
+var qishu;
+$(function(){
+	id = $.getUrlParam("id");
+	year = $.getUrlParam("year");
+	qishu = $.getUrlParam("qishu");
+	var url;
+	if(id == '0'){
+		url = 'http://localhost:8075/WebReport/ReportServer?reportlet=xlwurihuizong.cpt&year='+year+'&qishu='+qishu;	
+	}else if(id == '1'){
+		url = 'http://localhost:8075/WebReport/ReportServer?reportlet=qlwurihuizong.cpt&year='+year+'&qishu='+qishu;
+	}
+	$("#wuribaobiao").attr("src",url);
+});
+
+
+
+(function ($) {
+    $.getUrlParam = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+})(jQuery);
+
+</script>
+
+	<div class="panel panel-default">
+		<iframe id="wuribaobiao" style="width:1200px; height:650px" src=''></iframe>
+	</div>
+
+<%}%>

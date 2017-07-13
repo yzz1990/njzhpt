@@ -1,0 +1,307 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var xzqhdm = parameter.xzqhdm;
+ 
+ debug(xzqhdm);
+%>
+<style>
+#gengdi{
+	width:420px;
+	height:300px;
+	margin-left: auto;
+    text-align: center;
+    margin-right: auto;
+}
+.quxian-table{
+	border:1px solid;
+	width:450px;
+}
+.quxian-table th,td{
+	border:1px solid;
+	text-align:center;
+}
+.tudi{
+	border:1px solid;
+	text-align:right;
+}
+</style>
+
+
+<body>
+	<div style="text-align:center;" >
+		<h2 id="biaoti"></h2>
+		<input type="text" id="xzqh" style="display:none" value="${xzqhdm}"/>
+		<div id="gengdi">
+		</div>
+		
+		<div id="biaoge" align="center" style="margin-top:0px">
+			<table class="quxian-table">	 
+				<thead>
+					<tr>
+		    			<th rowspan="1" colspan="1" id="col3" style="vertical-align:middle"></th>
+		     			<th id="year1" rowspan="1" colspan="1" id="col4" style="vertical-align:middle"></th>
+		     			<th id="year2" rowspan="1" colspan="1" id="col5" style="vertical-align:middle"></th>
+		     			<th id="year3" rowspan="1" colspan="1" id="col6" style="vertical-align:middle"></th>
+		 			</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>收储企业</td>
+						<td class="tudi" id="shouchu1"></td>
+						<td class="tudi" id="shouchu2"></td>
+						<td class="tudi" id="shouchu3"></td>
+					</tr>
+					<tr>
+						<td>加工企业</td>
+						<td class="tudi" id="jiagong1"></td>
+						<td class="tudi" id="jiagong2"></td>
+						<td class="tudi" id="jiagong3"></td>
+					</tr>
+					<tr>
+						<td>运输企业</td>
+						<td class="tudi" id="yunshu1"></td>
+						<td class="tudi" id="yunshu2"></td>
+						<td class="tudi" id="yunshu3"></td>
+					</tr>
+					<tr>
+						<td>进出口企业</td>
+						<td class="tudi" id="jinchukou1"></td>
+						<td class="tudi" id="jinchukou2"></td>
+						<td class="tudi" id="jinchukou3"></td>
+					</tr>
+					<tr>
+						<td>销售企业</td>
+						<td class="tudi" id="xiaoshou1"></td>
+						<td class="tudi" id="xiaoshou2"></td>
+						<td class="tudi" id="xiaoshou3"></td>
+					</tr>
+					<tr>
+						<td>其他企业</td>
+						<td class="tudi" id="qita1"></td>
+						<td class="tudi" id="qita2"></td>
+						<td class="tudi" id="qita3"></td>
+					</tr>
+				</tbody>	
+			</table>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+<script type="text/javascript">
+$(function(){
+	var xzqhdm = $("#xzqh").val();
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryquxianmingxi.do',
+		type:'post',
+		data:{"xzqhdm":xzqhdm,"page":1,"rows":3},
+		dataType:'json',
+		success:function(data){
+			var shouchu = [];
+			var jiagong = [];
+			var yunshu = [];
+			var jinchukou = [];
+			var xiaoshou = [];
+			var qita = [];
+			var niandu = [];
+			$("#biaoti").text(data.list[0].quyu);
+			for(var i = 0; i < data.list.length; i++){
+				var sc = "shouchu"+(i+1);
+				var jg = "jiagong"+(i+1);
+				var ys = "yunshu"+(i+1);
+				var jck = "jinchukou"+(i+1);
+				var xs = "xiaoshou"+(i+1);
+				var qt = "qita"+(i+1);
+				var year = "year"+(i+1);
+				var scsl = data.list[i].qy_shougou != null ? data.list[i].qy_shougou : 0;
+				var jgsl = data.list[i].qy_jiagong != null ? data.list[i].qy_jiagong : 0;
+				var yssl = data.list[i].qy_peisong != null ? data.list[i].qy_peisong : 0;
+				var jcksl = data.list[i].qy_jck != null ? data.list[i].qy_jck : 0;
+				var xssl = data.list[i].qy_xiaoshou != null ? data.list[i].qy_xiaoshou : 0;
+				var qtsl = data.list[i].qy_qt != null ? data.list[i].qy_qt : 0;
+				$("#"+sc).text(scsl);
+				$("#"+jg).text(jgsl);
+				$("#"+ys).text(yssl);
+				$("#"+jck).text(jcksl);
+				$("#"+xs).text(xssl);
+				$("#"+qt).text(qtsl);
+				$("#"+year).text(data.list[i].niandu+"年度");
+				shouchu.push(scsl);
+				jiagong.push(jgsl);
+				yunshu.push(yssl);
+				jinchukou.push(jcksl);
+				xiaoshou.push(xssl);
+				qita.push(qtsl);
+				niandu.push(data.list[i].niandu);
+			}
+			shouchu.reverse();
+			jiagong.reverse();
+			yunshu.reverse();
+			jinchukou.reverse();
+			xiaoshou.reverse();
+			qita.reverse();
+			niandu.reverse();
+			var myChart = echarts.init(document.getElementById('gengdi'));
+			
+			option = {
+				    title: {
+				        text: '企业数量走势图'
+				    },
+				    tooltip : {
+				        trigger: 'axis'
+				    },
+				    legend: {
+			
+				        x: 'center',
+				        bottom:10,
+				        data:['收储企业','加工企业','运输企业','进出口企业','销售企业','其他企业']
+				    },
+				    toolbox: {
+				        feature: {
+				            saveAsImage: {}
+				        }
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '20%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            data : niandu,
+				        }
+				    ],
+				    yAxis : [
+				        {
+				        	name: '数量',
+				            type : 'value'
+				        }
+				    ],
+				    
+				    series : [
+				        {
+				            name:'收储企业',
+				            type:'line',
+				            //stack: '总量',
+				            data:shouchu,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        {
+				            name:'加工企业',
+				            type:'line',
+				            //stack: '总量',
+				            data:jiagong,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        {
+				            name:'运输企业',
+				            type:'line',
+				            //stack: '总量',
+				            data:yunshu,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },
+				        {
+				            name:'进出口企业',
+				            type:'line',
+				            //stack: '总量',
+				            data:jinchukou,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },{
+				            name:'销售企业',
+				            type:'line',
+				            //stack: '总量',
+				            data:xiaoshou,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        },{
+				            name:'其他企业',
+				            type:'line',
+				            //stack: '总量',
+				            data:qita,
+				            itemStyle:{
+				                  normal:{
+				                      //opacity:0,
+				                      label:{
+				                          show:true,
+				                          position:'top',
+				                          textStyle:{
+				                              color:'#3c3c3c'
+				                          }
+				                      }
+				                  }
+				              },      
+				        }
+				        
+				    ]
+				};
+			myChart.setOption(option);	
+		},
+		error:function(){
+			alert("加载耕地错误");
+		}
+		
+	});
+});
+
+</script>
+<%
+	}
+%>

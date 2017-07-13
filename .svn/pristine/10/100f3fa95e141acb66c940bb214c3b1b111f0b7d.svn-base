@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>视频</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+	content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Write an awesome description for your new site here.">
+    <link rel="stylesheet" href="${ctxPath}/css/weui.min.css">
+    <link rel="stylesheet" href="${ctxPath}/css/jquery-weui.min.css">
+</head>
+<body style="overflow-y:scroll;">
+<script src="${ctxPath}/js/jquery-2.1.4.min.js"></script>
+<script src="${ctxPath}/js/jquery-weui.min.js"></script>
+<script type="text/javascript">
+	var jsonData;
+	(function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+
+    function getData() {
+        var tableHtml='';
+       var str='';
+        var xzqhdm= $.getUrlParam("qyzzjgdm");
+        var kdbm= $.getUrlParam("kdbm");
+    	
+    	 $.ajax({
+    		 url:'${ctxPath}/cangchugl/findshipinTree',
+    		 type:'post',
+    		 data:{"qyzzjgdm":xzqhdm,"kdbm":kdbm},
+    		 dataType:'json',
+    		 success:function(data){
+    			 if(data==""){
+    				
+    				 str='<a class="weui_cell" style="color: inherit" href="javascript:void(0)">'+
+					 '<div class="weui_cells weui_cells_access" >无数据</div>'+
+					 '</a>'
+					 tableHtml+=str;
+					
+    			 }else{
+	    			 $.each(eval(data[0].points),function(i, n){
+	    				 	var url=""; 
+	    				 	var ip = n.info.ip;
+	    					var channel = n.info.channel;
+	    					var username = n.info.username;
+	    					var password = n.info.password;
+	    					var duansp = n.info.rtsp;
+	    					var spcj="";
+	    					if(duansp==undefined){
+	    						url=ip;
+	    					}else{
+	    						url=duansp;
+	    					}
+	    				str='<a class="weui_cell" style="color: inherit" href="javascript:showHtmlcallJava2(\''+url+'\')">'+
+	    					 	'<div class="weui_cells weui_cells_access" >'+n.name+'</div>'+
+	    					 	'</a>';
+		                tableHtml+=str;
+	    			 });
+    			 }
+    			 document.body.innerHTML = tableHtml;
+    		 },
+    		 error:function(){
+    			 alert("error");
+    		 }
+    		
+    	  });
+       
+    }
+    function showHtmlcallJava2(obj){
+    	var str = window.jsObj.HtmlcallJava2a(obj);
+    }
+   
+    $(function(){
+ 	   getData();
+    })
+  
+</script>
+</body>
+</html>

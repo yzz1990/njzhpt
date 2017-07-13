@@ -1,0 +1,268 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(4){
+		text-align: left;
+	}
+</style>
+<div class="panel panel-default">
+			<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>药剂管理</b></span>
+				</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<label>所属辖区:</label>
+					<select id="shiqu" class="js-example-basic-single input-smxq" style="width:150px;font-size:14px">
+						<option value="" selected="true" >选择区域</option>	
+					</select>
+					<label>存放库点:</label>
+					<!-- <select id="cfkudian" class="js-example-basic-single input-smyk" style="width:150px;font-size:14px">
+						<option value="" selected="true" >选择药库</option>	
+					</select> -->
+					<input class="form-control input-sm"  id="cfkudian" placeholder="存放库点"  type="text">	
+					<label>负责人:</label>
+					<input class="form-control input-sm" name="fuzeren" id="fuzeren" placeholder="负责人" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYaoku" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			/* {
+				"data" : "xuhao",
+				"title" : "序号"
+			}, */
+			{
+				"data" : "shiqu",
+				"title" : "所属辖区"
+			},{
+				"data" : "cfkudian",
+				"title" : "存放库点名称"
+			},{
+				"data" : "dizhi",
+				"title" : "地址",
+			},{
+				"data" : "fuzeren",
+				"title" : "负责人",
+			},{
+				"data" : "baoguanren",
+				"title" : "保管员"
+			},{
+				"data" : "jianguanren",
+				"title" : "监管员",
+			},{
+				"data" : "lianxifs",
+				"title" : "联系方式",
+			},{
+				"title" : "查看详情",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="yaojixq(\''+row["xzqydm"]+'\',\''+row["kdbm"]+'\')" class="btn btn-success btn-xs pjax">详情</a>';								
+					return chakan;	
+					}
+				}
+			/* ,{
+				"title" : "查看",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan1 = '<a  href='+url+' onclick="kucun(\''+row["xzqydm"]+'\',\''+row["kdbm"]+'\')" >库存</a>';
+					var shu1 = '<a>&nbsp|&nbsp</a>';
+					var chakan2 = '<a  href='+url+' onclick="taizhang(\''+row["xzqydm"]+'\',\''+row["kdbm"]+'\')" >台账</a>';
+					var shu2 = '<a>&nbsp|&nbsp</a>';
+					var chakan3 = '<a  href='+url+' onclick="yaojick(\''+row["xzqydm"]+'\',\''+row["kdbm"]+'\')" >药剂出库</a>';
+					return chakan1+shu1+chakan2+shu2+chakan3;	
+					}
+				} */
+			]
+	});
+});
+
+	
+function doSearch(){
+	var shiqu = $("#shiqu").val();
+	var cfkudian = $("#cfkudian").val();
+	var fuzeren = $("#fuzeren").val();
+	document.querySelector('.datatables').dataset.queryparam="&shiqu="+shiqu+"&cfkudian="+cfkudian+"&fuzeren="+fuzeren;
+	datatable.ajax.reload(null,false);
+}
+	
+function delYaoku(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delYaoku',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+function kucun(xzqydm,kdbm){
+	dialog1=BootstrapDialog.show({
+	    title: '药剂库存',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojikucun.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","560px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+function taizhang(xzqydm,kdbm){
+	dialog1=BootstrapDialog.show({
+	    title: '药剂台账',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojitaizhang.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","560px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+function yaojick(){
+	dialog1=BootstrapDialog.show({
+	    title: '药剂出库',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojick.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","560px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function yaojixq(xzqydm,kdbm){
+	dialog1=BootstrapDialog.show({
+	    title: '药剂详情',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/biaoqianye.html?xzqydm='+xzqydm+'&kdbm='+kdbm+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","510px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+$(document).ready(function() {
+	$(".input-smxq").select2();		//辖区
+	$(".input-smyk").select2();		//药库
+	
+	//========================加载辖区下拉框====================================
+	/*  $.ajax({
+		 url:'${ctxPath}/cangchugl/finddiqu',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option value='+data[i].quyu+'>'+data[i].quyu+'</option>';
+				 $(".input-smxq").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  }); */
+	 $.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		 success:function(data){
+			 $.each(data,function(i, n){
+					$(".input-smxq").append("<option value="+n.name+">"+n.name+"</option>");
+				});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	//========================加载辖区下拉框结束====================================
+		
+	//========================加载药库下拉框====================================
+	/*  $.ajax({
+		 url:'${ctxPath}/cangchugl/findyaoku',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option>'+data[i].cfkudian+'</option>';
+				 $(".input-smyk").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  }); */
+	//========================加载药库下拉框结束====================================
+
+});
+
+</script>
+<%
+	}
+%>

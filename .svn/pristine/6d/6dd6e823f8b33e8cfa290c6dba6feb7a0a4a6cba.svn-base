@@ -1,0 +1,154 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+//var ecConfig = require('echarts/config');
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/findkczb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			if(data.zcr==0){
+				$("#aa").html("库存总量：0吨");
+				$("#bb").html("自有仓容："+(data.zcr)+"吨");
+			}else{
+				$("#aa").html("库存总量："+(data.dmStock)+"吨");
+				$("#bb").html("自有仓容："+(data.zcr)+"吨");
+			}
+			option = {
+				tooltip : {
+					formatter: "{b} : {c}%"
+				},
+				series : [
+					{
+						name:'库存占比',
+						type:'gauge',
+						center: ['70%', '50%'],
+						detail : {formatter:'{value}%',textStyle:{fontSize: 20}},
+						data:[{value:((data.dmStock)/(data.zcr)*100).toFixed(1), name: '库存占比'}]
+						, title: {
+						textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+							fontSize: 5,
+						}
+					}
+					}
+				]
+			};
+			echarts.init(document.getElementById('container')).setOption(option);
+		}
+	});
+
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/findfqck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			option = {
+				title : {
+					text: '                   全市库存统计',
+				},
+				tooltip : {
+					trigger: 'item',
+					formatter: "{a} <br/>{b} : {c}吨 ({d}%)",
+					position: function (p) {
+						// 位置回调
+						return [p[0]-190, p[1]+10];
+					}
+				},
+				legend: {
+					orient : 'vertical',
+					y:'center',
+					x:'left',
+					data:data.qylist
+				},
+				calculable : false,
+				series : [{
+					name:'库存占比',
+					type:'pie',
+					radius : '55%',
+					center: ['60%', '50%'],
+					itemStyle:{
+						normal:{
+							label : {
+								show: false
+							},
+							labelLine : {
+								show : false
+							}
+						}
+					},
+					data:[
+						{value:(data.cklist[0]),name:(data.qylist[0]),
+							itemStyle : {
+								normal : {
+									color:'rgb(0,153,204)',
+								}
+							}
+						},
+						{value:(data.cklist[1]), name:(data.qylist[1]),
+							itemStyle : {
+								normal : {
+									color:'rgb(102,102,153)',
+								}
+							}
+						},
+						{value:(data.cklist[2]), name:(data.qylist[2]),
+							itemStyle : {
+								normal : {
+									color:'rgb(204,102,0)',
+								}
+							}},
+						{value:(data.cklist[3]), name:(data.qylist[3]),
+							itemStyle : {
+								normal : {
+									color:'rgb(255,153,153)',
+								}
+							}
+						},
+						{value:(data.cklist[4]), name:(data.qylist[4]),
+							itemStyle : {
+								normal : {
+									color:'rgb(255,204,153)',
+								}
+							}
+						},
+						{value:(data.cklist[5]), name:(data.qylist[5]),
+							itemStyle : {
+								normal : {
+									color:'rgb(153,204,0)',
+								}
+							}
+						}
+					]
+				}
+				]
+			};
+			myChart = echarts.init(document.getElementById('container1')).setOption(option);
+			//myChart.on(ecConfig.EVENT.CLICK, eConsole);
+		}
+	});
+	
+});	
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%;width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="container1" style="width: 50%;height:100%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;"></div>
+		  <center><span style="font-size: 19px;font-weight: bold;font-family: '宋体'" >全市库存占比</span></center>
+			<div id="container" style="min-width:50%;margin: 0 auto;float: left;margin-left: -50px;width: 50%;height:80%; margin-top: 10px">
+		  </div>
+
+		</div>
+	</div>		
+</div>  

@@ -1,0 +1,74 @@
+﻿<html>
+<head>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://58.214.246.30:1000/cdn/suofang/css/BootSideMenu.css">
+<link rel="stylesheet" type="text/css" href="http://58.214.246.30:1000/cdn/suofang/css/default.css">
+<script type="text/javascript" src="http://58.214.246.30:1000/cdn/jquery-easyui-1.4.5/jquery.min.js"></script>
+
+<script type="text/javascript">
+	function kongzhi(pan, tilt) {
+		var ip = location.search.split('&')[0].split('=')[1];
+		var channel = location.search.split('=')[2];
+		$.post("${ctxPath}/shipin/ajaxcaozuo", {
+			content : "<pan>" + pan + "</pan><tilt>" + tilt + "</tilt>",
+			ipandport : ip,
+			channel : channel
+		});
+	}
+
+	function zoom(zoom) {
+		var ip = location.search.split('&')[0].split('=')[1];
+		var channel = location.search.split('=')[2];
+		$.post("${ctxPath}/shipin/ajaxcaozuo", {
+			content : "<zoom>" + zoom + "</zoom>",
+			ipandport : ip,
+			channel : channel
+		});
+	}
+	function close() {
+		$(window.parent.document).find("#if1").css('width','98%');
+	}
+	function open() {
+		$(window.parent.document).find("#if1").css('width','90%');
+	}
+</script>
+</head>
+<body>
+  <!--Test 2 -->
+  <div id="kongzhi" style="width:60px;height:350px;margin-top: 60px;">
+  	<table style="margin-left: 10px;margin-top: 40px;">
+	<tr></tr>
+	<tr></tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="http://58.214.246.30:1000/cdn/img/upin.png" onmousedown="kongzhi('0','60')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="http://58.214.246.30:1000/cdn/img/downin.png" onmousedown="kongzhi('0','-60')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="http://58.214.246.30:1000/cdn/img/leftin.png" onmousedown="kongzhi('-60','0')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="http://58.214.246.30:1000/cdn/img/rightin.png" onmousedown="kongzhi('60','0')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="http://58.214.246.30:1000/cdn/img/zoom-outin.png" onmousedown="zoom('60')" onmouseup="zoom('0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="http://58.214.246.30:1000/cdn/img/zoom-inin.png" onmousedown="zoom('-60')" onmouseup="zoom('0')"></td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	</table>
+  </div>
+	
+ 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="http://58.214.246.30:1000/cdn/suofang/js/BootSideMenu.js"></script>
+    <script type="text/javascript">
+	  $(document).ready(function(){
+	      $('#kongzhi').BootSideMenu({side:"right",autoClose:true});
+	  });
+	</script>
+</body>
+</html>

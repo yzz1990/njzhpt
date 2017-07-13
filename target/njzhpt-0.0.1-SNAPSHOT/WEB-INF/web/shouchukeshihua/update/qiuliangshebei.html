@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+   
+
+
+<title>秋粮预测</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+    
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+ 	<script type="text/javascript">
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+    
+    $(document).ready(function() {
+    
+    });
+    
+    function saveyuce(){
+    	var form = $("#contentform");
+    	$.ajax({
+    		url:form.attr("action"),
+    		dataType: "json",
+    		data: form.serialize(),
+    		success: function(msg) {
+    			if (!msg.ret) {
+    				alert(msg.message);
+    			} else {
+    				alert("保存成功");
+    			}
+    		}
+    	});
+    }
+    
+    </script>
+ 	
+
+</head>
+
+<%
+	
+	var obj={},url=ctxPath+"/shouchukeshihua/addqiujishebei";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.queryqiuliangshebei({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/shouchukeshihua/upqiujishebei";
+	};
+
+%>
+
+<body>
+	 <div class="dashboard-wrapper-lg" >
+	  <form id="contentform" role="form" action="${url}"  method="post" style="overflow: hidden;">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	基础数据                            
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				 
+							<div class="row">
+							
+								<div class="col-xs-4" style="display:none">	
+									<div class="form-group">
+										<label for="id">id:</label>
+										<input id="id" name="id" class="form-control" placeholder="id" value="${obj.id}">
+									</div>	
+								</div>
+								
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="niandu">年度:</label>
+										<input id="niandu" name="niandu" class="form-control" placeholder="年度" value="${obj.niandu}">
+									</div>	
+								</div>
+								
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="diqu">地区:</label>
+										<input id="diqu" name="diqu" class="form-control" placeholder="地区" value="${obj.diqu}">
+									</div>	
+								</div>
+								
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="qymc">企业名称:</label>
+										<input id="qymc" name="qymc" class="form-control" placeholder="企业名称" value="${obj.qymc}">
+									</div>	
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="qyxz">企业性质:</label>
+										<input id="qyxz" name="qyxz" class="form-control" placeholder="企业性质" value="${obj.qyxz}">
+									</div>	
+								</div>
+							</div>
+			
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	烘干机配备情况                             
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				  
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="hongganji_shuliang">烘干机数量:</label>
+										<input id="hongganji_shuliang" name="hongganji_shuliang" class="form-control" placeholder="烘干机数量" value="${obj.hongganji_shuliang}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="hongganji_nengli">烘干能力（吨/小时）:</label>
+										<input id="hongganji_nengli" name="hongganji_nengli" class="form-control" placeholder="烘干能力（吨/小时）" value="${obj.hongganji_nengli}">
+									</div>	
+								</div>
+							</div>
+		
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	是否具备准低温储粮系统                               
+                    </div>
+                  </div>
+                  <div class="widget-body">
+		
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="blsheshi_diwenccxt_shifou">是/否:</label>
+										<input id="blsheshi_diwenccxt_shifou" name="blsheshi_diwenccxt_shifou" class="form-control" placeholder="是/否" value="${obj.blsheshi_diwenccxt_shifou}">
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="blsheshi_diwenccxt_lgj">冷谷机(台):</label>
+										<input id="blsheshi_diwenccxt_lgj" name="blsheshi_diwenccxt_lgj" class="form-control" placeholder="冷谷机(台)" value="${obj.blsheshi_diwenccxt_lgj}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="blsheshi_diwenccxt_ktj">空调机(台):</label>
+										<input id="blsheshi_diwenccxt_ktj" name="blsheshi_diwenccxt_ktj" class="form-control" placeholder="空调机(台)" value="${obj.blsheshi_diwenccxt_ktj}">
+									</div>
+								</div>
+							</div>
+		
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	机械通风和粮情检测系统                               
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				  
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="blsheshi_jixietfxt_shifou">是否具备机械通风系统(是/否):</label>
+										<input id="blsheshi_jixietfxt_shifou" name="blsheshi_jixietfxt_shifou" class="form-control" placeholder="是否具备机械通风系统(是/否)" value="${obj.blsheshi_jixietfxt_shifou}">
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="blsheshi_jixietfxt_tfj">通风机(台):</label>
+										<input id="blsheshi_jixietfxt_tfj" name="blsheshi_jixietfxt_tfj" class="form-control" placeholder="通风机(台)" value="${obj.blsheshi_jixietfxt_tfj}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="blsheshi_liangqinjc_shifou">是否具备粮情检测系统(是/否):</label>
+										<input id="blsheshi_liangqinjc_shifou" name="blsheshi_liangqinjc_shifou" class="form-control" placeholder="是否具备粮情检测系统(是/否)" value="${obj.blsheshi_liangqinjc_shifou}">
+									</div>
+								</div>
+							</div>
+		
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业仓容情况                       
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				  
+							<div class="row">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="cangrong_zcr">总仓容:</label>
+										<input id="cangrong_zcr" name="cangrong_zcr" class="form-control" placeholder="小麦" value="${obj.cangrong_zcr}">
+									</div>
+								</div>
+								<div class="col-xs-4">	
+									<div class="form-group">
+										<label for="cangrong_qlshougou">可用于秋粮收购的仓容:</label>
+										<input id="cangrong_qlshougou" name="cangrong_qlshougou" class="form-control" placeholder="红麦" value="${obj.cangrong_qlshougou}">
+									</div>	
+								</div>
+								<div class="col-xs-4">
+									<div class="form-group">
+										<label for="cangrong_tsshougou">可用于托市收购仓容:</label>
+										<input id="cangrong_tsshougou" name="cangrong_tsshougou" class="form-control" placeholder="油菜籽" value="${obj.cangrong_tsshougou}">
+									</div>
+								</div>
+							</div>
+					
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title" style="float:right">
+                        	<a class="btn btn-success btn-sm" type="button" onclick="saveyuce()"><i class="fa fa-floppy-o" aria-hidden="true">&nbsp;保存</i></a>                        
+                    </div>
+                  </div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+            <!-- Row End -->
+</body>
+
+
+</html>

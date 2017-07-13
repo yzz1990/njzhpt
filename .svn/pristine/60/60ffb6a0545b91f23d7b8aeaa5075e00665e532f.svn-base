@@ -1,0 +1,1188 @@
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<%
+var obj;
+if(isEmpty(parameter.id)){ title = "新增"; selecteddep={list:[]};
+	selectedrole={list:[]}; obj = {orderno:1,canuse:1}; action =
+	ctxPath+"/lunhuan/saveLHSQ.do"; 
+	}else{ title = "编辑"; obj =@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.querylhsqById({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+	} 
+var name=session.userinfo.area.name;
+var dep=session.userinfo.dep.name;
+
+%>
+<style type="text/css">
+body{
+background: #f7f7f7;
+}
+.dashboard-wrapper-lg {
+    position: relative;
+    background: #f7f7f7;
+    min-height: 0px; 
+    padding: 20px;
+}
+.row {
+    margin: 0px;
+    background-color: white;
+}
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 0px;
+}
+.modal-body {
+    position: relative;
+    padding: 0px;
+}
+td.details-control {
+    background: url('${ctxPath}/img/chubeiliangjh/Delete.png') no-repeat center center;
+}
+</style>
+
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  
+	<form action="" id="sc">
+		<div class="row">
+			<div class="col-xs-4">
+				<div class="form-group">
+					<label for="szqy">所在区域:</label>
+						<!-- <select id="szqy" name="szqy" class="form-control"   onchange="Change()">
+							<option value="">请选择区域名称</option>
+						</select> -->
+						<input id="szqy" name="szqy" class="form-control" value="${name}" readonly="readonly" >
+						<input id="xzqhdm" name="xzqhdm" class="form-control" type="hidden" >
+						<input id="id" name="id" value="${obj.id}" hidden="true">
+				</div>
+			</div>
+			<div class="col-xs-4">	
+					<div class="form-group">
+						<label for="qymc">承储企业:</label>
+							<!-- <select id="qymc" name="qymc"  class="form-control" onchange="selectKDMC()" >
+					 			<option value="">请选择企业名称</option>
+							</select> -->
+							<input id="qymc" name="yijiqymc" class="form-control" value="${dep}" readonly="readonly" >
+					</div>	
+			</div>
+			<div class="col-xs-4">	
+					<div class="form-group">
+						<label for="qymc"><font color="red" style="font-size:large;">*</font>审批流程:</label>
+							 <select id="liuchenghao" name="liuchenghao"  class="form-control" onchange="getliucheng()">
+					 			<option value="">请选择流程号</option>
+							</select> 
+					</div>	
+			</div>
+		</div>
+				<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+        
+        	
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	承储计划                                        
+                    </div>
+                    <div style="float: right;">单位/吨</div>
+                  </div>
+                  <div class="widget-body">
+		
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="szqy">总计划:</label>
+					<input name="ccjh_xj" id="ccjh_xj"  class="form-control " type="text" value="${obj.ccjh_xj}" placeholder="总计划" readonly="readonly">
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="qymc">小麦:</label>
+						<input name="ccjh_xm" id="ccjh_xm" class="form-control " value="${obj.ccjh_xm}" placeholder="小麦" readonly="readonly">	
+					</div>	
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6" >
+				<div class="form-group" style="margin-top: -10px;">
+					<label for="szqy">粳稻:</label>
+					<input name="ccjh_jd" id="ccjh_jd"  class="form-control " type="text" value="${obj.ccjh_jd}" placeholder="粳稻" readonly="readonly">
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group" style="margin-top: -10px;">
+						<label for="qymc">籼稻:</label>
+						<input name="ccjh_xd" id="ccjh_xd" class="form-control " value="${obj.ccjh_xd}" placeholder="籼稻" readonly="readonly">	
+					</div>	
+			</div>
+		
+		</div>
+  			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+        
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	实物库存                                        
+                    </div>
+                     <div style="float: right;">单位/吨</div>
+                  </div>
+                  <div class="widget-body">
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="szqy">总库存:</label>
+					<input name="swkc_xj" id="swkc_xj"  class="form-control " type="text" value="${obj.swkc_xj}" placeholder="总库存" readonly="readonly">
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="qymc">小麦:</label>
+						<input name="swkc_xm" id="swkc_xm" class="form-control " value="${obj.swkc_xm}" placeholder="小麦" readonly="readonly">	
+					</div>	
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="szqy">粳稻:</label>
+					<input name="swkc_jd" id="swkc_jd"  class="form-control " type="text" value="${obj.swkc_jd}" placeholder="粳稻" readonly="readonly">
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="qymc">籼稻:</label>
+						<input name="swkc_xd" id="swkc_xd" class="form-control " placeholder="籼稻" value="${obj.swkc_xd}" readonly="readonly">	
+					</div>	
+			</div>
+		</div>
+   
+  			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+   <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	库存占比                                       
+                    </div>
+                     <div style="float: right;">单位/吨</div>
+                  </div>
+                  <div class="widget-body">
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="szqy">总库存:</label>
+					<input name="xjzb" id="xjzb"  class="form-control " type="text" value="${obj.xjzb}" placeholder="总库存占比" readonly="readonly">
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="qymc">小麦:</label>
+						<input name="xmzb" id="xmzb" class="form-control " value="${obj.xmzb}" placeholder="小麦占比" readonly="readonly">	
+					</div>	
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="szqy">粳稻:</label>
+					<input name="jdzb" id="jdzb"  class="form-control " type="text" value="${obj.jdzb}" placeholder="粳稻占比" readonly="readonly">
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="qymc">籼稻:</label>
+						<input name="xdzb" id="xdzb" class="form-control " value="${obj.xdzb}" placeholder="籼稻占比" >	
+					</div>	
+			</div>
+		</div>
+		<div class="row" style="display: none">
+			<div class="col-xs-6" >	
+						<div class="form-group">
+							<label for="xmfndkc">小麦分年度库存:</label>
+							<input  id="xmfndkc" name="xmfndkc" class="form-control " placeholder="小麦分年度库存" value="${obj.xmfndkc}" >	
+						</div>	
+				</div>
+				<div class="col-xs-6" >	
+						<div class="form-group">
+							<label for="jdfndkc">粳稻分年度库存:</label>
+							<input  id="jdfndkc" name="jdfndkc" class="form-control " placeholder="粳稻分年度库存" value="${obj.jdfndkc}" >	
+						</div>	
+				</div>
+				<div class="col-xs-6" >	
+						<div class="form-group">
+							<label for="xdfndkc">籼稻分年度库存:</label>
+							<input  id="xdfndkc" name="xdfndkc" class="form-control " placeholder="籼稻分年度库存" value="${obj.xdfndkc}" >	
+						</div>	
+				</div>
+   			</div>
+   
+  			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	轮换申请                                        
+                    </div>
+                     <div style="float: right;">单位/吨</div>
+                  </div>
+                  <div class="widget-body">
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="sqwh">申请文号:</label>
+					<input name="sqwh" id="sqwh"  class="form-control" type="text" value="${obj.sqwh}" placeholder="申请文号" >
+				</div>
+			</div>
+		
+		
+			<div class="col-xs-6" hidden="">	
+					<div class="form-group" >
+						<label for="lhsq_kdmc">承储企业:</label>
+						<select  name="qyzzjgdm" id="qyzzjgdm"  class="form-control" onchange="selecterjiqy()">
+         				</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group" >
+					<label for="lhsq_ch" >承储库:</label>
+					<select  name="ccku" id="ccku" class="form-control"  onchange="selectccdian()">
+         				<option value="">请选择承储库</option>
+         			</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="lhsq_pz">承储点:</label>
+						<select  name="ccdian" id="ccdian" class="form-control "  onchange="selectCH()" >
+         					<option value="">请选择承储点</option>
+         				</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group" >
+					<label for="lhsq_ch" >仓号:</label>
+					<select  name="cfbm" id="cfbm" class="form-control"  onchange="selectYearPZ()">
+         				<option value="">请选择仓号</option>
+         			</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="lhsq_pz">品种:</label>
+						<select  name="pz" id="pz" class="form-control " >
+         					<option value="">请选择品种</option>
+         				</select>
+					</div>	
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="scnx">生产年限:</label>
+					<input name="year" id="scnx"  class="form-control " type="text" placeholder="生产年限" value="${obj.year}" onkeyup="value=value.replace(/[^\d.]/g,'')">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="lhsl">轮换数量:</label>
+						<input type="checkbox"style="width: 20px; height: 15px;margin-left: 20px;" id="zhengcanglc" onclick="zclc(this)" name="iszclc" ${obj.iszclc=='on'?" checked"}/>　整仓轮出
+						<input type="checkbox" style="width: 20px; height: 15px;margin-left: 20px;display: none;" id="yxdybllc"  name="yxdybllc"  />
+						<input name="lhsl" id="lhsl" class="form-control " value="${obj.lhsl}" placeholder="轮换数量" onkeyup="value=value.replace(/[^\d.]/g,'')" >	
+						<input name="cbllcts" id="cbllcts" class="form-control " style="display: none;" >	
+					</div>	
+			</div>
+		</div>
+		
+					
+			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	<div>轮出后库存占比 <span style="font-size: 10px;font-weight: normal;color: red" id="lchtitle"></span></div>                                      
+                    </div>
+                     <div style="float: right;">单位/吨</div>
+                  </div>
+                  <div class="widget-body">
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="lch_xjzb">总库存:</label>
+					<input name="lch_xjzb" id="lch_xjzb"  class="form-control " type="text" value="${obj.lch_xjzb}" placeholder="总库存占比" >
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="lch_xmzb">小麦:</label>
+						<input name="lch_xmzb" id="lch_xmzb" class="form-control " value="${obj.lch_xmzb}" placeholder="小麦占比" >	
+					</div>	
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label for="lch_jdzb">粳稻:</label>
+					<input name="lch_jdzb" id="lch_jdzb"  class="form-control " type="text" value="${obj.lch_jdzb}" placeholder="粳稻占比" >
+				</div>
+			</div>
+			<div class="col-xs-6">	
+					<div class="form-group">
+						<label for="lch_xdzb">籼稻:</label>
+						<input name="lch_xdzb" id="lch_xdzb" class="form-control " value="${obj.lch_xdzb}" placeholder="籼稻占比" >	
+					</div>	
+			</div>
+		</div>
+   		<div class="row" >
+				<div class="col-xs-6" >
+						<label class="control-label">下载报告：</label>
+						<button type="button" class="btn btn-sm btn-info" id="btn" style="margin-top: 3px;" onclick="yulan()" >下载报告</button>
+						<input id="sqdocpath" name="sqdocpath" value="${obj.sqdocpath}" type="hidden" style="opacity: 0; position: absolute; right: 0px; top: 0px; z-index: 999;">
+						<a id="sqdocname" style="float:none;height: 30px;margin-left: 10px;" href="javascript:xiazai();"  ></a>
+				</div>
+				<div class="col-xs-6" >
+						<label class="control-label">行文(上传)：</label>
+						<input id="sqxingwen" name="sqxingwen" type="hidden" value="${obj.sqxingwen}">
+						<a class="btn btn-sm btn-info" style="font-size:1px" >
+							<input  class="file_upload"  type="file"  />
+						</a>
+						<a id="scfilename" style="float:right;width: 250px;margin-top:4px;padding-left: -10px; " href="${obj.sqxingwen!=''&&obj.sqxingwen!=null?ctxPath+'/upload/'+obj.sqxingwen:'javascript:void(0)'}" ${obj.sqxingwen!=''&&obj.sqxingwen!=null?" download"} ${obj.sqxingwen==''||obj.sqxingwen==null?" disabled"}>${obj.sqxingwen}</a>
+						<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+				</div>
+			
+		</div>
+  			<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>              
+  
+    
+     <div class="widget-body"  style="height: 132px;">
+			<div id="liuchengtu" style="margin-top: 0px">
+			</div>
+	 </div>
+	 
+		 </form>
+<!-- 	  <div class="" style="margin-top: 60px;">
+		<button type="button" class="btn btn-sm btn-success" id="btn" style="margin-top: 3px;" onclick="yulan()" ><em class="fa fa-check fa-fw"></em>生成报告</button>
+	</div> -->
+    <!-- <div class="panel-footer">
+		<button type="button" class="btn btn-sm btn-success" id="btn" style="margin-top: 3px;" onclick="shangchuan()" ><em class="fa fa-check fa-fw"></em> 批准</button>
+		<a class="btn btn-sm btn-danger back" id="fanhui" style="margin-top: 3px;" onclick="quxiao()"><em class="fa fa-mail-reply fa-fw"></em>取消</a>
+	</div> -->
+</div>
+<script type="text/javascript">
+var datatable;
+var zongkuc;
+$(function(){
+	$("#sqdocname").html("${obj.sqdocpath}");
+	selectKDMC();
+	$("#liuchenghao,#ccku,#ccdian,#qyzzjgdm,#pz,#cfbm").select2();
+	$.ajax({
+		 url:'${ctxPath}/lunhuan/findlcbylc',
+		 type:'post',
+		 data:{},
+		 dataType:'json',
+		 success:function(data){
+			$.each(data.list,function(i, n){
+				if("${obj.liuchenghao}"==n.liuchenghao){
+					$("#liuchenghao").append("<option value='"+n.liuchenghao+"' selected >"+n.name+"</option>");
+				}else{
+					$("#liuchenghao").append("<option value='"+n.liuchenghao+"'>"+n.name+"</option>");
+				}
+			});
+			getliucheng();
+		 }
+	});
+	//整仓轮出
+			$.ajax({
+				url:'${ctxPath}/lunhuan/findYearPZ.do',
+				type:'post',
+				data:{"qyzzjgdm":"${obj.ccku}","kdbm":"${obj.ccdian}","cfbm":"${obj.cfbm}"},
+				dataType:'json',
+				success:function(data){
+						 if(null!=data.ret){
+							 zongkuc=data.ret.zongkucun;
+						 }
+				},
+				error:function(){
+					alert("error");
+				}
+			});
+	$('.file_upload').uploadifive({
+		'auto' : true,   //自动上传 
+        'uploadScript' : '${ctxPath}/excel/uploadlhsqxwFile',  //处理上传文件Action路径
+        'buttonClass' : 'file_upload',
+        'fileObjName' : 'file',        //文件对象
+  	    'buttonText'   : '上传行文',   //按钮显示文字 
+  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+//  		'fileTypeExts'     : '*.xlsx;*.xls;*.png',   //允许上传文件后缀名
+		'formData': { 'id': $("#biaoid").val() },
+  	    'onUploadComplete' : function(file, data) { //文件上传成功后执行
+	    	var obj = JSON.parse(data);
+	    	$("#scfilename").html(obj.scfilename);
+	    	$("#sqxingwen").val(obj.scfilename);
+	    	$("#scfilename").attr("href","${ctxPath}"+obj.filepath);
+	    	$("#scfilename").attr("download",obj.scfilename);
+    	}
+	});
+	$("#ccku").html("");
+	var qyzzjgdm = "${obj.qyzzjgdm}";
+	$("#ccku+span>span:first>span>span:first").html("请选择承储库");
+	var op = '<option value="">请选择承储库</option>';
+	$("#ccku").append(op);
+	$.ajax({
+		url : '${ctxPath}/chubeiliangJH/chengchuku',
+		type : 'post',
+		data : {
+			"yijiqiye" : qyzzjgdm,
+			"niandu":year,
+		},
+		dataType : 'json',
+		success : function(data) {
+			 for (var i = 0; i < data.length; i++) {
+				 if("${obj.ccku}"==data[i].kdbm){
+					 $("#ccku").append("<option value="+data[i].kdbm+"  selected>" + data[i].kdmc+ "</option>");
+				 }else{
+					$("#ccku").append("<option value="+data[i].kdbm+">" + data[i].kdmc+ "</option>");
+				 }
+			} 
+		
+			/* $('#kdbm').select2({
+			  data:data
+
+			}); */
+		}
+	});
+	$("#ccdian").html("");
+	/* $("#cfbm").html(""); */
+	var qyzzjgdm ="${obj.ccku}";
+	$("#ccdian+span>span:first>span>span:first").html("请选择承储点");
+	var op = '<option value="">请选择承储点</option>';
+	$("#ccdian").append(op);
+	/* var cc = '<option value="">请选择仓廒</option>';
+	$("#cfbm").append(cc); */
+	
+	$.ajax({
+		url : '${ctxPath}/chubeiliangJH/chengchudian',
+		type : 'post',
+		data : {
+			"qyzzjgdm" : qyzzjgdm,
+		},
+		dataType : 'json',
+		success : function(data) {
+			 for (var i = 0; i < data.length; i++) {
+				 if("${obj.ccku}"==data[i].qyzzjgdm&&"${obj.ccdian}"==data[i].kdbm){
+					 $("#ccdian").append("<option value="+data[i].kdbm+" selected>" + data[i].kdmc+ "</option>");
+				 }else{
+					$("#ccdian").append("<option value="+data[i].kdbm+">" + data[i].kdmc+ "</option>");
+				 }
+			} 
+		
+			/* $('#kdbm').select2({
+			  data:data
+
+			}); */
+		}
+	});
+	$("#cfbm").html("");
+	$("#cfbm").append("<option>请选择仓号</option>")
+	var qyzzjgdm="${obj.ccku}";
+	var kdbm="${obj.ccdian}";
+			$.ajax({
+				url: "${ctxPath}/lunhuan/selectcbjhCH.do",
+				dataType: "json",
+				data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+						if("${obj.ccku}"==n.qyzzjgdm&&"${obj.ccdian}"==n.kdbm&&"${obj.cfbm}"==n.cfbm){
+							$("#cfbm").append("<option value="+n.cfbm+" selected>"+n.cfmc+"</option>");
+						}else{
+							$("#cfbm").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+						}
+					});
+				
+				}
+			});
+			 $.ajax({
+				 url:'${ctxPath}/zhiliangGL/selectallpz.do',
+				 type:'post',
+				 //data:{"page":1,"rows":10},
+				 dataType:'json',
+				 data:{pzcoed:"${obj.pz}"},
+				 success:function(data){
+					$.each(data.list,function(i, n){
+						if(n.vCode =="${obj.pz}"){
+							$("#pz").append("<option value="+n.vCode+" selected>"+n.vName+"</option>");
+						}
+						lchzb();
+					});
+				 },
+				 error:function(){
+					 alert("error");
+				 }
+			  });
+	
+});
+$(document).ready(function (){
+
+});
+
+//根据选择的仓查询生产年限和品种
+function selectYearPZ(){
+	var cfbm=$("#cfbm").val();
+	var kdbm=$("#ccdian").val();
+	var qyzzjgdm=$("#ccku").val();
+	 $("#scnx").val("");
+	 $("#lhsl").val("");
+	 $("#pz").html("");
+	 var pinzhong = "<option value=''>请选择品种</option>";
+	 $("#pz").append(pinzhong);
+	 $("#lch_xjzb").val("");
+	 $("#lch_xmzb").val("");
+	 $("#lch_jdzb").val("");
+	 $("#lch_xdzb").val("");
+			$.ajax({
+				url:'${ctxPath}/lunhuan/findYearPZ.do',
+				type:'post',
+				data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"cfbm":cfbm},
+				dataType:'json',
+				success:function(data){
+						 if(null!=data.ret){
+							 $("#scnx").val(data.ret.year);
+							 $("#pz").html("");
+							 var pinzhong = "<option value="+data.ret.vCode+">"+data.ret.vName+"</option>";
+							 $("#pz").append(pinzhong);
+							 zongkuc=data.ret.zongkucun;
+							 $("#lhsl").val(data.ret.zongkucun);
+							 lchzb();
+						 }
+				},
+				error:function(){
+					alert("error");
+				}
+				
+				
+			});
+}
+
+
+
+function Change(){
+	$("#qymc").html("");
+	var xian = $("#szqy option:selected").text().trim();
+	var op = '<option value="">请选择企业名称</option>';
+    $("#qymc").append(op);
+    var kd = '<option value="">请选择库点名称</option>';
+    $("#lhsq_kdmc").append(kd);
+	$.ajax({
+		url:'${ctxPath}/lunhuan/findcompany',
+		type:'post',
+		data:{"xian":xian},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = "<option value="+data[i].qyzzjgdm+">"+data[i].qymc+"</option>";
+			     $("#qymc").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+	
+	
+}
+	
+	function shangchuan(){
+		if($("#liuchenghao").val()==""){
+			alert("请选择流程号 ");
+			return false;
+		}else if($("#qyzzjgdm").val()==""){
+			alert("请选择承储企业 ");
+			return false;
+		}else if($("#ccku").val()==""){
+			alert("请选择承储库 ");
+			return false;
+		}else if($("#ccdian").val()==""){
+			alert("请选择承储点 ");
+			return false;
+		}else if($("#cfbm").val()==""){
+			alert("请选择仓房名称 ");
+			return false;
+		}else if($("#pz").val()==""){
+			alert("请选择品种名称 ");
+			return false;
+		}else if($("#sqwh").val()==""){
+			alert("请输入申请文号 ");
+			return false;
+		}else if($("#jhsl").val()==""){
+			alert("请输入申请文号 ");
+			return false;
+		}else {
+		
+			$.ajax({
+				url: "${ctxPath}/lunhuan/validatesqwh1.do",
+				dataType: "json",
+				data:$("#sc").serialize(),
+				success: function(msg) {
+					if (msg.ret) {
+					   		alert(msg.message);
+					}else{
+						 $.ajax({
+				   				url: "${ctxPath}/lunhuan/saveLunHuanB1.do",
+				   				dataType: "json",
+				   				data:$("#sc").serialize(),
+				   				success: function(msg) {
+				   					if (msg.ret) {
+				   						parent.dialog10.close();
+				   						alert("轮换申请成功");
+				   						parent.window.datatable.ajax.reload(null,true);
+				   					}else{
+				   						alert(ret.message);
+				   					}
+				   				}
+				   			});
+					}
+				}
+			});
+		}
+	}
+	//区域下拉框值改变时调用该方法联动查询企业名称
+	function selectQYMC(){
+		$("#qymc").html("");
+		$("#qymc").append("<option>请选择企业名称</option>")
+		var szqy=$("#szqy").val();
+		$.ajax({
+				url: "${ctxPath}/lunhuan/selectQYMC.do",
+				dataType: "json",
+				data:{szqy:szqy},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+							$("#qymc").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+					});
+				}
+			});
+		
+			
+	}
+	//企业下拉框值改变时 联动查询库点名称
+	function selectKDMC(){
+		var xian = $("#szqy").val();
+		var qymc=$("#qymc").val();
+		var qyzzjgdm="";
+		//给xzqhdm赋值（时间传到后台值）
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/findquxian',
+			type:'post',
+			data:{"name":xian},
+			dataType:'json',
+			success:function(data){
+				$("#xzqhdm").val(data[0].xzqhdm);
+			},
+			error:function(){
+				alert("error");
+			}
+			
+			
+		});
+		//承储企业
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+			type:'post',
+			data:{"qymc":"${dep}"},
+			dataType:'json',
+			success:function(data){
+				for(var i = 0; i < data.list.length; i++){
+					if("${obj.qyzzjgdm}"==data.list[i].qyzzjgdm){
+						$("#qyzzjgdm").append("<option value="+data.list[i].qyzzjgdm+" selected>"+data.list[i].qymc+"</option>");
+					}else{
+				     	$("#qyzzjgdm").append("<option value="+data.list[i].qyzzjgdm+">"+data.list[i].qymc+"</option>");
+					}
+				}
+			}
+		});
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+			type:'post',
+			data:{"qymc":qymc},
+			dataType:'json',
+			success:function(data){
+				qyzzjgdm=data.list[0].qyzzjgdm;
+				$("#qymcc").val(qyzzjgdm);
+				/* $.ajax({
+					url:'${ctxPath}/lunhuan/findcckd',
+					type:'post',
+					data:{"qyzzjgdm":qyzzjgdm},
+					dataType:'json',
+					success:function(data){
+						for(var i = 0; i < data.length; i++){
+							 var op = "<option value="+data[i].kdbm+">"+data[i].kdmc+"</option>";
+						     $("#lhsq_kdmc").append(op);
+						}
+					},
+					error:function(){
+						alert("error");
+					}
+					
+					
+				}); */
+				//选完企业后 自动显示该企业下的储备粮计划和实物库存（取该企业下的所有...）
+				/* $.ajax({
+					url: "${ctxPath}/lunhuan/selectSWKC.do",
+					dataType: "json",
+					data:{"qyzzjgdm":qyzzjgdm,"niandu":year},
+					success: function(data) {
+						$("#swkc_xj").val(data.ret.swkc_xj);
+						$("#swkc_xm").val(data.ret.swkc_xm);
+						$("#swkc_jd").val(data.ret.swkc_jd);
+						$("#swkc_xd").val(data.ret.swkc_xd);
+						$("#ccjh_xj").val(data.ret.cbljh_xj);
+						$("#ccjh_xm").val(data.ret.cbljh_xm);
+						$("#ccjh_jd").val(data.ret.cbljh_jd);
+						$("#ccjh_xd").val(data.ret.cbljh_xd);
+						$("#xjzb").val(data.ret.xjzb);
+						$("#xmzb").val(data.ret.xmzb);
+						$("#jdzb").val(data.ret.jdzb);
+						$("#xdzb").val(data.ret.xdzb);
+					}
+				}); */ 
+			},
+			error:function(){
+				alert("error");
+			}
+			
+			
+		});
+	}
+	//库点下拉框值改变时 联动查询仓房名称
+	function selectCH(){
+		$("#cfbm").html("");
+		$("#cfbm").append("<option>请选择仓号</option>")
+		var qyzzjgdm=$("#ccku").val();
+		var kdbm=$("#ccdian").val();
+				$.ajax({
+					url: "${ctxPath}/lunhuan/selectcbjhCH.do",
+					dataType: "json",
+					data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+					success: function(data) {
+						$.each(data.list,function(i, n){
+							if("${obj.ccku}"==n.qyzzjgdm&&"${obj.ccdian}"==n.kdbm&&"${obj.cfbm}"==n.cfbm){
+								$("#cfbm").append("<option value="+n.cfbm+" selected>"+n.cfmc+"</option>");
+							}else{
+								$("#cfbm").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+							}
+						});
+						
+					}
+				});
+	
+		
+			
+	}
+	//点击批准提示，显示结果
+	function pizhuntishi(){
+		var scnx=$("#lhsq_scnx").val();//当前仓生产年限
+		var lhsl=$("#lhsq_lhsl").val();//轮换数量
+		var pz=$("#lhsq_pz").val();    //品种
+		var qymc=$("#qymc").val(); //企业组织机构代码
+		var kdbm=$("#lhsq_kdmc").val();  //库点编码
+		var cfbm=$("#lhsq_ch").val();  //仓房编码
+		$("#lhsq_tsjg").html("");
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+			type:'post',
+			data:{"qymc":qymc},
+			dataType:'json',
+			success:function(data){
+				var qyzzjgdm=data.list[0].qyzzjgdm;
+				$.ajax({
+					url:'${ctxPath}/lunhuan/pizhuntishi.do',
+					type:'post',
+					data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"cfbm":cfbm,"scnx":scnx,"lhsl":lhsl,"pz":pz},
+					dataType:'json',
+					success:function(data){
+							$("#lhpzts_qszlbl").val(data.ret.qszlbl);
+							$("#lhpzts_zlbl").val(data.ret.zlbl);
+							$("#lhpzts_fpzbl").val(data.ret.fpzbl);
+							$("#lhpzts_zzscnx").val(data.ret.zzscnx);
+							//fpzbudiyu 1 3 5 分别对应小麦粳稻籼稻 条件满足
+							//fpzbudiyu 2 4 6 分别对应小麦粳稻籼稻 条件不满足
+							if(data.ret.sfzzscnx==true&&data.ret.budiyu==true&&data.ret.fpzbudiyu==1){
+								var tishijieguo="<font color='green'>"+"满足"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo);
+							}else if(data.ret.sfzzscnx==true&&data.ret.budiyu==true&&data.ret.fpzbudiyu==3){
+								var tishijieguo="<font color='green'>"+"满足"+"</font>"+'<br>';
+							}else if(data.ret.sfzzscnx==true&&data.ret.budiyu==true&&data.ret.fpzbudiyu==5){
+								var tishijieguo="<font color='green'>"+"满足"+"</font>"+'<br>';
+							}
+							//显示是否最早年限
+							if(data.ret.sfzzscnx==true){
+								/* var tishijieguo="<font color='green'>"+"是否最早年限：是"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo); */
+							}else{
+								var tishijieguo="<font color='red'>"+"　不是最早生产年限"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo);
+							}	
+							//现有库存实物数-报批数/计划数=轮换后的库存是否满足
+							if(data.ret.budiyu==true){
+								/* var tishijieguo="<font color='green'>"+"现有库存实物数-报批数/计划数不得少于1/2：是"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo); */
+							}else{
+								var tishijieguo="<font  color='red'>"+"　(现有库存实物数-报批数)/计划数低于1/2"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo);
+							}
+							
+							//根据状态分品种显示是否满足
+							if(data.ret.fpzbudiyu==1){
+								/* var tishijieguo="<font color='green'>"+"是否低于小麦库存的1/2：是"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo); */
+							}else if(data.ret.fpzbudiyu==2){
+								var tishijieguo="<font color='red'>"+"　低于小麦库存的1/2"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo);
+							}else if(data.ret.fpzbudiyu==3){
+								/* var tishijieguo="<font color='green'>"+"是否低于粳稻库存的1/4：是"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo); */
+							}else if(data.ret.fpzbudiyu==4){
+								var tishijieguo="<font color='red'>"+"　低于粳稻库存的1/4"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo);
+							}else if(data.ret.fpzbudiyu==5){
+								/* var tishijieguo="<font color='green'>"+"是否低于籼稻库存的1/3：是"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo); */
+							}else if(data.ret.fpzbudiyu==6){
+								var tishijieguo="<font color='red'>"+"　低于籼稻库存的1/3"+"</font>"+'<br>';
+								$("#lhsq_tsjg").append(tishijieguo);
+							}
+					},
+					error:function(){
+						alert("error");
+					}
+					
+					
+				});
+			}
+		});
+	
+	}
+	$("#lhsl").bind("keyup",function(){
+		lchzb();
+	})
+	function lchzb(){
+		 $("#yxdybllc").prop("checked", false);
+		 $("#lchtitle").text("");
+		 $("#lch_xjzb").val("");
+		 $("#lch_xmzb").val("");
+		 $("#lch_jdzb").val("");
+		 $("#lch_xdzb").val("");
+		 var swkc_xj=Number($("#swkc_xj").val());
+		 var swkc_xm=Number($("#swkc_xm").val());
+		 var swkc_jd=Number($("#swkc_jd").val());
+		 var swkc_xd=Number($("#swkc_xd").val());
+		 var cbljh_xj=Number($("#ccjh_xj").val());
+		 var cbljh_xm=Number($("#ccjh_xm").val());
+		 var cbljh_jd=Number($("#ccjh_jd").val());
+		 var cbljh_xd=Number($("#ccjh_xd").val());
+		 var jhsl=Number($("#lhsl").val());
+		 var pz=$("#pz").val().substring(0,4);
+		 var pzname=$("#pz  option:selected").text();
+		 var lch_xjzb;
+		 var lch_xmzb;
+		 var lch_jdzb;
+		 var lch_xdzb;
+		 if(""!=pz){
+			 lch_xjzb=baifenbi(swkc_xj-jhsl,cbljh_xj);
+		 }
+		 if("111"==pz){
+			 lch_xmzb=baifenbi(swkc_xm-jhsl,cbljh_xm);
+			 lch_jdzb=baifenbi(swkc_jd,cbljh_jd);
+			 lch_xdzb=baifenbi(swkc_xd,cbljh_xd);
+			 if(lch_xmzb<((1/2)*100)&&lch_xjzb>=((1/2)*100)){
+				 	$("#lchtitle").text("（"+pzname+"超比例轮出）"); 
+				 	$("#yxdybllc").prop("checked", true);
+			 }else if(lch_xmzb<((1/2)*100)&&lch_xjzb<((1/2)*100)){
+					$("#lchtitle").text("（"+pzname+"超比例轮出且全市总量比例低于50%）"); 
+					$("#yxdybllc").prop("checked", true);
+			 }
+		 }else if("1132"==pz){
+			 lch_xmzb=baifenbi(swkc_xm,cbljh_xm);
+			 lch_jdzb=baifenbi(swkc_jd-jhsl,cbljh_jd);
+			 lch_xdzb=baifenbi(swkc_xd,cbljh_xd);
+			 if(parseInt(lch_jdzb)<((1/4)*100)&&lch_xjzb>=((1/2)*100)){
+				 	$("#lchtitle").text("（"+pzname+"超比例轮出）");
+				 	$("#yxdybllc").prop("checked", true);
+			 }else if(lch_jdzb<((1/4)*100)&&lch_xjzb<((1/2)*100)){
+					$("#lchtitle").text("（"+pzname+"超比例轮出且全市总量比例低于50%）"); 
+					$("#yxdybllc").prop("checked", true);
+			 }
+		 }else if("1131"==pz){
+			 lch_xmzb=baifenbi(swkc_xm,cbljh_xm);
+			 lch_jdzb=baifenbi(swkc_jd,cbljh_jd);
+			 lch_xdzb=baifenbi(swkc_xd-jhsl,cbljh_xd);
+			 if(lch_xdzb<((1/3)*100)&&lch_xjzb>=((1/2)*100)){
+				 	$("#lchtitle").text("（"+pzname+"超比例轮出）");
+				 	$("#yxdybllc").prop("checked", true);
+			 }else if(lch_xdzb<((1/3)*100)&&lch_xjzb<((1/2)*100)){
+					$("#lchtitle").text("（"+pzname+"超比例轮出且全市总量比例低于50%）"); 
+					$("#yxdybllc").prop("checked", true);
+			 }
+		 }
+		 $("#lch_xjzb").val((lch_xjzb).toFixed(2)+"%");
+		 $("#lch_xmzb").val((lch_xmzb).toFixed(2)+"%");
+		 $("#lch_jdzb").val((lch_jdzb).toFixed(2)+"%");
+		 $("#lch_xdzb").val((lch_xdzb).toFixed(2)+"%");
+		 if(lch_xjzb<((1/2)*100)&&cbljh_xj>0){
+			 $("#lch_xjzb").css("color","red");
+		 }else{
+			 $("#lch_xjzb").removeAttr("style");
+		 }
+		 if(lch_xmzb<((1/2)*100)&&cbljh_xm>0){
+			 $("#lch_xmzb").css("color","red");
+		 }else{
+			 $("#lch_xmzb").removeAttr("style");
+		 }
+		 if(lch_jdzb<((1/4)*100)&&cbljh_jd>0){
+			 $("#lch_jdzb").css("color","red");
+		 }else{
+			 $("#lch_jdzb").removeAttr("style");
+		 }
+		 if(lch_xdzb<((1/3)*100)&&cbljh_xd>0){
+			 $("#lch_xdzb").css("color","red");
+		 }else{
+			 $("#lch_xdzb").removeAttr("style");
+		 }
+		 $("#cbllcts").val($("#lchtitle").text().replace(/(^\s*)|(\s*$)/g, ""));
+	}
+	function baifenbi(swkc,cbljh){
+		if(swkc==0&&cbljh==0){
+			return 0.00;
+		}else{
+			if(swkc/cbljh>=1){
+				return 100;
+			}else{
+				return (swkc/cbljh)*100;
+			}
+		}
+	}
+	var date=new Date;
+	var year=parseInt(date.getFullYear());
+	function selecterjiqy() {
+		$("#ccku").html("");
+		/* $("#cfbm").html(""); */
+		var qyzzjgdm = $("#qyzzjgdm option:selected").val();
+		$("#ccku+span>span:first>span>span:first").html("请选择承储库");
+		var op = '<option value="">请选择承储库</option>';
+		$("#ccku").append(op);
+		/* var cc = '<option value="">请选择仓廒</option>';
+		$("#cfbm").append(cc); */
+		
+		$.ajax({
+			url : '${ctxPath}/chubeiliangJH/chengchuku',
+			type : 'post',
+			data : {
+				"yijiqiye" : qyzzjgdm,
+			},
+			dataType : 'json',
+			success : function(data) {
+				 for (var i = 0; i < data.length; i++) {
+					 if("${obj.ccku}"==data[i].kdbm){
+						 $("#ccku").append("<option value="+data[i].kdbm+" selected> " + data[i].kdmc+ "</option>");
+					 }else{
+						$("#ccku").append("<option value="+data[i].kdbm+">" + data[i].kdmc+ "</option>");
+					 }
+				} 
+			
+				/* $('#kdbm').select2({
+				  data:data
+
+				}); */
+			}
+		});
+	}
+
+	function selectccdian() {
+		$("#ccdian").html("");
+		/* $("#cfbm").html(""); */
+		var qyzzjgdm = $("#ccku option:selected").val();
+		$("#ccdian+span>span:first>span>span:first").html("请选择承储点");
+		var op = '<option value="">请选择承储点</option>';
+		$("#ccdian").append(op);
+		/* var cc = '<option value="">请选择仓廒</option>';
+		$("#cfbm").append(cc); */
+		
+		$.ajax({
+			url : '${ctxPath}/chubeiliangJH/chengchudian',
+			type : 'post',
+			data : {
+				"qyzzjgdm" : qyzzjgdm,
+			},
+			dataType : 'json',
+			success : function(data) {
+				 for (var i = 0; i < data.length; i++) {
+					$("#ccdian").append("<option value="+data[i].kdbm+">" + data[i].kdmc+ "</option>");
+				} 
+			
+				/* $('#kdbm').select2({
+				  data:data
+
+				}); */
+			}
+		});
+	}
+	function zclc(obj){
+		if(obj.checked){
+			$("#lhsl").val(zongkuc);
+			$("#lhsl").attr("readonly",true);
+			lchzb();
+		}else{
+			$("#lhsl").attr("readonly",false);
+		}
+	}
+	function getliucheng(){
+		var liuchenghao=$("#liuchenghao").find("option:selected").val();
+		if(liuchenghao!=""){
+			$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtu1?liuchenghao="+liuchenghao);
+		}
+	}
+/* 	if("${obj.id}"!=""){
+		var ri="${obj.beianriqi}";
+		var riqi=ri.split(" ");
+		$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtulunhuan?liuchenghao=${obj.liuchenghao}&qiyeid=${obj.qyzzjgdm}&nyr="+riqi[0]+"&sfm="+riqi[1]+"");
+	} */
+function quxiao(){
+	parent.dialog1.close();
+}
+	function yulan(){
+		if(""==$("#lhsl").val()||null==$("#lhsl").val()){
+			alert("请先完善轮换申请信息！");
+			return false;
+		}
+		var pzbm=$("#pz option:selected").val();
+		var data={};
+		data.qymc=$("#qymc").val();  //企业名称
+		data.pz=$("#pz option:selected").text();	 //品种名称
+		data.ccjh_xj=$("#ccjh_xj").val();  //市级储备规模量
+		if(pzbm.substring(0,3) == '111'){
+			data.fpzccjh=$("#ccjh_xm").val();		//分品种承储规模量
+			data.fpzswkc=$("#swkc_xm").val();		//分品种库存量
+			data.fpzzb=$("#xmzb").val();			//分品种库存比例
+			data.lch_fpzzb=$("#lch_xmzb").val();			//轮出后分品种库存比例
+			data.ndfpzkclist=$("#xmfndkc").val();
+		}else if(pzbm.substring(0,4) == '1132'){
+			data.fpzccjh=$("#ccjh_jd").val();
+			data.fpzswkc=$("#swkc_jd").val();
+			data.fpzzb=$("#jdzb").val();
+			data.lch_fpzzb=$("#lch_jdzb").val();
+			data.ndfpzkclist=$("#jdfndkc").val();
+		}else if(pzbm.substring(0,4) == '1131'){
+			data.fpzccjh=$("#ccjh_xd").val();
+			data.fpzswkc=$("#swkc_xd").val();
+			data.fpzzb=$("#xdzb").val();
+			data.lch_fpzzb=$("#lch_xdzb").val();
+			data.ndfpzkclist=$("#xdfndkc").val();
+		}
+		var myDate = new Date();
+		var monthpast = myDate.getMonth() + 1;
+		var day = myDate.getDate();  
+		var year=myDate.getFullYear();
+		
+		myDate.setMonth(myDate.getMonth()+parseInt(4));
+		var year1=myDate.getFullYear();
+		var month1=(myDate.getMonth()+1);
+		
+		data.year=year;
+		data.day=day;
+		data.lr_year=year1;
+		data.lr_month=month1;
+		data.month=monthpast;				//月末
+		data.swkc_xj=$("#swkc_xj").val();
+		data.xjzb=$("#xjzb").val();   //月末市级储备库存总量 
+		data.niandu=$("#scnx").val();		//生产年度
+		data.ccdian=$("#ccdian option:selected").text();			//库点名称
+		data.cfmc=$("#cfbm option:selected").text();			//仓房名称
+		data.lhsl=$("#lhsl").val();				//轮出数量
+		data.lch_xjzb=$("#lch_xjzb").val();			//轮出后实物库存总量比例
+		data.sqwh=$("#sqwh").val();
+		$.ajax({
+			url : '${ctxPath}/excel/yulanlhsq',
+			type : 'post',
+			data : data,
+			dataType : 'json',
+			success : function(data) {
+				$('#xzbtn').removeAttr("disabled"); 
+				$("#sqdocpath").val(data.docname);
+				$("#sqdocname").html(data.docname);
+				xiazai();
+			}
+		});
+	}
+	function xiazai(){
+		 window.location.href="${ctxPath}/excel/getDocFile?docpath=D:/upload/"+$("#sqdocpath").val()+"";
+	}
+	</script>

@@ -1,0 +1,209 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>页面模块方法使用维护</b></span>
+		</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+						<label>模块名称:</label>
+						<select id="code" class="js-example-basic-single input-sm" style="width:150px;font-size:14px">
+							<option value="" selected="true" >选择名称</option>	
+						</select>
+						
+						<label>用户:</label>
+						<select id="userid" class="js-example-basic-single input-sm" style="width:210px;font-size:14px" >
+							 <option value="" selected="true" >选择用户</option> 	
+						</select>
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div> 
+				<a class="btn btn-success btn-xs pull-right" type="button" onclick="addykgl()"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findcaidanfangfaweihu" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+	
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+		"autoWidth": false,
+        "columns": [
+			
+			{
+				"data" : "code",width:10,
+				"title" : "排序"
+			},
+			{
+				"data" : "name",width:100,
+				"title" : "模块名称"
+			},
+			{
+				"data" : "jiequname",width:80,
+				"title" : "截取名称"
+			},
+			{
+				"data" : "mokuai",width:80,
+				"title" : "模块名称"
+			},
+			{
+				"data" : "isedit",width:80,
+				"title" : "类型"
+			},
+			
+			 {"title":"操作",width:100,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upykgl(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delykgl(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+			]
+	});
+});
+
+function doSearch(){
+	var code = $("#code").val();
+	var userid = $("#userid").val();
+	document.querySelector('.datatables').dataset.queryparam="&code="+code+"&userid="+userid;
+	datatable.ajax.reload(null,false);
+}
+ 
+
+$(document).ready(function() {
+	/* 加载模块*/
+	$("#code").select2();
+	$("#userid").select2();
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findrate',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				
+					
+					$("#code").append("<option value="+n.code+">"+n.name+"</option>");
+				
+			
+			});
+		 }
+	});
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/finduserid',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+					$("#userid").append("<option value="+n.id+">"+n.realname+"</option>");
+			});
+		 }
+	});
+});
+var dialog;
+function addykgl(){
+	dialog=BootstrapDialog.show({
+	    title: '新增方法使用信息 ',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/weihu/caidanfangfaweihu_add.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","380px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveykgl(); 
+        	   parent.window.dialog.close();
+        	   datatable.ajax.reload(null,false);
+        	  
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+
+function upykgl(id){
+	dialog1=BootstrapDialog.show({
+	    title: '编辑模块信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/weihu/caidanfangfaweihu_add.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","380px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveykgl(); 
+        	   parent.window.dialog1.close();
+        	   datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function delykgl(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delCaidanweihu',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+</script>
+<%
+	}
+%>

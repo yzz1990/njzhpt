@@ -1,0 +1,501 @@
+<% layout("/WEB-INF/web/ui/globalStyle.html"){ %>
+<script type="text/javascript" src="${ctxPath}/web/echarts.js"></script>
+
+<title>SimpleTree</title>
+<link rel="stylesheet" type="text/css"
+	href="${ctxPath}/resource/SimpleTree.css" />
+<script type="text/javascript" src="${ctxPath}/resource/SimpleTree.js"></script>
+
+<style>
+.active {
+	background-color: #B0C4DE;
+}
+
+.conttext {
+	border: 1px solid;
+	width: 300px;
+	height: 300px;
+	float: left;
+}
+
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+
+.panel-info {
+	float: left;
+	width: 250px;
+	height: 600px;
+}
+
+.panel-success {
+	margin-left: 30px;
+	float: left;
+	width: 400px;
+	height: 600px;
+}
+.panel{
+	   
+	    margin-top: 10px;
+}
+
+#panelDemo10,#panelDemo9{
+	 background-color: rgba(217, 237, 247, 0.3);
+}
+
+#panelDemo11{
+	margin-left: 10px;
+}
+</style>
+
+<script type="text/javascript">
+	//选中品种
+	var fjiedian;
+	//选中品种id
+	var fid;
+	//选中品种父节点
+	var ffjiedian;
+	//标记保存还是修改
+	var flag = 0;
+	//保存子节点数
+	var fchild;
+
+	$(function() {
+		$("#pinzhong").select2();
+		$("#vgrade").select2();
+
+		//加载粮食等级下拉框
+		$.ajax({
+			url : '${ctxPath}/jiage/querygrade.do',
+			type : 'post',
+			data : {
+				"page" : 1,
+				"rows" : 100
+			},
+			dataType : 'json',
+			success : function(data) {
+				$.each(data.list, function(i, n) {
+					$("#vgrade").append(
+							'<option id="'+n.vCode+'" value="'+n.vLevelName+'">'
+									+ n.vLevelName + '</option>');
+				});
+			},
+			error : function() {
+				alert("加载品种等级失败");
+			}
+		});
+		//树形结构方式加载粮食品种
+		gettree();
+
+	});
+	
+	function gettree(){
+		$("#sysp").empty();
+		$
+		.ajax({
+			url : '${ctxPath}/jiage/querypinzhong.do',
+			type : 'post',
+			data : {
+				"page" : 1,
+				"rows" : 100
+			},
+			dataType : 'json',
+			success : function(data) {
+				//=======================================动态加载tree=================================
+				var num = data.list.length;
+
+				for (var j = 0; j < num; j++) {
+					var li;
+					//处理根节点
+					if (data.list[j].typecode.length == 3) {
+						li = '<li id="'+data.list[j].typecode+'" preid="'+data.list[j].id+'"  ichild="'+data.list[j].haschild+'"><a href="#" ref="sypz">&nbsp;'
+								+ data.list[j].vName
+								+ '</a></li><ul></ul>';
+						$("#sysp").append(li);
+					} else {
+						var fujiedian = data.list[j].typecode
+								.substring(0, 3);
+						li = '<li id="'+data.list[j].typecode+'" preid="'+data.list[j].id+'" ichild="0"><a href="#" ref="sypz">&nbsp;'
+								+ data.list[j].vName + '</a></li>';
+						$("#" + fujiedian).next().append(li);
+					}
+					var op = '<option id="'+data.list[j].typecode+'" preid="'+data.list[j].id+'" ichild="0" value="'+data.list[j].vName+'">'
+							+ data.list[j].vName + '</option>';
+					$("#pinzhong").append(op);
+				}
+				//=======================================动态加载tree（结束）=================================
+				//=====================================a的单击事件===================================
+
+				$(".st_tree")
+						.SimpleTree(
+								{
+									click : function(a) {
+										if (!$(a).attr("hasChild")) {
+											alert($(a).attr("ref"));
+										}
+										//增加和删除a的选中状态
+										$("a").removeClass("active");
+										$(a).addClass("active")
+												.siblings()
+												.removeClass("active");
+
+										//设置pinzhong列表不可编辑
+										$("#pinzhong").attr("disabled",
+												"disabled");
+										fchild = $(a).parent().attr(
+												"ichild");
+										fid = $(a).parent().attr("id");
+										//1为修改
+										flag = 1;
+										var pinzhong = $(a).text()
+												.trim();
+										$
+												.ajax({
+													url : '${ctxPath}/jiage/querypinzhong.do',
+													type : 'post',
+													data : {
+														"page" : 1,
+														"rows" : 1,
+														"pinzhong" : pinzhong
+													},
+													dataType : 'json',
+													success : function(
+															data) {
+														//显示品种名称
+														$("#pinzhong")
+																.val(
+																		pinzhong);
+
+														$("#div_pz")
+																.find(
+																		".select2-selection__rendered")
+																.text(
+																		pinzhong);
+														$("#div_pz")
+																.find(
+																		".select2-selection__rendered")
+																.attr(
+																		"title",
+																		pinzhong);
+														var grade;
+														grade = data.list[0].vLevelName;
+														//显示等级
+														$("#vgrade")
+																.val(
+																		grade);
+														$("#div_grade")
+																.find(
+																		".select2-selection__rendered")
+																.text(
+																		grade);
+														$("#div_grade")
+																.find(
+																		".select2-selection__rendered")
+																.attr(
+																		"title",
+																		grade);
+														//显示启用标志
+														$("#qybz")
+																.val(
+																		data.list[0].qybz);
+
+													},
+													error : function() {
+														alert("加载品种错误");
+													}
+												});
+									}
+								});
+				//===================================a的单击事件(结束)===================================
+			},
+			error : function() {
+				alert("读取品种失败");
+			}
+		});
+	}
+
+	function addPz() {
+		var pinzhong = $("#pinzhong").val();
+		flag = 2;
+		if (confirm("是否在" + pinzhong + "下添加新的粮食品种")) {
+			if (fid.length == 3 || fid.length == 1) {
+				var id;
+				if (fid.length == 3) {
+					id = fid;
+				} else {
+					id = 0;
+				}
+				$.ajax({
+					url : '${ctxPath}/jiage/graintype.do',
+					type : 'post',
+					data : {
+						"page" : 1,
+						"rows" : 100,
+						"vCode" : id
+					},
+					dataType : 'json',
+					success : function(data) {
+						//重置品种和等级
+						$("#pinzhong").removeAttr("disabled");
+						$("#pinzhong").empty();
+
+						$("#vgrade").val("");
+						$("#div_pz").find(".select2-selection__rendered").text(
+								"");
+						$("#div_pz").find(".select2-selection__rendered").attr(
+								"title", "");
+						$("#div_grade").find(".select2-selection__rendered")
+								.text("");
+						$("#div_grade").find(".select2-selection__rendered")
+								.attr("title", "");
+
+						$.each(data.list, function(i, n) {
+							$("#pinzhong").append(
+									'<option id="'+n.vCode+'" value="'+n.vName+'">'
+											+ n.vName + '</option>');
+						});
+						$("#pinzhong").val("");
+					},
+					error : function() {
+						alert("加载品种失败");
+					}
+				});
+			} else {
+				alert("不能在该品种下增添粮食品种");
+			}
+
+		}
+	}
+
+	function savePz() {
+		//新增粮食品种
+		if (flag == 2) {
+			//品种名称
+			var pinzhong = $("#pinzhong option:selected").val();
+			//品种编码
+			var pzcode = $("#pinzhong option:selected").attr("id");
+			//等级编码
+			var vgrade = $("#vgrade option:selected").attr("id");
+			//父类品种编码
+			var fpzcode = pzcode.substring(0, 3);
+			//启用标志
+			var qybz = $("#qybz option:selected").val();
+
+			if (confirm("是否保存新粮食品种" + pinzhong)) {
+				$.ajax({
+					url : '${ctxPath}/jiage/savepz',
+					type : 'post',
+					data : {
+						"typecode" : pzcode,
+						"grade" : vgrade,
+						"haschild" : 0,
+						"qybz" : qybz,
+						"fcode" : fpzcode
+					},
+					dataType : 'json',
+					success : function(msg) {
+						if (!msg.ret) {
+							alert(msg.message);
+						} else {
+							alert("保存成功");
+						}
+						gettree();
+					},
+					error : function() {
+						alert("保存粮食品种失败");
+					}
+				});
+			}
+		}
+		//修改当前选中的粮食品种
+		if (flag == 1) {
+			//品种id
+			var id = $("#pinzhong option:selected").attr("preid");
+			//品种名称
+			var pinzhong = $("#pinzhong option:selected").val();
+			//品种编码
+			var pzcode = $("#pinzhong option:selected").attr("id");
+			//等级编码
+			var vgrade = $("#vgrade option:selected").attr("id");
+			//启用标志
+			var qybz = $("#qybz option:selected").val();
+
+			if (confirm("是否修改当前粮食品种" + pinzhong)) {
+				$.ajax({
+					url : '${ctxPath}/jiage/updatepz',
+					type : 'post',
+					data : {
+						"id" : id,
+						"typecode" : pzcode,
+						"grade" : vgrade,
+						"haschild" : 0,
+						"qybz" : qybz
+					},
+					dataType : 'json',
+					success : function(msg) {
+						if (!msg.ret) {
+							alert(msg.message);
+						} else {
+							alert("修改成功");
+						}
+						gettree();
+					},
+					error : function() {
+						alert("修改粮食品种失败");
+					}
+				});
+			}
+		}
+	}
+	
+	
+	function deletePz() {
+		var id = $("#pinzhong option:selected").attr("preid");
+		var pinzhong = $("#pinzhong option:selected").val();
+		if (confirm("是否删除粮食品种" + pinzhong)) {
+			if (fchild > 0) {
+				alert("请先删除该品种下的子品种");
+			} else {
+				var fcode;
+				if (fid.length == 3) {
+					fcode = 0;
+				} else {
+					fcode = fid.substring(0, 3);
+				}
+				$.ajax({
+					url : '${ctxPath}/jiage/deletepz',
+					type : 'post',
+					data : {
+						"id" : id,
+						"fcode" : fcode
+					},
+					dataType : 'json',
+					success : function(msg) {
+						if (!msg.ret) {
+							alert(msg.message);
+						} else {
+							alert("删除成功");
+						}
+						gettree();
+					},
+					error : function() {
+						alert("删除失败");
+					}
+				});
+
+			}
+		}
+	}
+</script>
+</head>
+<body>
+	<div class="panel panel-default">
+		<div
+			style="border: 1px solid #ADD8E6; width: 100%; background-color: #E8F2F9; border-radius: 3px; margin-top: 5px"
+			align="left">
+			<img alt="" src="${ctxPath}/img/titleico.png"
+				style="padding: 5px; position: absolute;"> <span
+				style="height: 50px; font-size: 20px; color: black; padding: 0px; margin-left: 25px;"><b>品种管理</b></span>
+		</div>
+		<div class="panel-heading">
+			<div class="form-inline" >
+				<p class="caozuo">
+					<a class="btn btn-xs btn-success" type="button" onclick="addPz()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-clipboard" aria-hidden="true">&nbsp;新增</i></a> <a
+						class="btn btn-xs btn-success" type="button" onclick="savePz()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-floppy-o" aria-hidden="true">&nbsp;保存</i></a> <a
+						class="btn btn-xs btn-success" type="button" onclick="deletePz()"
+						style="margin-left: 5px; margin-top: 2px; "><i
+						class="fa fa-times" aria-hidden="true">&nbsp;删除</i></a> 
+				</p>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="panel-body" >
+			<div id="panelDemo10" class="panel panel-info">
+			<div class="panel-heading">商品列表</div>
+			<div class="panel-body">
+				<div class="st_tree">
+					<ul class="st_tree_ul">
+						<li id="0"><a href="#" ref="sypz">&nbsp;所有商品</a></li>
+						<ul id="sysp"></ul>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="panelDemo9" class="panel panel-success" style="width:76%;">
+			<div class="panel-heading">商品详细信息</div>
+			<div class="panel-body" style="margin-top: 20px;">
+			
+				<div class="col-lg-12 col-md-12">
+		        	<div class="widget">
+		        		<div class="widget-header">
+		                </div>
+		                <div class="widget-body">
+		                <div class="row">
+		                	<div class="col-xs-6">	
+								<div class="form-group">
+									<label>品种名称：</label>
+									<div id="div_pz">
+										<select id="pinzhong" class="form-control input-sm" disabled="disabled">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label>标准等级:</label>
+									<div id="div_grade">
+										<select id="vgrade" class="form-control input-sm">
+										</select>
+									</div>
+								</div>
+							</div>	
+							<div class="col-xs-6">	
+								<div class="form-group">
+									<label>启用标志：</label>
+									<div id="div_qybz">
+										<select id="qybz" class="form-control input-sm">
+											<option value="是">是</option>
+											<option value="否">否</option>
+										</select>
+									</div>
+								</div>
+							</div>
+									
+		                </div>
+							<!-- <p>品种名称：
+								<div id="div_pz">
+									<select id="pinzhong" class="form-control input-sm"
+										disabled="disabled">
+				
+									</select>
+								</div>
+							</p>
+							<p>标准等级:
+								<div id="div_grade">
+									<select id="vgrade" class="form-control input-sm">
+									</select>
+								</div>
+							</p>
+							<p>
+								启用标志 <select id="qybz">
+									<option value="是">是</option>
+									<option value="否">否</option>
+								</select>
+							</p> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+
+		
+	</div>
+	<%}%>

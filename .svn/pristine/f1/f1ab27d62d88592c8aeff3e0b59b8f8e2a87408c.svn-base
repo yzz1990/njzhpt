@@ -1,0 +1,460 @@
+<%
+layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+    #right-top {
+        height: 30px;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+
+    #left-div {
+        margin-left: 10px;
+        float: left;
+        height: 600px;
+        margin-top: 10px;
+        /*border: 1px solid #CCCCCC;*/
+    }
+
+    #right-div {
+        width: 75%;
+        height: 100%;
+        float: left;
+        border: 1px solid #CCCCCC;
+        margin-left: 10px;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .folder {
+        color: #000
+    }
+
+    .file {
+        color: #000;
+    }
+
+    .btn {
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    .table-striped > thead > tr > th {
+        text-align: center;
+    }
+
+    .table-striped > tbody > tr {
+        font-family: '微软雅黑'
+    }
+
+    .table-striped > tbody > tr > td {
+        text-align: center;
+    }
+
+    .table-striped > tbody > tr > td:nth-child(9) {
+        width: 140px;
+    }
+</style>
+<div class="panel panel-default">
+    <div style="margin-top: 6px;border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;"
+         align="left">
+        <img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+        <span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>安全教育</b></span>
+    </div>
+    <div id="left-div">
+        <iframe name="treeList" style="width: 200px;border:0px;height: 600px" src="${ctxPath}/securityedu/lefttree.html" style="width: 200px;border:0px;height: 300px"></iframe>
+    </div>
+    <div id="right-div">
+        <div id="right-top"></div>
+        <!--知识点部分-->
+        <div class="form-inline" id="knowledgeStructId">
+            <div style="margin-left: 10px">
+                <label>名称:</label>
+                <input class="form-control input-sm" name="name" id="name" placeholder="名称" type="text"
+                       style="width:150px;font-size:14px">
+                <label style="margin-left: 20px">文件类型:</label>
+                <select id="type" class="form-control input-sm selects" style="width:200px;font-size:14px">
+                    <option value="">全部</option>
+                    <option value="图片">图片</option>
+                    <option value="视频">视频</option>
+                    <option value="文档">文档</option>
+                    <option value="幻灯片">幻灯片</option>
+                    <option value="工作流">工作流</option>
+                </select>
+                <label style="margin-left: 20px">上传日期:</label>
+                <input class="form-control input-sm" name="uploadTime" id="uploadTime" placeholder="上传日期"
+                       onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text"
+                       style="width:150px;font-size:14px">
+                <a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search"
+                                                                                        aria-hidden="true"></i>&nbsp;查询</a>
+            </div>
+            <div style="margin-top: 10px">
+                <table id="fileList" class="table table-striped table-hover table-bordered datatables"
+                       ></table>
+            </div>
+        </div>
+        <!--安全考核部分-->
+        <div class="form-inline" id="safeCheck" style="display: none">
+            <div style="margin-left: 10px">
+                <label>标题:</label>
+                <input class="form-control input-sm" name="paperName" id="paperName" placeholder="标题" type="text"
+                       style="width:150px;font-size:14px">
+                <label>出卷人:</label>
+                <input class="form-control input-sm" name="realname" id="realname" placeholder="出卷人" type="text"
+                       style="width:150px;font-size:14px">
+                <label>试卷日期:</label>
+                <input class="form-control input-sm" name="paperCreateTime" id="paperCreateTime" placeholder="试卷日期" type="text"
+                       style="width:150px;font-size:14px">
+                <a class="btn btn-success btn-xs" type="button" onclick="doPaperSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+                <div style="margin-top: 10px">
+                    <table id="paperTodoList" class="table table-striped table-hover table-bordered datatables"
+                           data-url="${ctxPath}/securityedu/findpaperTest?userId=${session.userinfo.user.id}&istest=n"></table>
+                </div>
+            </div>
+        </div>
+        <!--考试成绩部分-->
+        <div class="form-inline" id="testScore" style="display: none">
+            <div style="margin-left: 10px">
+                <label>标题:</label>
+                <input class="form-control input-sm" name="paperName" id="paperNameFromScore" placeholder="标题" type="text"
+                       style="width:150px;font-size:14px">
+                <label>平均分高于:</label>
+                <input class="form-control input-sm" name="averageScore" type="number" id="averageScore" placeholder="平均分高于" type="text"
+                       style="width:150px;font-size:14px">
+                <label>分数高于:</label>
+                <input class="form-control input-sm" name="scoreHighThan" type="number" id="scoreHighThan" placeholder="分数高于" type="text"
+                       style="width:150px;font-size:14px">
+                <label>成绩:</label>
+                <select class="form-control" name="isstandard" id="isstandard">
+                    <option value="">请选择</option>
+                    <option value="y">合格</option>
+                    <option value="n">不合格</option>
+                </select>
+                <a class="btn btn-success btn-xs" type="button" onclick="doPersonScoreSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+                <div style="margin-top: 10px">
+                    <table id="paperdidList" class="table table-striped table-hover table-bordered datatables"
+                           data-url="${ctxPath}/securityedu/findpaperTest?userId=${session.userinfo.user.id}&istest=y"></table>
+                </div>
+            </div>
+        </div>
+        <!--整体成绩-->
+        <div class="form-inline" id="overScore" style="display: none">
+            <div style="margin-left: 10px">
+                <label>标题:</label>
+                <input class="form-control input-sm" name="paperName" id="paperNameFromOverAllScore" placeholder="标题" type="text"
+                       style="width:100px;font-size:14px">
+                <label>平均分高于:</label>
+                <input class="form-control input-sm" name="averageScore" type="number" id="averageScoreFromOverAllScore" placeholder="平均分高于" type="text"
+                       style="width:100px;font-size:14px">
+                <label>分数高于:</label>
+                <input class="form-control input-sm" name="scoreHighThan" type="number" id="scoreHighThanFromOverAllScore" placeholder="分数高于" type="text"
+                       style="width:100px;font-size:14px">
+                <label>答题人:</label>
+                <input class="form-control input-sm" name="answerPerson" id="answerPerson" placeholder="答题人" type="text"
+                       style="width:100px;font-size:14px">
+                <label>成绩:</label>
+                <select class="form-control" name="isstandard" id="isstandardFromOverAllScore">
+                    <option value="">请选择</option>
+                    <option value="y">合格</option>
+                    <option value="n">不合格</option>
+                </select>
+                <a class="btn btn-success btn-xs" type="button" onclick="doOverAllScoreSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+                <div style="margin-top: 10px">
+                    <table id="overScoreList" class="table table-striped table-hover table-bordered datatables"
+                           data-url="${ctxPath}/securityedu/findpaperTest?istest=y"></table>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="nodeId">
+    </div>
+</div>
+<script type="text/javascript">
+    var needblockdiv=["knowledgeStructId","safeCheck","testScore","overScore"];
+    var datatable;
+    $("#uploadTime").datetimepicker({
+        setStartDate: new Date(),
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN', //这里需要修改
+        weekStart: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $("#paperCreateTime").datetimepicker({
+        setStartDate: new Date(),
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN', //这里需要修改
+        weekStart: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $(function () {
+        datatable = $('#fileList').DataTable({
+            "columns": [
+                {
+                    "data": "originName",
+                    "title": "文件名称",
+                    "render": function (data, type, row, meta) {
+                        if (row["type"] == "视频") {
+                            //弹框播放视频
+                            return '<a onclick=loadVideo(\'' + row["uuidName"] + '\')>' + row["originName"] + '</a>';
+                        } else if (row["originName"].indexOf('pdf') > -1) {
+                            //新开页面
+                            return '<a href="#" onclick=isExist(\'' + row["uuidName"] + '\')>' +row["originName"]+'</a>'
+                        } else {
+                            return row["originName"];
+                        }
+                    }
+                }, {
+                    "data": "type",
+                    "title": "文件类型"
+                }, {
+                    "data": "size",
+                    "title": "文件大小",
+                    "render": function (data, type, row, meta) {
+                        return (row["size"]/1024/1024).toFixed(2) + "MB";
+                    }
+                }, {
+                    "data": "uploadTime",
+                    "title": "上传时间"
+                },
+                {
+                    "data": "clickNums",
+                    "title": "下载次数"
+                }, {
+                    "title": "操作",
+                    "render": function (data, type, row, meta) {
+
+                        var control= '<a href="#" class="btn btn-xs btn-info" onclick=isExist(\'' + row["uuidName"] + '\')>' +'<i class="fa fa-download" aria-hidden="true"></i>下载</a>';
+                        return control;
+                    }
+                }]
+        });
+        datatable3=$('#paperTodoList').DataTable({
+            "columns": [{
+                "data":"paperName",
+                "title":"试卷名称",
+            },{
+                "data":"realname",
+                "title":"出卷人",
+            },
+                {
+                    "data":"paperCreateTime",
+                    "title":"试卷日期",
+                },
+                {
+                    "title":"操作",
+                    "render":function(data, type, row, meta){
+                        var test='<a class="btn btn-success btn-xs" type="button" onclick="startTest(\''+row["id"]+'\',\''+row["batchId"]+'\')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;开始考试</a>';
+                        return test;
+                    },
+                    width:200
+                }]
+        });
+        datatable2=$('#paperdidList').DataTable({
+            "columns": [{
+                "data":"paperName",
+                "title":"试卷名称"
+            },{
+                "data":"testedNums",
+                "title":"答题人数",
+            },
+                {
+                    "data":"averageScore",
+                    "title":"平均分",
+                },{
+                    "data":"userScore",
+                    "title":"分数",
+                },{
+                    "data":"isstandard",
+                    "title":"成绩",
+                    render:function(data, type, row, meta){
+                        if(row["isstandard"]=='n'){
+                            return "<font color='red'>不合格</font>"
+                        }else{
+                            return "<font color='green'>合格</font>"
+                        }
+                    }
+                }]
+        });
+        datatable1=$('#overScoreList').DataTable({
+            "columns": [{
+                "data":"paperName",
+                "title":"标题"
+            },{
+                "data":"realname",
+                "title":"答题人",
+            },
+                {
+                    "data":"averageScore",
+                    "title":"平均分",
+                },{
+                    "data":"userScore",
+                    "title":"分数",
+                },{
+                    "data":"isstandard",
+                    "title":"成绩",
+                    render:function(data, type, row, meta){
+                        if(row["isstandard"]=='n'){
+                            return "<font color='red'>不合格</font>"
+                        }else{
+                            return "<font color='green'>合格</font>"
+                        }
+                    }
+                }]
+        });
+
+    })
+    function loadVideo(url) {
+        dialog1 = BootstrapDialog.show({
+            title: '视频',
+            closeByBackdrop: true,
+            message: $('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/securityedu/loadvideo?url=' + url + '"/>'),
+            onshow: function (dlg) {
+                dlg.$modalDialog.css("width", "800px");//modal-dialog
+                $(".bootstrap-dialog-message", dlg.$modalContent).css("height", "400px");//modal-dialog
+            },
+            buttons: [
+                {
+                    label: '关闭',
+                    action: function (dialog) {
+                        dialog.close();
+                    },
+                    cssClass: 'btn-danger btn-xs'
+                }]
+        });
+    }
+    function startTest(paperId,batchId){
+        if(typeof paperId!='undefined'&&typeof batchId!='undefined')
+        {
+            $.ajax({
+                url:'${ctxPath}/securityedu/findPaperAndSetSession',
+                data:{id:paperId,batchId:batchId},
+                dataType:'json',
+                async:false,
+                success: function (data) {
+                    if(data.ret) {
+                        dialogPaper = BootstrapDialog.show({
+                            title: "考试",
+                            closeByBackdrop: true,
+                            message: $('<iframe frameborderno="0" name="exam" style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/securityedu/previewPaper.html?isdo=yes"/>'),
+                            onshow: function (dlg) {
+                                dlg.$modalDialog.css("width", "900px");
+                                $(".bootstrap-dialog-message", dlg.$modalContent).css("height", "600px");
+                            },
+                            buttons: [{
+                                label: '提交',
+                                action: function(dialog) {
+                                    exam.doSubmit();
+                                },
+                                cssClass: 'btn-success btn-xs'
+                            },{
+                                label: '关闭',
+                                action: function (dialog) {
+                                    dialogPaper.close();
+                                },
+                                cssClass: 'btn-danger btn-xs'
+                            }]
+                        });
+                    }else{
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+
+    }
+    function leftClick(text, id) {
+        removeRightDiv(text,"knowledgeStructId");
+        $("#nodeId").val(id);
+        $("#fileList").attr("data-url","${ctxPath}/securityedu/findFile");
+        document.querySelector('.datatables').dataset.queryparam = "&knowLedgeStructId=" + id;
+        datatable.ajax.reload(null, false);
+    }
+    function doPaperSearch() {
+        paperName = $("#paperName").val();
+        realname = $("#realname").val();
+        paperCreateTime = $("#paperCreateTime").val();
+        document.querySelector('#paperTodoList').dataset.queryparam = "&paperName=" + paperName+"&realname="+realname+"&paperCreateTime="+paperCreateTime;
+        datatable3.ajax.reload(null, false);
+    }
+    function doSearch() {
+        var nodeId = $("#nodeId").val();
+        var name = $("#name").val();
+        var type = $("#type option:selected").val();
+        var uploadTime = $("#uploadTime").val();
+        document.querySelector('#fileList').dataset.queryparam = "&knowLedgeStructId=" + nodeId + "&originName=" + name + "&type=" + type + "&uploadTime=" + uploadTime;
+        datatable.ajax.reload(null, false);
+    }
+    function doPersonScoreSearch() {
+        document.querySelector('#paperdidList').dataset.queryparam = "&paperName=" + $("#paperNameFromScore").val() + "&averageScore=" + $("#averageScore").val() + "&scoreHighThan=" + $("#scoreHighThan").val() + "&isstandard=" + $("#isstandard option:selected").val();
+        datatable2.ajax.reload(null, false);
+    }
+    function doOverAllScoreSearch() {
+        document.querySelector('#overScoreList').dataset.queryparam = "&paperName=" + $("#paperNameFromOverAllScore").val() + "&averageScore=" + $("#averageScoreFromOverAllScore").val() + "&scoreHighThan=" + $("#scoreHighThanFromOverAllScore").val() + "&isstandard=" + $("#isstandardFromOverAllScore option:selected").val()+"&anserPerson="+$("#answerPerson").val();
+        datatable1.ajax.reload(null, false);
+    }
+    function isExist(url){
+        //判断文件是否存在
+        $.ajax({
+        		url:'${ctxPath}/securityedu/fileIsExist',
+        		data:{url:url},
+                async:false,
+        		success: function (data) {
+                    if(data=="false")
+                    {
+                        alert("文件不存在");
+                    }else{
+                        window.open("${ctxPath}/securityedu/downloadFile?filename="+url);
+                        //刷新列表
+                        datatable.ajax.reload(null, false);
+                    }
+        		}
+        	});
+    }
+    function removeRightDiv(text,expectDiv){
+        //右侧div上方标题
+        $("#right-top").html("");
+        $("#right-top").append(text);
+        //右侧div主体部分隐藏
+        for(var temp in needblockdiv)
+        {
+            if(needblockdiv[temp]!=expectDiv)
+            {
+                $("#"+needblockdiv[temp]).css("display","none");
+            }
+        }
+        if(typeof left=='undefined') {
+            //清空input框
+            $("#" + expectDiv).children().children("input").val("")
+            $("#" + expectDiv).children().children("select").val("")
+            $("#" + expectDiv).css("display", "block");
+            doOverAllScoreSearch();
+            doSearch();
+            doPaperSearch();
+            doPersonScoreSearch();
+        }
+    }
+    function showSafeCheck(str) {
+        //右侧div显示知识点管理页面
+        removeRightDiv(str,"safeCheck");
+        datatable3.ajax.reload(null, false);
+    }
+    function showPaperGrade(str) {
+        removeRightDiv(str,"testScore");
+        datatable2.ajax.reload(null, false);
+    }
+    function showOverAllCheck(str) {
+        removeRightDiv(str,"overScore");
+        datatable1.ajax.reload(null, false);
+    }
+</script>
+<%
+}
+%>

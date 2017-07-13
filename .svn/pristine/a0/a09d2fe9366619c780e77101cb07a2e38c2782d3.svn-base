@@ -1,0 +1,258 @@
+<!DOCTYPE html >
+<html >
+<head>
+<meta charset="UTF-8">
+<meta name="viewpart" content="width=device-width, initial-scale=1, maxium-scale=1, user-scalable=no">
+<title>${systemtitle}</title>
+<link rel="shortcut icon" type="image/x-icon" href="${ctxPath}/img/favicon.png">  
+    <link rel="stylesheet" href="${ctxPath}/css/ext-all.css" type="text/css">   
+    <script type="text/javascript" src="${ctxPath}/js/ext-all.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/ext-lang-zh_CN.js"></script>
+
+<script src="${ctxPath}/js/jquery.js"></script>
+<!-- 	<script src="jquery.login.js"></script> -->
+<style type="text/css">
+
+	*{
+		margin:0;
+		padding:0;
+		border:0;
+		font-size: 16PX;
+	}
+	#content {
+		margin-top:220px;
+	    position: absolute;
+	    left: 50%;
+	    z-index: 2;
+	    height:390px;
+	    line-height: 1.5em;
+	    color: white;
+	    font-family: sans-serif;
+	    font-size: 14px;
+	    width: 435px;
+	    margin-left: -217px;
+	}
+	#content {
+		margin-top: 250px;
+		position: absolute;
+		left: 34%;
+		z-index: 2;
+		height: 390px;
+		line-height: 1.5em;
+		color: white;
+		font-family: sans-serif;
+		font-size: 14px;
+		width: 840px;
+		margin-left: -217px;
+	}
+	#logo {
+	    background-repeat: no-repeat;
+		margin-top:100px;
+	    position: absolute;
+	    left: 45%;
+	    z-index: 2;
+	    height:95px;
+	    line-height: 1.5em;
+	    color: white;
+	    font-family: sans-serif;
+	    font-size: 12px;
+	    width: 780px;
+	    margin-left: -292px;
+	}
+	.a:hover{
+		text-decoration:underline;
+	}
+	.button{
+		background:url('image/login.png');
+	}
+	.button:hover{
+		background:url('image/login_hover.png');
+	}
+	#logobg{
+		width: 1000px;
+		height: 2px;
+		background-color: #C5DFEC;
+		margin-left: 270px;
+		margin-top: 200px;
+		position: absolute;
+	}
+	.username{
+		position: absolute;
+		outline:medium;
+		width:215px;
+		height: 35px;
+		padding: 5px 10px;
+		font-family:微软雅黑;
+		font-size: 14px;
+		color:#999999;
+		line-height: 1.5;
+		margin-left:35px;
+	}
+	.password{
+		position: absolute;
+		outline:medium;
+		width:215px;
+		height: 35px;
+		padding: 5px 10px;
+		font-family:微软雅黑;
+		font-size: 14px;
+		color:#999999;
+		line-height: 1.5;
+		margin-left:35px;
+	}
+	#userdiv{
+		margin-top:110px;
+		margin-left:570px;
+		width:328px;
+		height:52px;
+		position:absolute;
+	}
+	#passdiv{
+		margin-top:180px;
+		margin-left:570px;
+		width:328px;
+		height:52px;
+		position:absolute;
+	}
+	#dldiv{
+		margin-top:40px;
+		margin-left:570px;
+		width:328px;
+		height:52px;
+		position:absolute;
+	}
+	#hgspan{
+		width: 250px;
+		height: 2px;
+		background-color: #00882D;
+		margin-left: -67px;
+		margin-top: 30px;
+		position: absolute;
+		font-family: '微软雅黑';
+	}
+	#forgetpass{
+		color: #CDCDCD;
+		position:absolute;
+		font-size:small;
+		margin-top: 220px;
+		margin-left: 570px;
+		text-decoration: none;
+	}
+	#freered{
+		color: #CDCDCD;
+		position:absolute;
+		font-size:small;
+		margin-top: 220px;
+		margin-left: 760px;
+		text-decoration: none;
+	}
+	#dl{
+		position: absolute;
+		margin-top:270px;
+		border-radius: 5px;
+		margin-left:570px;
+		width:250px;
+		height:35px;
+		cursor: pointer;
+		background: green;
+	}
+	#dlspan{
+		font-family: '微软雅黑';
+		margin-left: 90px;
+		padding-top: 5px;
+		position: absolute;
+	}
+</style>
+</head>
+<body style="background-image:url('${ctxPath}/login/bg.png');" onkeydown="keyLogin();">
+	<div id="logo" style="background-image:url('${ctxPath}/login/logo.png');">
+	</div>
+	<span id="logobg"> </span>
+	<div id="content">
+		<form id="loginform" method="post" action="login.action">
+			 <div id="dldiv">
+		    	<span style="color: black;font-weight: 700;">用户登录</span>
+		    	<span id="hgspan"> </span>
+			</div>		
+		    <div id="userdiv">
+				<img alt="" src="${ctxPath}/login/uname.png" style="position: absolute;" height="35px">
+				<input class="username" name="username" type="text" placeholder="用户名" id="uid" />
+			</div>
+			<div id="passdiv">
+				<img alt="" src="${ctxPath}/login/pwd.png" style="position: absolute;"height="35px">
+				<input class="password" name="password"  type="password" placeholder="密码" id="pwd" />
+			</div > 
+			<!-- <a id="forgetpass" href="#">忘记登录密码？</a>
+			<a id="freered" href="#" >免费注册</a> -->
+			<div id="dl"  onclick="login()">
+				<span id="dlspan">登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</span>
+			</div>
+		</form>
+		<img alt="" src="${ctxPath}/login/panel.png" width="900px">
+		</div>
+</body>
+<script type="text/javascript">
+	function keyLogin(){
+	 	if (event.keyCode==13)  //回车键的键值为13
+		 	login();
+	}
+	$(function(){
+		
+		$("#uid").bind("focus", function(){
+			$("#uid").attr("placeholder","用户名");
+		})
+		$("#pwd").bind("focus", function(){
+			$("#pwd").attr("placeholder","密码");
+		})
+		
+	});
+	function login() {
+
+			var loginname = $("#uid").val();;
+			var password  = $("#pwd").val();;
+			
+			if(loginname==""){
+				$("#uid").attr("placeholder","请输入用户名！");
+				return false;
+			} 
+			if(password==""){
+				$("#pwd").attr("placeholder","请输入密码！");
+				return false;
+			} 			
+			
+			//提交    	    			
+			$.post("${ctxPath}/login/doLogin", {
+				loginname : $("input[type='text']").val(),
+				password : $("input[type='password']").val()},function(data){
+					if(data.ret){
+						if(data.role!="qxlsj"&&data.role!="qiye"&&data.role!="ssqiye"&&data.role!="cblgl"){
+						<%
+							if(showIndexPage=="true"){
+						%>
+							window.location.href="${ctxPath}/${showindex}";
+						<%
+							}else{
+						%>
+							window.location.href="${ctxPath}/gis/gis.html";
+						<%
+							}
+						%>
+					
+						}else{
+							window.location.href="${ctxPath}/gis/gis_qiye.html";
+						}
+					}else{	 			
+						Ext.Msg.show({
+						     title:'登录提示',
+						     msg: data.message,
+						     buttons: Ext.Msg.YES,
+						     icon: Ext.Msg.WARNING
+						});			
+					 } 
+			},'json')    			
+			return false;   		    		
+	
+		
+	}
+</script>
+</html>

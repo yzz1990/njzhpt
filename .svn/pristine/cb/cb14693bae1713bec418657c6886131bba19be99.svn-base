@@ -1,0 +1,215 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style>
+table.table-bordered.dataTable{
+	text-align: center;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/web/showBo.css"/>
+<style>
+	.datatables{
+		text-align:center;
+	}
+</style>
+<script src="${ctxPath}/web/showBo.js" type="text/javascript" charset="utf-8"></script>
+	
+	<div class="panel panel-default">
+			<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>生成分期</b></span>
+				</div>
+		<div class="panel-heading">
+			<div class="form-inline">
+			<label>日期:</label>
+			<input class="form-control input-sm" style="width: 140px;" id="starttime"  type="text">
+			<label>至</label>
+				<input class="form-control input-sm" style="width: 140px;" id="endtime"  type="text">
+			<label style="margin-left:20px">季度</label>
+			<select class="form-control input-sm input-smjidu" style="width:150px; font-size:12pt">
+				<option>请选择</option>	
+				<option>夏季</option>	
+				<option>秋季</option>	
+			</select>
+				<a class="btn btn-success btn-xs " type="button" onclick="fenqi()">生成分期</a>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="panel-body">
+			<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/queryfenqi.do" ></table>	
+		</div>
+	</div>
+		
+<script type="text/javascript">
+
+Date.prototype.Format = function (fmt) { //author: meizz  
+    var o = {  
+        "M+": this.getMonth() + 1, //月份  
+        "d+": this.getDate(), //日  
+        "h+": this.getHours(), //小时  
+        "m+": this.getMinutes(), //分  
+        "s+": this.getSeconds(), //秒  
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度  
+        "S": this.getMilliseconds() //毫秒  
+    };  
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+    for (var k in o)  
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));  
+    return fmt;  
+};  
+
+
+$(function(){
+	$("#starttime").datetimepicker({
+		format: 'yyyy-mm-dd',
+		language : 'zh-CN', 
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+	$("#endtime").datetimepicker({
+		format: 'yyyy-mm-dd',
+		language : 'zh-CN',
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+	
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "niandu",
+				"title" : "年度"
+			},{
+				"data" : "jidu",
+				"title" : "季度",
+			},{
+				"data" : "starttime",
+				"title" : "开始时间",
+			},{
+				"data" : "endtime",
+				"title" : "结束时间"
+			},{
+				width:100,
+				"title" : "操作",
+				"render": function (data,type,row,meta) {
+				var start = row["starttime"];
+				var xiugai;
+				var shanchu
+				xiugai = '<a class="btn btn-success btn-xs btm-smshangchuan " type="button" href="javascript:void(0)" onclick="upfenqi(\''+start+'\')" target="_black" style="margin-left:10px">修改</a>';
+				shanchu = '<a class="btn btn-success btn-xs btm-smshangchuan " type="button" href="javascript:void(0)" onclick="delfenqi(\''+start+'\')" target="_black" style="margin-left:10px">删除</a>';
+				return shanchu;		
+			}	
+			
+			}
+
+			]
+
+	});
+	
+	
+});
+
+function fenqi(){
+	var start = $("#starttime").val();
+	var endl = $("#endtime").val();
+	var end = (new Date(endl)).getTime();
+	var datetime = (new Date(start)).getTime();
+	var qi = 1;
+	var starttime = new Date(start).Format("yyyy-MM-dd");
+	var endtime = new Date(end).Format("yyyy-MM-dd");
+	var niandu = start.substring(0,4);
+	var jidu = $(".input-smjidu option:selected").text();
+	
+	if(start == "" || start == null){
+		alert("起始时间不能为空");
+		return;
+	}else if(endl == "" || endl == null){
+		alert("终止时间不能为空");
+		return;
+	}else if(start>endl){
+		alert("终止时间必须大于起始时间");
+		return;
+	}
+	else if(jidu == "请选择"){
+		alert("季度不能为空");
+		return;
+	}else{
+		//判断数据库中是否已经存在
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/querywuri.do',
+			type:'post',
+			data:{"niandu":niandu,"jidu":jidu,"page":1,"rows":10},
+			success:function(data){
+				if(data.list.length==0){
+					//保存分期
+					while(datetime < end){
+						var fenqistarttime = new Date(datetime).Format("yyyy-MM-dd");
+						var fenqiendtime = new Date((datetime+4*60*60*1000*24)).Format("yyyy-MM-dd");
+						$.ajax({
+							url:'${ctxPath}/shouchukeshihua/savefenqi',
+							type:'post',
+							data:{"niandu":niandu,"starttime":starttime,"endtime":endtime,"fenqistarttime":fenqistarttime,"fenqiendtime":fenqiendtime,"qishu":qi,"jidu":jidu},
+							dataType:'json',
+							success:function(data){
+								//$(".panel-body").append('<p>"起始："'+new Date(datetime).Format("yyyy-MM-dd")+'",结束："'+new Date((datetime+4*60*60*1000*24)).Format("yyyy-MM-dd")+'"期数:"'+qi+'</p>');
+								
+							},
+							error:function(){
+								alert("保存分期失败");
+							}
+						});
+						datetime += 5*60*60*1000*24;
+						qi += 1;
+					}
+					alert(niandu+"年"+jidu+"五日分期生成成功,共："+(qi-1)+"期");
+				}else{
+					alert(niandu+"年"+jidu+"五日分期已存在，请仔细检查，或删除重新存");
+				}
+			},
+			error:function(){
+				alert("querywuri error");
+			}
+			
+		});
+		
+	}
+}
+
+function upfenqi(e){
+	
+}
+
+/**
+ * 删除分期
+ */
+function delfenqi(e){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/delfenqi',
+			type:'post',
+			data:{"starttime":e},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+			},
+			error:function(){
+				alert("删除分期失败");
+			}
+		});
+	}
+}
+
+</script>
+<%}%>

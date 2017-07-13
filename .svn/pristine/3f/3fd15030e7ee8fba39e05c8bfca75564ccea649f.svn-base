@@ -1,0 +1,36 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){
+%>
+	
+
+			<table id="quxianxixni"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/quxian/queryQiyeInfo" ></table>
+
+<script>
+var datatable;
+$(function(){
+	datatable = $('#quxianxixni').DataTable({
+		
+        "columns": [
+			{
+				"data" : "qyzzjgdm",
+				"title" : "企业编码",width:50
+			},{
+				"data" : "qymc",
+				"title" : "企业名称",width:50
+			},{
+				"title":"操作",width:50,
+            	"render": function (data,type,row,meta) {
+                   	var xiangqing = '<button type="button" class="btn btn-xs btn-danger" onclick="delqiyexx(\''+row["ID"]+'\',\''+row["qyzzjgdm"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;详情</button>';
+               		return xiangqing;
+            	}
+            }]
+	});
+});
+
+
+
+</script>
+
+<%
+	}
+%>

@@ -1,0 +1,191 @@
+<html>
+	<head>
+	<link id="bootstrap_221" rel="stylesheet" type="text/css" class="library" href="${ctxPath}/css/bootstrap.min.css?v=20140118">
+	<script id="jquery_172" type="text/javascript" class="library" src="${ctxPath}/js/jquery.min.js"></script>
+	<script id="bootstrap_221" type="text/javascript" class="library" src="${ctxPath}/js/bootstrap.min.js"></script>
+	<style>
+		.tree {
+	    min-height:20px;
+	    padding:5px;
+	    margin-bottom:20px;
+	    background-color:#fbfbfb;
+	    border:0px;
+	    -webkit-border-radius:4px;
+	    -moz-border-radius:4px;
+	    border-radius:4px;
+	    -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	    -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	    box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+	}
+	.tree li {
+	    list-style-type:none;
+	    padding:10px 5px 0 5px;
+	    position:relative
+	}
+	.tree li::before, .tree li::after {
+	    content:'';
+	    left:-20px;
+	    position:absolute;
+	    right:auto
+	}
+	.tree li::before {
+	    border-left:1px solid #999;
+	    bottom:50px;
+	    height:100%;
+	    top:0;
+	    width:1px
+	}
+	.tree li::after {
+	    border-top:1px solid #999;
+	    height:20px;
+	    top:25px;
+	    width:25px
+	}
+	.tree li span {
+	    -moz-border-radius:5px;
+	    -webkit-border-radius:5px;
+	    border:1px solid #999;
+	    border-radius:5px;
+	    display:inline-block;
+	    padding:3px 8px;
+	    text-decoration:none
+	}
+	.tree li.parent_li>span {
+	    cursor:pointer
+	}
+	.tree>ul>li::before, .tree>ul>li::after {
+	    border:0
+	}
+	.tree li:last-child::before {
+	    height:30px
+	}
+	.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+	    background:#eee;
+	    border:1px solid #94a0b4;
+	    color:#000
+	}
+	</style>
+	</head>
+<body>
+	<div class="tree well">
+    <ul style="margin:10px;">
+        <!-- <li id="320102" class="parent_li">
+            <span><i class="icon-folder-close"></i>玄武区</span>
+        </li>
+        <li id="320104" class="parent_li">
+            <span><i class="icon-folder-close"></i>秦淮区</span>
+        </li>
+        <li id="320106" class="parent_li">
+            <span><i class="icon-folder-close"></i>鼓楼区</span>
+        </li>
+        <li id="320105" class="parent_li">
+            <span><i class="icon-folder-close"></i>建邺区</span>
+        </li>
+        <li id="320114" class="parent_li">
+            <span><i class="icon-folder-close"></i>雨花台区</span>
+        </li> -->
+        <li id="320111" class="parent_li">
+            <span><i class="icon-folder-close"></i>浦口区</span>
+        </li>
+        <li id="320116" class="parent_li">
+            <span><i class="icon-folder-close"></i>六合区</span>
+        </li>
+       <!--  <li id="320113" class="parent_li">
+            <span><i class="icon-folder-close"></i>栖霞区</span>
+        </li> -->
+        <li id="320115" class="parent_li">
+            <span><i class="icon-folder-close"></i>江宁区</span>
+        </li>
+        <li id="320117" class="parent_li">
+            <span><i class="icon-folder-close"></i>溧水区</span>
+        </li>
+        <li id="320118" class="parent_li">
+            <span><i class="icon-folder-close"></i>高淳区</span>
+        </li>                                                                                
+    </ul>
+</div>
+</body>
+<script type="text/javascript">
+$(function () {
+	$.post("${ctxPath}/remote/findAllCangku.do",function(data){
+		$.each(data.rows,function(i, n){
+			var code = n.vAministrationCode;
+			if(code==320102){
+				$("#320102").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320104){
+				$("#320104").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320106){
+				$("#320106").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320105){
+				$("#320105").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320114){
+				$("#320114").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320111){
+				$("#320111").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320116){
+				$("#320116").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320113){
+				$("#320113").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320115){
+				$("#320115").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320117){
+				$("#320117").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}else if(code==320118){
+				$("#320118").append("<ul><li class='parent_li' id='"+n.vCode+"' style='display: none;'><span onclick='show("+n.vCode+")'><i class='icon-folder-close'></i>"+n.vName+"</span></li></ul>");
+				getSp(n.vCode);
+			}
+		});
+	},'json');
+	
+    $('.tree .parent_li > span').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+            $(this).find(' > i').addClass('icon-folder-close').removeClass('icon-folder-open');
+        } else {
+            children.show('fast');
+            $(this).find(' > i').addClass('icon-folder-open').removeClass('icon-folder-close');
+        }
+        e.stopPropagation();
+    });
+    
+});
+function show(code){
+	var node = $("#"+code);
+	var sp= node.find(' > ul > li');
+    if (sp.is(":visible")) {
+    	sp.hide('fast');
+    	node.find(' > span > i').addClass('icon-folder-close').removeClass('icon-folder-open');
+    } else {
+    	sp.show('fast');
+    	node.find(' > span > i').addClass('icon-folder-open').removeClass('icon-folder-close');
+    }
+}
+function showSp (outterUrl,ipandport,channel) {
+	$(window.parent.document).find("#sp").html("");
+	$(window.parent.document).find("#sp").html("<iframe id='if1' frameborderno='0' width='700px' height='500px' style='border-width:0px;' src= '${ctxPath}/remote/shipin/jiankong.html?url="+outterUrl+"/'>");
+	$(window.parent.document).find("#sp").append("<iframe width='80px' height='500px' style='border:0px;position: absolute;right:5px;' scrolling='no' src='${ctxPath}/remote/shipin/kz_jiankong.html?ipandport="+ ipandport +"&channel="+ channel +"'/></iframe>");
+	//+"<iframe src='${ctxPath}/remote/shipin/kz_jiankong.html?ipandport="+ ipandport +"&channel="+ channel + " width='80px' height='300px' style='border:0px;position: absolute;top: 15px;right:5px;' scrolling='no'></iframe>"
+}
+function getSp(code){
+		$.post("${ctxPath}/remote/findShiPin.do",{vcode:code},function(data){
+		$.each(data.rows,function(i, n){
+			var outterUrl = n.outterUrl;
+			var ipandport = n.controIp;
+			var channel = n.channel;
+			$("#"+code).append("<ul><li class='parent_li' id='"+n.code+"' style='display: none;'><span onclick=showSp(\""+outterUrl+"\",\""+ipandport+"\",\""+channel+"\")><i class='icon-facetime-video'></i>"+n.name+"</span></li></ul>");
+		});
+	},'json');
+}
+</script>
+</html>

@@ -1,0 +1,276 @@
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<style type="text/css">
+body{
+background: #f7f7f7;
+}
+.dashboard-wrapper-lg {
+    position: relative;
+    background: #f7f7f7;
+    min-height: 0px; 
+    padding: 20px;
+}
+</style>
+<%
+	var obj,title,selecteddep,selectedrole,action,jhsl;
+if(isEmpty(parameter.id)){
+		title = "新增";
+		selecteddep={list:[]};
+		selectedrole={list:[]};
+		obj = {orderno:1,canuse:1};
+		action = ctxPath+"/chubeiliangJH/savecbljhrenwu.do";
+	}else{
+		title = "编辑";
+		
+		 obj = @com.zkzy.njzhpt.dao.ChuBeiLiangJHDAO.querycbljhrenwuById({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+		action = ctxPath+"/chubeiliangJH/savecbljhrenwu.do";
+	}
+%>
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	承储计划                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  		<form id="sc" role="form" action=""  style="overflow: hidden;">
+							<input value="${obj.id}" name="id" type="hidden">
+		<div class="row">
+		<div class="col-xs-6">
+				<div class="form-group">
+					<label>年度:</label> 
+					<select id="niandu" name="niandu" class="form-control" >
+					</select>
+				</div>
+		</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label>所在区域:</label> 
+					<select id="xzqhdm" name="xzqhdm"	class="form-control"class="js-example-basic-single" onchange="Change()">
+						 	<option value="" >请选择区域</option> 
+					</select>
+				</div>
+			</div>
+			</div>
+			<div class="row">
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label>承储企业:</label> 
+					<select id="qyzzjgdm" name="qyzzjgdm"	class="form-control"  onchange="">
+						<option value="" >请选择承储企业</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+						<label>粮食性质:</label> 
+							<select id="xingzhi" name="xingzhi"	class="form-control">
+								<option value=''>请选择粮食性质</option>
+								<option value='122' ${obj.xingzhi=='122'?" selected"}>地市级储备粮</option>
+								<option value='123' ${obj.xingzhi=='123'?" selected"}>县级储备粮</option>
+							</select>
+					</div>
+			</div>
+			</div>
+        	<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="xm">小麦(吨):</label> 
+						<input name="xm" value="${obj.xm}"
+							id="xm" class="form-control " type="text" placeholder="小麦(吨)"
+							>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+					<label for="jd">粳稻(吨):</label>
+						<input name="jd" value="${obj.jd}"
+							id="jd" class="form-control " type="text" placeholder="粳稻(吨)"
+							>
+					</div>
+				</div>
+				</div>
+				<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="qymc">籼稻(吨):</label> 
+						<input name="xd" value="${obj.xd}"
+							id="xd" class="form-control " type="text" placeholder="籼稻(吨)"
+							>
+					</div>
+				</div>
+				</div>
+        		<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+</form>
+<script type="text/javascript">
+$(function(){
+	var date=new Date;
+	var year=parseInt(date.getFullYear());
+	for(var i = 0; i < 5; i++){
+		if('${obj.id}'==''){
+			$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+		}else{
+			if('${obj.niandu}'==(year-i)){	
+				$("#niandu").append("<option value='"+(year - i)+"' selected>"+(year - i)+"</option>");	
+			}else{
+				$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");
+			}
+		}
+	}
+	//初始化区域
+	$.ajax({
+		 url:'${ctxPath}/chubeiliangJH/selectQY.do',
+		 type:'post',
+		 //data:{"page":1,"rows":10},
+		 dataType:'json',
+		 data:{},
+		 success:function(data){
+			$.each(data.list,function(i, n){
+					if(n.xzqhdm == "${obj.xzqhdm}"){
+						$("#xzqhdm").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+					}else{
+						$("#xzqhdm").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+					}
+			});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+		
+	  });
+	//初始化企业
+	var niandu=$("#niandu").val();
+	$.ajax({
+		 url:'${ctxPath}/chubeiliangJH/selectQiYe.do',
+		 type:'post',
+		 //data:{"page":1,"rows":10},
+		 dataType:'json',
+		 data:{niandu:niandu},
+		 success:function(data){
+			$.each(data.list,function(i, n){
+						if(n.qyzzjgdm == "${obj.qyzzjgdm}"){
+							$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+" selected>"+n.qymc+"</option>");
+						}else{
+							$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+						}
+			});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+		
+	  });
+})
+
+
+function bjniandu(){
+	alert(1);
+	var date=new Date;
+	var year=parseInt(date.getFullYear());
+	for(var i = 0; i < 5; i++){
+		$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+	}
+}
+$("#xm,#jd,#xd").keyup(function(){  
+    var c=$(this); 
+    var len= $(this).val().length;
+    if(len>7){
+    	var str=c.val().substring(0,7);
+    	 $(this).val(str); 
+    }else if(/[^\d]/.test(c.val())){//替换非数字字符  
+     	 var temp_amount=c.val().replace(/[^\d]/g,'');  
+      	$(this).val(temp_amount);  
+    }  
+    
+ }) 
+$(document).ready(function() {
+	$("#niandu").select2();
+	$("#xzqhdm").select2();
+	$("#qyzzjgdm").select2();
+	$("#xingzhi").select2();
+	$("#pinzhong").select2();
+	
+	var xian = "${session.userinfo.area.name}";
+	var dep = "${session.userinfo.role.code}";
+	var qymc = "${session.userinfo.dep.name}";
+	var qyzzjgdm;
+	
+	
+});
+
+	function Change() {
+	    var xzqhdm = $("#xzqhdm option:selected").val();
+	    $("#xingzhi").html("");
+	    $("#xingzhi").append("<option value=''>请选择粮食性质</option>");
+		//初始化性质
+		if("210008"==xzqhdm){
+			$("#xingzhi").append("<option value='122'>地市级储备粮</option>");
+		}else{
+			$("#xingzhi").append("<option value='122'>地市级储备粮</option>");
+			$("#xingzhi").append("<option value='123'>县级储备粮</option>");
+		}
+		
+		$("#qyzzjgdm").html("");
+		$("#qyzzjgdm+span>span:first>span>span:first").html("请选择承储企业");
+		var op = '<option value="">请选择承储企业</option>';
+	    $("#qyzzjgdm").append(op);
+	    var niandu=$("#niandu").val();
+		$.ajax({
+			url:'${ctxPath}/chubeiliangJH/selectQiYe.do',
+			type:'post',
+			data:{"page":1,"rows":1000,"xzqhdm":xzqhdm,"niandu":niandu},
+			dataType:'json',
+			success:function(data){
+				for(var i = 0; i < data.list.length; i++){
+					 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+				     $("#qyzzjgdm").append(op);
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+		}); 
+	}
+
+	function tijiao() {
+		if($("#xzqhdm").val()==""){
+			alert("请选择区域!");
+			return false;
+		}else if($("#qyzzjgdm").val()==""){
+			alert("请选择承储企业!");
+			return false;
+		}else if (($("#xm").val()==""||$("#xm").val()==null)&&($("#jd").val()==""||$("#jd").val()==null)&&($("#xd").val()==""||$("#xd").val()==null)) {
+			alert("请填写储备粮计划数量!");
+			return false;
+		} else if (""==$("#xingzhi").val()||null==$("#xingzhi").val()) {
+			alert("请选择性质!");
+			return false;
+		}else {
+			$.ajax({
+				type : 'post',
+				url : '${ctxPath}/chubeiliangJH/cbljhrwbianji',
+				data : $("#sc").serialize(),
+				success : function(msg) {
+					if (msg.ret) {
+						alert("保存成功!");
+					} else {
+						alert(msg.msg);
+					}
+				}
+			})
+		}
+	}
+
+
+</script>

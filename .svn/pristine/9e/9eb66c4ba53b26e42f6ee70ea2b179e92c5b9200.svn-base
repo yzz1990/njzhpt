@@ -1,0 +1,72 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+%>
+<script>
+
+</script>
+
+    <ul role="tablist" class="nav nav-tabs nav-justified" on  onload="onloaddocment()">	 
+                  <li role="presentation" class="active" id="xiangqing">
+                     <a href="#jj"  aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+                        企业</a>
+                  </li>
+                
+                  <li role="presentation" class="part" style="visibility: hidden;"  onclick="yanzheng()" id="kudian">
+                     <a href="#kqqk" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                       库点</a>
+                  </li>
+                 
+                   <li role="presentation" class="part" style="visibility: hidden;"   id="cangao"  onclick="yanzheng()">
+                     <a href="#ccsb" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                       仓廒</a>
+                  </li>
+                
+    </ul>
+
+	<div id="myTabContent" class="tab-content" style="padding: 0;">
+		<div class="tab-pane fade in active" id="jj">
+			<iframe id="if1" frameborderno="0" width="700px" height="490px" style="border-width: 0px; width: 100%;" src="${ctxPath}/oa/jibenxinxi/qiyexinxi_zsg.html?qyzzjgdm=&id="></iframe>
+		</div>
+		<div class="tab-pane fade" id="kqqk">
+			<iframe id="if2" name="if2" frameborderno="0" width="700px" height="490px" style="border-width: 0px; width: 100%;" src="${ctxPath}/oa/jibenxinxi/kudianxinxi.html?qyzzjgdm=&id="></iframe>
+		</div>
+		<div class="tab-pane fade" id="ccsb">
+			<iframe id="if4" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/oa/jibenxinxi/cangfang.html?qyzzjgdm=&id="></iframe>
+		</div>
+	</div>
+<script type="text/javascript">
+
+	$(document).ready(function(){ 
+		if("${parameter.id}"!="undefined"){
+			$(".part").css("visibility","visible");
+		}
+	}); 
+	
+	
+  function yanzheng(){
+	var id=  document.getElementById('if1').contentWindow.$("#id").val();
+	var qyzzjgdm=  document.getElementById('if1').contentWindow.$("#qyzzjgdm").val();
+	  if(id!=""){
+		  $("#if2").attr("src","${ctxPath}/oa/jibenxinxi/kudianxinxi.html?qyzzjgdm="+qyzzjgdm+"&id="+id);
+		  $("#if4").attr("src","${ctxPath}/oa/jibenxinxi/cangfang.html?qyzzjgdm="+qyzzjgdm+"&id="+id);
+	  }else{
+		  
+	  }
+  }
+  
+  
+  if("${parameter.id}"!=""){
+	  $("#if1").attr("src","${ctxPath}/oa/jibenxinxi/qiyexinxi_zsg.html?qyzzjgdm=${parameter.qyzzjgdm}");
+  }
+  
+  function edit(){
+		parent.window.datatable.ajax.reload(null,true);
+	}
+  
+  
+  
+</script>
+<%
+	}
+%>

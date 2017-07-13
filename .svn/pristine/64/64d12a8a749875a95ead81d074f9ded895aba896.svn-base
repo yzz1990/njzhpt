@@ -1,0 +1,117 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+	.datatables{
+		text-align:center;
+		color:black;
+		
+	}
+</style>
+
+
+	<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>秋粮调查预测</b></span>
+				</div>
+		<div class="panel-heading">
+			<div class="form-inline">
+			<label>年度:</label>
+			<select class="form-control input-smnjpt" style="width:100px; font-size:12pt">		
+				<option value="请选择">请选择</option>			
+			</select>
+			
+				<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="panel-body">
+				<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/queryqiuliangyucend.do" ></table>
+		</div>
+	</div>
+
+<script type="text/javascript">
+var datatable;
+var date=new Date;
+var year=parseInt(date.getFullYear());
+var niandu = 0;
+$(function(){
+	
+	$(".input-smnjpt").select2();
+	
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "niandu",
+				"title" : "年度"
+			},{
+				"title" : "报表名称",
+				"render": function (data,type,row,meta) {
+					if(niandu == 0){
+						niandu = row["niandu"];
+					}
+					var name = row["niandu"]+"年秋粮生产收购情况调查预测报表";
+					return name;
+				}
+			},{
+				"title" : "操作",
+				width : 120,
+				"render": function (data,type,row,meta) {
+				var urlxz = 'http://49.65.0.27:8080/WebReport/ReportServer?reportlet=qiuliangyuce.cpt&op=write&niandu='+row["niandu"]+'&format=excel&extype=simple';
+				var urlck = 'http://49.65.0.27:8080/WebReport/ReportServer?reportlet=qiuliangyuce.cpt&op=write&niandu='+row["niandu"];	
+				var chakan = '<a class="btn btn-success btn-xs btn-smchakan" type="button" onclick="readreport(\''+urlck+'\')"><i class="fa fa-search" aria-hidden="true">&nbsp;查看</i></a>';
+				var xiazai = '<a class="btn btn-success btn-xs" type="button" href="'+urlxz+'" ><i class="fa fa-download" aria-hidden="true">&nbsp;下载</i></a>';
+				return chakan+" "+xiazai;	
+				}
+			}
+			]
+	});
+	$('.datatables').on( 'draw.dt', function () {
+		for(var i = 0; i < 5; i++){
+			if((year - i) == niandu) {
+				$(".select2-selection__rendered").text(niandu);
+				$(".select2-selection__rendered").attr("title",niandu);
+				$(".input-smnjpt").append("<option selected='selected' value='"+(year - i)+"'>"+(year - i)+"</option>");	
+			}else{
+				$(".input-smnjpt").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");
+			}
+			
+		}
+		
+	});
+	
+});
+
+function readreport(url){
+	dialog1=BootstrapDialog.show({
+	    title: '报表详情',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="'+url+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1300px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons:[{
+    	   label:'关闭',
+    	   cssClass:'btn-xs btn-danger',
+    	   action:function(dialog){
+    		   dialog.close();
+    	   }
+       }]
+	});
+}
+
+function doSearch(){
+	var niandu = $(".input-smnjpt option:selected").val();
+	if(niandu != null && niandu != "" && niandu != "请选择"){
+		$(".datatables").attr("data-queryparam","&niandu="+niandu);
+		datatable.ajax.reload(null,true);
+	}else{
+		$(".datatables").attr("data-queryparam","");
+		datatable.ajax.reload(null,true);
+	}
+}
+
+</script>
+<%}%>

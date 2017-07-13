@@ -1,0 +1,158 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+    </style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<label>药剂名称:</label>
+					<select id="yjmc" class="js-example-basic-single input-smmc" style="width:150px;font-size:14px">
+						<option value="" selected="true" >选择药剂名称</option>
+					</select>
+					<label>所入药库:</label>
+					<select id="gmdw" class="js-example-basic-single input-smkd" style="width:150px;font-size:14px">
+						<option value="" selected="true" >选择药库</option>
+					</select>
+					<label>药剂入库时间:</label>
+					<input class="form-control input-sm" style="width: 80px;" name="qssj" id="qssj"   type="text" >~
+					<input class="form-control input-sm" style="width: 80px;" name="jssj" id="jssj"  type="text">
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYjrk" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+(function ($) {
+	
+     $.getUrlParam = function (name) {
+           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if (r != null) return unescape(r[2]); return null;
+       }
+    })(jQuery);
+
+var kdbm = $.getUrlParam("kdbm");
+var xzqydm = $.getUrlParam("xzqydm");
+
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	})
+
+var datatable;
+$(function(){
+	
+	$('#qssj').datetimepicker({
+		minView: "month",
+		format:'yyyy-mm-dd',
+		language: 'zh-CN',
+		autoclose: 1,
+		startView: 2,
+	});
+	
+	$('#jssj').datetimepicker({
+		minView: "month",
+		format:'yyyy-mm-dd',
+		language: 'zh-CN',
+		autoclose: 1,
+		startView: 2,
+	});
+
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "yjmc",
+				"title" : "药剂名称"
+			},{
+				"data" : "gg",
+				"title" : "规格"
+			},{
+				"data" : "sccj",
+				"title" : "生产厂家",
+			},{
+				"data" : "kdbm",
+				"title" : "所入药库",
+			},{
+				"data" : "rksj",
+				"title" : "入库时间",
+			},{
+				"data" : "yxqz",
+				"title" : "生产日期",
+			},{
+				"data" : "sl",
+				"title" : "数量",
+			},{
+				"data" : "gly",
+				"title" : "管理员",
+			}
+			]
+	});
+});
+
+	
+function doSearch(){
+	var gmdw = $("#gmdw").val();
+	var yjmc = $("#yjmc").val();
+	var qssj = $("#qssj").val();
+	var jssj = $("#jssj").val();
+	document.querySelector('.datatables').dataset.queryparam="&gmdw="+gmdw+"&yjmc="+yjmc+"&qssj="+qssj+"&jssj="+jssj;
+	datatable.ajax.reload(null,false);
+}
+
+
+$(document).ready(function() {
+	$(".input-smmc").select2();		//药剂名称
+	$(".input-smkd").select2();		//所入库点
+	
+	//========================加载药剂名称下拉框====================================
+	 $.ajax({
+		 url:'${ctxPath}/cangchugl/findyjmcpp',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option>'+data[i].yjmc+'</option>';
+				 $(".input-smmc").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	//========================加载药剂名称下拉框结束====================================
+		
+	//========================加载所入药库下拉框====================================
+	 $.ajax({
+		 url:'${ctxPath}/cangchugl/findyaoku',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option>'+data[i].cfkudian+'</option>';
+				 $(".input-smkd").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	//========================加载所入药库下拉框结束====================================
+
+});
+
+</script>
+<%
+	}
+%>

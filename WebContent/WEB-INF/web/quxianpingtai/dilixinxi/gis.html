@@ -1,0 +1,437 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=EgCiIDqOEHVgXQcpUFFqZezz"></script>
+<script type="text/javascript" src="${ctxPath}/js/BaiduMap.js"></script>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.5/themes/sunny/easyui.css" />
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.5/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.5/demo/demo.css" />
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.3.5/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.3.5/locale/easyui-lang-zh_CN.js"></script>
+<link rel="stylesheet" href="${ctxPath}/css/main.css" type="text/css" >	
+<link rel="stylesheet" href="${ctxPath}/css/index.css" type="text/css" >	
+<link rel="stylesheet" href="${ctxPath}/css/checkbox.css" type="text/css" >	
+<body style="margin: 0;padding: 0;">
+<style>
+	.anchorBL{  display:none;}
+	#gismenu div {margin-top: 2px;}
+	#gismenu div img{width:60px;width: 60px;}
+	span >div>img{
+		width:40px;
+	}
+	span>label{
+		font-weight: 900;
+	}
+	.topDIV{	
+		width:365px;
+		height:520px;			
+		border-width: 1px;
+		border-color: #000;
+		border-style: solid;	
+		background-color: #fff;	
+		position:absolute;
+		top:35px; 
+		right:0px;  
+		z-Index:99;		
+	}
+	.tabs-header {
+		background:rgba(44, 161, 198, 0.44);
+	}
+	.tabs li a.tabs-inner{
+		background: rgba(162, 214, 230, 0.63) ;
+	}
+	.datagrid-header td{
+		background:white;
+	}
+	.datagrid-btablet>body>tr:nth-of-type(odd){
+		background-color: #E8F2F9;
+	}
+	
+	.datagrid-btablet>body>tr:nth-of-type(even){
+		background-color: #FFFFFF;
+	}
+	.datagrid-td-rownumber:nth-of-type(odd) {
+ 	   background: #FFF ;
+	}
+	.datagrid-row-selected {
+   		background: #B0E0E6;
+	}
+	.datagrid-row-over{
+		background: #B0E0E6;
+	}
+	.datagrid-header td.datagrid-header-over{
+		background: #B0E0E6;
+	}
+	.datagrid-header {
+	    overflow: hidden;
+    	background: #B6D8FB; 
+	    border-bottom: 1px solid #B6D8FB;
+	    cursor: default;
+	}
+	.datagrid-body td, .datagrid-footer td {
+	    font-size: 12px;
+	    border-right: 1px dotted #2FEBFE;
+	    border-bottom: 1px dotted #2FEBFE;
+	    overflow: hidden;
+	    padding: 0;
+	    margin: 0;
+	}
+	.panel-body {
+	    overflow: auto;
+	    border: 1px solid #FFFFFF;
+	    border-top-width: 0px;
+	    background: #FFFFFF ;
+	}
+	.datagrid-pager {
+	    background: #FFFFFF; 
+	    border-top: 1px solid #FFFFFF;
+	    position: relative;
+	}
+	.pagination {
+	    display: inline-block;
+	    padding-left: 0;
+	    margin: 0px 0; 
+	    border-radius: 4px;
+	}
+</style>
+	<script type="text/javascript">
+		var img_src,img_src2;
+		$(document).ready(function(){
+			$(".gismenu").hover(function(){
+				img_src = $(this).attr("src");
+				img_src2 = img_src.substring(0,(img_src.length - 4)) +"02.png";
+			    $(this).attr("src",img_src2);
+			}, function() {
+				$(this).attr("src",img_src);
+			});
+			$(".img_control").hover(function(){
+				img_src = $(this).attr("src");
+				img_src2 = img_src.substring(0,(img_src.length - 5)) +"2.png";
+			    $(this).attr("src",img_src2);
+			}, function() {
+				$(this).attr("src",img_src);
+			});
+		});
+	</script>
+		
+<div id="allmap" style="minwidth: 600px;minheight: 200px; position: absolute; width: 100%; height: 670px" >
+</div>
+<div style="position:absolute;top:235px;right:14px;width:18px;height:58px;border:1px solid #B1B1B1;background:#FFF;z-Index:99;" onClick="systoleOrExpandContentDIV();">			 		
+    <table height="100%" width="100%" >
+	   	<tr valign=middle align=center>
+	    	<td>					  	  
+              <img src="${ctxPath}/image/tool/w_left.png" style="width:10px;height:16px"></img>
+          	</td>
+        </tr>
+    </table>
+</div>
+<div id="contentDIV" class="topDIV" style="border:1px solid #B1B1B1;">
+      	<div style="position:absolute;margin-top:200px;left:-18px;width:18px;height:58px;border:1px solid #B1B1B1;background:#FFF;" onClick="systoleOrExpandContentDIV();">			 		
+	 	   <table height=100% width=100%>
+	  	   		<tr valign=middle align=center>
+	  	   			<td>					  	  
+	                 		<img src="${ctxPath}/image/tool/w_right.png" style="width:10px;height:16px"></img>
+             		</td>
+           		</tr>
+       	   </table>
+		</div>
+		<div id="contentDIV1" style="position: absolute;left:0px;top:0px;width: 360px;height: 70px;" >
+    		<div style="width: 100%;height: 30px; vertical-align:middle;line-height:30px;background-color: #B6D8FB;">
+    			<a id="icoTitle"  style="position: absolute;left:  10px; font-size:14pt; font-style: normal;color:black; text-decoration: none;">库点信息</a>
+    			
+    		</div>
+    		<div style="width: 100%;height: 100%;">
+    			<div id="imgSelectBox">
+    			</div>
+       		</div>
+    	</div>						
+</div>
+<script>
+
+$.ajax({
+    type: "POST",
+    url: "${ctxPath}/quxian/getMapDocument",
+    dataType: "json",
+    success:function(data){		
+		//alert(data.countyLong +"=="+data.countyLat); 
+		initMap(data.countyLong,data.countyLat,data.countyName);
+    }
+});
+	
+	var iterm = 1;
+	var contentdiv = document.getElementById("contentDIV");
+	var icodiv= document.getElementById("icoDIV");
+	var timer;
+	var isShowDIV=false;
+	$(document).ready(function(){
+		$("#icoDIV1").bind("click",closeDIV); // 为btnFadein绑定click时间
+		$("#icoDIV2").bind("click",openDIV); // 为btnFadeout绑定click时间
+		
+		systoleOrExpandContentDIV();
+		
+	}) 
+
+	var isShowContentDIV=1;
+	function systoleOrExpandContentDIV(){
+		//var seImg = document.getElementById("seImg");
+		if(isShowContentDIV==0){
+			isShowContentDIV=1;
+			//seImg.src = "map/image/tool/w_right.png";
+			$("#contentDIV").animate({width:"show", opacity:"show"}, "normal" ,function(){
+				$("#contentDIV").show();
+				doSearch4GIS();
+			});		
+		}else{
+			isShowContentDIV=0;
+			//seImg.src = "map/image/tool/w_left.png";
+			$("#contentDIV").animate({width:"hide", opacity:"hide"}, "normal" ,function(){
+				$("#contentDIV").hide();
+			});
+		}
+	}
+	
+	function Fadein(){ 
+		$("#contentDIV").slideDown("slow"); // 滑入<展开>
+		isShowDIV = true;
+	} 
+
+	function Fadeout(){ 
+		$("#contentDIV").slideUp("slow"); // 滑出<折叠>
+		isShowDIV = false;
+	} 
+
+	function getChange4GIS(){
+		if(isShowDIV){
+			Fadeout();
+			window.setTimeout("Fadein()", 500);
+		}else{
+			Fadein();
+		}
+	}
+
+	function closeDIV(){
+		Fadeout();
+		window.setTimeout(
+		function (){
+			document.getElementById("icoDIV2").style.display = "";
+		}, 500);
+	}
+	function openDIV(){
+		document.getElementById("icoDIV2").style.display = "none";
+		window.setTimeout(
+			function (){
+				Fadein();
+			}, 200);
+	}
+
+	/** gis 页面，左侧页面* */
+	var sysHTML='<DIV  >';
+	sysHTML+="<table id='lk_dg' class='easyui-datagrid' style='width:360px;height:470px;' " +
+					"data-options=\"toolbar:'#tb', onClickRow:clickRow\">" ;
+	sysHTML+="<thead><tr>" +
+			            "<th data-options=\"field:'kdmc',width:'252' \" >库点名称</th> "+
+			            "<th data-options=\"field:'aaa',width:'60',formatter:rowformater\">操作</th> "+
+			        "</tr> </thead>";
+	sysHTML+= "</table>";
+	sysHTML+="<div id=\"tb\" style='padding:5px;'><div>"+
+	            "  请输入粮库名称查询：<input id='ename' class='easyui-searchbox' data-options=\"prompt:'请输入查询内容',searcher:doSearch4GIS\" style='width:150px'></input>"+
+	        "</div> </div>";
+	sysHTML+="</DIV>";
+	// $('#imgSelectBox').prop('innerHTML', sysHTML);
+	imgSelectBox.outerHTML = sysHTML;
+
+	function rowformater(val,row,index){
+		return "<a href='#' onclick=\"showMoreInfo('"+row.qyzzjgdm+"','"+row.kdbm+"')\" style='color:#295786'>详情</a>";
+			
+	}
+	
+	var dialog1;
+	function showMoreInfo(qyzzjgdm,kdbm){
+		dialog1=BootstrapDialog.show({
+		    title: '库点信息',
+			closeByBackdrop: true,
+		    message:$('<iframe id="a" name="a" frameborderno="0"  style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="yes" src="${ctxPath}/quxian/kudian?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'"/>'),
+		    onshow:function(dlg){
+		    	
+	       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-danger btn-xs'
+	       }]
+		});
+		
+		/* $('#dialog').dialog({
+			title : "详细信息",
+			top : 125,
+		    left : 315,
+			width : 750,
+			height : 550,
+		    closed: false,
+		    cache: false,
+		    modal: true,
+		    href : "${ctxPath}/quxian/dilixinxi/kudianDetail.html?kdbm="+kdbm+"&qyzzjgdm="+qyzzjgdm,
+			content:""	  
+		}); */
+
+		
+	}
+
+	function clickRow(rowIndex){
+		var row = $('#lk_dg').datagrid('getSelected');
+		panToPoint(row.qyjd,row.qywd);
+	}
+
+	function queryLK(temp){
+		doSearch4GIS();
+		iterm = temp;
+		getChange4GIS();
+		var str = "视频信息";
+		var table_str;
+		if(temp == 1){
+			str = "视频信息";
+		}else if(temp == 2){
+			str = "仓储信息";
+		}else if(temp == 3){
+			str = "粮情信息";
+		}else if(temp == 4){
+			str = "动态收购";
+		}else if(temp == 5){
+			str = "智能仓储";
+		}
+		document.getElementById("icoTitle").innerHTML = str;
+	}
+
+	function showMore(_ordernum){
+		var width = document.body.clientWidth;
+		var height = document.body.clientHeight;
+		var left_win ;
+		var width_win = 1020;
+		var height_win = 540;
+		var title_win = "粮库信息";
+			if(iterm == 1){
+				/*
+				 * url="../gis_page/video/video"+_ordernum+".jsp?num='"+_ordernum+"'";
+				 * width_win = 1020; height_win = 540; title_win = "视频信息";
+				 */
+				window.open("http://58.210.26.202/doc/page/login.asp");
+			}else if(iterm == 2){
+				url="../gis_page/cangchu/cangchu"+_ordernum+".html";
+				width_win = 1035;
+				height_win = 592;
+				title_win = "仓储信息";
+			}else if(iterm == 3){
+				url="../gis_page/liangqing/liangqing.jsp?code="+_ordernum;
+				width_win = 830;
+				height_win = 620;
+				title_win = "三维粮温信息";
+			}else if(iterm == 4){
+				url="../gis_page/dongtai/dongtai.jsp?code="+_ordernum;
+				width_win = 1035;
+				height_win = 592;
+				title_win = "动态收购";
+			}else if(iterm == 5){
+				url="../gis_page/zhineng/zn_control.jsp";
+				width_win = 1020;
+				height_win = 600;
+				title_win = "智能控制";
+			}
+			left_win = width - width_win ;
+			$('#win_gis').window({title:title_win,width:width_win,height:height_win, shadow:true,left: left_win,top: 2}); 
+			document.getElementById("win_con").src = url;
+			$('#win_gis').window('open');
+	}
+
+	function doSearch4GIS(){
+		var name = $("#ename").searchbox("getValue");
+		// datagrid初始化
+		$('#lk_dg').datagrid({
+			width:360,
+			height:'auto',
+			striped:true,
+			pageSize:15,  
+		    pageList : [ 10, 15 , 20],
+			nowrap: false,  
+			striped: true,
+			border: true,  
+			collapsible:false,// 是否可折叠的
+	// fit: true,//自动大小
+	// url:'./point.do',
+			url:'${ctxPath}/quxian/queryQiyeInfo',
+			queryParams:{'kdmc':name},
+			loadMsg : '数据装载中......', 
+			onLoadError : function() {  
+	// alert('数据加载失败!');
+		    },
+		    onLoadSuccess:function(data){
+	// getEnterPriseDate(data);
+		    },
+	// sortName: 'ecode',
+	// sortOrder: 'asc',
+			remoteSort:false,   
+	// idField:'ecode',
+			singleSelect:true,// 是否单选
+			pagination:true,// 分页控件
+			rownumbers:true,// 行号
+		});
+		displayMsg(); 
+	}
+
+	function displayMsg() {
+	  // 设置分页控件
+	    var p = $('#lk_dg').datagrid('getPager');  
+	    $(p).pagination({  
+	        beforePageText: '第',// 页数文本框前显示的汉字
+	        afterPageText: '页    共 {pages} 页',  
+	        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',  
+	    });  
+	} 
+	/** **** show or hide **** */
+	// var isShowDIV=false;
+	function showDIV(){
+		contentdiv.style.Width = contentdiv.offsetWidth + 10 + "px";
+		if(contentdiv.offsetWidth == 360){
+			clearInterval(timer);
+			icodiv.style.display="none";
+			isShowDIV = true;
+		}
+	}
+
+	function flodDIV(){
+		alert("cc:"+contentdiv.style.width +"　－－　" +contentdiv.offsetWidth);
+		contentdiv.style.width = contentdiv.offsetWidth - 10 + "px";
+		if(contentdiv.offsetWidth == 0){
+			clearInterval(timer);
+			icodiv.style.display="";
+			isShowDIV = false;
+		}
+	}
+
+	function readHTM(url){
+		var str ;
+		$.ajax({
+			async:false, 
+			contentType: "text/html; charset=UTF-8",
+			url : "htm/sp.html",
+			success : function(result){
+				str = result;
+			} 
+		});
+		return str;
+	}
+
+</script>
+	
+</body>
+	
+	
+	
+	
+<%
+	}
+%>

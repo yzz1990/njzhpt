@@ -1,0 +1,26 @@
+package com.zkzy.njzhpt.bo;
+
+import com.jfinal.aop.Duang;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.config.interfaces.ICommond;
+
+public class CommondBo {
+
+	
+	public static ICommond getCommond() throws Exception {
+		ICommond icomond = null;
+		String code = UserKit.currentUserInfo().getRole().getString("code");
+		if(code.equals("systemuser")||code.equals("njslsj")||code.equals("jdjc")||code.equals("cbtk")||code.equals("jzhcky")||code.equals("jldjkscz")||code.equals("cblgl")){//管理员/南京市粮食局//监督检查处科员//储备调控处科员//局综合处科员权限//局领导及局科室处长
+			icomond=Duang.duang(new jibenxinxiBo());
+		}else if(code.equals("qxlsj")){//区县粮食局用户
+			icomond=Duang.duang(new QuxuanCommondBo());		
+		}else if(code.equals("qiye")||code.equals("ssqiye")){//企业用户
+			icomond=Duang.duang(new QiyeQuxuanCommondBo());			
+		}
+		return icomond;
+		
+	}
+	
+	
+	
+}

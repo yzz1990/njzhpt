@@ -1,0 +1,92 @@
+package com.zkzy.njzhpt.util;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Map;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+/**
+ * 
+ * @author yzz
+ * @marker  使用freemarker模板动态生成.doc文档
+ * 
+ */
+public class DocUtil {
+	  private Configuration configuration = null;  
+      
+	    public DocUtil(){  
+	        configuration = new Configuration();  
+	        configuration.setDefaultEncoding("UTF-8");  
+	    }  
+	      
+	   
+     /**
+      * 根据Doc模板生成word文件
+      * @param dataMap Map 需要填入模板的数据
+      * @param fileName 文件名称
+      * @param savePath 保存路径
+      */
+   
+     public  double createDoc(Map<String,Object>  dataMap,String fileName,String savePath){
+    	
+          configuration.setClassForTemplateLoading(this.getClass(), "/");  //FTL文件所存在的位置  
+          Template t=null;  
+          try {  
+              t = configuration.getTemplate(fileName+".ftl"); //文件名  
+          } catch (IOException e) {  
+              e.printStackTrace();  
+          }  
+        //  File outFile = new File("D:/upload/"+Math.random()*10000+".doc");
+          double docname=Math.random()*10000;
+            File outFile = new File(savePath+docname+".doc");
+          System.out.println(outFile);
+          Writer out = null;  
+          try {  
+              out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));  
+          } catch (FileNotFoundException e1) {  
+              e1.printStackTrace();  
+          }  
+             
+          try {  
+              t.process(dataMap, out);  
+          } catch (TemplateException e) {  
+              e.printStackTrace();  
+          } catch (IOException e) {  
+              e.printStackTrace();  
+          }
+		return docname;  
+     }
+     
+   /*  @Test
+     public void getData() {  
+    	 Map<String, Object> dataMap = new HashMap<String, Object>();
+    	 List list=new ArrayList();
+    	 list.add("1号仓1660吨");
+    	 list.add("5号仓1212吨");
+    	 list.add("11号仓1623吨");
+    	 
+    	 dataMap.put("qymc", "江宁区粮食购销公司");
+    	 dataMap.put("pz", "混合小麦");
+    	 dataMap.put("reason", "某某原因");
+    	 dataMap.put("year", "2017");
+    	 dataMap.put("month", "5");
+    	 dataMap.put("weight", "5000");
+    	 dataMap.put("pwh", "[2017]5号");
+    	 dataMap.put("yearend", "2017");
+    	 dataMap.put("monthend", "9");
+    	 dataMap.put("date", "2017年5月10号");
+    	 dataMap.put("list", list);
+    	 createDoc(dataMap,"33","D:/upload/");
+     }  
+     
+  */
+}	
+		
+

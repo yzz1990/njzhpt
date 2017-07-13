@@ -1,0 +1,808 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style>
+
+.tubiao{
+	width:1000px;
+	height:500px;
+}
+.panel-pinzhong{
+	width:50%;
+	float:left;
+}
+</style>
+<script type="text/javascript">
+(function ($) {
+   $.getUrlParam = function (name) {
+         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+         var r = decodeURI(window.location.search).substr(1).match(reg);
+         if (r != null) return unescape(r[2]); return null;
+     }
+ })(jQuery);
+ 
+var pz = $.getUrlParam("pz");
+var year = $.getUrlParam("year");
+var week = $.getUrlParam("week");
+
+var myChart;
+var myChart1;
+var myChart2;
+ 
+ $(function(){
+	 myChart = echarts.init(document.getElementById('divjidu')); 	//季度趋势
+	 myChart1 = echarts.init(document.getElementById('divbannian'));	//半年趋势
+	 myChart2 = echarts.init(document.getElementById('divniandu')); 	//年度趋势
+	 
+	//获取原粮的图表
+	//6种价格
+	//粳稻收购
+	var jdsg = [];
+	//粳稻出货
+	var jdch = [];
+	//籼稻收购
+	var xdsg = [];
+	//籼稻出货
+	var xdch = [];
+	//小麦收购
+	var xmsg = [];
+	//小麦出货
+	var xmch = [];
+	//获取成品粮的图表
+	//6种价格
+	//粳米批发
+	var jmpf = [];
+	//粳米零售
+	var jmls = [];
+	//籼米批发
+	var xianmpf = [];
+	//籼米零售
+	var xianmls = [];
+	//面粉批发
+	var mfpf = [];
+	//面粉零售
+	var mfls = [];
+	//获取加工商品的图标
+	//3种价格
+	//粳米加工
+	var jmjg = [];
+	//面粉加工
+	var mfjg = [];
+	//油脂加工
+	var yzjg = [];
+	
+	//半年图表
+	var bnjdsg = [];
+	var bnjdch = [];
+	var bnxdsg = [];
+	var bnxdch = [];
+	var bnxmsg = [];
+	var bnxmch = [];
+	var bnjmpf = [];
+	var bnjmls = [];
+	var bnxianmpf = [];
+	var bnxianmls = [];
+	var bnmfpf = [];
+	var bnmfls = [];
+	var bnjmjg = [];
+	var bnmfjg = [];
+	var bnyzjg = [];
+	
+	//季度图表
+	var jdjdsg = [];
+	var jdjdch = [];
+	var jdxdsg = [];
+	var jdxdch = [];
+	var jdxmsg = [];
+	var jdxmch = [];
+	var jdjmpf = [];
+	var jdjmls = [];
+	var jdxianmpf = [];
+	var jdxianmls = [];
+	var jdmfpf = [];
+	var jdmfls = [];
+	var jdjmjg = [];
+	var jdmfjg = [];
+	var jdyzjg = [];
+	
+	
+	
+	//年周数
+	var nianzhou = [];
+	var bnnianzhou = [];
+	var jdnianzhou = [];
+	
+	$.ajax({
+		url:'${ctxPath}/jiage/covershineiprice.do',
+		type:'post',
+		data:{'year':year,'week':week},
+		dataType:'json',
+		success:function(data){
+			var nz = data.list[0].year+"年"+data.list[0].iweek+"周";
+			var zhou = data.list[0].iweek;
+			nianzhou.push(nz);
+			for(var i = 0; i < data.list.length; i++){
+				//加载年周
+				if(zhou != data.list[i].iweek){
+					nz = data.list[i].year+"年"+data.list[i].iweek+"周";
+					zhou = data.list[i].iweek;
+					nianzhou.push(nz);
+				}
+				var pzcode = data.list[i].pzcode;
+				var jglxcode = data.list[i].jglxcode;
+				var price = data.list[i].price;
+				//粳稻
+				if(pzcode == "1132"){
+					if(jglxcode == "001"){
+						jdsg.push(price);
+					}
+					if(jglxcode == "002"){
+						jdch.push(price);
+					}
+				}
+				//籼稻
+				if(pzcode == "1131"){
+					if(jglxcode == "001"){
+						xdsg.push(price);
+					}
+					if(jglxcode == "002"){
+						xdch.push(price);
+					}
+				}
+				//小麦
+				if(pzcode.substring(0,3) == "111"){
+					if(jglxcode == "001"){
+						xmsg.push(price);
+					}
+					if(jglxcode == "002"){
+						xmch.push(price);
+					}
+				}
+				//粳米
+				if(pzcode == "2362"){
+					if(jglxcode == "005"){
+						jmpf.push(price);
+					}
+					if(jglxcode == "006"){
+						jmls.push(price);
+					}
+					if(jglxcode == "004"){
+						jmjg.push(price);
+					}
+				}
+				//籼米
+				if(pzcode == "2361"){
+					if(jglxcode == "005"){
+						xianmpf.push(price);
+					}
+					if(jglxcode == "006"){
+						xianmls.push(price);
+					}
+				}
+				//面粉
+				if(pzcode == "2311"){
+					if(jglxcode == "005"){
+						mfpf.push(price);
+					}
+					if(jglxcode == "006"){
+						mfls.push(price);
+					}
+					if(jglxcode == "004"){
+						mfjg.push(price);
+					}
+				}
+				//油脂
+				if(pzcode.substring(0,3) == "141"){
+					if(jglxcode == "004"){
+						yzjg.push(price);
+					}
+				}
+			}
+			
+			//保存半年价格和周期
+			bnjdsg = jdsg.slice(-26);
+			bnjdch = jdch.slice(-26);
+			bnxdsg = xdsg.slice(-26);
+			bnxdch = xdch.slice(-26);
+			bnxmsg = xmsg.slice(-26);
+			bnxmch = xmch.slice(-26);
+			bnjmpf = jmpf.slice(-26);
+			bnjmls = jmls.slice(-26);
+			bnxianmpf = xianmpf.slice(-26);
+			bnxianmls = xianmls.slice(-26);
+			bnmfpf = mfpf.slice(-26);
+			bnmfls = mfls.slice(-26);
+			bnjmjg = jmjg.slice(-26);
+			bnmfjg = mfjg.slice(-26);
+			bnyzjg = yzjg.slice(-26);
+			bnnianzhou = nianzhou.slice(-26);
+			
+			//保存季度价格和周期
+			jdjdsg = jdsg.slice(-13);
+			jdjdch = jdch.slice(-13);
+			jdxdsg = xdsg.slice(-13);
+			jdxdch = xdch.slice(-13);
+			jdxmsg = xmsg.slice(-13);
+			jdxmch = xmch.slice(-13);
+			jdjmpf = jmpf.slice(-13);
+			jdjmls = jmls.slice(-13);
+			jdxianmpf = xianmpf.slice(-13);
+			jdxianmls = xianmls.slice(-13);
+			jdmfpf = mfpf.slice(-13);
+			jdmfls = mfls.slice(-13);
+			jdjmjg = jmjg.slice(-13);
+			jdmfjg = mfjg.slice(-13);
+			jdyzjg = yzjg.slice(-13);
+			jdnianzhou = nianzhou.slice(-13);
+			
+			//季度原粮价格
+			option = {
+					title: {
+				        text: '季度市内原粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳稻收购","粳稻出货","籼稻收购","籼稻出货","小麦收购","小麦出货"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: jdnianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳稻收购",
+				            type:'line',
+				            data:jdjdsg,
+				        },
+				        {
+				            name:"粳稻出货",
+				            type:'line',
+				            data:jdjdch,
+				        },
+				        {
+				            name:"籼稻收购",
+				            type:'line',
+				            data:jdxdsg,
+				        }
+				        ,
+				        {
+				            name:"籼稻出货",
+				            type:'line',
+				            data:jdxdch,
+				        },
+				        {
+				            name:"小麦收购",
+				            type:'line',
+				            data:jdxmsg,
+				        },
+				        {
+				            name:"小麦出货",
+				            type:'line',
+				            data:jdxmch,
+				        }
+				    ]
+			};
+			
+			//季度成品粮价格
+			option1 = {
+					title: {
+				        text: '季度市内成品粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳米批发","粳米零售","籼米批发","籼米零售","面粉批发","面粉零售"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: jdnianzhou
+				    },
+				    yAxis: [{
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    }],
+				    series: [
+				        {
+				            name:"粳米批发",
+				            type:'line',
+				            data:jdjmpf,
+				        },
+				        {
+				            name:"粳米零售",
+				            type:'line',
+				            data:jdjmls,
+				        },
+				        {
+				            name:"籼米批发",
+				            type:'line',
+				            data:jdxianmpf,
+				        }
+				        ,
+				        {
+				            name:"籼米零售",
+				            type:'line',
+				            data:jdxianmls,
+				        },
+				        {
+				            name:"面粉批发",
+				            type:'line',
+				            data:jdmfpf,
+				        },
+				        {
+				            name:"面粉零售",
+				            type:'line',
+				            data:jdmfls,
+				        }
+				    ]
+			};
+			
+			//季度加工粮价格
+			option2 = {
+					title: {
+				        text: '季度市内加工粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳米加工","面粉加工","油脂加工"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: jdnianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳米加工",
+				            type:'line',
+				            data:jdjmjg,
+				        },
+				        {
+				            name:"面粉加工",
+				            type:'line',
+				            data:jdmfjg,
+				        },
+				        {
+				            name:"油脂加工",
+				            type:'line',
+				            data:jdyzjg,
+				        }
+				        
+				    ]
+			};
+			
+			//半年度原粮价格
+			option3 = {
+					title: {
+				        text: '半年度市内原粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳稻收购","粳稻出货","籼稻收购","籼稻出货","小麦收购","小麦出货"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: bnnianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳稻收购",
+				            type:'line',
+				            data:bnjdsg,
+				        },
+				        {
+				            name:"粳稻出货",
+				            type:'line',
+				            data:bnjdch,
+				        },
+				        {
+				            name:"籼稻收购",
+				            type:'line',
+				            data:bnxdsg,
+				        }
+				        ,
+				        {
+				            name:"籼稻出货",
+				            type:'line',
+				            data:bnxdch,
+				        },
+				        {
+				            name:"小麦收购",
+				            type:'line',
+				            data:bnxmsg,
+				        },
+				        {
+				            name:"小麦出货",
+				            type:'line',
+				            data:bnxmch,
+				        }
+				    ]
+			};
+			
+			//季度成品粮价格
+			option4 = {
+					title: {
+				        text: '半年度市内成品粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳米批发","粳米零售","籼米批发","籼米零售","面粉批发","面粉零售"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: bnnianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳米批发",
+				            type:'line',
+				            data:bnjmpf,
+				        },
+				        {
+				            name:"粳米零售",
+				            type:'line',
+				            data:bnjmls,
+				        },
+				        {
+				            name:"籼米批发",
+				            type:'line',
+				            data:bnxianmpf,
+				        }
+				        ,
+				        {
+				            name:"籼米零售",
+				            type:'line',
+				            data:bnxianmls,
+				        },
+				        {
+				            name:"面粉批发",
+				            type:'line',
+				            data:bnmfpf,
+				        },
+				        {
+				            name:"面粉零售",
+				            type:'line',
+				            data:bnmfls,
+				        }
+				    ]
+			};
+			
+			//季度加工粮价格
+			option5 = {
+					title: {
+				        text: '半年市内加工粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳米加工","面粉加工","油脂加工"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: bnnianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳米加工",
+				            type:'line',
+				            data:bnjmjg,
+				        },
+				        {
+				            name:"面粉加工",
+				            type:'line',
+				            data:bnmfjg,
+				        },
+				        {
+				            name:"油脂加工",
+				            type:'line',
+				            data:bnyzjg,
+				        }
+				    ]
+			};
+			
+			//年度原粮价格
+			option6 = {
+					title: {
+				        text: '年度市内原粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳稻收购","粳稻出货","籼稻收购","籼稻出货","小麦收购","小麦出货"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: nianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳稻收购",
+				            type:'line',
+				            data:jdsg,
+				        },
+				        {
+				            name:"粳稻出货",
+				            type:'line',
+				            data:jdch,
+				        },
+				        {
+				            name:"籼稻收购",
+				            type:'line',
+				            data:xdsg,
+				        }
+				        ,
+				        {
+				            name:"籼稻出货",
+				            type:'line',
+				            data:xdch,
+				        },
+				        {
+				            name:"小麦收购",
+				            type:'line',
+				            data:xmsg,
+				        },
+				        {
+				            name:"小麦出货",
+				            type:'line',
+				            data:xmch,
+				        }
+				    ]
+			};
+			
+			
+			//年度成品粮价格
+			option7 = {
+					title: {
+				        text: '年度市内成品粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳米批发","粳米零售","籼米批发","籼米零售","面粉批发","面粉零售"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: nianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳米批发",
+				            type:'line',
+				            data:jmpf,
+				        },
+				        {
+				            name:"粳米零售",
+				            type:'line',
+				            data:jmls,
+				        },
+				        {
+				            name:"籼米批发",
+				            type:'line',
+				            data:xianmpf,
+				        }
+				        ,
+				        {
+				            name:"籼米零售",
+				            type:'line',
+				            data:xianmls,
+				        },
+				        {
+				            name:"面粉批发",
+				            type:'line',
+				            data:mfpf,
+				        },
+				        {
+				            name:"面粉零售",
+				            type:'line',
+				            data:mfls,
+				        }
+				    ]
+			};
+			
+			//年度成品粮价格
+			option8 = {
+					title: {
+				        text: '年度市内加工粮价格趋势图',
+				        x: 'center',
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:["粳米加工","面粉加工","油脂加工"],
+				        y: 'bottom',
+				    },
+				    xAxis:  {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: nianzhou
+				    },
+				    yAxis: {
+				    	name: '单位:元/50公斤',
+				        type: 'value',
+				        axisLabel: {
+				            formatter: '{value}'
+				        }
+				    },
+				    series: [
+				        {
+				            name:"粳米加工",
+				            type:'line',
+				            data:jmjg,
+				        },
+				        {
+				            name:"面粉加工",
+				            type:'line',
+				            data:mfjg,
+				        },
+				        {
+				            name:"油脂加工",
+				            type:'line',
+				            data:yzjg,
+				        }
+				        
+				    ]
+			};
+			
+			if(pz == "yl"){
+				myChart.setOption(option);
+				myChart1.setOption(option3);
+				myChart2.setOption(option6);
+			}
+			if(pz == "cpl"){
+				myChart.setOption(option1);
+				myChart1.setOption(option4);
+				myChart2.setOption(option7);
+			}
+			if(pz == "jg"){
+				myChart.setOption(option2);
+				myChart1.setOption(option5);
+				myChart2.setOption(option8);
+			}
+			
+		},
+		error:function(){
+			alert("加载价格错误");
+		}
+		
+	}) 
+ });
+ 
+function getjd(){
+	$(".divjidu").css('display','block');
+	$(".divbannian").css('display','none');
+	$(".divniandu").css('display','none');
+}
+
+function getbn(){
+	$(".divjidu").css('display','none');
+	$(".divbannian").css('display','block');
+	$(".divniandu").css('display','none');
+}
+
+function getyn(){
+	$(".divjidu").css('display','none');
+	$(".divbannian").css('display','none');
+	$(".divniandu").css('display','block');
+}
+
+
+</script>
+<div class="panel panel-default">
+	
+
+<div class="panel-heading">
+	<div class="form-inline">
+
+		<div class="clearfix">
+		</div>
+	</div>
+</div>
+
+	<div class="panel-body">
+		<div class="panel-zhouqi" style="width:100%; float:left; text-align:right">
+			<label><input name="zhiliang" type="radio" value="xingzhi" onclick="getjd()" checked="checked"/>&nbsp;季度 </label>&nbsp;&nbsp;  
+			<label><input name="zhiliang" type="radio" value="pinzhong" onclick="getbn()" />&nbsp;半年</label>&nbsp;&nbsp; 
+			<label><input name="zhiliang" type="radio" value="dengji" onclick="getyn()" />&nbsp;一年</label> 
+		</div>
+		
+		<div style="flaot:left;margin-top:20px;">
+			<div id="divjidu" class="tubiao divjidu" style="display:block">
+			</div>
+			<div id="divbannian" class="tubiao divbannian" style="display:none">
+			</div>
+			<div id="divniandu" class="tubiao divniandu" style="display:none">
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<%}%>

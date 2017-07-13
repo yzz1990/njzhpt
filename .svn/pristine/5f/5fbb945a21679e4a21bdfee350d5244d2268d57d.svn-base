@@ -1,0 +1,629 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<script src="${ctxPath}/resource/select2.min.js"></script>
+<script src="${ctxPath}/resource/zh-CN.js"></script>
+<link href="${ctxPath}/resource/select2.min.css" rel="stylesheet">
+<link href="${ctxPath}/resource/select2-bootstrap.css" rel="stylesheet">
+<!----------select-------------->
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+	font-size:30px;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia{
+	height:800px;
+	overflow-y:auto;
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:right;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+.panel-default>.panel-heading {
+	border: 1px solid #ADD8E6;
+}
+#searchprice{
+	font-size:35px;
+	text-aligh:center;
+	vertical-align: middle;
+	margin-left:20px; 
+	margin-top:2px;
+	background-color: #C6E2FF;
+	text-align:center;
+	display:block;
+	width:130px;
+	height:50px;
+	float:left;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    height: 50px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 50px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 50px;
+    font-size:25px;
+}
+.select2-results__option[aria-selected] {
+    cursor: pointer;
+    font-size:25px;
+}
+</style>
+
+<script type="text/javascript">
+
+var mydate = new Date();
+var vyear = mydate.getFullYear();
+var vmonth = mydate.getMonth();
+var vwidth;
+var vheight;
+
+$(window).load(function() {
+	//加载年度下拉框
+	for(var i = 0; i < 5 ; i++){
+		var op = '<option value="'+(vyear-i)+'">'+(vyear-i)+'</option>';
+		$("#niandu").append(op);
+	}
+	$(".cjd-select").select2();
+	
+});
+
+$(function(){
+	var qmonth;
+	var qyear;
+	if(vmonth > 0){
+		qmonth = vmonth;
+		qyear = vyear;
+	}else{
+		qmonth = 12;
+		qyear = vyear - 1;
+	}
+	vwidth = $("#container3").width();
+	vheight = $("#container3").height();
+	$("#panelbannian").width(vwidth);
+	$("#panelbannian").height(vheight);
+	$("#panelniandu").width(vwidth);
+	$("#panelniandu").height(vheight);
+	//alert(vwidth+","+vheight);
+	
+	$("#niandu").val(qyear);
+    $(".niandu-div").find(".select2-selection__rendered").text(qyear);
+	$(".niandu-div").find(".select2-selection__rendered").attr("title",qyear);
+	//初始化采价点下拉框
+	$("#yuedu").val(qmonth);
+    $(".yuedu-div").find(".select2-selection__rendered").text(qmonth);
+	$(".yuedu-div").find(".select2-selection__rendered").attr("title",qmonth);
+	
+	searym(qyear,qmonth);
+});
+
+//生成期货价格表
+function doSearch(){
+	var year = $("#niandu option:selected").val();
+	var month = $("#yuedu option:selected").val();
+	searym(year,month);
+	
+}
+
+function searym(year,month){
+	$.ajax({
+		url:'${ctxPath}/jiage/querywpqihuo.do',
+		type:'post',
+		data:{"year":year,"month":month},
+		dataType:'json',
+		success:function(data){
+			var pz = ["黄豆","小麦","豆油","玉米"];
+			//年月
+			var jdny = [];
+			var bnny = [];
+			var ndny = [];
+			//季度价格
+			var jdhdprice = [];
+			var jdxmprice = [];
+			var jddyprice = [];
+			var jdymprice = [];
+			//半年度价格
+			var bnhdprice = [];
+			var bnxmprice = [];
+			var bndyprice = [];
+			var bnymprice = [];
+			//年度
+			var ndhdprice = [];
+			var ndxmprice = [];
+			var nddyprice = [];
+			var ndymprice = [];
+			//季度
+			var lmonth = month;
+			jdny.push(year+"年"+month+"月");
+			bnny.push(year+"年"+month+"月");
+			ndny.push(year+"年"+month+"月");
+			
+			for(var i = 0; i < 48; i ++){
+				//把时间放入数组
+				if(data.list[i].month != lmonth ){
+					jdny.push(data.list[i].year+"年"+data.list[i].month+"月");
+					bnny.push(data.list[i].year+"年"+data.list[i].month+"月");
+					ndny.push(data.list[i].year+"年"+data.list[i].month+"月");
+					lmonth = data.list[i].month;
+				}
+				if(data.list[i].pinzhong == "黄豆"){
+					jdhdprice.push(data.list[i].price);
+					bnhdprice.push(data.list[i].price);
+					ndhdprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "小麦"){
+					jdxmprice.push(data.list[i].price);
+					bnxmprice.push(data.list[i].price);
+					ndxmprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "豆油"){
+					jddyprice.push(data.list[i].price);
+					bndyprice.push(data.list[i].price);
+					nddyprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "玉米"){
+					jdymprice.push(data.list[i].price);
+					bnymprice.push(data.list[i].price);
+					ndymprice.push(data.list[i].price);
+				}				
+			}
+			//截取季度和半年度的时间及价格
+			jdny = jdny.slice(0,3);
+			bnny = bnny.slice(0,6);
+			//黄豆
+			jdhdprice = jdhdprice.slice(0,3);
+			bnhdprice = bnhdprice.slice(0,6);
+			//小麦
+			jdxmprice = jdxmprice.slice(0,3);
+			bnxmprice = bnxmprice.slice(0,6);
+			//豆油
+			jddyprice = jddyprice.slice(0,3);
+			bndyprice = bndyprice.slice(0,6);
+			//玉米
+			jdymprice = jdymprice.slice(0,3);
+			bnymprice = bnymprice.slice(0,6);
+			
+			jdny.reverse();
+			bnny.reverse();
+			ndny.reverse();
+			jdhdprice.reverse();
+			jdxmprice.reverse();
+			jddyprice.reverse();
+			jdymprice.reverse();
+			bnhdprice.reverse();
+			bnxmprice.reverse();
+			bndyprice.reverse();
+			bnymprice.reverse();
+			ndhdprice.reverse();
+			ndxmprice.reverse();
+			nddyprice.reverse();
+			ndymprice.reverse();
+			
+			
+			var myChart = echarts.init(document.getElementById('paneljidu')); 	//季度趋势
+			var myChart1 = echarts.init(document.getElementById('panelbannian'));	//半年趋势
+			var myChart2 = echarts.init(document.getElementById('panelniandu')); 	//年度趋势
+			//季度折线图
+			option = {
+			    title: {
+			        text: '季度国内期货价格趋势图',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:pz,
+			        textStyle:{
+			        	fontSize:25,
+			        }
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data:[
+			          {
+		        		value:jdny[0],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			       	{
+		        		value:jdny[1],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			       	{
+		        		value:jdny[2],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			        ]
+			        
+			    },
+			    yAxis: {
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:pz[0],
+			            type:'line',
+			            data:jdhdprice,
+			        },
+			        {
+			            name:pz[1],
+			            type:'line',
+			            data:jdxmprice,
+			        },
+			        {
+			            name:pz[2],
+			            type:'line',
+			            data:jddyprice,
+			        }
+			        ,
+			        {
+			            name:pz[3],
+			            type:'line',
+			            data:jdymprice,
+			        }
+			        
+			    ]
+			};
+			myChart.setOption(option);
+			
+			//半年度折线图
+			option1 = {
+			    title: {
+			        text: '半年国内期货价格趋势图',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:pz,
+			        textStyle:{
+			        	fontSize:25,
+			        }
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data:[
+			          {
+		        		value:bnny[0],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			       	{
+		        		value:bnny[1],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			       	{
+		        		value:bnny[2],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			       	{
+		        		value:bnny[3],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			       	{
+		        		value:bnny[4],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			       	{
+		        		value:bnny[5],
+			        	textStyle:{
+				        	fontSize:20,
+			        	}
+			       	 },
+			        ]
+			    },
+			    yAxis: {
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:pz[0],
+			            type:'line',
+			            data:bnhdprice,
+			        },
+			        {
+			            name:pz[1],
+			            type:'line',
+			            data:bnxmprice,
+			        },
+			        {
+			            name:pz[2],
+			            type:'line',
+			            data:bndyprice,
+			        }
+			        ,
+			        {
+			            name:pz[3],
+			            type:'line',
+			            data:bnymprice,
+			        }
+			    ]
+			};
+			myChart1.setOption(option1);
+			
+			//半年度折线图
+			option2 = {
+			    title: {
+			        text: '一年国内期货价格趋势图',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:pz,
+			        textStyle:{
+			        	fontSize:25,
+			        }
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data:[
+				          {
+			        		value:ndny[0],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[1],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[2],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[3],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[4],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[5],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[6],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[7],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[8],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[9],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[10],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				       	{
+			        		value:ndny[11],
+				        	textStyle:{
+					        	fontSize:16,
+				        	}
+				       	 },
+				     ]
+			    },
+			    yAxis: {
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:pz[0],
+			            type:'line',
+			            data:ndhdprice,
+			        },
+			        {
+			            name:pz[1],
+			            type:'line',
+			            data:ndxmprice,
+			        },
+			        {
+			            name:pz[2],
+			            type:'line',
+			            data:nddyprice,
+			        }
+			        ,
+			        {
+			            name:pz[3],
+			            type:'line',
+			            data:ndymprice,
+			        }
+			    ]
+			};
+			myChart2.setOption(option2);
+			
+		},
+		error:function(){
+			alert("遍历国内期货连续失败");
+		}
+	});
+}
+
+
+function getjd(){
+	$("#paneljidu").css('display','block');
+	$("#panelbannian").css('display','none');
+	$("#panelniandu").css('display','none');
+}
+function getbn(){
+	
+	$("#paneljidu").css('display','none');
+	$("#panelbannian").css('display','block');
+	$("#panelniandu").css('display','none');
+	
+	
+}
+function getyn(){
+	$("#paneljidu").css('display','none');
+	$("#panelbannian").css('display','none');
+	$("#panelniandu").css('display','block');
+	
+}
+
+</script>
+<meta content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%;width:100%">
+			<div class="form-inline" style="height: 15%">
+			  <div class="caozuo" >
+			  	<div class="cjd-div niandu-div" style="height:50px;margin-left:100px">
+					<label class="cjd-label" style="height:50px;">年度:</label>
+					<select id="niandu" class="form-control cjd-select"  onchange = ""  style="width:200px;height:50px;font-size:25px">
+					</select>
+				</div>
+				<div class="cjd-div yuedu-div" style="margin-left:20px;height:50px;">
+					<label class="cjd-label" style="height:50px;">月度:</label>
+					<select id="yuedu" class="form-control cjd-select" style="width:200px;height:50px;font-size:25px">
+						<option value="1">1月</option>
+						<option value="2">2月</option>
+						<option value="3">3月</option>
+						<option value="4">4月</option>
+						<option value="5">5月</option>
+						<option value="6">6月</option>
+						<option value="7">7月</option>
+						<option value="8">8月</option>
+						<option value="9">9月</option>
+						<option value="10">10月</option>
+						<option value="11">11月</option>
+						<option value="12">12月</option>
+					</select>
+				</div>
+			  	<a id="searchprice" class="abutton" type="button" onclick="doSearch()" >查询</a>
+			  </div>
+			  	<div style="float:left;width:100%;margin-top:10px;">
+			  		<img alt="" src="${ctxPath}/img/jiage/bulb.jpg" style="width:30px;height:30px">
+					<label style="font-size:25px;">国外期货价格为每月最后一个交易日收盘价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单位:美分/蒲式耳(豆油单位:美分/磅)</label>
+				</div>
+				<div class="clearfix"></div>
+			</div> 
+			         
+          <div id="container3" style="width: 100%;height:90%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;">
+          	
+          	<div class="panel-zhouqi" style="width:100%; float:left; text-align:right">
+				<label style="font-size:25px;"><input name="zhiliang" type="radio" value="xingzhi" onclick="getjd()"  checked="checked"/>&nbsp;季度 </label>&nbsp;&nbsp;  
+				<label style="font-size:25px;"><input name="zhiliang" type="radio" value="pinzhong" onclick="getbn()"  />&nbsp;半年</label>&nbsp;&nbsp; 
+				<label style="font-size:25px;"><input name="zhiliang" type="radio" value="dengji" onclick="getyn()"  />&nbsp;一年</label> 
+			</div>
+			
+			<div id="paneljidu" style="width:100%; height:100%;float:left">
+			</div>
+			<div id="panelbannian" style="float:left; display:none">
+			</div>
+			<div id="panelniandu" style="float:left; display:none">
+			</div>
+
+          </div>
+        </div>
+	</div>		
+</div>  
+
+
+
+
+

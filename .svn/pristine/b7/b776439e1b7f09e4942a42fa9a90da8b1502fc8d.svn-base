@@ -1,0 +1,889 @@
+package com.zkzy.njzhpt.controller;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+
+import org.jsoup.Jsoup;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import com.alibaba.fastjson.JSONArray;
+import com.ggy.common.utils.ParamUtil;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Duang;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.tx.Tx;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.bo.JiageBO;
+
+
+import com.jfinal.core.Controller;
+
+
+public class JiageController extends Controller {
+	public void index(){
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) JiageBO.class.getMethod(method, HashMap.class)
+						.invoke(Duang.duang(JiageBO.class),
+								ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				renderText("FrameworkController");
+			}
+		} catch (Exception e) {
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+		
+	}
+	
+	
+	/**
+	 * 解析sina外盘期货
+	 * 使用DOM方法来遍历一个文档
+	 */
+	public void getsinawp() throws IOException{
+		String[] pzname = {"豆粕","大豆","豆油","玉米","菜油","强麦"};
+		String[] pzcode = {"M0","A0","Y0","C0","OI0","WH0"};
+		for(int j = 0; j< pzname.length; j++){
+			String pz = pzname[j];
+			String code = pzcode[j];
+			
+			String input = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesDailyKLine?symbol="+code;
+			String output = "";
+			URL url = new URL(input);
+			InputStreamReader reader = new InputStreamReader(new BufferedInputStream(url.openStream()));
+			 char[] cbuf = new char[1024 * 10];
+	         int cnum = -1;
+	         while((cnum=reader.read(cbuf))!=-1)
+	         {
+	             output += new String(cbuf, 0, cnum);
+	         }          
+	         JSONArray outjson = JSONArray.parseArray(output);
+	         Calendar c = Calendar.getInstance();
+	         int year = c.get(Calendar.YEAR); 
+	         int month = c.get(Calendar.MONTH) + 1; 
+	         //System.out.println(year+","+month+","+c+","+now);
+	         
+	         if(month == 1){
+	        	 month = 12;
+	        	 year = year - 1;
+	         }else{
+	        	 month -= 1;
+	         }
+	         
+	         for(int i = outjson.size() - 1 ; i > 0; i-- ){
+	         	 String[] items = outjson.getString(i).split(",");
+		         String uuid = SqlUtil.uuid();
+		         String day = items[0].substring(2, 12);
+		         String price = items[4].substring(1,items[4].length()-1);
+		         int iyear = Integer.parseInt(day.substring(0, 4));
+		         int imonth = Integer.parseInt(day.substring(5, 7));
+		         if(iyear == year && imonth == month){
+		        	 HashMap<String,Object> map = new HashMap<>();
+			         map.put("id", uuid);
+			         map.put("riqi", day);
+			         map.put("price", price);
+			         map.put("pinzhong", pz);
+			         map.put("year", year);
+			         map.put("month", month); 
+		        	 System.out.println(map);
+		        	 Duang.duang(JiageBO.class).savegnqihuo(map);
+		        	 break;
+		         }
+	         }
+			
+		}
+		
+
+		/*
+		Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR); 
+        int month = c.get(Calendar.MONTH) + 1; 
+        
+        if(month == 1){
+       	 month = 12;
+       	 year = year - 1;
+        }else{
+       	 month -= 1;
+        }
+        
+        String[] pzname = {"豆油"};
+		String[] pzcode = {"BO"};
+		
+        for(int j = 0; j < pzname.length; j++){
+        	
+        	String pz = pzname[j];
+        	String pc = pzcode[j];
+        	String url = "http://vip.stock.finance.sina.com.cn/q/view/vFutures_History.php?jys=CBOT&pz="+pc+"&hy=&breed="+pc+"&type=global&start=&end=";
+            System.out.println(pz);
+    		Document doc = Jsoup.connect(url).get();
+
+    		Element content = doc.select(".historyList").first().select("tbody").first();
+    		renderText(content.html());
+    		Elements links = content.select("tr");
+    		for (int i = 1; i < links.size(); i++) {
+    			Elements ctds = links.get(i).select("td");
+    			String sriqi = ctds.get(0).select("div").text().trim();
+    			
+    			String sprice = ctds.get(1).select("div").text().trim();
+    			
+    			double price = Double.parseDouble(sprice);
+    			
+    			int iyear = Integer.parseInt(sriqi.substring(0, 4));
+    	        int imonth = Integer.parseInt(sriqi.substring(5, 7));
+
+    	        
+    	        if(iyear == year && imonth == month){
+    	        	renderText(links.get(i).html());
+    	        	System.out.println(price+","+sriqi);
+    	        	
+    	        	String uuid = SqlUtil.uuid();
+    	        	
+    	        	 HashMap<String,Object> map = new HashMap<>();
+    		         map.put("id", uuid);
+    		         map.put("riqi", sriqi);
+    		         map.put("price", price);
+    		         map.put("pinzhong", pz);
+    		         map.put("year", year);
+    		         map.put("month", month); 
+    	        	 System.out.println(map);
+    	        	 renderJson(Duang.duang(JiageBO.class).savewpqihuo(map).getData().get("list"));
+    	        	 break;
+    	        	
+    	        } 
+    		}
+        }
+        */
+	}
+	
+	
+
+	/**
+	 * 保存品种
+	 */
+	@Before(Tx.class)
+	public void savepz(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).savepz(param).getData());
+		
+	}
+	/**
+	 * 更新品种
+	 */
+	public void updatepz(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).updatepz(param).getData());
+	}
+	/**
+	 * 更新采价点
+	 */
+	@Before(Tx.class)
+	public void updatecjd(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).updatecjd(param).getData());
+	}
+	
+	/*
+	 * 修改职员
+	 */
+	public void updatezy(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).updatezy(param).getData());
+	}
+	
+	/*
+	 * 保存采价点
+	 */
+	@Before(Tx.class)
+	public void savecjd(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).savecjd(param).getData());
+	}
+	
+	/*
+	 * 保存职员
+	 */
+	public void savezy(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).savezy(param).getData());
+	}
+	
+	/*
+	 * 删除品种
+	 */
+	@Before(Tx.class)
+	public void deletepz(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).deletepz(param).getData());
+	}
+	
+	/*
+	 * 删除采价点
+	 */
+	@Before(Tx.class)
+	public void deletecjd(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).deletecjd(param).getData());
+	}
+	
+	/*
+	 * 删除职员
+	 */
+	public void deleteZy(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).deleteZy(param).getData());
+	}
+	/**
+	 * 加载临时采价点商品
+	 */
+	@Before(Tx.class)
+	public void loadlscjdsp(){
+		String cjdid = getPara("cjdid");
+		//删除临时表中原来的内容
+		String delsql = "Delete jg_conflixls";
+		Db.update(delsql);
+		//在临时表中插入对应的数据
+		String insql = "insert into jg_conflixls select * from jg_conflix where cjdid = ?";
+		renderJson(Db.update(insql, cjdid)); 
+	}
+	
+	/**
+	 * 加载临时采价点商品
+	 */
+	@Before(Tx.class)
+	public void updatelscjdpz(){
+		
+		String cjdcode = getPara("vid");
+		String spmccode = getPara("vpzid");
+		String sumjglx = getPara("sumjglx");
+		
+		//删除临时表中原来的内容
+		String delsql = "Delete jg_conflixls where pzid = ?";
+		int del = Db.update(delsql, spmccode);
+		//更新临时表
+		if(!StrKit.isBlank(sumjglx)){  
+			String[] sjglx = sumjglx.split(","); 
+			 for (String str : sjglx) {  
+				String uuid = SqlUtil.uuid();
+	        	String savesql = "insert into jg_conflixls values(?,?,?,?)";
+	        	Db.update(savesql,uuid,cjdcode,spmccode,str);
+	        }      
+		}
+		renderJson(del);
+	}
+	
+	/**
+	 * 加载临时采价点商品
+	 */
+	@Before(Tx.class)
+	public void adddzpz(){
+		String cjdid = getPara("cjdid");
+		String pzid = getPara("pzid");
+		String id = SqlUtil.uuid();
+    	String savesql = "insert into jg_conflixls values(?,?,?,?)";
+    	renderJson(Db.update(savesql,id,cjdid,pzid,"55555"));
+	}
+	
+	/**
+	 * 删除临时采价点对照商品
+	 */
+	@Before(Tx.class)
+	public void deldzpz(){
+		String pzid = getPara("pzid");
+		//删除临时表中原来的内容
+		String delsql = "Delete jg_conflixls where pzid = ?";
+		renderJson(Db.update(delsql,pzid));
+	}
+	/**
+	 * 填充临时表
+	 */
+	public void loadcaijiasp(){
+		//清空临时表
+		String delsql = "delete ls_baojia ";
+		Db.update(delsql);
+		String upsql = "insert into ls_baojia (cjdbh,pzcode,jglxcode) select * from "
+				+ "tz_caijiasp where cjdcode = ? ";
+		renderJson(Db.update(upsql,getPara("cjdcode")));
+	}
+	/**
+	 * 保存报价
+	 */
+	public void saveprice(){
+		Date dt = new Date();
+	    SimpleDateFormat matter=new SimpleDateFormat("yyyy-MM-dd");
+	    String tday = matter.format(dt);
+	    String id = SqlUtil.uuid();
+	    HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+	    param.put("id", id);
+	    param.put("day", tday);
+	    Record record = new Record().setColumns(param);
+	    boolean result = Db.save("jg_baojia", record);
+	    renderJson(result);
+	}
+	
+	
+	/**
+	 * 删除临时报价
+	 */
+	public void dellsprice(){
+		String delsql = "delete jg_baojials";
+		Db.update(delsql);
+	}
+	
+	
+	/**
+	 * 保存报价单
+	 * @throws ParseException 
+	 */
+	@Before(Tx.class)
+	public void savebaojia() throws ParseException{
+		
+		String cjdbh = getPara("cjdbh");
+		String cjrq = getPara("cjrq");
+		String jldw = getPara("jldw");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");  
+		Date date = sdf.parse(cjrq);
+		Calendar calendar = Calendar.getInstance(); 
+		if(date != null){        
+	        calendar.setTime(date);      
+	    }  
+		//获取年度
+		int year = calendar.get(Calendar.YEAR);
+		//获取当前星期几
+		String firstday = year+"/1/1";
+		System.out.println(year);
+		Date first = sdf.parse(firstday);
+		System.out.println(first);
+		System.out.println(date);
+		if(first != null){
+			calendar.setTime(first);
+		}
+		int weke = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+		long firsttime = first.getTime();
+		long nowtime = date.getTime();
+		firsttime -= (weke-1) *24 * 3600 *1000;
+		System.out.println(nowtime-firsttime);
+		int iw = (int) ((nowtime - firsttime)/(24*3600*1000*7));
+		iw++;
+		
+		String pzcodes = getPara("pzcodes");
+		String prices = getPara("prices");
+		String jglxcodes = getPara("jglxcodes");
+		String grades = getPara("grades");
+		int result = 0;
+		
+		//插入填报单
+		if(!StrKit.isBlank(pzcodes)){  
+			String[] spzcode = pzcodes.split(","); 
+			String[] sprice = prices.split(",");
+			String[] sjglxcode = jglxcodes.split(",");
+			String[] sgrade = grades.split(",");
+			
+			for(int i = 0; i < spzcode.length; i++){
+				String uuid = SqlUtil.uuid();
+				String pzcode = spzcode[i];
+				String pr = sprice[i];
+				float price = Float.parseFloat(pr);
+				String jglxcode = sjglxcode[i];
+				String gradecode = sgrade[i];
+				if(price > 0){
+					String savesql = "insert into tz_baojia "
+							+ " (id,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,iweek) "
+							+ " values(?,?,?,?,?,?,?,?,?,?,?)";
+		        	result += Db.update(savesql,uuid,cjdbh,cjrq,"已提交",jldw,pzcode,gradecode,jglxcode,price,year,iw);
+				}
+			}
+		}
+		renderJson(result);
+	}
+	/**
+	 * 审核发布报价单
+	 */
+	public void baojiashenhe(){
+		String sid = getPara("sid");
+		int result = 0;
+		//更新临时表
+		if(!StrKit.isBlank(sid)){  
+			String[] ids = sid.split(","); 
+			 for (String str : ids) {  
+	        	String upsql = "update tz_baojia set djzt = ? where id = ? and djzt = ? ";
+	        	result += Db.update(upsql,"已审批", str,"已提交");
+	        }      
+		}
+		renderJson(result);
+	}
+	
+	/**
+	 * 驳回报价单
+	 */
+	public void baojiabohui(){
+		String sid = getPara("sid");
+		int result = 0;
+		//修改状态为驳回
+		if(!StrKit.isBlank(sid)){  
+			String[] ids = sid.split(","); 
+			 for (String str : ids) {  
+	        	String upsql = "update tz_baojia set djzt = ? where id = ? and djzt = ? ";
+	        	result += Db.update(upsql,"驳回", str, "已提交");
+	        }      
+		}
+		renderJson(result);
+	}
+	/**
+	 * 修改报价单
+	 */
+	public void updatebaojia(){
+		String ids = getPara("ids");
+		String prices = getPara("prices");
+		int result = 0;
+		//修改报价单
+		if(!StrKit.isBlank(ids)){  
+			String[] sid = ids.split(","); 
+			String[] sprice = prices.split(",");
+			for(int i = 0; i < sid.length; i++){
+				String id = sid[i];
+				String price = sprice[i];
+				String upsql = " update tz_baojia set price = ?, djzt = ? "
+						+ "where id = ? and djzt = ? ";
+				result += Db.update(upsql,price,"已提交",id,"驳回");	
+			}
+		}
+		renderJson(result);
+	}
+	
+	/**
+	 * 生成年周数
+	 * @throws ParseException 
+	 */
+	public void findweek() throws ParseException{
+		int year = getParaToInt("niandu");
+		String day = year+"-1-1";
+		String max = (year+1)+"-1-1";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		Date date = sdf.parse(day);
+		Date maxdate = sdf.parse(max);
+	    Calendar calendar = Calendar.getInstance();      
+	    if(date != null){        
+	        calendar.setTime(date);      
+	    }        
+	    int weke = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+	    long time = date.getTime();
+	    long maxtime = maxdate.getTime();
+	    time = time - (weke - 1) * 24 * 3600 * 1000;
+	    int iw = 1;
+	    ArrayList<String> nianzhou = new ArrayList<>();
+	    while(time < maxtime){
+	    	String str = iw+"周    ";
+	    	Date d = new Date(time);
+	    	SimpleDateFormat sf = new SimpleDateFormat("MM月dd日");
+	    	str += sf.format(d)+" 至 ";
+	    	time = time + 6 * 24 * 3600 * 1000;
+	    	d = new Date(time);
+	    	str += sf.format(d);
+	    	nianzhou.add(str);
+	    	time = time + 1 * 24 * 3600 * 1000;
+	    	iw++;
+	    }
+	  
+	    renderJson(nianzhou);
+	}
+	
+	/**
+	 * 加载市内价格
+	 * @throws Exception 
+	 */
+	public void findshinei() throws Exception{
+		
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).findshinei(param).getData().get("list"));
+	}
+	
+	/**
+	 * 保存国内报价
+	 * @throws ParseException 
+	 */
+	public void savegnbj() throws ParseException{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		
+		String cjrq = getPara("cjrq");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");  
+		Date date = sdf.parse(cjrq);
+		Calendar calendar = Calendar.getInstance(); 
+		if(date != null){        
+	        calendar.setTime(date);      
+	    }  
+		//获取年度
+		int year = calendar.get(Calendar.YEAR);
+		//获取当前星期几
+		String firstday = year+"/1/1";
+		System.out.println(year);
+		Date first = sdf.parse(firstday);
+		if(first != null){
+			calendar.setTime(first);
+		}
+		int weke = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+		long firsttime = first.getTime();
+		long nowtime = date.getTime();
+		firsttime -= (weke-1) *24 * 3600 *1000;
+		System.out.println(nowtime-firsttime);
+		int iw = (int) ((nowtime - firsttime)/(24*3600*1000*7));
+		iw++;
+		param.put("year", year);
+		param.put("iweek",iw);
+		renderJson(Duang.duang(JiageBO.class).savegnbj(param).getData());
+		
+	}
+	
+	/**
+	 * 加载国内价格
+	 * @throws Exception 
+	 */
+	public void findguonei() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).findguonei(param).getData().get("list"));
+	}
+	
+	/**
+	 * 加载国内期货价格
+	 * @throws Exception 
+	 */
+	public void findqihuo() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).findqihuo(param).getData());
+	}
+	
+	
+	/**
+	 * 获取所有新浪财经数据
+	 * @throws IOException 
+	 */
+	public void readsina() throws IOException{
+		String input = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesDailyKLine?symbol=WH0";
+		String output = "";
+		URL url = new URL(input);
+		InputStreamReader reader = new InputStreamReader(new BufferedInputStream(url.openStream()));
+		 char[] cbuf = new char[1024 * 10];
+         int cnum = -1;
+         while((cnum=reader.read(cbuf))!=-1)
+         {
+             output += new String(cbuf, 0, cnum);
+         }          
+         JSONArray outjson = JSONArray.parseArray(output);
+//         System.out.println(outjson.get(475));
+         
+         for(int i = 0; i < outjson.size(); i++ ){
+         	 String[] items = outjson.getString(i).split(",");
+         	 String pz = "强麦";
+	         String uuid = SqlUtil.uuid();
+	         String day = items[0].substring(2, 12);
+	         String price = items[4].substring(1,items[4].length()-1);
+	         String year = day.substring(0, 4);
+	         String month = day.substring(5, 7);
+         	 
+//         	 for(int i = 0; i < items.length; i++){
+//         		 System.out.println(items[i]);
+//         	 }
+//         	 System.out.println(day);
+//         	 System.out.println(price);
+//         	 System.out.println(year);
+//         	 System.out.println(month);
+        	 
+	         HashMap<String,Object> map = new HashMap<>();
+	         map.put("id", uuid);
+	         map.put("riqi", day);
+	         map.put("price", price);
+	         map.put("pinzhong", pz);
+	         map.put("year", year);
+	         map.put("month", month); 
+	         renderJson(Duang.duang(JiageBO.class).saveqihuo(map).getData().get("list"));
+         }
+	}
+	
+	/**
+	 * 保存上月国内期货价格
+	 * @throws IOException 
+	 */
+	public void loadsina() throws IOException{
+		String[] pzname = {"豆粕","大豆","豆油","玉米","菜油","强麦"};
+		String[] pzcode = {"M0","A0","Y0","C0","OI0","WH0"};
+		for(int j = 0; j< pzname.length; j++){
+			String pz = pzname[j];
+			String code = pzcode[j];
+			
+			String input = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesDailyKLine?symbol="+code;
+			String output = "";
+			URL url = new URL(input);
+			InputStreamReader reader = new InputStreamReader(new BufferedInputStream(url.openStream()));
+			 char[] cbuf = new char[1024 * 10];
+	         int cnum = -1;
+	         while((cnum=reader.read(cbuf))!=-1)
+	         {
+	             output += new String(cbuf, 0, cnum);
+	         }          
+	         JSONArray outjson = JSONArray.parseArray(output);
+	         Calendar c = Calendar.getInstance();
+	         int year = c.get(Calendar.YEAR); 
+	         int month = c.get(Calendar.MONTH) + 1; 
+	         //System.out.println(year+","+month+","+c+","+now);
+	         
+	         if(month == 1){
+	        	 month = 12;
+	        	 year = year - 1;
+	         }else{
+	        	 month -= 1;
+	         }
+	         
+	         
+	         for(int i = outjson.size() - 1 ; i > 0; i-- ){
+	         	 String[] items = outjson.getString(i).split(",");
+		         String uuid = SqlUtil.uuid();
+		         String day = items[0].substring(2, 12);
+		         String price = items[4].substring(1,items[4].length()-1);
+		         int iyear = Integer.parseInt(day.substring(0, 4));
+		         int imonth = Integer.parseInt(day.substring(5, 7));
+		         if(iyear == year && imonth == month){
+		        	 HashMap<String,Object> map = new HashMap<>();
+			         map.put("id", uuid);
+			         map.put("riqi", day);
+			         map.put("price", price);
+			         map.put("pinzhong", pz);
+			         map.put("year", year);
+			         map.put("month", month); 
+		        	 System.out.println(map);
+		        	 renderJson(Duang.duang(JiageBO.class).savegnqihuo(map).getData().get("list"));
+		        	 break;
+		         }
+	         }
+	         
+			
+			
+		}
+		
+		
+		
+		
+	}
+	
+	/**
+	 * 保存历史价格指数
+	 */
+	public void readzhishu(){
+
+		String sql = "insert into tz_jiagezhishu "
+				+ " SELECT bj1.id, bj1.pzcode, bj1.jglxcode, "
+				+ "((bj1.price / bj2.price) * 100) AS zhishu, bj1. YEAR, bj1.iweek, bj1.cjrq "
+				+ "FROM ( SELECT MAX (id) AS id, AVG (price) AS price, "
+				+ "pzcode, jglxcode, YEAR, iweek, MAX (cjrq) AS cjrq FROM tz_baojia tz_baojia "
+				+ "WHERE [year] = ? AND iweek = ? GROUP BY YEAR, iweek, pzcode, jglxcode ) AS bj1 "
+				+ "LEFT JOIN ( SELECT AVG (price) AS price, pzcode, jglxcode, YEAR, iweek, MAX (cjrq) AS cjrq "
+				+ "FROM tz_baojia WHERE [year] = ? AND iweek = ? GROUP BY YEAR, iweek, pzcode, jglxcode ) "
+				+ "AS bj2 ON bj1.pzcode = bj2.pzcode AND bj1.jglxcode = bj2.jglxcode ";
+		
+//		int year = 2015;
+//		int week = 49;
+//		int qyear = year;
+//		int qweek = week - 1;
+//		Db.update(sql,year,week,qyear,qweek);
+		
+		for(int year = 2016; year >= 2015; year --){
+			for(int week = 53; week > 1 ; week --){
+				int qweek;
+				int qyear;
+				if(week > 1){
+					qweek = week - 1;
+					qyear = year;
+				}else{
+					qweek = 52;
+					qyear = year - 1;
+				}
+				if(Db.update(sql,year,week,qyear,qweek)>=1){
+					continue;
+				}else{
+					continue;
+				}
+				
+			}
+		}
+		
+	
+	
+	
+	}
+	
+	/**
+	 * 保存采价点
+	 * @throws ParseException 
+	 */
+	public void loadcaijia() throws ParseException{
+		String day = "2014-12-30";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		Date date = sdf.parse(day);
+		long time = date.getTime();
+		for(int week = 53; week > 0; week--){
+			
+			Date nowday = new Date(time);
+			String cjrq = sdf.format(nowday).toString();
+			//第一个报价cjdbh716290701
+			//int week = 53;
+			String uuid = SqlUtil.uuid();
+			int year = 2014;
+			String cjdbh = "716290701";
+			//共同
+			String djzt = "已提交";
+			//共同
+			String jldw = "001";
+			String pzcode = "2361";
+			//共同
+			String gradecode = "01";
+			String jglxcode = "006";
+			double price = Math.round((130 + 10 * Math.random()));
+			String sql = "insert into tz_baojia "
+					+ "(id,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,iweek) "
+					+ "values(?,?,?,?,?,?,?,?,?,?,?) ";
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//2
+			uuid = SqlUtil.uuid();
+			jglxcode = "005";
+			price = Math.round((120 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//3
+			uuid = SqlUtil.uuid();
+			pzcode = "2362";
+			jglxcode = "005";
+			price = Math.round((110 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//4
+			uuid = SqlUtil.uuid();
+			pzcode = "2362";
+			jglxcode = "006";
+			price = Math.round((130 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//5 cjdbh=765432125
+			uuid = SqlUtil.uuid();
+			cjdbh = "765432125";
+			pzcode = "1132";
+			jglxcode = "001";
+			price = Math.round((110 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//6 
+			uuid = SqlUtil.uuid();
+			cjdbh = "765432125";
+			pzcode = "1132";
+			jglxcode = "002";
+			price = Math.round((120 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//7 cjdbh=9132011774238914X8
+			uuid = SqlUtil.uuid();
+			cjdbh = "9132011774238914X8";
+			pzcode = "2311";
+			jglxcode = "004";
+			price = Math.round((140 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//8
+			uuid = SqlUtil.uuid();
+			cjdbh = "9132011774238914X8";
+			pzcode = "1411";
+			jglxcode = "004";
+			price = Math.round((150 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//9
+			uuid = SqlUtil.uuid();
+			cjdbh = "9132011774238914X8";
+			pzcode = "2362";
+			jglxcode = "004";
+			price = Math.round((130 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//10
+			uuid = SqlUtil.uuid();
+			cjdbh = "9132011774238914X8";
+			pzcode = "2311";
+			jglxcode = "006";
+			price = Math.round((150 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//11
+			uuid = SqlUtil.uuid();
+			cjdbh = "9132011774238914X8";
+			pzcode = "2311";
+			jglxcode = "005";
+			price = Math.round((120 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//12 cjdbh=765432124
+			uuid = SqlUtil.uuid();
+			cjdbh = "765432124";
+			pzcode = "1112";
+			jglxcode = "001";
+			price = Math.round((100 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//13
+			uuid = SqlUtil.uuid();
+			cjdbh = "765432124";
+			pzcode = "1112";
+			jglxcode = "002";
+			price = Math.round((110 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//14
+			uuid = SqlUtil.uuid();
+			cjdbh = "765432124";
+			pzcode = "1131";
+			jglxcode = "002";
+			price = Math.round((120 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			//15
+			uuid = SqlUtil.uuid();
+			cjdbh = "765432124";
+			pzcode = "1131";
+			jglxcode = "001";
+			price = Math.round((110 + 10 * Math.random()));
+			Db.update(sql,uuid,cjdbh,cjrq,djzt,jldw,pzcode,gradecode,jglxcode,price,year,week);
+			
+			time -= 7 * 24 * 3600 * 1000;
+			
+		}
+	}
+	
+	
+	/**
+	 * 加载国内期货价格
+	 * @throws Exception 
+	 */
+	public void findwpqihuo() throws Exception{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).findwpqihuo(param).getData());
+	}
+	
+	/**
+	 * 寻找年周数
+	 */
+	public void findnianzhou(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(JiageBO.class).findnianzhou(param).getData().get("list"));
+	}
+	
+}

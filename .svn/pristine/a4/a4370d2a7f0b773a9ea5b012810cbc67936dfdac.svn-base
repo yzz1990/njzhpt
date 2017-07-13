@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+   
+
+
+<title>夏粮五日报表增删</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+
+</head>
+
+<%
+	var obj={},url=ctxPath+"/zhiliangzs/addrukumingxi";
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.ZhiliangzsDAO.queryzhiliang({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/zhiliangzs/uprukumingxi";
+	};
+	var qyzzjgdm = parameter.qyzzjgdm;
+	var kdbm = parameter.kdbm;
+%>
+
+
+<script type="text/javascript">
+var date=new Date;
+var year=parseInt(date.getFullYear());
+
+$(function(){
+	
+});
+
+
+$(window).load(function() { 
+	
+
+	
+});
+/*
+function saverukuzhiliang() {
+	var form = $("#contentform");
+	$.ajax({
+		url: form.attr("action"),
+		type:"post",
+		dataType:"json",
+		data: form.serialize(),
+		success: function(msg) {
+			alert(form.serialize());
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		},
+		error:function(){
+			alert("保存失败,请检查内容是否重复");
+		}
+	});
+}
+*/
+</script>
+
+
+<body>
+	 <div class="dashboard-wrapper-lg" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                
+                  <div class="widget-header">
+                    <div class="title">
+                        	入库质量追溯                                 
+                    </div>
+                  </div>
+                  <div class="widget-body">
+							<div class="row">
+								<div class="col-xs-6">	
+									<input id="qyzzjgdm" name="qyzzjgdm" style="display:none;" class="form-control" placeholder="企业组织机构代码" value="${qyzzjgdm}">
+									<input id="kdbm" name="kdbm" style="display:none;" class="form-control" placeholder="库点编码" value="${kdbm}">
+									<div class="form-group">
+										<label for="jianyanriqi">检验日期:</label>
+										<input id="jianyanriqi" name="jianyanriqi" class="form-control" placeholder="检验日期" value="${obj.jianyanriqi}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="canghao">仓号:</label>	
+										<input id="canghao" name="canghao" class="form-control" placeholder="仓号" value="${obj.canghao}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="pinzhong">品种:</label>
+										<input id="pinzhong" name="pinzhong" class="form-control" placeholder="品种" value="${obj.pinzhong}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="harvestyear">收获年度:</label>
+										<input id="harvestyear" name="harvestyear" class="form-control" placeholder="收获年度" value="${obj.harvestyear}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="chechuanhao">车船号:</label>
+										<input id="chechuanhao" name="chechuanhao" class="form-control" placeholder="收获年度" value="${obj.chechuanhao}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="dmStock">实收数量(公斤):</label>
+										<input id="dmStock" name="dmStock" class="form-control" placeholder="实收数量(公斤)" value="${obj.dmStock}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="danjubianhao">入库单编号:</label>
+										<input id="danjubianhao" name="danjubianhao" class="form-control" placeholder="入库单编号" value="${obj.danjubianhao}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="shuifen">水份(%):</label>
+										<input id="shuifen" name="shuifen" class="form-control" placeholder="水份(%)" value="${obj.shuifen}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="zazhi">杂质(%):</label>
+										<input id="zazhi" name="zazhi" class="form-control" placeholder="杂质(%)" value="${obj.zazhi}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="chucao">出糙(%):</label>
+										<input id="chucao" name="chucao" class="form-control" placeholder="出糙(%)" value="${obj.chucao}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="rongzhong">容重(g/l):</label>
+										<input id="rongzhong" name="rongzhong" class="form-control" placeholder="容重(g/l)" value="${obj.rongzhong}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="buwanshanli">不完善粒(%):</label>
+										<input id="buwanshanli" name="buwanshanli" class="form-control" placeholder="不完善粒" value="${obj.buwanshanli}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="huangli">黄粒(%):</label>
+										<input id="huangli" name="huangli" class="form-control" placeholder="黄粒" value="${obj.huangli}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="guwaicaomi">谷外糙米(%):</label>
+										<input id="guwaicaomi" name="guwaicaomi" class="form-control" placeholder="谷外糙米" value="${obj.guwaicaomi}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="zhengjingmili">整精米粒(%):</label>
+										<input id="zhengjingmili" name="zhengjingmili" class="form-control" placeholder="整精米粒" value="${obj.zhengjingmili}">
+									</div>	
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+	</form>
+	</div>
+            <!-- Row End -->
+            
+    <script type="text/javascript">
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+    
+   
+    
+    </script>
+            
+</body>
+
+
+</html>

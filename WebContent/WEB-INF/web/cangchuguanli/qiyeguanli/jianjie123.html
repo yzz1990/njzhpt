@@ -1,0 +1,77 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var xzqydm = parameter.xzqydm;
+%>
+<style>
+#titlecontent{
+	word-wrap: break-word;
+}
+
+</style>
+
+<script type="text/javascript">
+	$(function(){
+		var xzqydm = $.getUrlParam("xzqydm");
+		$.ajax({
+			url:"${ctxPath}/cangchugl/findjianjie",
+			type:"post",
+			data:{"id":id,"status":status,"date":date},
+			dataType:"json",
+			success:function(data){
+				var title = data.title;
+				var jianjie = data.jianjie;
+				
+				$(".texttitle").find("h3").text(titlename);
+				$("#titlecontent").find("pre").html(content);
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+		
+	});
+	
+	(function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+	
+	
+
+</script>
+
+<div class=" lay se_bor clear lay2" style="background-color: #fff; border: 1px solid #ddd">            
+<div class="texttitle ">                <h3>                    粮食竞价销售交易规则                </h3>                
+<div class="bar">                    
+<span>wx</span> <em>|</em><span id="createtime">时间：2016-01-08</span><em>|</em> <span class="fontResizer clear">                        <b style="font-weight: normal">字体大小：</b> <a href="javascript:void(0);" title="原始字号" class="medFont curFont2">中</a> <a href="javascript:void(0);" title="文字变大" class="largeFont">大</a><em>|</em>                        <span id="ArtHit">浏览量：7231</span> </span>                </div>            </div>            <div class="info_text_con bor2" style="font-size: 20px;">                <p>
+ <span style="display: none">&nbsp;</span></p>
+
+<p align="center">
+ </p>
+<div id="titlecontent"><pre></pre> </div>
+ 
+<div>
+ &nbsp;</div>
+<div>
+ <strong>&nbsp;</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<p>
+ &nbsp;</p>
+<p>
+ &nbsp;</p>
+<p>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>            </div>                        <div class="print lay2 lay1">                <a class="titlebar_p" title="打印" href="javascript:window.print();">【打印本页】</a></div>        </div>    </div>    <div class="lay mainbody clear">    </div>    
+ 
+
+
+
+
+
+
+
+
+<%
+	}
+%>

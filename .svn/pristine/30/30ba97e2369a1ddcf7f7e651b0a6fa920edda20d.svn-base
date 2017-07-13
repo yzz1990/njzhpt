@@ -1,0 +1,120 @@
+package com.zkzy.njzhpt.interceptor;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.beetl.ext.jfinal.BeetlRenderFactory;
+
+import com.jfinal.handler.Handler;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.zkzy.njzhpt.bo.PeizhiBO;
+
+public class JfinalSkipHandler extends Handler {
+	public static Ret tianqi = new Ret();
+
+	@Override
+	public void handle(String target, HttpServletRequest request,
+			HttpServletResponse response, boolean[] isHandled) {
+
+		request.setAttribute("servletPath", request.getServletPath());
+		request.setAttribute("requestURI", request.getRequestURI());
+		String Referer = request.getHeader("Referer");
+		request.setAttribute("Referer", StrKit.isBlank(Referer) ? "" : Referer);
+		request.setAttribute("gisCityHtml", "/WEB-INF/web/ui/globalStyle.html");
+		
+		
+		//t_property表  配置基础信息    yzz 
+		Map<String, Object> sharedVars = new HashMap<String, Object>();
+		sharedVars.putAll(new PeizhiBO().getTProperty().getColumns());
+		BeetlRenderFactory.groupTemplate.setSharedVars(sharedVars);
+		 
+		
+		if (target.contains(".html")) {
+			request.setAttribute("tianqi", tianqi);
+			if (target.contains("/framework/")) {
+				request.setAttribute("_url_", target.replace("/framework/", ""));
+				target = "/framework/toHTML";
+			} else if (target.contains("/login/")) {
+				request.setAttribute("_url_", target.replace("/login/", ""));
+				target = "/login/toHTML";
+			} else if (target.contains("/yewu")) {
+				request.setAttribute("_url_", target.replace("/yewu/", ""));
+				target = "/yewu/toHTML";
+			} else if (target.contains("/renyuan")) {
+				request.setAttribute("_url_", target.replace("/renyuan/", ""));
+				target = "/renyuan/toHTML";
+			}else if (target.contains("/shouchukeshihua")) {  
+				request.setAttribute("_url_", target.replace("/shouchukeshihua/", ""));
+				target = "/shouchukeshihua/toHTML";
+			}else if (target.contains("/quxian")) {  
+				request.setAttribute("_url_", target.replace("/quxian/", ""));
+				target = "/quxian/toHTML";
+			}else if (target.contains("/zonghe")) {  
+				request.setAttribute("_url_", target.replace("/zonghe/", ""));
+				target = "/zonghe/toHTML";
+			}else if (target.contains("/emergency")) {
+				request.setAttribute("_url_", target.replace("/emergency/", ""));
+				target = "/emergency/toHTML";
+			}else if (target.contains("/oa")) {
+				request.setAttribute("_url_", target.replace("/oa/", ""));
+				target = "/oa/toHTML";
+			}else {
+				request.setAttribute("_url_", target.substring(1));
+				target = "/";
+			}
+		} else if (target.contains(".do")) {
+			String[] urls = target.split("/");
+			request.setAttribute("_url_",
+					urls[urls.length - 1].replace(".do", ""));
+			if (target.contains("/framework/")) {
+				target = "/framework/index";
+			} else if (target.contains("/lunhuan/")) {
+				target = "/lunhuan/index";
+			} else if (target.contains("/qitiJC/")) {
+				target = "/qitiJC/index";
+			} else if (target.contains("/chubeiliangJH/")) {
+				target = "/chubeiliangJH/index";
+			} else if (target.contains("/chengpinliang/")) {
+				target = "/chengpinliang/index";
+			} else if (target.contains("/shouchukeshihua")) {
+				target = "/shouchukeshihua/index";
+			} else if (target.contains("/zhiliangGL")) {
+				target = "/zhiliangGL/index";
+			} else if (target.contains("/zhiliangGL")) {
+				target = "/zhiliangGL/index";
+			} else if (target.contains("/yewu")) {
+				target = "/yewu/index";
+			} else if (target.contains("/peizhi")) {
+				target = "/peizhi/index";
+			} else if(target.contains("/jiage")){
+				target = "/jiage/index";
+			} else if(target.contains("/renyuan")){
+				target = "/renyuan/index";
+			} else if(target.contains("/zhiliangzs")){
+				target = "/zhiliangzs/index";
+			} else if(target.contains("/emergency")){
+				target = "/emergency/index";
+			} else if(target.contains("/gonggong")){
+				target = "/gonggong/index";
+			}
+		} else if (target.contains(".svg")) {
+			if (target.contains("/yewu/")) {
+				request.setAttribute("_url_", target.replace("/yewu/", ""));
+				target = "/yewu/toHTML";
+			}
+		} else if (target.contains(".js")) {
+			if (target.contains("/yewu/")) {
+				request.setAttribute("_url_", target.replace("/yewu/", ""));
+				target = "/yewu/toHTML";
+			}else if(target.contains("/quxian/")){
+				request.setAttribute("_url_", target.replace("/quxian/", ""));
+				target = "/quxian/toHTML";
+			}
+		}
+		next.handle(target, request, response, isHandled);
+	}
+}

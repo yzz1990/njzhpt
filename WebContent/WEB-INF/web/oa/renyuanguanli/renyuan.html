@@ -1,0 +1,182 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+ <style type="text/css">
+  
+	
+ </style>
+<div class="panel panel-default">
+		<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>人员管理</b></span>
+		</div>
+		<div class="panel-heading">
+			<div class="form-inline" >
+				<div class = "div-diqu pull-left" >
+					<label>角色:</label>
+					<select id="role" class="form-control input-sm" style="width:150px; font-size:14px" onchange="Change()">
+						<option value="" >请选择</option>
+						<option value="粮食局" >粮食局</option>
+						<option value="企业" >企业</option>
+					</select>
+				</div>
+				<div class = "div-qiye pull-left" style="margin-left: 10px">
+					<label>企业名称:</label>
+					<select id="qiye" class="form-control input-sm" style="width:150px; font-size:14px">
+						<option value="" >请选择</option>
+					</select>
+				</div>
+				<div class = "div-xingzhi pull-left" style="margin-left: 10px">
+					<label>人员姓名:</label>
+					<input id="name" name="name" class="form-control" placeholder="人员姓名" value="">	
+				</div>
+				<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left:5px;margin-top: 2px"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+				<!-- 一个页面导入对应一个liucid -->
+				<a class="btn btn-success btn-xs pull-right" type="button" style="margin-right:5px" onclick="addRenyuan()" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+				
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	<div class="panel-body" >
+			<table id="quxianxixni"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/renyuan/findRenyuan" ></table>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+            {
+				"data" : "name",
+				"title" : "姓名",width:100
+			},{
+				"data" : "zhiwei",
+				"title" : "职务",width:100
+			},{
+				"data" : "dept",
+				"title" : "所属部门",width:100
+			},{
+				"data" : "quxian",
+				"title" : "地区",width:100
+			},{
+				"data" : "phone",
+				"title" : "电话",width:100
+			},{
+				"data" : "remark",
+				"title" : "备注",width:100
+			},{
+				"title":"操作",width:100,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="addRenyuan(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delrenyuan(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }]
+	});
+});
+
+$(document).ready(function() {	
+	/* 加载区县 --备用*/
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				$("#quxian").append("<option value="+n.name+">"+n.name+"</option>");
+			});
+		 }
+	});
+	
+
+});
+
+/*根据角色获取部门信息  */
+function Change(){
+	$("#qiye").empty();
+	var role=$("#role").find("option:selected").val();
+	
+		$.ajax({
+			url:'${ctxPath}/renyuan/queryLSjAndQy',
+			type:'post',
+			data:{role:role},
+			dataType:'json',
+			success:function(data){
+				$("#qiye").append("<option value=''>请选择</option>");
+				$.each(data.list,function(i,n){
+					
+					$("#qiye").append("<option value="+n.name+">"+n.name+"</option>");
+				});
+			}
+		});
+}
+
+
+
+/*查询功能  */
+function doSearch(){
+	var param="";
+
+	var dept=$("#qiye").find("option:selected").val();  
+	var name=	$("#name").val()==""?"":$("#name").val();
+	//列表重新加载
+	document.querySelector('#quxianxixni').dataset.queryparam="&dept="+dept+"&name="+name;
+	datatable.ajax.reload(null,true);
+}
+
+
+var dialogAdd;
+function addRenyuan(id){
+	
+	dialogAdd=BootstrapDialog.show({
+	    title: '新增人员',
+		closeByBackdrop: true,
+	    message:$('<iframe id="a" name="a" frameborderno="0"  style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="yes" src="${ctxPath}/renyuan/renyuanguanli/renyuanguanli_edit.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+	    	
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","400px");//modal-dialog
+       },
+       buttons: [{
+	           label: '保存',
+	           action: function(dialog) {
+	        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saverenyuan(); 
+	           },
+	          cssClass: 'btn-xs btn-success'
+	       },{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+	});
+}
+
+function delrenyuan(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/renyuan/deleteRenyuan.do',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			}
+		});
+	}
+}
+
+</script>
+<%
+	}
+%>

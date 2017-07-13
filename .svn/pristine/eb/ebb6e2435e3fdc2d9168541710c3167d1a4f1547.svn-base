@@ -1,0 +1,145 @@
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.4/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.4/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.3.4/demo/demo.css">
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.3.4/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.3.4/jquery.easyui.min.js"></script>
+<div class="easyui-layout" fit="true" border="false" id="chooseomsperson" >
+	
+	<div data-options="region:'center'" border="false">
+		
+		<button class="btn btn-success  btn-xs" onclick="save()" style="margin-left:610px;">保存</button>
+		<table class="easyui-treegrid" id="menuTable"  data-options="nowrap:false,pageSize:5000,columns:[columns],url:'${ctxPath}/shoujian/findPerson',treeField:'text',fitColumns:true,singleSelect:true,idField:'id',checkOnSelect:true,selectOnCheck:true,onLoadSuccess:function change(){$('#menuTable').treegrid('collapseAll');huoqu();}"></table>
+    	
+    </div>
+   	<script type="text/javascript">
+   
+ 
+   		
+   	
+    
+    
+		var columns = [
+		{
+			field : "text",
+			title : "所在部门",
+			width : 180,
+			formatter: function (value, row, index) {
+                return "<input type='checkbox' onclick=show('" + row.id + "') id='check_" + row.id + "'/>" + value;
+            }
+		},
+		{
+			field : "id",
+			title : "用户",
+			width : 300,
+			formatter : function(value, row, index) {
+				var ret="";
+				var a = $.parseJSON(row.person);
+				if(a.length==0){
+				}else{
+					//for(var i=0;i<a.length;i++){$(this).toggleClass('ssssss');
+						ret='<a id=\"'+a[0].columns.id+'\" class="aaaaaaa" href="javascript:void(0);" onclick="addclass(\''+a[0].columns.id+'\')">'+a[0].columns.realname+'</a>';
+					//}
+				} 
+				return ret;
+			}
+		} ];
+   	function huoqu(){
+   		(function ($) {
+   	        $.getUrlParam = function (name) {
+   	            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+   	            var r = window.location.search.substr(1).match(reg);
+   	            if (r != null) return unescape(r[2]); return null;
+   	        }
+   	    })(jQuery);
+   		 if(!$.getUrlParam("id")==""){
+   			var idd=$.getUrlParam("id");
+   	   		$("#"+idd).addClass("ssssss");
+   	   	}
+ 
+   	}
+			function save(){
+				 var persons = $(".ssssss");
+				if(persons.html()!=""&&persons.html()!=null&&persons.attr("id")!=""&&persons.attr("id")!=null){
+					var names = "";
+					var ids = "";
+					var btns = new Array(); 
+					var btts=new Array();
+					jQuery('.ssssss').each(function(key,value){
+					     btns[key] = $(this).html();
+					     btts[key] = $(this).attr("id");
+					    names+=btns[key]+",";
+					    ids+=btts[key]+",";
+					});
+					 var obj=parent.document.getElementById("if1").contentWindow;
+					obj.document.getElementById("shoujianren").value=names; 
+					obj.document.getElementsByName("mailInfo.sjrid")[0].value=ids;
+					obj.document.getElementsByName("mailInfo.sjrname")[0].value=names;
+					window.parent.frames["if1"].edit(); 
+				}else{
+					alert("请添加人员");
+					return false;
+				} 
+				 
+			}
+			function addclass(ids){
+				//$(".aaaaaaa").removeClass("ssssss");
+				$("#"+ids).toggleClass('ssssss');
+				if($("#"+ids).hasClass('ssssss')){
+					 $(('#check_' + ids))[0].checked=true;
+				}else{
+					$(('#check_' + ids))[0].checked=false;
+				}
+			}
+			function show(checkid) {
+	            var s = '#check_' + checkid;
+	          	 //alert( $(s).attr("id"));
+	             //alert($(s)[0].checked);
+	            
+	             $.ajax({
+	        		 url:'${ctxPath}/shoujian/findUserid',
+	        		 type:'post',
+	        		 data:{"id":checkid},
+	        		 dataType:'json',
+	        		 success:function(data){
+	        			$.each(data,function(i, n){
+	        				if($(s)[0].checked){
+	        					$("#"+n).addClass('ssssss');
+	        				}else{
+	        					$("#"+n).removeClass('ssssss');
+	        				}
+	        				 
+	        			});
+	        		 }
+	        	});
+	            /*选子节点*/
+	            var nodes = $("#menuTable").treegrid("getChildren", checkid);
+	            for (i = 0; i < nodes.length; i++) {
+	                $(('#check_' + nodes[i].id))[0].checked = $(s)[0].checked;
+	                if($(s)[0].checked){
+	                	$("#"+nodes[i].id).addClass('ssssss');
+	                }else{
+	                	$("#"+nodes[i].id).removeClass("ssssss");
+	                }
+	            	
+
+	            }
+	        }
+	</script>
+	<style>
+	.ssssss{
+		color: white;
+		background-color: #DB4700;
+	}
+	.aaaaaaa {
+		margin:0 5px;
+	}
+	.aaaaaaa:HOVER {
+		color: white;
+		background-color: #804040;
+	}
+	.datagrid-body{
+		margin-left: 8px;
+	}
+	</style>
+</div>

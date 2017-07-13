@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>出入库详情</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={};
+	var dmGW = 0;
+	var dmCheckWeight = 0;
+	var dmPW = 0;
+	var dmMoisture = 0;
+	var dmImpurity = 0;
+	var dmMilledRice = 0;
+	var dmGamma = 0;
+	var dmMildew = 0;
+	var dmYellowRiceKernel = 0;
+	var dmUnsoundKernel = 0;
+	var dmVBRRatio = 0;
+	var dmCheckNumber = 0;
+	var dmOdor = 0;
+	var dmPrice = 0;
+	obj=@com.zkzy.njzhpt.dao.CangchuglDao.findChuruku({"vSwiftNumber":parameter.vSwiftNumber,page:1,rows:1}).getList();
+	  if(obj.~size>0){
+	  		obj=obj[0];
+	  		dmGW = parseInt(obj.dmGW);
+	  		dmCheckWeight = parseInt(obj.dmCheckWeight);
+	  		dmPW = parseInt(obj.dmPW);
+	  		dmMoisture = parseInt(obj.dmMoisture);
+	  		dmImpurity = parseInt(obj.dmImpurity);
+	  		dmMilledRice = parseInt(obj.dmMilledRice);
+	  		dmGamma = parseInt(obj.dmGamma);
+	  		dmMildew = parseInt(obj.dmMildew);
+	  		dmYellowRiceKernel = parseInt(obj.dmYellowRiceKernel);
+	  		dmUnsoundKernel = parseInt(obj.dmUnsoundKernel);
+	  		dmVBRRatio = parseInt(obj.dmVBRRatio);
+	  		dmCheckNumber = parseInt(obj.dmCheckNumber);
+	  		dmOdor = parseInt(obj.dmOdor);
+	  		dmPrice = parseInt(obj.dmPrice);
+	  }	
+%>
+
+  <body>
+        <div class="dashboard-wrapper-lg">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	出入库流水号                                        
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					       <input type="hidden" name="vSwiftNumber" value="${obj.vSwiftNumber}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="vSwiftNumber">流水号:</label>
+										<input id="vSwiftNumber" name="vSwiftNumber" class="form-control" readonly="readonly" placeholder="流水号" value="${obj.vSwiftNumber}">
+									</div>	
+								</div>
+							</div>
+						</form>
+	
+                  </div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	出入库基本信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					       <input type="hidden" name="vSwiftNumber" value="${obj.vSwiftNumber}">
+							<div class="row">
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="dtRegistrateTime">报港时间:</label>
+										<input readonly="readonly" id="dtRegistrateTime" name="bgtime" class="form-control" placeholder="报港时间"  style="height:30px" value="${obj.bgtime}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="qiyemc">企业:</label>
+										<input readonly="readonly" id="qiyemc" name="qiyemc" class="form-control" placeholder="企业" style="height:30px" value="${obj.qiyemc}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="kudianmc">库点:</label>
+										<input readonly="readonly" id="kudianmc" name="kudianmc" class="form-control" placeholder="库点名称" style="height:30px" value="${obj.kudianmc}">
+									</div>
+								</div>
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="vWareHouseCode">仓房:</label>
+										<input readonly="readonly" id="vWareHouseCode" name="vWareHouseCode" class="form-control" placeholder="仓房" style="height:30px" value="${obj.vWareHouseCode}">
+									</div>	
+								</div>
+							</div>	
+							<div class="row">
+								<div class="col-xs-3">	
+									<div class="form-group">
+										<label for="vKeeperId">负责人:</label>
+										<input readonly="readonly" id="vKeeperId" name="vKeeperId" class="form-control" placeholder="负责人" style="height:30px" value="${obj.vKeeperId}">
+									</div>	
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vGrainPropertyId">粮食性质:</label>
+										<input readonly="readonly" id="vGrainPropertyId" name="vGrainPropertyId" class="form-control" placeholder="粮食性质" style="height:30px" value="${obj.lsxz}">
+									</div>
+								</div>
+								
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vGrainSubTypeCode">粮食品种:</label>
+										<input readonly="readonly" id="vGrainSubTypeCode" name="vGrainSubTypeCode" class="form-control" placeholder="粮食品种" style="height:30px" value="${obj.lslb}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vPackageTypeCode">包装方式:</label>
+										<input readonly="readonly" id="vPackageTypeCode" name="vPackageTypeCode" class="form-control" placeholder="包装方式" style="height:30px" value="${obj.vPackageTypeCode}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vDirection">出入库标识:</label>
+										<input readonly="readonly" id="vDirection" name="vDirection" class="form-control" placeholder="出入库标识" style="height:30px" value="${obj.vDirection}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmGW">发货数量(kg):</label>
+										<input readonly="readonly" id="dmGW" name="dmGW" class="form-control" placeholder="发货数量" style="height:30px" value= "${dmGW}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmCheckWeight">实际出入库数量(kg):</label>
+										<input readonly="readonly" id="dmCheckWeight" name="dmCheckWeight" class="form-control" placeholder="实际出入库数量" style="height:30px" value="${dmCheckWeight}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmPW">损耗(kg):</label>
+										<input readonly="readonly" id="dmPW" name="dmPW" class="form-control" placeholder="损耗" style="height:30px" value="${dmPW}">
+									</div>
+								</div>
+							</div>
+					</form>
+                  </div>
+                </div>
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	发货基本信息                                        
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vDispatchCompany">发货单位:</label>
+										<input readonly="readonly" id="vDispatchCompany" name="vDispatchCompany" class="form-control" placeholder="发货单位" style="height:30px" value="${obj.vDispatchCompany}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vDispatchCompany2">货主名:</label>
+										<input readonly="readonly" id="vDispatchCompany2" name="vDispatchCompany" class="form-control" placeholder="货主名" style="height:30px" value="${obj.vDispatchCompany}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vCustomerIdentificationId">证件号:</label>
+										<input readonly="readonly" id="vCustomerIdentificationId" name="vCustomerIdentificationId" class="form-control" placeholder="证件号" style="height:30px" value="${obj.vCustomerIdentificationId}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vProvinceCode">收购省份:</label>
+										<input readonly="readonly" id="vProvinceCode" name="vProvinceCode" class="form-control" placeholder="收购省份" style="height:30px" value="${obj.vProvinceCode}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vHarvestPeriod">收获年度:</label>
+										<input readonly="readonly" id="vHarvestPeriod" name="vHarvestPeriod" class="form-control" placeholder="收获年度" style="height:30px" value="${obj.vHarvestPeriod}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vViechelNumber">车船号:</label>
+										<input readonly="readonly" id="vViechelNumber" name="vViechelNumber" class="form-control" placeholder="车船号" style="height:30px" value="${obj.vViechelNumber}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="bIsWild">是否为散户:</label>
+										<input readonly="readonly" id="bIsWild" name="bIsWild" class="form-control" placeholder="是否为散户" style="height:30px" value="${obj.bIsWild}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vTrasnportType">运输方式:</label>
+										<input readonly="readonly" id="vTrasnportType" name="vTrasnportType" class="form-control" placeholder="运输方式" style="height:30px" value="${obj.vTrasnportType}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vUseViechle">车辆类型:</label>
+										<input readonly="readonly" id="vUseViechle" name="vUseViechle" class="form-control" placeholder="车辆类型" style="height:30px" value="${obj.vUseViechle}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vViechleOwner">车主:</label>
+										<input readonly="readonly" id="vViechleOwner" name="vViechleOwner" class="form-control" placeholder="车主" style="height:30px" value="${obj.vViechleOwner}">
+									</div>
+								</div>
+							</div>
+						</form>
+                  </div>
+                </div>
+                
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	粮食质量检验                                      
+                    </div>
+                  </div>
+	                 <div class="widget-body">
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="bIsQualityFinished">是否质检结束:</label>
+										<input readonly="readonly" id="bIsQualityFinished" name="bIsQualityFinished" class="form-control" placeholder="是否质检结束" style="height:30px" value="${obj.bIsQualityFinished}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dtQualityTime">检测日期:</label>
+										<input readonly="readonly" id="dtQualityTime" name="dtQualityTime" class="form-control" placeholder="检验日期" style="height:30px" value="${obj.dtQualityTime}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vGrainLevel">粮食等级:</label>
+										<input readonly="readonly" id="vGrainLevel" name="vGrainLevel" class="form-control" placeholder="粮食等级" style="height:30px" value="${obj.vGrainLevel}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmMoisture">水分(%):</label>
+										<input readonly="readonly" id="dmMoisture" name="dmMoisture" class="form-control" placeholder="水分(%)" style="height:30px" value="${dmMoisture}">
+									</div>
+								</div>
+								
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmImpurity">杂质（%）:</label>
+										<input readonly="readonly" id="dmImpurity" name="dmImpurity" class="form-control" placeholder="杂质（%）" style="height:30px" value="${dmImpurity}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmMilledRice">出糙（%）:</label>
+										<input readonly="readonly" id="dmMilledRice" name="dmMilledRice" class="form-control" placeholder="出糙（%）" style="height:30px" value="${dmMilledRice}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmGamma">容重（g/l）:</label>
+										<input readonly="readonly" id="dmGamma" name="dmGamma" class="form-control" placeholder="容重（g/l）" style="height:30px" value="${dmGamma}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmMildew">霉变(%):</label>
+										<input readonly="readonly" id="dmMildew" name="dmMildew" class="form-control" placeholder="霉变" style="height:30px" value="${dmMildew}">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmYellowRiceKernel">黄粒（%）:</label>
+										<input readonly="readonly" id="dmYellowRiceKernel" name="dmYellowRiceKernel" class="form-control" placeholder="黄粒（%）" style="height:30px" value="${dmYellowRiceKernel}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmUnsoundKernel">不完善粒（%）:</label>
+										<input readonly="readonly" id="dmUnsoundKernel" name="dmUnsoundKernel" class="form-control" placeholder="不完善粒（%）" style="height:30px" value="${dmUnsoundKernel}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmMilledRice">整粳米率（%）:</label>
+										<input readonly="readonly" id="dmMilledRice" name="dmMilledRice" class="form-control" placeholder="整粳米率（%）" style="height:30px" value="${dmMilledRice}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmVBRRatio">谷外糙米（g/l）:</label>
+										<input readonly="readonly" id="dmVBRRatio" name="dmVBRRatio" class="form-control" placeholder="谷外糙米（g/l）" style="height:30px" value="${dmVBRRatio}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmPrice">单价(元/kg):</label>
+										<input readonly="readonly" id="dmPrice" name="dmPrice" class="form-control" placeholder="单价" style="height:30px" value="${dmPrice}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmCheckNumber">总价(元):</label>
+										<input readonly="readonly" id="dmCheckNumber" name="dmCheckNumber" class="form-control" placeholder="总价" style="height:30px" value="${dmCheckNumber}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="dmOdor">色泽气味:</label>
+										<input readonly="readonly" id="dmOdor" name="dmOdor" class="form-control" placeholder="色泽气味" style="height:30px" value="${dmOdor}">
+									</div>
+								</div>
+								<div class="col-xs-3">
+									<div class="form-group">
+										<label for="vInspector">检验员:</label>
+										<input readonly="readonly" id="vInspector" name="vInspector" class="form-control" placeholder="检验员" style="height:30px" value="${obj.vInspector}">
+									</div>
+								</div>
+							</div>
+							
+						</form>
+	
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+
+    <!-- Main Container end -->
+
+</body>
+
+<script>
+	$(function () {
+	    //是否为散户
+		aa();
+       // dj();
+    })
+
+
+function aa() {
+    var bIsWild =${obj.bIsWild};
+        if(bIsWild==true){
+            $("#bIsWild").val("是");
+        }else{
+            $("#bIsWild").val("否");
+        }
+}
+
+
+/*function dj(){
+	    var dj = ${obj.vGrainLevel};
+	    if(dj == "01"){
+	        $("#vGrainLevel").val("一级");
+		}else if(dj == "02"){
+            $("#vGrainLevel").val("二级");
+		}else if(dj == "03"){
+            $("#vGrainLevel").val("三级");
+        }else if(dj == "04"){
+            $("#vGrainLevel").val("四级");
+        }else if(dj == "05"){
+            $("#vGrainLevel").val("五级");
+        }else if(dj == "06"){
+            $("#vGrainLevel").val("等外级");
+        }else{
+            $("#vGrainLevel").val("/");
+		}
+
+}*/
+
+	
+</script>
+</html>

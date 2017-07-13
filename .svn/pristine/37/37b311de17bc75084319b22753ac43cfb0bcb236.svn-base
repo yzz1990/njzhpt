@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>南京智慧粮食管理平台</title>    
+<link rel="shortcut icon" type="image/x-icon" href="${ctxPath}/img/favicon.png">  
+<link rel="stylesheet" href="${ctxPath}/css/style.css">
+</head>
+<body style="overflow-y:hidden ">
+	<div class="top">
+    	<div class="logo"><img src="${ctxPath}/img/logo.png" /></div>
+        <div class="container">
+        	<div class="login"><a href="${ctxPath}/login/logout"><% if(session.userinfo.user.loginname=="njqu"){%><span style="font-size: 20px;">——六合区子系统</span> <%}%><span style="margin-left: 50px" ><img  src="${ctxPath}/img/icon01.png" /></span><span class="login-out">退出系统</span><span><img src="${ctxPath}/img/icon02.png" /></span></a></div>
+        </div>	
+        <div class="six-width">
+        	<div class="clearfix">
+            	<div class="col-xs-2">
+                	<a href="${ctxPath}/gis/gis.html">
+	                	<div class="img"><img src="${ctxPath}/img/01.png" /></div>
+	                    <p>地理信息</p>
+                    </a>
+                </div>
+            	<div class="col-xs-2">
+                	<a href="${ctxPath}/juece/cangchu.html">
+	                	<div class="img"><img src="${ctxPath}/img/02.png" /></div>
+	                    <p>综合分析</p>
+                    </a>
+                </div>
+            	<div class="col-xs-2">
+                	<a href="${ctxPath}/shouchukeshihua/churuku/shishi.html">
+                	<div class="img"><img src="${ctxPath}/img/03.png" /></div>
+                    <p>收储可视化</p>
+                    </a>
+                </div>
+            	<div class="col-xs-2">
+                	<a href="${ctxPath}/remote/gis.html">
+	                	<div class="img"><img src="${ctxPath}/img/04.png" /></div>
+	                    <p>储备粮管理</p>
+                    </a>
+                </div>
+            	<div class="col-xs-2">
+                	<a href="${ctxPath}/cangchuguanli/qiyeguanli/qiyebeian.html">
+	                	<div class="img">
+	                		<img src="${ctxPath}/img/05.png" />
+                		</div>
+	                    <p>仓储管理</p>
+                    </a>
+                </div>
+            	<div class="col-xs-2">
+                	<a href="${ctxPath}/supervisioncheck/basicinfo/operator.html">
+	                	<div class="img">
+	                		<img src="${ctxPath}/img/06.png" />
+                		</div>
+	                    <p>监督检查</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" >
+    	<div class="clearfix" style="margin-left: 130px">
+        	<div class="news left">
+            	<p class="tt">新闻资讯</p>
+                <div class="clearfix">
+                	<div class="news-img left"><img src="${ctxPath}/img/01.jpg" /></div>
+                    <div class="left news-txt">${systemtitle}最新通,${systemtitle}最新通,${systemtitle}最新通,${systemtitle}最新通,<a href="" class="red">[更多]</a></div>
+                </div>	
+                <ul>
+                	<li><a href=""><div class="clearfix"><div class="left list-width">${systemtitle}最新通...</div><div class="right">2016-06-06</div></div></a></li>
+                    <li><a href=""><div class="clearfix"><div class="left list-width">${systemtitle}最新通...</div><div class="right">2016-06-06</div></div></a></li>
+                    <li><a href=""><div class="clearfix"><div class="left list-width">${systemtitle}最新通...</div><div class="right">2016-06-06</div></div></a></li>
+                    <li><a href=""><div class="clearfix"><div class="left list-width">${systemtitle}最新通...</div><div class="right">2016-06-06</div></div></a></li>
+                </ul>
+            </div>
+            <div class="btn left">
+            	<div class="clearfix">
+            	<div class="left btn-01">
+                	<a href="${ctxPath}/pricemonitoring/jibenxinxi/pinzhong.html">
+                	<div><img src="${ctxPath}/img/icon04.png" /></div>
+                    <div>价格监测</div>
+                    </a>
+                </div>
+            	<div class="left btn-01 btn-02">
+                	<a href="${ctxPath}/emergencysecurity/grainresources/reservehouse.html">
+                	<div><img src="${ctxPath}/img/icon05.png" /></div>
+                    <div>应急保障</div>
+                    </a>
+                </div>
+            	<div class="left btn-01 btn-03">
+                	<a href="${ctxPath}/yuanliangzhuishu/shibiedaima/shibiedaima.html">
+                	<div><img src="${ctxPath}/img/icon06.png" /></div>
+                    <div>质量追溯</div>
+                    </a>
+                </div>
+                </div>
+                <div class="clearfix">
+            	<div class="left btn-01 btn-04">
+                	<a href="${ctxPath}/publicservice/shouye.html">
+                	<div><img src="${ctxPath}/img/icon07.png" /></div>
+                    <div>公众平台</div>
+                    </a>
+                </div>
+            	<div class="left btn-01 btn-05">
+                	<a href="">
+                	<div><img src="${ctxPath}/img/icon08.png" /></div>
+                    <div>报表管理</div>
+                    </a>
+                </div>
+                </div>
+                <div class="clearfix">
+            	<div class="left btn-01 btn-06">
+                	<a href="${ctxPath}/datacenter/shouye.html">
+                	<div><img src="${ctxPath}/img/icon09.png" /></div>
+                    <div>数据中心</div>
+                    </a>
+                </div>
+                </div>
+            </div>
+            <div class="left notice">
+                <div class="tt">待办事项</div>
+                <ul>
+                	<li><a href="">您有一个新的视频会议需要参加一下，请及时登录平台处理。</a></li>
+                    <li><a href="">您有一个新的视频会议需要参加一下，请及时登录平台处理。</a></li>
+                    <li><a href="">您有一个新的视频会议需要参加一下，请及时登录平台处理。</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<input type="text" hidden="true" id="id" >
+<script type="text/javascript">
+$(function(){
+	var url;
+	//http://localhost:8075/WebReport/ReportServer?reportlet=chubeiliangjh_xq.cpt
+	url = 'http://58.214.246.30:1000/WebReport/ReportServer?reportlet=chubeiliangjh_xq.cpt';
+	//url = 'http://localhost:8075/WebReport/ReportServer?reportlet=chubeiliangjihuahuizong.cpt';
+	$("#CBLjihuahuizong").attr("src",url);
+});
+
+
+
+
+</script>
+
+	<div class="panel panel-default">
+		<iframe id="CBLjihuahuizong" style="width:1360px; height:630px" src=''></iframe>
+	</div>
+
+<%}%>

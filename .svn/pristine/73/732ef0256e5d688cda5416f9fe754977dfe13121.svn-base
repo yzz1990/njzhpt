@@ -1,0 +1,185 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style>
+	.datatables{
+		text-align:center;
+	}
+
+</style>
+	<link rel="stylesheet" type="text/css" href="${ctxPath}/web/showBo.css"/>
+	<script src="${ctxPath}/web/showBo.js" type="text/javascript" charset="utf-8"></script>
+
+
+		<div class="panel panel-default">
+		<!-- 一个页面导入对应一个liucid -->
+		<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>夏粮五日上传</b></span>
+				</div>
+			<input type="hidden" id="liucid" name="liucid" value="08209f9061c64bf4ab8ac30509148b9d">
+			<div class="panel-heading">
+				<div class="form-inline">
+				<label>年份:</label>
+				<select class="form-control input-sm input-smnjpt" style="width:100px; font-size:12pt">
+					<option value="请选择">请选择</option>
+				</select>
+					<a class="btn btn-success btn-xs " type="button" onclick="doSearch()">查询</a>	
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/querywuri.do" ></table>
+			</div>
+			
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+var quxiandatatable;
+var nianqi = [];
+var date=new Date;
+var year=parseInt(date.getFullYear());
+
+$(function(){
+	$(".input-smnjpt").select2();
+	nianqi = [];
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryxialiangshougouwuri.do',
+		type:'post',
+		data:{"diqu":"市区","page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				nianqi.push(data.list[i].year+""+data.list[i].qishu);
+			}
+		},
+		error:function(){
+			alert("error:查找已存在的夏粮五日期报");
+		}
+	});
+	
+	for(var i = 0; i < 5; i++){
+		$(".input-smnjpt").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+	}
+	
+});
+
+$(window).load(function() { 
+	
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findyear',
+		type:'post',
+		data:{"jidu":"夏季"},
+		dataType:'json',
+		success:function(data){
+			//alert(data[0].niandu);
+			var niandu = data[0].niandu;
+			$(".datatables").attr("data-queryparam","&niandu="+niandu+"&jidu=夏季");
+			datatable = $('.datatables').DataTable({
+		        "columns": [
+					{
+						"data" : "niandu",
+						"title" : "年度"
+					},{
+						"data" : "qishu",
+						"title" : "期数",
+					},{
+						"title" : "报表名称",
+						"render": function (data,type,row,meta) {
+							var name = row["niandu"]+"年第"+row["qishu"]+"期夏粮五日报表";
+							return name;
+						}
+					},{
+						"data" : "fenqiendtime",
+						"title" : "结束时间"
+					},{
+						"title" : "状态",
+						"render": function (data,type,row,meta) {
+							var nq = parseInt(row["niandu"])+""+parseInt(row["qishu"]);
+							if(nianqi.indexOf(nq)>-1){
+								return '<span class="label label-success">已上报</span>';
+							}else{
+								return '<span class="label label-danger">未上报</span>';
+							}
+						}
+					},{
+						"title" : "上传查看",
+						"render": function (data,type,row,meta) {
+						var nq = parseInt(row["niandu"])+""+parseInt(row["qishu"]);
+						var shangchuan;
+						var surl;
+						if(nianqi.indexOf(nq)>-1){
+							shangchuan = '<a class="btn btn-success btn-xs " type="button" href="javascript:void(0)" onclick="" target="_black" style="margin-left:10px;" disabled="true">上传</a>';
+						}else{
+							surl = 'year='+row["niandu"]+'&qishu='+row["qishu"]+'&jijie=xia'+'&shi=市区'+'&liucid='+$("#liucid").val();
+							shangchuan = '<a class="btn btn-success btn-xs btm-smshangchuan " type="button" href="javascript:void(0)" onclick="loadreport(\''+surl+'\')" target="_black" style="margin-left:10px">上传</a>';
+						}
+						return shangchuan;		
+					}	
+					
+					}
+
+					]
+
+			});
+			
+			
+		},
+		error:function(){
+			
+		}
+	});
+	
+	
+	
+	
+}); 
+
+function loadreport(surl){
+	var url = '${ctxPath}/shouchukeshihua/wuri/xlwurishangchuan.html?'+surl;
+	
+	/*
+	var url = '${ctxPath}/shouchukeshihua/wuri/shangchuan.html?'+surl;
+	dialog1=BootstrapDialog.show({
+	    title: '上传报表',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="'+url+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","500px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","400px");//modal-dialog
+       },
+	});
+	*/
+	dialog1=BootstrapDialog.show({
+	    title: '导入',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="'+url+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+	
+}
+
+function doSearch(){
+	var niandu = $(".input-sm option:selected").val();
+	var queryparam = "&jidu=夏季";
+	if(niandu != "请选择"){
+		queryparam += "&niandu="+niandu;
+	}
+	$(".datatables").attr("data-queryparam",queryparam);
+	datatable.ajax.reload(null,true);
+}
+
+
+</script>
+<%}%>

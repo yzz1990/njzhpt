@@ -1,0 +1,405 @@
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<!-- =============== VENDOR STYLES ===============-->
+<link href='${ctxPath}/css/jquery.dataTables.min.css'
+	rel='stylesheet'>
+<!-- SIMPLE LINE ICONS-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/simple-line-icons.css">
+<!-- ANIMATE.CSS-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/animate.min.css">
+<!-- WHIRL (spinners)-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/whirl.css">
+<!-- =============== PAGE VENDOR STYLES ===============-->
+<!-- =============== BOOTSTRAP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap.css"
+	id="bscss">
+<!-- =============== APP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/app.css"
+	id="maincss">
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap-slider.min.css">
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<!----------select-------------->
+<link rel="stylesheet"
+	href="${ctxPath}/css/select2.css">
+<link rel="stylesheet"
+	href="${ctxPath}/css/select2-bootstrap.css">
+<script src="${ctxPath}/js/select2.js"></script>
+<script src="${ctxPath}/js/echarts.min.js"></script>
+
+<script src="${ctxPath}/web/jquery.uploadifive.min.js"></script>
+<link href='${ctxPath}/web/uploadifive.css' />
+
+
+<script src="${ctxPath}js/bootstrap.min.js"></script>
+<link href="${ctxPath}/css/bootstrap-dialog.min.css"
+	rel="stylesheet">
+<script src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+<!----------select-------------->
+<!---------kindeditor--------->
+<script
+	src='${ctxPath}/js/kindeditor-all-min.js'></script>
+<script src='${ctxPath}/js/zh-CN.js'></script>
+<link rel="stylesheet"
+	href='${ctxPath}/css/default.css'>
+<link rel="stylesheet"
+	href='${ctxPath}/css/default.css'>
+<link rel="stylesheet"
+	href='${ctxPath}/css/prettify.css'>
+<script src='${ctxPath}/js/modal.js'></script>
+<script src='${ctxPath}/js/transition.js'></script>
+
+<link rel="stylesheet" href='${ctxPath}/css/animate.css'>
+<!------ datetimepicker ------>
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap-datetimepicker.min.css">
+<script
+	src="${ctxPath}/js/bootstrap-datetimepicker.min.js"></script>
+<script
+	src="${ctxPath}/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script
+	src="${ctxPath}/js/bootstrap-datetimepicker.fr.js"></script>
+<!------ datetimepicker ------>
+<!-- bootstrap-table-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap-table.css">
+<script src="${ctxPath}/js/bootstrap-table-filter.js"></script>
+<script src="${ctxPath}/js/bootstrap-table-export.js"></script>
+<script src="${ctxPath}/js/bootstrap-table.js"></script>
+<!----------dataTables-------------->
+<script src="${ctxPath}/js/jquery.dataTables.min.js"></script>
+<script src='${ctxPath}/js/dataTables.bootstrap.min.js'></script>
+<!----------dataTables-------------->
+<script src='${ctxPath}/resource/datagrid.js'></script>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+
+<style type="text/css">
+body{
+background: #f7f7f7;
+}
+.dashboard-wrapper-lg {
+    position: relative;
+    background: #f7f7f7;
+    min-height: 0px; 
+    padding: 20px;
+}
+</style>
+
+<div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                  
+                  		<form id="sc" role="form" action=""  style="overflow: hidden;">
+					        <input id="qyzzjgdm" hidden="true"> 
+							<input id="cfbm" hidden="true"> 
+		<div class="row">
+		<div class="col-xs-6">
+				<div class="form-group">
+					<label>年度:</label> 
+					<select id="niandu" name="niandu" class="form-control">
+					</select>
+				</div>
+		</div>
+			<div class="col-xs-6">
+				<div class="form-group">
+					<label>所在区域:</label> <select id="quming" name="quming" class="form-control" onchange="Change()">
+						<option value="">请选择区域名称</option>
+						<option value="320115">江宁区</option>
+						<option value="320111">浦口区</option>
+						<option value="320116">六合区</option>
+						<option value="320124">溧水区</option>
+						<option value="320125">高淳区</option>
+						<option value="210008">市区</option>
+					</select>
+				</div>
+			</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>承储企业:</label> <select id="ccqy"	name="ccqy" class="form-control" onchange="selectKDMC()">
+						<option value="">请选择企业名称</option>
+					</select>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>承储库点:</label> <select id="cckd" name="cckd"	class="form-control" onchange="selectCH()">
+						<option value="">请选择库点名称</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>承储仓号:</label> 
+							<select id="ccch" name="ccch"	class="form-control">
+								<option value="">请选择承储仓号</option>
+							</select>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>粮食性质:</label> 
+							<select id="xingzhi" name="xingzhi"	class="form-control">
+								<option value="">请选择粮食性质</option>
+							</select>
+					</div>
+				</div>
+			</div>
+			
+			
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+        
+        
+        
+ <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	承储计划                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">       
+        			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="szqy">小麦(吨):</label> <input name="cbljh_xm"
+							id="cbljh_xm" class="form-control " placeholder="小麦"
+							onkeydown="value=value.replace(/[^\d.]/g,'')" onkeyup="add()" >
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="cbljh_xm">粳稻(吨):</label> 
+						<input name="cbljh_jd"
+							id="cbljh_jd" class="form-control " type="text" placeholder="粳稻"
+							 onkeydown="value=value.replace(/[^\d.]/g,'')" onkeyup="add()"  >
+					</div>
+				</div>
+				</div>
+        <div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="szqy">籼稻(吨):</label> 
+						<input name="cbljh_xd"
+							id="cbljh_xd" class="form-control " placeholder="籼稻"
+							onkeydown="value=value.replace(/[^\d.]/g,'')" onkeyup="add()" >
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="qymc">小计:</label> <input name="cbljh_xj" id="cbljh_xj"
+							class="form-control " type="text" placeholder="小计"
+							readonly="readonly">
+					</div>
+				</div>
+			</div>
+        
+        		<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+</form>
+  
+<!-- 	<div class="panel-footer">
+		<button type="button" class="btn btn-primary" id="btn"
+			onclick="tijiao()">
+			<em class="fa fa-check fa-fw"></em> 提交
+		</button>
+		<a class="btn btn-danger back" id="fanhui" href=""><em
+			class="fa fa-mail-reply fa-fw"></em>取消</a>
+	</div> -->
+
+<script type="text/javascript">
+$(function(){
+	$.ajax({
+		url: "${ctxPath}/lunhuan/selectXZ.do",
+		dataType: "json",
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				
+				$("#xingzhi").append("<option value="+n.vCode+">"+n.vGrainProperties+"</option>");
+			});
+		}
+	});
+})
+var date=new Date;
+var year=parseInt(date.getFullYear());
+for(var i = 0; i < 5; i++){
+	$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+}
+	$(document).ready(function() {
+		$("#niandu").select2();
+		$("#quming").select2();
+		$("#ccqy").select2();
+		$("#cckd").select2();
+		$("#ccch").select2();
+		$("#xingzhi").select2();
+	});
+	function Change() {
+		$("#ccqy").html("");
+		var xian = $("#quming option:selected").text().trim();
+		var op = '<option value="">请选择企业名称</option>';
+		$("#ccqy").append(op);
+		var kd = '<option value="">请选择库点名称</option>';
+		$("#cckd").append(kd);
+		$.ajax({
+			url : '${ctxPath}/lunhuan/findcompany',
+			type : 'post',
+			data : {
+				"xian" : xian
+			},
+			dataType : 'json',
+			success : function(data) {
+				for (var i = 0; i < data.length; i++) {
+					var op = "<option value="+data[i].qyzzjgdm+">"
+							+ data[i].qymc + "</option>";
+					$("#ccqy").append(op);
+				}
+			},
+			error : function() {
+				alert("error");
+			}
+		});
+	}
+	function selectKDMC() {
+		$("#cckd").html("");
+		var xian = $("#quming option:selected").text().trim();
+		var qyzzjgdm = $("#ccqy option:selected").val();
+		var op = '<option value="">请选择库点名称</option>';
+		$("#cckd").append(op);
+
+		$.ajax({
+			url : '${ctxPath}/lunhuan/findcckd',
+			type : 'post',
+			data : {
+				"qyzzjgdm" : qyzzjgdm
+			},
+			dataType : 'json',
+			success : function(data) {
+				for (var i = 0; i < data.length; i++) {
+					var op = "<option value="+data[i].kdbm+">" + data[i].kdmc
+							+ "</option>";
+					$("#cckd").append(op);
+				}
+			},
+			error : function() {
+				alert("error");
+			}
+		});
+	}
+	function selectCH() {
+		$("#ccch").html("");
+		$("#ccch").append("<option>请选择仓号</option>")
+		var kdbm = $("#cckd option:selected").val();
+		var qyzzjgdm = $("#ccqy option:selected").val();
+		$.ajax({
+			url : "${ctxPath}/lunhuan/selectCH.do",
+			dataType : "json",
+			data : {
+				kdbm : kdbm,
+				qyzzjgdm : qyzzjgdm
+			},
+			success : function(data) {
+				$.each(data.list,
+						function(i, n) {
+							$("#ccch").append(
+									"<option value="+n.cfbm+">" + n.cfmc
+											+ "</option>");
+						});
+			}
+		});
+
+	}
+	function tijiao() {
+		if ($("#ccch ").val() == null || $("#ccch ").val() == "请选择承储仓号") {
+			alert("请选择承储仓号");
+		} else {
+			$.ajax({
+				type : 'post',
+				url : '${ctxPath}/chubeiliangJH/xinzeng',
+				data : $("#sc").serialize(),
+				success : function(msg) {
+					if (msg.ret) {
+						alert("新增市级储备粮承储计划成功");
+					} else {
+						alert("抱歉，新增失败！");
+					}
+				}
+			})
+		}
+	}
+	function summ() {
+		if ($("#ccjh_xm ").val() == null || $("#ccjh_xm ").val() == "") {
+			var ccjh_xm = 0;
+		} else {
+			ccjh_xm = parseFloat($("#ccjh_xm ").val());
+		}
+		$("#ccjh_xj").val(ccjh_xm);
+	}
+	function sum() {
+		if ($("#ccjh_xm ").val() == null || $("#ccjh_xm ").val() == "") {
+			var ccjh_xm = 0;
+		} else {
+			ccjh_xm = parseFloat($("#ccjh_xm ").val());
+		}
+		if ($("#ccjh_jd").val() == null || $("#ccjh_jd").val() == "") {
+			var ccjh_jd = 0;
+		} else {
+			ccjh_jd = parseFloat($("#ccjh_jd").val());
+		}
+		$("#ccjh_xj").val(ccjh_xm + ccjh_jd);
+	}
+	function add() {
+		if ($("#cbljh_xm").val() == null || $("#cbljh_xm").val() == "") {
+			var cbljh_xm = 0;
+		} else {
+			cbljh_xm = parseFloat($("#cbljh_xm").val());
+		}
+		if ($("#cbljh_jd").val() == null || $("#cbljh_jd").val() == "") {
+			var cbljh_jd = 0;
+		} else {
+			cbljh_jd = parseFloat($("#cbljh_jd").val());
+		}
+		if ($("#cbljh_xd").val() == null || $("#cbljh_xd").val() == "") {
+			var cbljh_xd = 0;
+		} else {
+			cbljh_xd = parseFloat($("#cbljh_xd").val());
+		}
+		$("#cbljh_xj").val(cbljh_xm + cbljh_jd + cbljh_xd);
+	}
+</script>

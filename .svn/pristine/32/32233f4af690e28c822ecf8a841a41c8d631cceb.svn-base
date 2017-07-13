@@ -1,0 +1,96 @@
+<%
+ layout(gisCityHtml){
+%>
+<style>
+.BootstrapDialog{margin-top:20%;}  
+ #myModal-help
+    {
+        top:120px;
+    }
+ 
+   	.container-fluid {
+	     padding-right: 0px; 
+	     padding-left: 0px; 
+	     margin-right: 0px; 
+	     margin-left: 0px; 
+	}
+	.panel.panel-default {
+    	border-top-width: 3px;
+   	 	margin-top: 0px; 
+	}
+	
+	
+    
+</style>
+<script type="text/javascript">
+
+	$(function(){
+		var role = '${session.userinfo.role.code}'; 
+		if(role == "njslsj" || role == "systemuser"||role == "qxlsj"||role == "qiye"){
+			dialog1=BootstrapDialog.show({
+				id:"myModal-help",
+			    title: '${decode(session.userinfo.role.code,"qiye",session.userinfo.user.realname+"粮食情况","qxlsj",session.userinfo.area.name+"粮食情况","全市粮食情况")}',
+				closeByBackdrop: true,
+				type: BootstrapDialog.TYPE_DEFAULT,
+			    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" src="${ctxPath}/shouchukeshihua/churuku/renzhongxingzhi.html"/>'),
+			    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","750");//modal-dialog
+		       	dlg.$modalDialog.css("margin-top","450");//modal-dialog
+		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","370px");//modal-dialog
+		       },
+		       buttons: [{
+			        label: '关闭',
+			        cssClass: 'btn-xs btn-danger',
+			        action: function(dialog) {
+			        	dialog.close();
+			        }
+			    }]
+			});
+			
+		}
+		
+		if("${session.userinfo.role.code}"=="systemuser"||"${session.userinfo.role.code}"=="njslsj"||"${session.userinfo.role.code}"=="jdjc"||"${session.userinfo.role.code}"=="jldjkscz"||"${session.userinfo.role.code}"=="cbtk"||"${session.userinfo.role.code}"=="cblgl"){
+					$("#scksh").attr("src","${gisurl}idxKeshihua.jsp?type=1&role=${session.userinfo.role.code}&code=''");
+		 }else if("${session.userinfo.role.code}"=="qxlsj"||"${session.userinfo.role.code}"=="cbtkk"||"${session.userinfo.role.code}"=="zhk"||"${session.userinfo.role.code}"=="cyfzk"||"${session.userinfo.role.code}"=="jdjck"||"${session.userinfo.role.code}"=="qjld"){
+			 $.ajax({
+				 url:'${ctxPath}/shouchukeshihua/findquxian',
+				 type:'post',
+				 data:{"name":"${session.userinfo.area.name}"},
+				 dataType:'json',
+				 success:function(data){					 
+					 $("#scksh").attr("src","${gisurl}idxKeshihua.jsp?type=1&role=${session.userinfo.role.code}&code="+data[0].xzqhdm);				 
+				 } 
+			 });
+		 }else if("${session.userinfo.role.code}"=="qiye"){		 
+			 $.ajax({
+				 url:'${ctxPath}/jibenxinxi/findQiyexinxi',
+				 type:'post',
+				 dataType:'json',
+				 success:function(data){
+					 //alert(data.list[0].qyzzjgdm);
+		     		$("#scksh").attr("src","${gisurl}idxKeshihua.jsp?type=1&role=${session.userinfo.role.code}&code="+data.list[0].qyzzjgdm);			 
+				 }
+					 
+			 });
+		 }	
+		
+	});
+</script>
+
+<div id="content" style="display:none">
+	<a id="example2" href="">
+		<img id="img2" src="" width="100px" height="50px"/>
+	</a>
+</div>
+
+<div class="panel panel-default">	
+	<div class="panel-body" >
+		<div class="container-fluid">
+			<iframe  id="scksh" src="" width="98%" height="750px" style="position: absolute;margin-top: 0px;"  frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+		</div>
+	</div>
+</div>
+
+<%
+	}
+%>

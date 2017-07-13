@@ -1,0 +1,169 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+ var kdbm = parameter.kdbm;
+ var obj={};
+obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.findkudian({"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,page:1,rows:1}).getList().get(0);
+
+%>
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+
+ <style type="text/css">
+ 	.u1128{
+		font-size:18px;
+		width:150px;
+		float:left;
+		display:inline-block;
+		font-weight:bold;
+		margin-top:0px;
+	}
+	.uu1124{
+		font-size:18px;
+		background:#0066CC;
+		width:130px;
+		float:left;
+		display:inline-block;
+		font-color:white;
+		text-align:center;
+		font-weight:bold;
+		color: white;
+		margin-top:0px;
+	}
+ 	.content-body{
+ 		text-align:center;
+ 		 
+ 	}
+ 	.crkmingxi{
+ 		text-align:center;
+ 		 
+ 	}
+ 	.crkmingxi_jinri{
+ 		width:34%;
+ 		float:left;
+ 		margin:0 auto;
+ 	}
+ 	#crkmingxi_tubiao{
+	 	width:500px;
+	 	height:500px;
+ 	}
+ </style>
+<div class="content-body">
+	<div class="crkmingxi">
+		<h2>当日收储情况</h2>
+		<div class="crkmingxi_jinri">
+			<p  class="u1128">今日平均水分:</p><p id="u1" class="uu1124">0.00%</p>
+		</div>
+		<div class="crkmingxi_jinri">
+			<p  class="u1128">今日平均杂质:</p><p id="u2" class="uu1124">0.00%</p>
+		</div>
+		<div class="crkmingxi_jinri">
+			<p  class="u1128">今日出库总量(吨):</p><p id="u3" class="uu1124">0.000</p>
+		</div>
+		<div class="crkmingxi_jinri">
+			<p  class="u1128">今日入库总量(吨):</p><p id="u4" class="uu1124">0.000</p>
+		</div>
+	</div>
+	<div id="crkmingxi_tubiao">
+		
+		
+	</div>
+</div>
+<script type="text/javascript">
+Date.prototype.Format = function (fmt) { //author: meizz  
+    var o = {  
+        "M+": this.getMonth() + 1, //月份  
+        "d+": this.getDate(), //日  
+        "h+": this.getHours(), //小时  
+        "m+": this.getMinutes(), //分  
+        "s+": this.getSeconds(), //秒  
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度  
+        "S": this.getMilliseconds() //毫秒  
+    };  
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+    for (var k in o)  
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));  
+    return fmt;  
+};
+
+$(function(){
+	var qyzzjgdm = '74238914X';
+	var kdbm = '001';
+	var today = (new Date).Format("yyyy-MM-dd");
+	var day1 = (new Date(((new Date).getTime() - 24*60*60*1000))).Format("yyyy-MM-dd");
+	var day2 = (new Date(((new Date).getTime() - 2*24*60*60*1000))).Format("yyyy-MM-dd");
+	//計算當日收儲情況
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findshuiza.do',
+		type:'post',
+		data:{"dtRegistrateTime":today,"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			$("#u1").text(data.avgshuifen.toFixed(2)+"%");
+			$("#u2").text(data.avgzazhi.toFixed(2)+"%");
+			$("#u3").text((data.sumnwck/1000).toFixed(3));
+			$("#u4").text((data.sumnwrk/1000).toFixed(3));
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	var myChart = echarts.init(document.getElementById('crkmingxi_tubiao'));
+	option = {
+	    tooltip : {
+	        trigger: 'axis',
+	        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+	            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+	        }
+	    },
+	    legend: {
+	        data:['出库','入库','混合小麦','粳稻']
+	    },
+	    grid: {
+	        left: '3%',
+	        right: '4%',
+	        bottom: '3%',
+	        containLabel: true
+	    },
+	    xAxis : [
+	        {
+	            type : 'category',
+	            data : [day2,day1,today]
+	        }
+	    ],
+	    yAxis : [
+	        {
+	            type : 'value'
+	        }
+	    ],
+	    series : [
+	        {
+	            name:'出库',
+	            type:'bar',
+	            data:[320, 332, 301],
+	        },
+	        {
+	            name:'入库',
+	            type:'bar',
+	            data:[862, 1018, 964],
+	        },
+	        {
+	            name:'混合小麦',
+	            type:'bar',
+	            data:[862, 1018, 964],
+	        },
+	        {
+	            name:'粳稻',
+	            type:'bar',
+	            data:[862, 1018, 964],
+	        },
+	        
+	    ]
+	};
+	myChart.setOption(option);	
+});
+
+</script>
+<%
+	}
+%>

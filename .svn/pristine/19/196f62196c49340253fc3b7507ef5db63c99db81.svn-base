@@ -1,0 +1,218 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(7){
+		width: 100px;
+	}
+	.table-striped>tbody>tr>td:nth-child(2){
+		text-align: left;
+	}
+</style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<!-- <div class="form-inline pull-right">
+						<a href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_bzh_qslsj.html" class="btn btn-primary btn-sm" type="button">安全生产</a>
+						<a href="${ctxPath}/cangchuguanli/anquanshengchan/anquan_jiaoyu_shipin.html" class="btn btn-primary btn-sm" type="button">安全教育</a>
+				</div> -->
+				<div class="form-inline" style="float: left;">
+					<label>区域:</label>
+						<select id="quming" name="quming" style="width:140px;font-size:14px" class="js-example-basic-single input-smqy">
+							<option value="">区域</option>
+						</select>
+					<label>达标单位:</label>
+					<select id="dbdw" name="dbdw" class="js-example-basic-single input-smdw" style="width:150px;font-size:14px">
+						<option value="">达标单位</option>
+					</select>
+					<label>自评等级:</label>
+					<select class="form-control input-sm" id="dj">
+								<option value="">全部</option>
+								<option value="1">一级</option>
+								<option value="2">二级</option>
+								<option value="3">三级</option>
+					</select>	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findanquantj" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "sb",
+				"title" : "市别"
+			},{
+				"data" : "dbdw",
+				"title" : "达标单位"
+			},{
+				"data" : "dj",
+				"title" : "等级",
+				"render":function(data,type,row,meta){
+					var chakan = "";
+  					if(data=="1"){
+  						var chakan ="<span class='label label-success'>一级</span>";	
+  					}else if(data=="2"){
+  						var chakan = "<span class='label label-warning'>二级</span>";	
+  					}else if(data=="3"){
+  						var chakan = "<span class='label label-danger'>三级</span>";	
+  					}
+  					return chakan;
+  				}
+			},{
+				"data" : "zsh",
+				"title" : "证书号"
+			},{
+				"data" : "pddw",
+				"title" : "评定单位"
+			},{
+				"data" : "bz",
+				"title" : "备注"
+			},{
+				"title" : "详情查看",
+				"render": function (data,type,row,meta) {
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="anquansczp(\''+row["id"]+'\')" class="btn btn-sm btn-info pjax">详情</a>';								
+					return chakan;	
+					}
+			}
+			]
+	});
+});
+
+function exportExcel(){
+	 var qiyename= $("#qiyename").val();
+	 var username= $("#username").val();
+	 $.post('${ctxPath}/lsj/export.html?qiyename='+qiyename+"&username="+username+"&status="+$("#status").find("option:selected").val(),function(data){  
+		 //alert(data.file);
+		 	window.location.href='${ctxPath}/lsj/FileUpload?id=' + data.file;	
+		},'json');
+}
+
+
+function anquansczp(id){
+	dialog1=BootstrapDialog.show({
+	    title: '安全生产自评',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/cangchuguanli/anquanshengchan/anquansczp.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","560px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger'
+       }]
+	});
+}
+
+
+
+$(document).ready(function() {
+	$(".input-smqy").select2();		//所属区域
+	$(".input-smdw").select2();		//达标单位
+	
+	//========================加载所属区域下拉框====================================
+	 $.ajax({
+		 url:'${ctxPath}/cangchugl/finddiqu',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option value='+data[i].quyu+'>'+data[i].quyu+'</option>';
+				 $(".input-smqy").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	//========================加载所属区域下拉框结束====================================
+		
+	//========================加载药库下拉框====================================
+	 $.ajax({
+		 url:'${ctxPath}/cangchugl/finddbdw',
+		 type:'post',
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option>'+data[i].dbdw+'</option>';
+				 $(".input-smdw").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	//========================加载药库下拉框结束====================================
+
+});
+
+
+function doSearch(){
+	var sb = $("#quming").val();
+	var dbdw = $("#dbdw").val();
+	var dj = $("#dj").val();
+	var q="";
+	if($("#quming").val()!="区域"){
+		q =q + "&sb="+$("#quming").val();
+	}
+	if($("#dbdw").val()!="达标单位"){
+		q =q + "&dbdw="+$("#dbdw").val();
+	}
+	if($("#dj").val()){
+		q =q + "&dj="+$("#dj").val();
+	}
+	document.querySelector('.datatables').dataset.queryparam=q;
+	datatable.ajax.reload(null,false);
+}
+
+/* function Changedbdw(){
+	$("#dbdw").html("");
+	var op = '<option value="">达标单位</option>';
+    $("#dbdw").append(op);
+	
+	$.ajax({
+		url:'${ctxPath}/cangchugl/finddbdw',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option>'+data[i].dbdw+'</option>';
+			     $("#dbdw").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+} */
+
+
+	
+</script>
+<%
+	}
+%>

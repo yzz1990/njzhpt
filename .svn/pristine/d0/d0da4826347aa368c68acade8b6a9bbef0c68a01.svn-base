@@ -1,0 +1,163 @@
+package com.zkzy.njzhpt.bo;
+
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.njzhpt.dao.AppDao;
+import com.zkzy.njzhpt.dao.JibenxinxiDao;
+import com.zkzy.njzhpt.dao.RenyuanDao;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class AppBo {
+	/**
+	 * 
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> getQyInfo(HashMap<String, Object> param) throws Exception {
+		Page<Record>  page=AppDao.getQyInfo(param);
+		for(Record record:page.getList()){
+			HashMap<String, Object> queryparam=new HashMap<String, Object>();
+			queryparam.put("rows", 10000);
+			queryparam.put("page", 1);
+			queryparam.put("jyywlxbh", record.getStr("jyywlxbh"));
+			Page<Record> page1=JibenxinxiDao.findQiyexinxi(queryparam);
+			DecimalFormat b1 = new DecimalFormat("###0.00");
+			double sjkc=0;
+			for(Record record1:page1.getList()){
+				Record re=Db.findFirst("select SUM(dmStock) as dmStock from kc_CurrentStock  where qyzzjgdm=?",record1.getStr("qyzzjgdm"));
+				if(re.get("dmStock")!=null){
+					sjkc+=re.getBigDecimal("dmStock").doubleValue();
+				}
+			}
+			record.set("dmStock",b1.format(sjkc));
+		}
+		
+		return page;
+	}
+
+	/**
+	 * 地区表 --- 查删增改
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Page<Record> findDiqu (HashMap<String, Object> param) throws Exception {	
+		 Page<Record>  diqulist=JibenxinxiDao.findDiqu(param);
+		return diqulist;
+	}
+
+	/**
+	 * 获取应急事件
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Page<Record> queryyjsj(HashMap<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		return JibenxinxiDao.queryyjsj(param);
+	}
+
+	/**
+	 * 查找灵山出入库信息
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret searchlscrk(HashMap<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		Page<Record> userPageRecord = AppDao.searchlscrk(map);
+		List<Record> pagelist = userPageRecord.getList();
+		int total = userPageRecord.getTotalRow();
+		
+		Ret ret = new Ret();
+		ret.put("total",total);
+		ret.put("rows",pagelist);
+		return ret;
+	}
+
+	/**
+	 * 查找灵山仓房信息
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret searchlscf(HashMap<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		Page<Record> userPageRecord = AppDao.searchlscf(map);
+		List<Record> lsr = userPageRecord.getList();
+		Record re = new Record();
+		re.set("cfbm", "");
+		re.set("cfmc", "全部");
+		lsr.add(0, re);
+		
+		Ret ret = Ret.create("list", lsr);
+		return ret;
+	}
+
+	
+	public Page<Record> findQiyexinxi(HashMap<String, Object> queryparam) throws Exception {
+		
+		return AppDao.findQiyexinxi(queryparam);
+	}
+	
+	
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findQyba(HashMap<String, Object> param) throws Exception {
+		Page<Record> page=	AppDao.findQyba(param);
+		int index=1;
+		for(Record record:page.getList()){
+			record.set("xuhao", index);
+			index++;
+			if(record.getStr("shenpiren")!=null){
+				Record liucheng=  Db.findFirst("select * from oa_shenpiliucheng where liuchenghao=? and shenpiren=?",record.getStr("liuchengid"),record.getStr("shenpiren"));
+				if(liucheng!=null){
+					Record dep= Db.findFirst("select * from fw_dep  where id=?",liucheng.getStr("shenpibumen"));
+					if(dep!=null){
+						record.set("depname", dep.getStr("name"));	
+					}
+				}
+			}
+		}
+		return page;
+	}
+	
+	
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findXzba(HashMap<String, Object> param) throws Exception {
+		Page<Record> page=AppDao.findXzba(param);
+		int index=1;
+		for(Record record:page.getList()){
+			record.set("xuhao", index);
+			index++;
+			if(record.getStr("shenpiren")!=null){
+				Record liucheng=  Db.findFirst("select * from oa_shenpiliucheng where liuchenghao=? and shenpiren=?",record.getStr("liuchenghao"),UserKit.currentUserInfo().getUser().getString("id"));
+				if(liucheng!=null){
+					Record dep= Db.findFirst("select * from fw_dep  where id=?",liucheng.getStr("shenpibumen"));
+					if(dep!=null){
+						record.set("depname", dep.getStr("name"));	
+					}
+					record.set("jiedian", liucheng.getInt("jiedian"));
+				}
+			}
+			
+		}
+		return page;
+	}
+	
+
+	
+
+
+	
+}

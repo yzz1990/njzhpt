@@ -1,0 +1,108 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+
+%>
+
+ <style type="text/css">
+ 	
+ 	.table-striped>tbody>tr>td{
+		 text-align: center;
+	}
+	
+ </style>
+	<div class="panel panel-default">
+		<div class="panel-body" >
+				<table id="spxx"  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/quxian/queryShipin?qyzzjgdm=${parameter.qyzzjgdm}&kdbm=${parameter.kdbm}" ></table>
+		</div>
+	</div>
+
+
+<script>
+
+
+
+
+var datatable;
+$(function(){
+	datatable = $('#spxx').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[10],
+		       		[10]
+		       	],
+        "columns": [
+			{
+				"data" : "name",
+				"title" : "视频名称",width:100
+			},{
+				"title":"操作",width:100,
+            	"render": function (data,type,row,meta) {
+            	
+                   	var chakan = '<button type="button" class="btn btn-xs btn-success" onclick="chakansp(\''+row["kdbm"]+'\',\''+row["qyzzjgdm"]+'\',\''+row["ip"]+'\',\''+row["outterip"]+'\',\''+row["username"]+'\',\''+row["password"]+'\',\''+row["channel"]+'\',\''+row["vpnip"]+'\',\''+row["duansp"]+'\')"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;查看视频</button>';
+               		return chakan;
+            	}
+            }]
+	});
+});
+
+
+
+var dialog2;
+function chakansp(kdbm,qyzzjgdm,ip,outterip,username,password,channel,vpnip,duansp){
+
+	
+	if(${parameter.flag}){
+		var Intent = plus.android.importClass("android.content.Intent");
+		var Uri = plus.android.importClass("android.net.Uri");
+		var main = plus.android.runtimeMainActivity();
+		var uri = Uri.parse(duansp);
+		
+		var intent = new Intent(Intent.ACTION_VIEW);
+		intent.setDataAndType(uri, "video/rtsp");
+		main.startActivity(intent);
+	}else{
+		$.ajax({
+			 url:'${ctxPath}/quxian/querySpcj',
+			 type:'post',
+			 dataType:'json',
+			 data:{qyzzjgdm:qyzzjgdm,kdbm:kdbm},
+			 success:function(data){
+				 var url="";
+					if(data.spcj=="大华"){
+						url="${ctxPath}/quxian/dilixinxi/jiankongBF.html?ip="+outterip;
+					}else if(data.spcj=="海康新"){
+						url="${ctxPath}/quxian/dilixinxi/jiankong.html?ip="+ ip + "&outterip="+outterip+"&channel="+channel+"&username="+username+"&password="+password+"&spnet="+data.spnet+"&vpnip="+vpnip;
+					}else{
+						url="${ctxPath}/quxian/kongzhi?tongdao="+ channel + "&ip="+ip+"&duankou=9001";
+					}
+				
+				dialog2=top.BootstrapDialog.show({
+				    title: '视频查看',
+					closeByBackdrop: true,
+				    message:$('<iframe  frameborderno="0"  style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="yes" src="'+url+'"/>'),
+				    onshow:function(dlg){
+				    	
+			       	dlg.$modalDialog.css("width","600px");//modal-dialog
+			       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+			       },
+			       buttons: [{
+			           label: '关闭',
+			           action: function(dialog) {
+			               dialog.close();
+			           },
+			          cssClass: 'btn-danger btn-xs'
+			       }]
+				});
+				
+			 }
+		});
+	}
+	
+}
+
+
+</script>
+
+<%
+	}
+%>

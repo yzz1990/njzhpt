@@ -1,0 +1,1389 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    border: 1px solid #ADD8E6;
+    border-bottom: 1px solid #ADD8E6;
+    font-size:15px;
+}
+
+.table>tbody>tr>td {
+    font-size:15px;
+   text-align:right;
+}
+.div_center{
+	text-align:center;
+}
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+    height:39px;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+    height:39px;
+}
+.table-bordered {
+    border: 1px solid #ADD8E6;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+	    padding-left: 0px;
+		padding-right: 0px;
+		margin: 0 auto;
+}
+
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.odd{
+	height:39px;
+}
+.even{
+	height:39px;
+}
+.odd td{
+	height:39px;
+} 
+.even td{
+ 	height:39px;
+}
+table.dataTable {
+       margin: 0 auto;
+       clear: both;
+       border-collapse: collapse;
+       border-spacing: 0;
+       float:left;
+}
+.dataTables_wrapper{
+	width:760px;
+	float:left;
+
+}
+</style>
+<div class="aa">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 350px;">
+		  <h4 style="margin-left: 10px;" id="zcr" ></h4>
+		  <h4 style="margin-left: 10px;" id="sjcr" ></h4>
+          <div id="container" style="min-width: 380px; max-width: 700px; height: 300px; margin: 0 auto;margin-left: 2%;float: left;"></div>
+          <hr size=100 width="1" color="#A9B2B8" style="position: absolute;margin-left: 45%;border: 2px;height: 270px;margin-top: -50px;">
+          <div id="container1" style="min-width: 40%; max-width: 50%; height: 300px; margin: 0 auto;float: left;margin-left: 20%;margin-top: -20px;"></div>
+        </div>
+	</div>		
+</div>
+
+<div class="row">
+		<div class="col-lg-12">
+			<div class="well" style="height: 400px;">
+				
+					<span style="width: 200px;font-size: 18px;margin-left: 10px;">全市自有仓容</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+					<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+	           	<table id="zycr"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;"  data-url="${ctxPath}/zonghe/findzycr">
+					<thead>
+	       				 <tr>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">区域</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">总仓容</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">库存</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">空仓</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">其他</th>
+	        			</tr>	
+	    			</thead>
+				</table>   
+	           <div id="containerx" style="min-width: 30%; max-width:40%; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+	         </div>
+		</div>		
+</div>
+
+<div class="row">
+		<div class="col-lg-12">
+			<div class="well" style="height: 450px;">
+				
+					<span style="width: 200px;font-size: 18px;margin-left: 10px;">仓房类型</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+					<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+	           	<table id="cflx"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;"  data-url="${ctxPath}/zonghe/findcflxzcrzb">
+					<thead>
+	       				 <tr>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">区域</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">平房仓</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">浅圆仓</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">立筒仓</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">楼房仓</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">储粮罩棚</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">仓间罩棚</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">铁路罩棚</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">其他简易仓</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">其他</th>
+	        			</tr>	
+	    			</thead>
+				</table>   
+	           <div id="container2" style="min-width: 30%; max-width:40%; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+	         </div>
+		</div>		
+</div>
+<div class="row">
+		<div class="col-lg-12">
+			<div class="well" style="height: 400px;">
+			
+				<span style="width: 200px;font-size: 18px;margin-left: 10px;">保粮技术情况统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+	           	<table id="bljs"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" data-url="${ctxPath}/zonghe/cfcljs" >
+					<thead>
+	       				 <tr>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">区域</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">计算机测温</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">机械通风</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">环流熏蒸</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">低温储藏</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">气调储粮</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">其他技术</th>
+	        			</tr>
+	    			</thead>
+				</table>
+           	<div id="container3" style="min-width: 30%; max-width: 40%; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+         	</div>
+		</div>		
+</div>
+
+
+<div class="row">
+		<div class="col-lg-12">
+			<div class="well" style="height: 400px;">
+
+				<span style="width: 200px;font-size: 18px;margin-left: 10px;">仓房状态统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+	           	<table id="cfzt"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" data-url="${ctxPath}/zonghe/findcfzt">
+					<thead>
+	       				 <tr>
+	       				 	<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">地区</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">完好可用</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">需大修</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">待报废</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">待拆除</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">死角仓</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">其他</th>
+	        			</tr>
+	    			</thead>			
+				</table>
+           	<div id="container5" style="min-width: 30%; max-width: 40%; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+         	</div>
+		</div>		
+</div>
+
+<div class="row">
+		<div class="col-lg-12">
+			<div class="well" style="height: 400px;">
+				<span style="width: 200px;font-size: 18px;margin-left: 10px;">仓房使用情况统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;margin-top: 10px;width: 1340px;height: 2px;">
+	           	<table id="syqk"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" data-url="${ctxPath}/zonghe/findcfsy">
+					<thead>
+	       				 <tr>
+	       				 	<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">地区</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">已装粮</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">闲置</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">季节性暂时空置</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">占地作用</th>
+	        			</tr>
+	    			</thead>
+				</table>
+           	<div id="container6" style="min-width: 30%; max-width: 40%; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+         	</div>
+		</div>		
+</div>
+
+<div class="row">
+		<div class="col-lg-12">
+			<div class="well" style="height: 420px;">
+			
+				<span style="width: 200px;font-size: 18px;margin-left: 10px;">按建设年代分仓房统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+	           	<table id="jsnd"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" data-url="${ctxPath}/zonghe/findcfnd">
+					<thead>
+	       				 <tr>
+	       				 	<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">地区</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">1999年以前</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">2000年至2013年</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">2014年至今</th>
+	        			</tr>
+	    			</thead>
+				</table>
+           	<div id="container7" style="min-width: 30%; max-width: 40%; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+         	</div>
+		</div>		
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 400px;">			
+				<span style="width: 200px;font-size: 18px;margin-left: 10px;">烘干能力统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(吨/天)</span>
+				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+           	<table id="hgnltj"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" data-url="${ctxPath}/zonghe/findhgnl">
+				<thead>
+					 <tr>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">编号</th>
+	            			<th rowspan="1" style="vertical-align:middle;text-align:center;">区域</th>
+	           				<th rowspan="1" style="vertical-align:middle;text-align:center;">烘干能力</th>
+	        			</tr>
+    			</thead>
+			</table>   
+           <div id="container4" style="min-width: 30%; max-width: 40%; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+         </div>
+	</div>		
+</div>
+</div>
+<script>
+
+var xians = [];
+var kucuns = [];
+var kongcs = [];
+var qts = [];
+
+$(function () {	
+	var ecConfig = require('echarts/config');
+	$.ajax({
+		url:'${ctxPath}/zonghe/findcflyl',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			//alert(data.zcr);
+		$("#zcr").html("总仓容："+((data.zcr)*10000).toFixed(0)+"吨 ");
+			$("#sjcr").html("设计仓容："+((data.sjcr)*10000).toFixed(0)+"吨 ");
+			 option = {
+					    tooltip : {
+					        formatter: "{b} : {c}%"
+					    },
+					    /*
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    */
+					    series : [
+							{
+								name: '仓房利用率',
+								type: 'gauge',
+								center: ['70%', '50%'],
+								detail: {formatter: '{value}%',textStyle:{fontSize: 20}},
+								data: [{value: (data.lyl).toFixed(1), name: '仓房利用率'}]
+								, title: {
+								textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+									fontSize: 10,
+									/*fontStyle: 'italic',
+									color: "#25c36c"*/
+								}
+							}
+							}
+
+			]
+					};
+			 echarts.init(document.getElementById('container')).setOption(option);   
+			}
+		});
+	
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/findcfcrzb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+	option = {
+		    title : {
+		        text: '全市仓房总仓容统计',
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}吨 ({d}%)",
+		        position: function (p) {
+	                // 位置回调
+	                return [p[0]-190, p[1]+15];
+	            }
+		    },
+		    legend: {
+		    	 orient : 'vertical',
+			        y:'center',
+			        x:'left',
+		        data:data.quyu
+		    },
+		    color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+		    /*
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType : {
+		                show: true, 
+		                type: ['pie', 'funnel'],
+		                option: {
+		                    funnel: {
+		                        x: '25%',
+		                        width: '50%',
+		                        funnelAlign: 'left',
+		                        max: 1548
+		                    }
+		                }
+		            },
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    */
+		    calculable : false,
+		    series : [
+		              {
+		                  name:'总仓容占比',
+		                  type:'pie',
+		                  radius : '55%',
+		                  center: ['60%', '50%'],
+		                  itemStyle:{
+		                	  normal:{
+		                		  label:{
+		                			  show: false 
+		                		  },
+		                		  labelLine:{
+		                			  show: false
+		                		  }
+		                	  }
+		                  },
+		                  data:[
+		                      {value:data.list[0].toFixed(2)*10000, name:data.quyu[0].name,
+		                    	  itemStyle : {
+				                	  normal : {
+				                		  color:'#0099CC',
+				                	  }
+				                  }
+		                      },
+		                      {value:data.list[1].toFixed(2)*10000, name:data.quyu[1].name,
+		                    	  itemStyle : {
+				                	  normal : {
+				                		  color:'#666699',
+				                	  }
+				                  }},
+				                  {value:data.list[2].toFixed(2)*10000, name:data.quyu[2].name,
+		                      		itemStyle : {
+			                	  		normal : {
+			                		  		color:'#CC6600',
+			                	  		}
+			                  		}},
+		                    
+		                      {value:data.list[3].toFixed(2)*10000, name:data.quyu[3].name,
+		                    	  itemStyle : {
+				                	  normal : {
+				                		  color:'#FF9999',
+				                	  }
+				                  }},
+		                      {value:data.list[4].toFixed(2)*10000, name:data.quyu[4].name,
+			                    	  itemStyle : {
+					                	  normal : {
+					                		  color:'#FFCC99',
+					                	  }
+					                  }},
+		                      {value:data.list[5].toFixed(2)*10000, name:data.quyu[5].name,
+		                    	  itemStyle : {
+				                	  normal : {
+				                		  color:'#99CC00',
+				                	  }
+				                  }}
+		                  ]
+		              }
+		          ]
+		};
+	echarts.init(document.getElementById('container1')).setOption(option);
+		}
+	});
+	
+	//仓房类型
+	
+	var cflxmc = ["平房仓","浅圆仓","立筒仓","楼房仓","储粮罩棚","仓间罩棚","铁路罩棚","其他简易仓","其他"];
+	var qscflx = [0,0,0,0,0,0,0,0,0];
+	
+	datatable = $('#cflx').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				width:35,
+				"render": function (data,type,row,meta) {
+					var name = row["name"];
+					var div = '<div class="div_center">'+name+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var pfc = row["pfc"];
+					if("合计" == row["name"]){
+						qscflx[0] = (pfc);
+						}
+					var div = '<div class="">'+(pfc)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qyc = row["qyc"];
+					if("合计" == row["name"]){
+						qscflx[1] = (qyc);
+					}
+					var div = '<div class="">'+(qyc)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var ltc = row["ltc"];
+					if("合计" == row["name"]){
+						qscflx[2] = (ltc);
+					}
+					var div = '<div class="">'+(ltc)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var lfc = row["lfc"];
+					if("合计" == row["name"]){
+						qscflx[3] = (lfc);
+					}
+					var div = '<div class="">'+(lfc)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var clzp = row["clzp"];
+					if("合计" == row["name"]){
+						qscflx[4] = (clzp);
+					}
+					var div = '<div class="">'+(clzp)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var cjzp = row["cjzp"];
+					if("合计" == row["name"]){
+						qscflx[5] = (cjzp);
+					}
+					var div = '<div class="">'+(cjzp)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var tlzp = row["tlzp"];
+					if("合计" == row["name"]){
+						qscflx[6] = (tlzp);
+					}
+					var div = '<div class="">'+(tlzp)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qtjyc = row["qtjyc"];
+					if("合计" == row["name"]){
+						qscflx[7] = (qtjyc);
+					}
+					var div = '<div class="">'+(qtjyc)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var youguan = row["youguan"];
+					if("合计" == row["name"]){
+						qscflx[8] = (youguan);
+					}
+					var div = '<div class="">'+(youguan)+'</div>';	
+					return div;					
+				}
+			}
+			]
+	});
+	$('#cflx').on( 'draw.dt', function () {
+		var qscf = [{name:"平房仓",value:qscflx[0]},{name:"浅圆仓",value:qscflx[1]},{name:"立筒仓",value:qscflx[2]},
+		            {name:"楼房仓",value:qscflx[3]},{name:"储粮罩棚",value:qscflx[4]},{name:"仓间罩棚",value:qscflx[5]},
+		            {name:"铁路罩棚",value:qscflx[6]},{name:"其他简易仓",value:qscflx[7]},{name:"其他",value:qscflx[8]}];
+		//仓房状态饼状图
+		option2 = {
+			    title : {
+			        text: '全市仓房类型统计',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+			        position: function (p) {
+		                // 位置回调
+		                return [p[0]-190, p[1]+15];
+		            }
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:cflxmc
+			    },
+			    /*
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType : {
+			                show: true, 
+			                type: ['pie', 'funnel'],
+			                option: {
+			                    funnel: {
+			                        x: '60%',
+			                        width: '60%',
+			                        funnelAlign: 'left',
+			                        max: 1548
+			                    }
+			                }
+			            },
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    */
+			    calculable : false,
+			    series : [
+			              {
+			                  name:'仓房类型占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscf
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container2')).setOption(option2);	
+		
+	});
+	
+	
+	//储粮技术
+	var cfclmc = ["计算机测温","机械通风","环流熏蒸","低温储藏","气调储粮","其他技术"];
+	var qscfcl = [0,0,0,0,0,0];
+	
+	datatable = $('#bljs').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var name = row["name"];
+					var div = '<div class="div_center">'+name+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var jsjcw = row["jsjcw"];
+					if("合计" == row["name"]){
+						qscfcl[0] = (jsjcw);
+					}
+					var div = '<div class="">'+(jsjcw)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var jxtf = row["jxtf"];
+					if("合计" == row["name"]){
+						qscfcl[1] = (jxtf);
+					}
+					var div = '<div class="">'+(jxtf)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var hlxz = row["hlxz"];
+					if("合计" == row["name"]){
+						qscfcl[2] = (hlxz);
+					}
+					var div = '<div class="">'+(hlxz)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var dwcl = row["dwcl"];
+					if("合计" == row["name"]){
+						qscfcl[3] = (dwcl);
+					}
+					var div = '<div class="">'+(dwcl)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qtcl = row["qtcl"];
+					if("合计" == row["name"]){
+						qscfcl[4] = (qtcl);
+					}
+					var div = '<div class="">'+(qtcl)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qtjs = row["qtjs"];
+					if("合计" == row["name"]){
+						qscfcl[5] = (qtjs);
+					}
+					var div = '<div class="">'+(qtjs)+'</div>';	
+					return div;					
+				}
+			}
+			]
+	});
+	$('#bljs').on( 'draw.dt', function () {
+		var qscf = [{name:"计算机测温",value:qscfcl[0]},{name:"机械通风",value:qscfcl[1]},{name:"环流熏蒸",value:qscfcl[2]},
+		            {name:"低温储藏",value:qscfcl[3]},{name:"气调储粮",value:qscfcl[4]},{name:"其他技术",value:qscfcl[5]}];
+		//仓房保粮类型饼状图
+		option3 = {
+			    title : {
+			        text: '全市仓房保粮类型统计',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+			        position: function (p) {
+		                // 位置回调
+		                return [p[0]-190, p[1]+15];
+		            }
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:cfclmc
+			    },
+			    /*
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType : {
+			                show: true, 
+			                type: ['pie', 'funnel'],
+			                option: {
+			                    funnel: {
+			                        x: '60%',
+			                        width: '60%',
+			                        funnelAlign: 'left',
+			                        max: 1548
+			                    }
+			                }
+			            },
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    */
+			    calculable : false,
+			    series : [
+			              {
+			                  name:'仓房类型占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscf
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container3')).setOption(option3);	
+		
+	});
+	
+	
+	//烘干能力统计
+	var quxian = ["市区","江宁区","浦口区","六合区","溧水区","高淳区"];
+	var qscfnl = [];
+	
+	
+	datatable = $('#hgnltj').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var name = row["name"];
+					var div = '<div class="div_center">'+name+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var hgnl= row["hgnl"];
+					var name = row["name"];
+					if(name != "合计"){
+						qscfnl.push(hgnl.toFixed(0));
+					}
+					var div = '<div class="">'+hgnl.toFixed(0)+'</div>';	
+					return div;
+				}
+			}
+			]
+	});
+	$('#hgnltj').on( 'draw.dt', function () {
+		var qscf = [{name:"市区",value:qscfnl[0]},{name:"江宁区",value:qscfnl[1]},{name:"浦口区",value:qscfnl[2]},
+		            {name:"六合区",value:qscfnl[3]},{name:"溧水区",value:qscfnl[4]},{name:"高淳区",value:qscfnl[5]}];
+		//烘干能力饼状图
+		option4 = {
+			    title : {
+			        text: '全市烘干能力统计',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}吨/天({d}%)",
+			        position: function (p) {
+		                // 位置回调
+		                return [p[0]-190, p[1]+15];
+		            }
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:quxian
+			    },
+			    color:['#0099CC','#666699','#CC6600','#FF9999','#FFCC99','#99CC00'],
+			    /*
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType : {
+			                show: true, 
+			                type: ['pie', 'funnel'],
+			                option: {
+			                    funnel: {
+			                        x: '60%',
+			                        width: '60%',
+			                        funnelAlign: 'left',
+			                        max: 1548
+			                    }
+			                }
+			            },
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    */
+			    calculable : false,
+			    series : [
+			              {
+			                  name:'仓房类型占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscf
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container4')).setOption(option4);	
+		
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//仓房状态
+	var cfztmc = ["完好可用","需大修","待报废","待拆除","死角库","其他"];
+	var qscfzt = [0,0,0,0,0,0];
+	
+	datatable = $('#cfzt').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var name = row["name"];
+					var div = '<div class="div_center">'+name+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var whky = row["whky"];
+					if("合计" == row["name"]){
+						qscfzt[0] = (whky).toFixed(0);
+					}
+					var div = '<div class="">'+(whky).toFixed(0)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var xdx = row["xdx"];
+					if("合计" == row["name"]){
+						qscfzt[1] = (xdx).toFixed(0);
+					}
+					var div = '<div class="">'+(xdx).toFixed(0)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var dbf = row["dbf"];
+					if("合计" == row["name"]){
+						qscfzt[2] = (dbf).toFixed(0);
+					}
+					var div = '<div class="">'+(dbf).toFixed(0)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var dcc = row["dcc"];
+					if("合计" == row["name"]){
+						qscfzt[3] = (dcc).toFixed(0);
+					}
+					var div = '<div class="">'+(dcc).toFixed(0)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var sjk = row["sjk"];
+					if("合计" == row["name"]){
+						qscfzt[4] = (sjk).toFixed(0);
+					}
+					var div = '<div class="">'+(sjk).toFixed(0)+'</div>';	
+					return div;					
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qt = row["qt"];
+					if("合计" == row["name"]){
+						qscfzt[5] = (qt).toFixed(0);
+					}
+					var div = '<div class="">'+(qt).toFixed(0)+'</div>';	
+					return div;					
+				}
+			}
+			]
+	});
+	$('#cfzt').on( 'draw.dt', function () {
+		var qscf = [{name:"完好可用",value:qscfzt[0]},{name:"需大修",value:qscfzt[1]},{name:"待报废",value:qscfzt[2]},{name:"待拆除",value:qscfzt[3]},{name:"死角库",value:qscfzt[4]},{name:"其他",value:qscfzt[5]}];
+		//仓房状态饼状图
+		option5 = {
+			    title : {
+			        text: '全市仓房状态统计',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+			        position: function (p) {
+		                // 位置回调
+		                return [p[0]-190, p[1]+15];
+		            }
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:cfztmc
+			    },
+			    /*
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType : {
+			                show: true, 
+			                type: ['pie', 'funnel'],
+			                option: {
+			                    funnel: {
+			                        x: '60%',
+			                        width: '60%',
+			                        funnelAlign: 'left',
+			                        max: 1548
+			                    }
+			                }
+			            },
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    */
+			    calculable : false,
+			    series : [
+			              {
+			                  name:'仓房类型占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscf
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container5')).setOption(option5);	
+		
+	});
+	
+	
+	
+	var cfsymc = ["已装粮","闲置","季节性暂时空置","占地作用"];
+	var qscfsy = [0,0,0,0];
+	
+	datatable = $('#syqk').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+            	width:88,
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				width:88,
+				"render": function (data,type,row,meta) {
+					var name = row["name"];
+					var div = '<div class="div_center">'+name+'</div>';	
+					return div;
+				}
+			},{
+				width:88,
+				"render": function (data,type,row,meta) {
+					var yzl = row["yzl"];
+					if("合计" == row["name"]){
+						qscfsy[0] = (yzl).toFixed(0);
+					}
+					var div = '<div class="">'+(yzl).toFixed(0)+'</div>';	
+					return div;
+				}
+			},{
+				width:88,
+				"render": function (data,type,row,meta) {
+					var xz = row["xz"];
+					if("合计" == row["name"]){
+						qscfsy[1] = (xz).toFixed(0);
+					}
+					var div = '<div class="">'+(xz).toFixed(0)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var jjxzskz = row["jjxzskz"];
+					if("合计" == row["name"]){
+						qscfsy[2] = (jjxzskz).toFixed(0);
+					}
+					var div = '<div class="">'+(jjxzskz).toFixed(0)+'</div>';	
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var zdzy = row["zdzy"];
+					if("合计" == row["name"]){
+						qscfsy[3] = (zdzy).toFixed(0);
+					}
+					var div = '<div class="">'+(zdzy).toFixed(0)+'</div>';	
+					return div;								
+				}
+			}
+			]
+	});
+	$('#syqk').on( 'draw.dt', function () {
+		var qscf = [{name:"已装粮",value:qscfsy[0]},{name:"闲置",value:qscfsy[1]},{name:"季节性暂时空置",value:qscfsy[2]},{name:"占地作用",value:qscfsy[3]}];
+		//仓房使用饼状图
+		option6 = {
+			    title : {
+			        text: '全市仓房使用统计',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+			        position: function (p) {
+		                // 位置回调
+		                return [p[0]-190, p[1]+15];
+		            }
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:cfsymc
+			    },
+			    /*
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType : {
+			                show: true, 
+			                type: ['pie', 'funnel'],
+			                option: {
+			                    funnel: {
+			                        x: '60%',
+			                        width: '60%',
+			                        funnelAlign: 'left',
+			                        max: 1548
+			                    }
+			                }
+			            },
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    */
+			    calculable : false,
+			    series : [
+			              {
+			                  name:'仓房类型占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscf
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container6')).setOption(option6);	
+	});
+	
+	var cfndmc = ["1999年以前","2000年至2013年","2014年至今"];
+	var qscfnd = [0,0,0,0,0];
+	
+	datatable = $('#jsnd').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				width:40,
+				"render": function (data,type,row,meta) {
+					var name = row["name"];
+					var div = '<div class="div_center">'+name+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var eight = row["eight"];
+					if("合计" == row["name"]){
+						qscfnd[0] = eight;
+					}
+					var div = '<div class="">'+eight.toFixed(0)+'</div>';
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var nine = row["nine"];
+					if("合计" == row["name"]){
+						qscfnd[1] = nine;
+					}
+					var div = '<div class="">'+nine+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var zero = row["zero"];
+					if("合计" == row["name"]){
+						qscfnd[2] = zero;
+					}
+					var div = '<div class="">'+zero+'</div>';
+					return div;								
+				}
+			}
+			]
+	});
+	$('#jsnd').on( 'draw.dt', function () {
+		var qscf = [{name:"1999年以前",value:qscfnd[0]},{name:"2000年至2013年",value:qscfnd[1]},{name:"2014年至今",value:qscfnd[2]}];
+		//仓房使用饼状图
+		option7 = {
+			    title : {
+			        text: '全市仓房使用统计',
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+			        position: function (p) {
+		                // 位置回调
+		                return [p[0]-190, p[1]+15];
+		            }
+			    },
+			    legend: {
+			    	 orient : 'vertical',
+				        y:'center',
+				        x:'left',
+			        data:cfndmc
+			    },
+			    /*
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType : {
+			                show: true, 
+			                type: ['pie', 'funnel'],
+			                option: {
+			                    funnel: {
+			                        x: '60%',
+			                        width: '60%',
+			                        funnelAlign: 'left',
+			                        max: 1548
+			                    }
+			                }
+			            },
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    */
+			    calculable : false,
+			    series : [
+			              {
+			                  name:'仓房类型占比',
+			                  type:'pie',
+			                  radius : '55%',
+			                  center: ['60%', '60%'],
+			                  itemStyle:{
+			                	  normal:{
+			                		  label:{
+			                			  show: false 
+			                		  },
+			                		  labelLine:{
+			                			  show: false
+			                		  }
+			                	  }
+			                  },
+			                  data:qscf
+			              }
+			          ]
+			};
+		echarts.init(document.getElementById('container7')).setOption(option7);	
+		
+	});
+	
+	
+	
+	
+	//自有仓容
+	datatable = $('#zycr').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "paging": false,
+		"info": false,
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="div_center">'+(row["orderno"]+1)+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var name = row["xian"];
+					xians.push(name);
+					var orderno = row["orderno"];
+					if(orderno == null){
+						orderno = 0;
+					}
+					var div = '<div class="div_center" onclick = "getxian(\''+orderno+'\')">'+name+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var zcr = Math.round(row["zcr"]);
+					var div = '<div class="">'+zcr+'</div>';
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var kucun = Math.round(row["sum"]/1000);
+					kucuns.push(kucun);
+					var div = '<div class="">'+kucun+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var kongc = Math.round(row["kongc"]);
+					kongcs.push(kongc);
+					var div = '<div class="">'+kongc+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qt = Math.round(row["qt"]);
+					qts.push(qt)
+					var div = '<div class="">'+qt+'</div>';
+					return div;								
+				}
+			}
+			]
+	});	
+	$('#zycr').on( 'draw.dt', function () {
+		getxian(0);
+		
+	});
+	
+	
+	
+});
+
+
+/**
+ * 获取区县饼图
+ */
+function getxian(orderno){
+	var leixin = ["库存","空仓","其它"];
+	var qu = xians[orderno];
+	var kc = kucuns[orderno];
+	var kong = kongcs[orderno];
+	var q = qts[orderno];
+	var shuju = [{"name":"库存","value":kc},{"name":"空仓","value":kong},{"name":"其它","value":q}];
+	optionx = {
+		    title : {
+		    	x:'center',
+		        text: qu+"自有仓容统计(单位：吨)"
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}吨 ({d}%)"
+		    },
+		    legend: {
+		    	orient : 'vertical',
+		        y:'center',
+		        x:'left',
+		        data:leixin,
+		    },
+		    calculable : true,
+		    series : [
+		        {
+		            name:'数量',
+		            type:'pie',
+		            radius : '55%',
+		            center: ['60%', '50%'],
+		            itemStyle:{
+	                	  normal:{
+	                		  label:{
+	                			  show: false 
+	                		  },
+	                		  labelLine:{
+	                			  show: false
+	                		  }
+	                	  }
+	                  },
+		            data:shuju
+		        }
+		    ]
+		};
+	echarts.init(document.getElementById('containerx')).setOption(optionx);	
+}
+
+
+
+</script>
+ 
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

@@ -1,0 +1,302 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+.table-striped>tbody>tr>td:nth-child(1){
+		text-align: center;
+	}
+.table-striped>tbody>tr>td:nth-child(6){
+		text-align: center;
+	}
+.datatables{
+	text-align: center;
+}
+</style>
+
+
+<script type="text/javascript">
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+}); 
+
+
+$(function() {
+	//加载区县
+	$.ajax({
+		url : '${ctxPath}/shouchukeshihua/findquxian',
+		type : 'post',
+		dataType : 'json',
+		data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		success : function(data) {
+			/* var op = '<option value="请选择">请选择</option>';
+			$("#quyu").append(op); */
+			$.each(data,
+					function(i, n) {
+						var op = '<option value="'+n.xzqhdm+'">' + n.name
+								+ '</option>';
+						$("#quyu").append(op);
+					});
+			//初始化区县下拉框
+			$("#quyu").val("");
+			$("#quyu-div").find(".select2-selection__rendered").text("");
+			$("#quyu-div").find(".select2-selection__rendered").attr("title", "");
+		},
+		error : function() {
+			alert("加载区县失败");
+		}
+	});
+	 $.ajax({
+			url:'${ctxPath}/lunhuan/selectQYMC.do',
+			type:'post',
+			data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+				,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+			dataType:'json',
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#qiye").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				});
+			},
+			error:function(){
+				alert("error");
+			}
+			
+			
+		}); 
+	//加载企业
+	/* $.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			 var op = '<option value="请选择">请选择</option>';
+			$("#qiye").append(op); 
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+			
+			
+			$("#qiye").val("");
+			$("#qiye-div").find(".select2-selection__rendered").text("");
+			$("#qiye-div").find(".select2-selection__rendered").attr("title", "");
+			
+		},
+		error:function(){
+			alert("加载企业失败");
+		}
+	}); */
+	
+	//加载列表
+	datatable = $('.datatables').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["xian"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["qymc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["kdmc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div></div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div></div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var qyzzjgdm = row["qyzzjgdm"];
+					var kdbm = row["kdbm"];
+					var div = '<a href="javascript:void(0)" class="btn-xs btn-success" target="_black"  onclick="readmx(\''+qyzzjgdm+'\',\''+kdbm+'\')">详细信息</a>';
+					return div;								
+				}
+			}
+			
+			]
+	});
+	
+	
+	
+});
+
+//跳转到库点的质量追溯页面
+function readmx(e,f){
+dialog1=BootstrapDialog.show({
+    title: '库点质量情况',
+    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/zhiliangzs/kudianmx.html?qyzzjgdm='+e+'&kdbm='+f+'"/>'),
+    onshow:function(dlg){
+      	dlg.$modalDialog.css("width","1200px");//modal-dialog
+      	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons: [{
+	        label: '关闭',
+	        cssClass: 'btn-xs btn-danger',
+	        action: function(dialog) {
+	        	dialog.close();
+	        }
+	   }]
+});
+}
+
+function Change(){
+	$("#qiye").html("");
+	var op = '<option value="">全部企业</option>';
+	$("#qiye").append(op);
+	var xian = $("#quyu option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/lunhuan/selectQYMC.do',
+		type:'post',
+		data:{"xzqhdm":xian,"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+			,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		dataType:'json',
+		success: function(data) {
+			$(".nianzs-div").find(".select2-selection__rendered").text("全部企业");
+			$(".nianzs-div").find(".select2-selection__rendered").attr("title","全部企业");
+			$.each(data.list,function(i, n){
+					$("#qiye").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+			});
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+	
+}
+
+//查询列表
+function doSearch(){
+	//获取区县名称
+	var xian = $("#quyu option:selected").text();
+	//获取企业组织机构代码
+	var qyzzjgdm = $("#qiye option:selected").val();
+	//加载查询条件
+	var querystr = "";
+	if(xian != null && xian != "" && xian != "全部区县"){
+		querystr += "&xian="+xian;
+	}
+	if(qyzzjgdm != null && qyzzjgdm != "" && qyzzjgdm != "全部企业"){
+		querystr += "&qyzzjgdm="+qyzzjgdm;
+	}
+	
+	
+	
+	$(".datatables").attr("data-queryparam",querystr);
+	datatable.ajax.reload(null,true);
+}
+
+
+</script>
+
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>库点质量情况</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+		 <div class="caozuo">
+		 	<div class="cjd-div niandu-div">
+				<label class="cjd-label" style="margin-top: 5px">区县:</label>
+				<select id="quyu"  class="form-control cjd-select" onchange="Change()" style="width: 150px;">
+					<option value="">全部区县</option>
+				</select>
+			</div>
+			<div class="cjd-div nianzs-div" style="margin-left:20px">
+				<label class="cjd-label"  style="margin-top: 5px">企业:</label>
+				<select id="qiye" class="form-control cjd-select" style="width: 150px;">
+					<option value="">全部企业</option>
+				</select>
+			</div>
+		 	<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:5px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px">
+   <div id="div-caijia" class="panel-body">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped  table-bordered table-hover  datatables table-caijia" data-url="${ctxPath}/zhiliangzs/querykudian" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" id="col3" style="vertical-align:middle">区县</th>
+	     			<th rowspan="1" colspan="1" id="col4" style="vertical-align:middle">企业</th>
+	     			<th rowspan="1" colspan="1" id="col5" style="vertical-align:middle">库点</th>
+	     			<th rowspan="1" colspan="1" id="col6" style="vertical-align:middle">质量标准</th>
+	     			<th rowspan="1" colspan="1" id="col7" style="vertical-align:middle">质检因子</th>
+	     			<th rowspan="1" colspan="1" id="col10" style="vertical-align:middle">查看详情</th>
+	 			</tr>
+			</thead>	
+			
+		</table>
+   </div>
+</div>
+
+</div>
+</div>
+
+<%}%>

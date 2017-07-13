@@ -1,0 +1,466 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+/* .table-striped>tbody>tr>td:nth-child(2){
+text-align:left ;
+}
+.table-striped>tbody>tr>td:nth-child(3){
+text-align:left ;
+}
+.table-striped>tbody>tr>td:nth-child(4){
+text-align:left ;
+} */
+td.details-control {
+    background: url('${ctxPath}/img/chubeiliangjh/buttonadd.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.details td.details-control {
+    background: url('${ctxPath}/img/chubeiliangjh/Delete.png') no-repeat center center;
+}
+/* table.table-bordered td:last-child {
+    vertical-align: bottom;
+    height: 35px;
+    padding-top: 0px;
+    border-right-width: 0;
+    padding-left: 47px;
+} */
+table.datatables>thead>tr{
+				 background-color: #B5DCFF;
+			}
+</style>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>储备粮计划</b></span>
+				</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;" >
+					<label>年度:</label>
+						<select id="niandu" name="niandu" style="width:100px;font-size:14px" class="form-control input-sm" >
+						</select>
+					<!-- <label style="margin-left: 10px">区域:</label>
+						<select id="xzqhdm" name="xzqhdm" style="width:150px;font-size:14px" class="form-control input-sm"  onchange="Change()">
+							<option value="">全部</option>
+				 			<option value="市属企业">市属企业</option> 
+				 			<option value="江宁区">江宁区</option>
+				 			<option value="浦口区">浦口区</option>
+				 			<option value="六合区">六合区</option>
+				 			<option value="溧水区">溧水区</option>
+				 			<option value="高淳区">高淳区</option>
+				 			<option value="其他">其他</option>
+						</select> -->
+					<!-- <label style="margin-left: 10px">承储企业:</label>
+						<select id="ccqy" style="width:150px;font-size:14px" name="ccqy" class="form-control input-sm"  onchange="" >
+							<option value="">请选择企业名称</option>
+						</select> -->
+					<!-- <label style="margin-left: 10px">承储库点:</label>
+						<select id="cckd" name="cckd" style="width:150px;font-size:14px" class="form-control input-sm"  >
+							<option value="">请选择库点名称</option>
+						</select> -->
+				<!-- <label>性质:</label>
+					<select id="xingzhi" name="xingzhi" style="width:130px;font-size:14px" class="form-control input-sm"  >
+					</select> --> 
+					<!-- <label>品种:</label>
+					<select id="pinzhong" name="pinzhong" style="width:130px;font-size:14px" class="form-control input-sm"  >
+							<option value="">全部</option>
+							<option value="111">小麦</option>
+							<option value="1132">粳稻</option>
+							<option value="1131">粳稻</option>
+					</select>  -->
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()">查询</a>
+				</div>
+	<!-- 			<div class="form-inline" style="float: right;">
+					<button type="button" class="btn btn-success btn-xs " onclick="xinzeng()"><i class="fa fa-plus-circle" aria-hidden="true"></i>新增</button>
+					
+					<button type="button" class="btn  btn-xs " ><i class="fa fa-indent" aria-hidden="true"></i>导入</button>
+					
+				</div>  -->
+				<div style="float: right;">
+					<a type="button" class="btn btn-xs btn-success" onclick="daochu()"><i class="fa fa-outdent" aria-hidden="true"></i>导出</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+				<table id="chubeiliangjihua" class="table table-striped table-hover table-bordered datatables" cellspacing="0" width="100%" data-url="${ctxPath}/chubeiliangJH/cbljhrenwu.do">
+        			<thead>
+           				 <tr>
+                			<th rowspan="2" style="vertical-align:middle">区域</th>
+                			<th rowspan="2" style="vertical-align:middle">承储企业</th>
+                			<!-- <th rowspan="2" style="vertical-align:middle">承储仓号</th> -->
+                			<th colspan="4" style="border-right-width: 0px;">地市级储备粮承储计划</th>
+            			</tr>
+            			<tr>
+            				<th>小计(吨)</th>
+                			<th>小麦(吨)</th>
+               				<th>粳稻(吨)</th>
+                			<th>籼稻(吨)</th>
+            			</tr>
+        			</thead>
+    </table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+var datatable;
+
+
+
+$(function(){
+	var date=new Date;
+	var year=parseInt(date.getFullYear());
+	for(var i = 0; i < 5; i++){
+		$("#niandu").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+	}
+	$(".form-control").select2();
+	 
+	var q="";
+	var role="${session.userinfo.role.code}";
+	var area="${session.userinfo.area.name}";
+	if("njslsj"==role||"qxlsj"==role){
+		q=q+"&diqu="+area;
+	}
+	var niandu=$("#niandu").val();
+	q=q+"&niandu="+niandu;
+	 $(".datatables").attr("data-queryparam",q);
+ 	datatable=$('#chubeiliangjihua').DataTable( {
+        "columns": [
+            { "data": "name",
+            	"width":150,
+            	"render":function(data,type,row,meta){
+	   				 var result;
+	   				 if(row["name"] == "市属企业"){
+	   					result = '<div class="shishu" style="pointer-events:none">'+row["name"]+'</div>';
+	   				 }else if(row["name"] == "其他"){
+	   					result = '<div class="qita" style="pointer-events:none">'+row["name"]+'</div>';
+	   				 }else{
+	   					result = '<div style="pointer-events:none">'+row["name"]+'</div>';
+	   				 }
+	   				 return result;
+	   			 }
+            },
+            { "data": "qymc",
+            	"width":300
+            	
+            },
+            { "data": "xj", 
+            	"render": function (data,type,row,meta) {
+            		/* var pz=$("#pinzhong").val();
+            		if(pz==""){
+            			return parseFloat(row["xiaoji"]).toFixed(0);
+            		}else if(pz=="111"){
+            			return parseFloat(row["xm"]).toFixed(0);
+            		}else if(pz=="1132"){
+            			return parseFloat(row["jd"]).toFixed(0);
+            		}else if(pz=="1131"){
+            			return parseFloat(row["xd"]).toFixed(0);
+            		} */
+            		return parseFloat(row["xj"]).toFixed(0);
+            	}
+            
+            },
+            /* { "data": "ccch" }, */
+            { "data": "xm",
+            	"render": function (data,type,row,meta) {
+            			return parseFloat(row["xm"]).toFixed(0);
+            	}
+            },
+            { "data": "jd",
+            	"render": function (data,type,row,meta) {
+            		return parseFloat(row["jd"]).toFixed(0);
+            	}
+            },
+            { "data": "xd",
+            	"render": function (data,type,row,meta) {
+            			return parseFloat(row["xd"]).toFixed(0);
+            	}	
+            }
+        ]
+    } ); 
+});
+
+function daochu(){
+	var juese="${session.userinfo.role.code}";
+	var q="&niandu="+$("#niandu").val();
+	if(juese=="qxlsj"){
+		q=q+"&diqu="+"${session.userinfo.area.name}";
+	}
+	url = 'http://58.214.246.30:1000/WebReport/ReportServer?reportlet=%5B5730%5D%5B5e02%5D%5B7ea7%5D%5B50a8%5D%5B5907%5D%5B7cae%5D%5B627f%5D%5B50a8%5D%5B8ba1%5D%5B5212%5D.cpt'+q+'&op=write&format=excel&extype=simple';
+	window.location.href=url;
+}
+
+var dialog;
+function xinzeng(){
+	dialog=parent.BootstrapDialog.show({
+	    title: '新增储备粮承储计划任务',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0"; scrolling="no"  src="${ctxPath}/remote/chuliang/cblrenwu_bianji.html" />'),
+	    onshow:function(dlg){
+      	dlg.$modalDialog.css("width","1000px");//modal-dialog
+      	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480px");//modal-dialog
+      },
+	    buttons: [{
+	           label: '保存',
+	           action: function(dialog) {
+	        	   var bool= $(window.parent.document).contents().find("iframe")[0].contentWindow.tijiao(); 
+	        	   if(bool==false){
+	        		   //parent.window.datatable.ajax.reload(null,false);
+	        	   }else{
+	        		   parent.window.dialog.close();
+	        		   parent.window.datatable.ajax.reload(null,true);
+	        	   }
+	           },
+	          cssClass: 'btn-xs btn-success'
+	          
+	       },{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+	});
+	
+} 
+var dialog1;
+function bianji(id){
+	 dialog1=BootstrapDialog.show({
+	    title: '编辑储备粮承储计划任务',
+	    message:$('<iframe frameborderno="0" scrolling="no" style="width:100%;height:100%;" frameborder="0";  src="${ctxPath}/remote/chuliang/cblrenwu_bianji.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+      	dlg.$modalDialog.css("width","1000px");//modal-dialog
+      	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480px");//modal-dialog
+      },
+	    buttons:[{
+	           label: '保存',
+	           action: function(dialog) {
+	        	   var bool= $(window.parent.document).contents().find("iframe")[0].contentWindow.tijiao(); 
+	        	   if(bool==false){
+	        		   //parent.window.datatable.ajax.reload(null,false);
+	        	   }else{
+	        		   parent.window.dialog1.close();
+	        		   parent.window.datatable.ajax.reload(null,true);
+	        	   }
+	           },
+	          cssClass: 'btn-xs btn-success'
+	          
+	       },{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+	});
+	
+} 
+function shanchu(id) {
+	if (confirm("是否删除此条信息？")) {
+		$.ajax({
+			type : 'post',
+			url : '${ctxPath}/chubeiliangJH/deleterenwu?id=' + id,
+			success : function(msg) {
+				if (msg.ret) {
+					datatable.ajax.reload(null, true);
+					alert("恭喜你，已成功删除！");
+
+				} else {
+					alert("抱歉，删除失败！");
+				}
+			}
+		})
+	}
+}
+$(".datatables").on("draw.dt",function(){
+	var shishusize=$(".shishu").length;
+	if(shishusize==2){
+		$("td:eq(0)","#chubeiliangjihua tbody tr:eq('1')").remove();
+		$("td:eq(0)","#chubeiliangjihua tbody tr:first").attr("rowspan","2");
+		$("td:eq(0)","#chubeiliangjihua tbody tr:first").html("<div style='margin-top:20px;'>市属企业</div>");
+	}else if(shishusize==3){
+		$("td:eq(0)","#chubeiliangjihua tbody tr:eq('1')").remove();
+		$("td:eq(0)","#chubeiliangjihua tbody tr:eq('2')").remove();
+		$("td:eq(0)","#chubeiliangjihua tbody tr:first").attr("rowspan","3");
+		$("td:eq(0)","#chubeiliangjihua tbody tr:first").html("<div style='margin-top:40px;'>市属企业</div>");
+	}
+	var qitasize=$(".qita").length;
+	if(qitasize==2){
+		var qitaindex =$("div[class='qita']:first").closest("tr").index();
+		$("td:eq(0)","#chubeiliangjihua tbody tr:eq("+(qitaindex+1)+")").remove();
+		$("td:eq(0)","#chubeiliangjihua tbody tr:eq("+qitaindex+")").attr("rowspan","2");
+		$("td:eq(0)","#chubeiliangjihua tbody tr:eq("+qitaindex+")").html("<div style='margin-top:20px;'>其他</div>");
+		/* $("td:eq(0)","#chubeiliangjihua tbody tr:first").html("<div style='margin-top:20px;'>市属企业</div>"); */
+	}
+	var niandu=$("#niandu").val();
+	var xingzhi="";
+	$.ajax({
+		url: "${ctxPath}/chubeiliangJH/chubeiliangrenwuheji.do",
+		dataType: "json",
+		data:{"niandu":niandu,"page":1,"rows":10000,"diqu":"${decode(session.userinfo.role.code,'njslsj',session.userinfo.area.name,'qxlsj',session.userinfo.area.name,'')}"},
+		success: function(data) {
+		//alert(data.cbljh_xm);
+		var xj;
+		var xm;
+		var jd;
+		var xd;
+		if(data.heji==""||data.heji==null){
+			xj=0;
+			xm=0;
+			jd=0;
+			xd=0;
+		}else{
+			xj=data.heji.xj.toFixed(0);
+			xm=data.heji.xm.toFixed(0);
+			jd=data.heji.jd.toFixed(0);
+			xd=data.heji.xd.toFixed(0);
+		}
+		var tr = '<tr style="border:1px solid:black">';
+		tr+=	'<td><b>合计</b></td>';
+		tr+=	'<td></td>';
+		tr+= '<td >'+xj+'</td>';
+		tr+= '<td >'+xm+'</td>';
+		tr+= '<td >'+jd+'</td>';
+		tr+= '<td >'+xd+'</td>';
+		tr+= '</tr>';
+	$("#chubeiliangjihua").find("tbody").prepend(tr);
+	},
+	error:function(){
+		alert("加载合计失败");
+	}
+});
+
+
+})	
+function doSearch(){
+	var q="";
+	if($("#niandu").val()!=""&&$("#niandu").val()!=null){
+		q =q + "&niandu="+$("#niandu").val();
+	}
+	var role="${session.userinfo.role.code}";
+	var area="${session.userinfo.area.name}";
+	if("njslsj"==role||"qxlsj"==role){
+		q=q+"&diqu="+area;
+	}
+	/* if($("#xingzhi").val()!=""&&$("#xingzhi").val()){
+		q=q+"&xingzhi="+$("#xingzhi").val();
+	} */
+	/* if($("#pinzhong").val()!=""&&$("#pinzhong").val()){
+		q=q+"&pinzhong="+$("#pinzhong").val();
+	} */
+	document.querySelector('.datatables').dataset.queryparam=q;
+	datatable.ajax.reload(null,false);
+}
+function Change(){
+	$("#ccqy+span>span:first>span>span:first").html("请选择企业名称");
+	$("#ccqy").html("");
+	$("#cckd+span>span:first>span>span:first").html("请选择库点名称");
+	$("#cckd").html("");
+	var xian = $("#quming option:selected").text().trim();
+	var op = '<option value="">请选择企业名称</option>';
+    $("#ccqy").append(op);
+    var kd = '<option value="">请选择库点名称</option>';
+    $("#cckd").append(kd);
+	
+	
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'ssqiye',session.userinfo.area.name,'"+xian+"')}",
+			"qymc":"${decode(session.userinfo.role.code,'qxlsj','','qiye',session.userinfo.dep.name,'ssqiye',session.userinfo.dep.name,'')}"},
+		dataType:'json',
+		success:function(data){
+			
+			$(".input-smqy").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#ccqy").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	//查找库点
+	/* $.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudianbyqiyeid.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'ssqiye',session.userinfo.area.name,'"+xian+"')}","qiyeid":"${decode(session.userinfo.role.code,'qiye',session.userinfo.dep.id,'')}"},
+		dataType:'json',
+		success:function(data){
+
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].kdbm+'>'+data.list[i].kdmc+'</option>';
+			     $("#cckd").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	}); */
+	
+	
+	
+	
+	
+}
+
+function selectKDMC(){
+	$("#cckd+span>span:first>span>span:first").html("请选择库点名称");
+	$("#cckd").html("");
+	var xian = $("#quming option:selected").text().trim();
+	var qyzzjgdm=$("#ccqy option:selected").val();
+	var op = '<option value="">请选择库点名称</option>';
+    $("#cckd").append(op);
+    
+    $.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"qyzzjgdm":qyzzjgdm},
+		dataType:'json',
+		success:function(data){
+			
+			for(var i = 0; i < data.list.length; i++){
+				//插入库点名称
+				var op = '<option value='+data.list[i].kdbm+'>'+data.list[i].kdmc+'</option>';
+			    $("#cckd").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+    
+}
+
+function dayin(){
+	dialog1=BootstrapDialog.show({
+	    title: '质量详情',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no"  src="${ctxPath}/remote/chuliang/bgzhang1.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1100px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","500px");//modal-dialog
+       },
+
+	    buttons: [{
+	       
+	    }]
+	});
+}	
+</script>
+
+
+<%
+	}
+%>

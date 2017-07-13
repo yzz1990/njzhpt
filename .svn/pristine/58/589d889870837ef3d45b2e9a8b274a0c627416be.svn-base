@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>地区信息</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description"
+	content="Blue Moon - Responsive Admin Dashboard">
+<meta name="keywords"
+	content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+<meta name="author" content="Bootstrap Gallery">
+
+
+
+<!-- FONT AWESOME-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/font-awesome.min.css">
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<style type="text/css">
+#edui1_bottombar{
+	display: none;
+}
+
+</style>
+
+</head>
+<% 
+	var obj={},url=ctxPath+"/jibenxinxi/addDiqu",title="新增地区信息"; 
+	var id = parameter.id; 
+	if (isNotEmpty(parameter.id)) { 
+			var diqu = @com.zkzy.njzhpt.dao.JibenxinxiDao.findDiqu({"id":parameter.id,"page":"1","rows":"100"});
+			obj = diqu.list[0]; 
+			title = "编辑地区信息";
+			 
+	}; 
+	if (isNotEmpty(parameter.quxian)){ 
+		var diqu = @com.zkzy.njzhpt.dao.JibenxinxiDao.findDiqu({"quyu":parameter.quxian,"page":"1","rows":"100"});
+	 	obj = diqu.list[0]; title = "新增地区信息"; 
+ 	} 
+ %>
+		
+<body>
+
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+
+		<form id="contentform" role="form" action="${url}" method="post"
+			style="overflow: hidden;">
+			<input type="hidden" name="id" class="form-control quxianid" value="${obj.id}">
+			<input type="hidden" name="areaid" class="form-control quxianid" value="${obj.areaid}">
+
+			<div class="col-lg-12 col-md-12">
+				
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">区县信息</div>
+					</div>
+					<div class="widget-body">
+						<div class="row">
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="xzqhdm"><font color="red" style="font-size:large;">*</font>行政区划代码:</label> 
+									<input id="xzqhdm" name="xzqhdm" class="form-control" placeholder="行政区划代码" onKeyPress="if (event.keyCode!=46 && event.keyCode!=45 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false" value="${obj.xzqhdm}">
+								</div>
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="name"><font color="red" style="font-size:large;">*</font>区域名称:</label> 
+									<input id="name" name="name"  class="form-control" value="${obj.name}">
+									<!-- <select id="name" name="name" class="form-control"></select> -->
+								</div>
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="orderno">区县序号:</label> <input id="orderno"
+										name="orderno" class="form-control" placeholder="区县序号" onKeyPress="if (event.keyCode!=46 && event.keyCode!=45 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false"
+										value="${obj.orderno}">
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">区县粮食局信息</div>
+					</div>
+					<div class="widget-body">
+						<div class="row">
+							<div class="col-xs-3">
+								<div class="form-group">
+									<label for="fangwei">区方位:</label> 
+									<select id="fangwei" name="fangwei" class="form-control">
+										<option value="请选择">请选择</option>
+										<option value="东部" ${obj.fangwei=="东部"?" selected"}>东部</option>
+										<option value="西部" ${obj.fangwei=="西部"?" selected"}>西部</option>
+										<option value="南部" ${obj.fangwei=="南部"?" selected"}>南部</option>
+										<option value="北部" ${obj.fangwei=="北部"?" selected"}>北部</option>
+										<option value="中部" ${obj.fangwei=="中部"?" selected"}>中部</option>
+										<option value="西北" ${obj.fangwei=="西北"?" selected"}>西北</option>
+										<option value="东北" ${obj.fangwei=="东北"?" selected"}>东北</option>
+										<option value="西南" ${obj.fangwei=="西南"?" selected"}>西南</option>
+										<option value="东南" ${obj.fangwei=="东南"?" selected"}>东南</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-3">
+								<div class="form-group">
+									<label for="dizhi">区粮食局名称:</label> 
+									<input id="lsjmc" name="lsjmc" class="form-control" placeholder="区粮食局名称" value="${obj.lsjmc}">
+								</div>
+							</div>
+							<div class="col-xs-3">
+								<div class="form-group">
+									<label for="dizhi">区粮食局地址:</label> 
+									<input id="dizhi" name="dizhi" class="form-control" placeholder="区粮食局地址" value="${obj.dizhi}">
+								</div>
+							</div>
+							<div class="col-xs-3">
+								<div class="form-group">
+
+									<label for="tel">区粮食局电话:</label> <input id="tel" name="tel"
+										class="form-control" onblur="ss()" placeholder="区粮食局电话" onKeyPress="if (event.keyCode!=46 && event.keyCode!=45 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false" value="${obj.tel}">
+								<script type="text/javascript">
+								function ss(){
+									var Fax = $("#tel").val();
+				                    if (Fax != "") {
+				                        var reg =/\d{3}-\d{8}|\d{4}-\d{7}|^1(3|4|5|7|8)\d{9}$/;
+				                        if (!reg.test(Fax)) {
+				                            alert('电话格式不正确！');
+				                            $("#tel").focus();
+				                            return false;
+				                        }
+				                    }
+								}
+								</script>
+
+
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="qxjd">区粮食局经度:</label> <input id="qxjd" name="qxjd"
+
+										onkeyup="value=value.replace(/[^\d.]/g,'')" class="form-control" placeholder="区粮食局经度" onKeyPress="if (event.keyCode!=46 && event.keyCode!=45 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false" value="${obj.qxjd}">
+
+
+								</div>
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="qxwd">区粮食局纬度:</label> <input id="qxwd" name="qxwd"
+
+										onkeyup="value=value.replace(/[^\d.]/g,'')" class="form-control" placeholder="区粮食局纬度" onKeyPress="if (event.keyCode!=46 && event.keyCode!=45 &&  (event.keyCode<48 || event.keyCode>57)) event.returnValue=false" value="${obj.qxwd}">
+
+
+								</div>
+							</div>
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label for="maplevel">地图等级:</label> <input id="maplevel"
+										name="maplevel" class="form-control" placeholder="地图等级"   onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))"
+   										value="${obj.maplevel}">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">区县图片</div>
+					</div>
+					<div class="widget-body">
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="qushiyipath">区县示意图:</label> <input id="qushiyipath"
+										class="qushiyipath" name="qushiyipath" type="hidden"
+										value="${obj.qushiyipath}"> <a
+										class="btn btn-sm btn-info"><input
+										class="file_upload_syt " type="file" name="file" /></a> <a
+										id="tip-queue"
+										style="float: right; width: 125px; display: none;"></a>
+									<div class="imgsyt">
+										<img id="qysyPic" ${(obj.qushiyipath!=null&&obj.qushiyipath!= '')?'width="330px" height="180px"'}src="${(obj.qushiyipath!=null&&obj.qushiyipath!='')?strutil.startWith(obj.qushiyipath,'upload')?ctxPath+'/'+obj.qushiyipath:ctxPath+'/upload/'+obj.qushiyipath}" />
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="qumappath">企业全貌图:</label> <input id="qumappath"
+										class="qumappath" name="qumappath" type="hidden"
+										value="${obj.qumappath}"> <a
+										class="btn btn-sm btn-info"><input
+										class="file_upload_qmt " type="file" name="file" /></a> <a
+										id="tip-queue"
+										style="float: right; width: 125px; display: none;"></a>
+									<div class="imgqmt">
+										<img id="qyqmPic" ${(obj.qumappath!=null&&obj.qumappath!= '')? 'width="330px" height="180px" '} src="${(obj.qumappath!=null&&obj.qumappath!='')?strutil.startWith(obj.qumappath,'upload')?ctxPath+'/'+obj.qumappath:ctxPath+'/upload/'+obj.qumappath}" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">区县简介</div>
+					</div>
+					<div class="widget-body">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<div id="titleeditor">
+										<script id="textcontent" name="textcontent" type="text/plain"
+											style="width: 100%; height: 400px;">
+    										</script>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+	</div>
+
+	<!-- uploadifive所需js和css -->
+	<script src="${ctxPath}/resource/jquery.uploadifive.min.js"></script>
+	<link href='${ctxPath}/resource/uploadifive.css' />
+
+
+	<script type="text/javascript">
+		var ue = UE.getEditor('textcontent');
+
+		$(document).ready(function() {
+			var ue = UE.getEditor('textcontent');
+
+			ue.ready(function() {//编辑器初始化完成再赋值  
+				if ("${parameter.id}" != "") {
+					ue.setContent('${obj.textcontent}');
+				}
+			});
+
+		});
+
+		(function($) {
+
+			$.getUrlParam = function(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				if (r != null)
+					return unescape(r[2]);
+				return null;
+			}
+		})(jQuery);
+
+		$(function() {
+			
+			
+			
+			
+			
+			
+			
+			var flag = $.getUrlParam("flag");
+			//if(flag != 1){
+			//	$(".btn-info").hide();
+			//}
+
+			$('.file_upload_syt').uploadifive({
+				'auto' : true, //自动上传 
+				'uploadScript' : '${ctxPath}/cangchugl/scqysyt', //处理上传文件Action路径 
+				'buttonClass' : 'file_upload',
+				'fileObjName' : 'file', //文件对象
+				'buttonText' : '上传示意图', //按钮显示文字 
+				'queueID' : 'tip-queue', //提示信息放置目标 
+				'fileTypeExts' : '*.jpg; *.png', //允许上传文件后缀名
+				'onUploadComplete' : function(file, data) { //文件上传成功后执行
+					var url = "${ctxPath}/upload/";
+					url += data;
+					var obimg = document.getElementsByTagName("img")[0];
+					obimg.setAttribute("src", url);
+					$("#qushiyipath").val(data);
+					$("#qysyPic").css("width", "330px");
+					$("#qysyPic").css("height", "180px");
+
+				}
+			});
+
+			$('.file_upload_qmt').uploadifive({
+				'auto' : true, //自动上传 
+				'uploadScript' : '${ctxPath}/cangchugl/scqysyt', //处理上传文件Action路径 
+				'buttonClass' : 'file_upload',
+				'fileObjName' : 'file', //文件对象
+				'buttonText' : '上传全貌图', //按钮显示文字 
+				'queueID' : 'tip-queue', //提示信息放置目标 
+				'fileTypeExts' : '*.jpg; *.png', //允许上传文件后缀名
+				'onUploadComplete' : function(file, data) { //文件上传成功后执行
+					var url = "${ctxPath}/upload/";
+					url += data;
+					var obimg = document.getElementsByTagName("img")[1];
+					obimg.setAttribute("src", url);
+					$("#qumappath").val(data);
+					$("#qyqmPic").css("width", "330px");
+					$("#qyqmPic").css("height", "180px");
+
+				}
+			});
+
+		});
+
+		function saveDiqu() {
+			
+			var orderno = $("#orderno").val();
+			var tel = $("#tel").val();
+			var qxjd = $("#qxjd").val();
+			var qxwd = $("#qxwd").val();
+			var maplevel = $("#maplevel").val();
+			var form = $(".dashboard-wrapper-lg form");
+			$.ajax({
+				url : form.attr("action"),
+				type : 'post',
+				dataType : "json",
+				data : form.serialize(),
+				success : function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("保存成功！");
+						parent.window.dialog1.close();
+			        	parent.window.datatable.ajax.reload(null,true);
+					}
+				}
+			});
+
+		}
+
+		function insertDiqu() {
+			var quxian = $("#quyu option:selected").text();
+			window.location.href = "${ctxPath}/oa/jibenxinxi/quxianxinxi_zsg.html?quxian="
+					+ quxian;
+			$(".quxianid").text("");
+		}
+	</script>
+</body>
+
+
+
+
+</html>

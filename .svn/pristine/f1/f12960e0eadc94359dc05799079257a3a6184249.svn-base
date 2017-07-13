@@ -1,0 +1,488 @@
+package com.zkzy.njzhpt.bo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.CangchuglDao;
+import com.zkzy.njzhpt.dao.JibenxinxiDao;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class jibenxinxiBo {
+	
+	
+	
+	/**
+	 * 获取用户信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Page<Record> findUserInfo (HashMap<String, Object> param) throws Exception {
+		return JibenxinxiDao.findUserInfo(param);
+	} 
+	
+	/**
+	 * 分页查询企业信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<Record> findQiyexinxi (HashMap<String, Object> param) throws Exception {
+		return JibenxinxiDao.findQiyexinxi(param);
+	} 
+	
+	/**
+	 * 删除企业信息
+	 * @author yzz
+	 * @param param
+	 * @return
+	 */
+	public Ret delQiyexinxi (HashMap<String, Object> param) {
+		
+		Record userinfo=Db.findFirst("select * from fw_user_dep where depid=?",param.get("ID"));
+		boolean result3=false,result4=false,result5=false;
+		if(userinfo!=null){
+			String userid=userinfo.getStr("userid");
+			result4 = Db.deleteById("fw_user_dep", "userid", userid);
+			result5 = Db.deleteById("fw_user_role", "userid", userid);	
+			result3 = Db.deleteById("fw_user", "id", userid);
+		}
+
+		boolean result6= Db.deleteById("fw_dep", param.get("ID"));
+		boolean result = Db.deleteById("tz_cangfang", "qyzzjgdm", param.get("qyzzjgdm"));
+		boolean result1 = Db.deleteById("tz_kudian", "qyzzjgdm", param.get("qyzzjgdm"));
+		boolean result2 = Db.deleteById("tz_qiye", "qyzzjgdm", param.get("qyzzjgdm"));
+		
+		if (result&&result1&&result2&&result3&&result4&&result5&&result6){
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+	
+	public Ret addQiyexinxi (HashMap<String, Object> param) {
+		//添加部门信息
+		String depid=SqlUtil.uuid();
+		Record dept = new Record();
+		dept.set("id", depid);
+		dept.set("name",param.get("qymc"));
+		dept.set("canuse",1);
+		dept.set("orderno",7);
+		dept.set("childcount",0);
+		dept.set("parentid","root");
+		dept.set("areaid",Db.findFirst("select * from fw_area where name=?",param.get("xian")).getStr("id"));
+		boolean bool1=Db.save("fw_dep", dept);
+		//添加用户信息
+		String userid=SqlUtil.uuid();
+		Record userinfo = new Record();
+		userinfo.set("id", userid);
+		userinfo.set("loginname", param.get("loginname"));
+		userinfo.set("password", param.get("password"));
+		userinfo.set("realname", param.get("qymc"));
+		userinfo.set("canuse",1);
+		userinfo.set("orderno", 1);
+		boolean bool2=Db.save("fw_user", userinfo);
+		//添加角色_用户
+		Record user_role = new Record();
+		user_role.set("id", SqlUtil.uuid());
+		user_role.set("userid", userid);
+		user_role.set("roleid", Db.findFirst("select * from fw_role where code='qiye'").getStr("id"));
+		boolean bool3=Db.save("fw_user_role", user_role);
+		//添加用户——部门
+		Record user_dept = new Record();
+		user_dept.set("id", SqlUtil.uuid());
+		user_dept.set("userid", userid);
+		user_dept.set("depid", depid);
+		boolean bool4=Db.save("fw_user_dep", user_dept);
+		
+		//获取企业类型名称
+		/*String jyywlxmc="";
+		String jyywlxbh =(String) param.get("jyywlxbh");
+		HashMap<String, Object> param1 = new HashMap<>();
+		if(jyywlxbh.contains(",")){
+			String mc[]=jyywlxbh.split(",");
+			for(int i=0;i<mc.length;i++){
+				param1.put("jyywlxbh", mc[i]);
+				Record record1 = CangchuglDao.findjylx(param1);
+				if(i!=mc.length-1){
+					jyywlxmc+=record1.get("jyywlxmc")+",";
+				}else{
+					jyywlxmc+=record1.get("jyywlxmc");
+				}
+			}
+		}else{
+			param1.put("jyywlxbh", jyywlxbh);
+			Record record1 = CangchuglDao.findjylx(param1);
+			record1.get("jyywlxmc");
+			jyywlxmc+=record1.get("jyywlxmc");
+		}*/
+		//企业信息
+		Record record = new Record().setColumns(param).set("ID", depid).remove("loginname").remove("password");
+		//record.set("jyywlxmc", jyywlxmc);
+		boolean result = Db.save("tz_qiye", "ID", record);
+		if (result&&bool1&&bool2&&bool3&&bool4) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("id",depid));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+	public Ret upQiyexinxi (HashMap<String, Object> param) {
+		
+		//修改部门
+		Record dept = new Record();
+		dept.set("id", param.get("ID"));
+		dept.set("name",param.get("qymc"));
+		dept.set("canuse",1);
+		dept.set("orderno",7);
+		dept.set("childcount",0);
+		dept.set("parentid","root");
+		dept.set("areaid",Db.findFirst("select * from fw_area where name=?",param.get("xian")).getStr("id"));
+		Record deptInfo=   Db.findFirst("select * from fw_dep where id=?",param.get("ID"));
+		boolean bool1=false;
+		if(deptInfo!=null){
+			bool1=Db.update("fw_dep", dept);
+		}else{
+			bool1=Db.save("fw_dep", dept);
+		}
+		
+		//修改用户
+		Record userinfo = new Record();
+		userinfo.set("loginname", param.get("loginname"));
+		userinfo.set("password", param.get("password"));
+		userinfo.set("realname", param.get("qymc"));
+		userinfo.set("canuse",1);
+		userinfo.set("orderno", 1);
+		Record userdetail=  Db.findFirst("select * from fw_user where loginname=?",param.get("loginname"));
+		boolean bool2=false;
+		if(userdetail!=null){
+			userinfo.set("id", Db.findFirst("select * from fw_user_dep where depid=?",param.get("ID")).getStr("userid"));
+			bool2=Db.update("fw_user", userinfo);
+		}else{
+			String userid=SqlUtil.uuid();
+			userinfo.set("id", userid);
+			bool2=Db.save("fw_user", userinfo);
+			//添加角色_用户
+			Record user_role = new Record();
+			user_role.set("id", SqlUtil.uuid());
+			user_role.set("userid", userid);
+			user_role.set("roleid", Db.findFirst("select * from fw_role where code='qiye'").getStr("id"));
+			boolean bool3=Db.save("fw_user_role", user_role);
+			//添加用户——部门
+			Record user_dept = new Record();
+			user_dept.set("id", SqlUtil.uuid());
+			user_dept.set("userid", userid);
+			user_dept.set("depid", param.get("ID"));
+			boolean bool4=Db.save("fw_user_dep", user_dept);
+			
+		}
+		//获取企业类型名称
+				/*String jyywlxmc="";
+				String jyywlxbh =(String) param.get("jyywlxbh");
+				HashMap<String, Object> param1 = new HashMap<>();
+				if(jyywlxbh.contains(",")){
+					String mc[]=jyywlxbh.split(",");
+					for(int i=0;i<mc.length;i++){
+						param1.put("jyywlxbh", mc[i]);
+						Record record1 = CangchuglDao.findjylx(param1);
+						if(i!=mc.length-1){
+							jyywlxmc+=record1.get("jyywlxmc")+",";
+						}else{
+							jyywlxmc+=record1.get("jyywlxmc");
+						}
+					}
+				}else{
+					param1.put("jyywlxbh", jyywlxbh);
+					Record record1 = CangchuglDao.findjylx(param1);
+					record1.get("jyywlxmc");
+					jyywlxmc+=record1.get("jyywlxmc");
+				}*/
+		//修改企业基本信息
+		Record record = new Record().setColumns(param).remove("loginname").remove("password");
+		//record.set("jyywlxmc", jyywlxmc);
+		boolean result = Db.update("tz_qiye", "ID", record);
+		if (result&&bool1&&bool2) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+	
+	
+	/**
+	 * 地区表 --- 查删增改
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Page<Record> findDiqu (HashMap<String, Object> param) throws Exception {	
+		 Page<Record>  diqulist=JibenxinxiDao.findDiqu(param);
+		return diqulist;
+	} 
+	
+	public Ret delDiqu (HashMap<String, Object> param) {
+		boolean result = Db.deleteById("njpt_diqu", "areaid", param.get("id"));
+		boolean result2 = Db.deleteById("fw_area", "id", param.get("id"));
+		
+		if (result&&result2) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+	
+	
+
+	public Ret addDiqu (HashMap<String, Object> param) {
+			
+		/*添加地区信息--fw_area*/
+		String  areaid=SqlUtil.uuid();
+		Record areainfo=new Record();
+		areainfo.set("name", param.get("name"));
+		areainfo.set("canuse",1);
+		areainfo.set("childcount",1);
+		areainfo.set("orderno",Db.use("njpt").findFirst("select * from fw_area where parentid!='root' ORDER BY orderno desc").getInt("orderno")+1);
+		areainfo.set("parentid",Db.use("njpt").findFirst("select * from fw_area where parentid='root' ").getStr("id"));
+		boolean  bool2=false;
+		if(!param.get("id").equals("")){
+			areainfo.set("id", param.get("areaid"));
+			bool2=Db.use("njpt").update("fw_area", areainfo);
+		}else{
+			areainfo.set("id", areaid);
+			bool2=Db.use("njpt").save("fw_area", areainfo);
+		}
+		
+		/*添加地区基本信息*/
+		param.remove("loginname");param.remove("password");param.remove("name");
+		Record record = new Record().setColumns(param);
+		boolean bool4= false;
+		if(!param.get("id").equals("")){
+			
+			bool4= Db.use("njpt").update("njpt_diqu", record);
+		}else{
+			record.set("id", SqlUtil.uuid()).set("areaid", areaid);
+			bool4= Db.use("njpt").save("njpt_diqu", record);
+		}
+		
+		
+		if (bool2&&bool4) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+	public Ret upDiqu (HashMap<String, Object> param) {
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("njpt_diqu", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+	
+	
+	/**
+	 * 库点信息 --- 查删增改
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<Record> findKudian (HashMap<String, Object> param) throws Exception {
+		return JibenxinxiDao.findKudian(param);
+	} 
+	
+	public Ret delKudian (HashMap<String, Object> param) {
+		int result = Db.update("delete  from tz_cangfang where qyzzjgdm=? and kdbm=?", param.get("qyzzjgdm"),param.get("kdbm"));
+		int result1 = Db.update("delete from tz_kudian where qyzzjgdm=? and kdbm=?", param.get("qyzzjgdm"),param.get("kdbm"));
+		if (result==1&&result1==1) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+	
+	public Ret addKudian (HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		Record record = new Record().setColumns(param).set("ID", uuid);
+		boolean result = Db.save("tz_kudian", "ID", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+	public Ret upKudian (HashMap<String, Object> param) {
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("tz_kudian", "ID", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+	
+	
+	/**
+	 * 仓房信息 查删增改
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<Record> findCangfang (HashMap<String, Object> param) throws Exception {
+		return JibenxinxiDao.findCangfang(param);
+	} 
+	
+	public Ret delCangfang (HashMap<String, Object> param) {
+		int result = Db.update("delete from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=?",param.get("qyzzjgdm"),param.get("kdbm"),param.get("cfbm"));
+		if (result==1) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+	
+	public Ret addCangfang (HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		Record record = new Record().setColumns(param).remove("ID");
+		boolean result = Db.save("tz_cangfang", "ID",record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+	public Ret upCangfang (HashMap<String, Object> param) {
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("tz_cangfang", "ID",record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+	
+	
+	/**
+	 * 廒间信息  查删增改
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<Record> findAojian (HashMap<String, Object> param) throws Exception {
+		return JibenxinxiDao.findAojian(param);
+	} 
+	
+	public Ret delAojian (HashMap<String, Object> param) {
+		boolean result = Db.deleteById("tz_aojian", "ID",param.get("ID"));
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+	
+	public Ret addAojian (HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		Record record = new Record().setColumns(param).set("ID", uuid);
+		boolean result = Db.save("tz_aojian", "ID",record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+	
+	public Ret upAojian (HashMap<String, Object> param) {
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("tz_aojian", "ID",record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+	
+	/**
+	 * 通过qyzzjgdm查询企业下库点
+	 * @param qyzzjgdm
+	 * @return
+	 */
+	public List<Record> findsuoshukd(String qyzzjgdm){
+		return Db.find("select * from tz_kudian where qyzzjgdm = ?",qyzzjgdm);
+	}
+
+
+}

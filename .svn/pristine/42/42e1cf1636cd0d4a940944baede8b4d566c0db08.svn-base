@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>增加部门</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+ 	<script src="${ctxPath}/js/jquery.min.js"></script>
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+
+</head>
+<%
+	var obj={},url=ctxPath+"/emergency/addbumen";
+	var fid = parameter.fid;
+	var cengshu = parameter.cengshu;
+	if (isNotEmpty(parameter.id)) {
+		obj=@com.zkzy.njzhpt.dao.EmergencyDAO.querytree({"id":parameter.id,page:1,rows:1}).getList().get(0);
+		url = ctxPath+"/emergency/upbumen";
+	};
+%>
+<script type="text/javascript">
+
+$(window).load(function() { 
+	if("${parameter.id}"!=""){
+		$("#isend").val(0);
+		$("#leixing").val("txl");
+	}else{
+		var cs = parseInt("${cengshu}") + 1;
+		$("#cengshu").val(cs);
+		$("#isend").val(0);
+		$("#leixing").val("txl");
+		$("#shangji").val("${fid}");
+	}
+	
+});
+
+</script>
+
+
+<body>
+	 <div class="dashboard-wrapper-lg" style="padding: 0px;min-height: 0px;" >
+	 	<form id="contentform" role="form"  action="${url}"  method="post" style="overflow: hidden;">
+	 		<input type="hidden" id="id" name="id" class="form-control" placeholder="id" value="${obj.id}">
+	 		<input type="hidden" id="cengshu" name="cengshu" class="form-control" placeholder="chengshu" value="${obj.cengshu}">
+	 		<input type="hidden" id="isend"  name="isend" class="form-control" placeholder="isend" value="${obj.isend}">
+	 		<input type="hidden" id="leixing"  name="leixing" class="form-control" placeholder="leixing" value="${obj.leixing}">
+	 		<input type="hidden" id="shangji"  name="shangji" class="form-control" placeholder="shangji" value="${obj.shangji}">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget" style="margin-bottom: 0px;">
+                  <div class="widget-header">
+                    <div class="title">
+                        	基本信息                                  
+                    </div>
+                  </div>
+                  <div class="widget-body">
+						<div class="row">
+							<!--  
+							<div class="col-xs-12">	
+								<div class="form-group">
+									<label for="genjd">根节点:</label>
+									<input id="genjd" name="genjd" class="form-control" placeholder="根节点" value="${obj.genjd}">	
+								</div>	
+							</div>
+							-->
+							<div class="col-xs-12">	
+								<div class="form-group">
+									<label for="name">*名称:</label>
+									<input id="name" name="name" class="form-control" placeholder="名称" value="${obj.name}">	
+								</div>	
+							</div>
+							<div class="col-xs-12">	
+								<div class="form-group">
+									<label for="diqu">*所属地区:</label>
+									<input id="diqu" name="diqu" class="form-control" placeholder="所属地区" value="${obj.diqu}">	
+								</div>	
+							</div>
+							<div class="col-xs-12">	
+								<div class="form-group">
+									<label for="orderno">*排序:</label>
+									<input id="orderno" name="orderno" class="form-control" placeholder="排序" value="${obj.orderno}">	
+								</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</form>
+	</div>
+            <!-- Row End -->
+            
+    <script type="text/javascript">
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+
+    function savebumen() {
+    	var form = $("#contentform");
+    	
+    	var name = $("#name").val();
+    	var diqu = $("#diqu").val();
+    	var orderno = $("#orderno").val();
+    	
+    	var tishi = "";
+    	
+    	if(name == null || name == ""){
+    		tishi += "名称不能为空 ";
+    	}
+    	if(diqu == null || diqu == ""){
+    		tishi += "所属地区不能为空 ";
+    	}
+    	if(orderno == null || orderno == ""){
+    		tishi += "排序不能为空 ";
+    	}
+    	
+    	if(tishi != ""){
+    		alert(tishi);
+    	}else{
+    		$.ajax({
+        		url: form.attr("action"),
+        		type:"post",
+        		dataType:"json",
+        		data: form.serialize(),
+        		success: function(msg) {
+        			if (!msg.ret) {
+        				alert(msg.message);
+        			} else {
+        				alert("保存成功");
+        				parent.window.dialog1.close();
+			        	   parent.window.datatable.ajax.reload(null,true);
+        			}
+        			window.parent.gettree(); 
+        		},
+        		error:function(){
+        			alert("保存失败,请检查内容是否重复");
+        		}
+        	});
+    	}
+    }
+    
+    </script>
+            
+</body>
+
+
+</html>

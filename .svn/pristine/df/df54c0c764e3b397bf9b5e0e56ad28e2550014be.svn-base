@@ -1,0 +1,31 @@
+package com.zkzy.njzhpt.dao;
+
+import java.util.HashMap;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+
+public class AppDao {
+
+	public static Page<Record> getQyInfo(HashMap<String, Object> param) throws Exception {
+		Param p = new Param();
+		p.put("and a.jyywlxbh = ?", "jyywlxbh");
+		SqlAndParam s = SqlUtil.buildSql(p, param);
+		Page<Record> page = Db.paginate(Integer.valueOf(String
+				.valueOf(param.get("page"))), Integer.valueOf(String
+				.valueOf(param.get("rows"))), 
+				"select sum(CAST(a.zdmj as FLOAT)) as zdmj,sum(CAST(a.yxcr as FLOAT)) as yxcr,sum(CAST(a.cfzcr as FLOAT)) as cfzcr,a.jyywlxbh as jyywlxbh,count(a.jyywlxbh) as num ,a.jyywlxmc as jyywlxmc ",
+				"from  tz_qiye a where 1=1 " + s.getSql()+" GROUP BY a.jyywlxbh,a.jyywlxmc", 
+				s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	
+	
+	
+	
+}

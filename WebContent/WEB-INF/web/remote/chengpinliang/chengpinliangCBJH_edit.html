@@ -1,0 +1,186 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+ var obj,title,selecteddep,selectedrole,action;
+	if(isEmpty(parameter.id)){
+		title = "新增成品粮计划";
+		selecteddep={list:[]};
+		selectedrole={list:[]};
+		obj = {orderno:1,canuse:1};
+		action = ctxPath+"/canshu/saveCanshu.do";
+	}else{
+		title = "编辑成品粮计划";
+		obj = @com.zkzy.njzhpt.dao.ChengPinLiangDAO.selectCPLCBJH({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+		action = ctxPath+"/canshu/saveCanshu.do";
+	}
+ 
+%>
+<style type="text/css">
+#btn{
+float: right;
+}
+div{
+margin-top: 10px;
+}
+table{
+border:none;
+}
+input{
+height:100%;
+width: 100%;
+}
+ td{
+   		    font-size: 14px ! important;
+   			padding: 0px ! important;
+   			line-height: 34px ! important;
+   			text-align: left ! important;
+    	}
+.tt{
+    		text-align: right ! important;
+    	} 
+
+</style>
+<form action="${action}" method="post">
+		<input type="hidden" name="id" value="${obj.id}"/>
+		<fieldset>
+			<legend>承储企业</legend>
+			
+			<table width="100%" border="1">
+         	<tr>
+         		<td width="160" class="tt">所在区域:</td>
+         		<td width="281"><select id="quming" name="quming" class="form-control input-sm" onchange="selectQYMC()">
+					<%	
+						if(isEmpty(parameter.id)){
+					%>
+						<option>请选择区域名称</option>
+						
+					<%
+						}else{
+					%>
+							<option>${obj.quming}</option>
+					<%
+						}
+					%>
+				
+					
+				</select></td>
+         		<td width="160" class="tt">企业名称:</td>
+         		<td width="280">
+         		<select id="ccqy" name="ccqy"  class="form-control input-sm" >
+         			<%	
+						if(isEmpty(parameter.id)){
+					%>
+						<option>请选择企业名称</option>
+						
+					<%
+						}else{
+					%>
+							<option>${obj.ccqy}</option>
+					<%
+						}
+					%>
+								
+							</select>
+         		<td  width="160" class="tt">年度:</td>
+         		<td >
+					<input type="text" class="form-control" name="niandu" id="niandu" placeholder="年度" value="${obj.niandu}">
+         		</td>
+         	</tr>
+         </table>
+		</fieldset>
+		 <fieldset>
+    		<legend>成品粮</legend>
+       		<table width="100%" border="1">
+         	<tr>
+         		<td width="160" class="tt">大　米:</td>
+         		<td width="270"><input type="text" class="form-control" name="cpl_dm" id="cpl_dm" placeholder="大米" value="${obj.cpl_dm}"></td>
+         		<td class="tt" width="160">面　粉:</td>
+         		<td width="270"><input type="text" class="form-control" name="cpl_mf" id="cpl_mf" placeholder="面粉" value="${obj.cpl_mf}"></td>
+         		<td width="160"></td>
+         		<td width="280"></td>
+         	</tr>
+         </table>
+         </fieldset>
+		<fieldset>
+    		<legend>成品油</legend>
+       		<table width="100%" border="1">
+         	<tr>
+         		<td width="160" class="tt">散装油:</td>
+         		<td width="270"><input type="text" class="form-control" name="cpy_szy" id="cpy_szy" placeholder="散装油" value="${obj.cpy_szy}"></td>
+         		<td class="tt" width="160">包装油:</td>
+         		<td width="270"><input type="text" class="form-control" name="cpy_bzy" id="cpy_bzy" placeholder="包装油" value="${obj.cpy_bzy}"></td>
+         		<td width="160"></td>
+         		<td width="280"></td>
+         	</tr>
+         </table>
+         </fieldset>
+	</form>
+<div class="panel-footer">
+	<button type="button" id="tijiao" class="btn btn-primary" onclick="saveCPLCBJH()" ><em class="fa fa-check fa-fw"></em> 提交</button>
+	<a class="btn btn-danger back" href="${Referer}"><em class="fa fa-mail-reply fa-fw"></em> 返回</a>
+</div>
+
+<script>
+(function ($) {
+    $.getUrlParam = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+})(jQuery);
+$(function(){
+	if($.getUrlParam("id")==null){
+		$.ajax({
+			url: "${ctxPath}/lunhuan/selectQY.do",
+			dataType: "json",
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#quming").append("<option value="+n.xzqhdm+">"+n.quyu+"</option>");
+				});
+			}
+		});
+	}
+})
+function selectQYMC(){
+	$("#ccqy").html("");
+	$("#ccqy").append("<option>请选择企业名称</option>")
+	var szqy=$("#quming").val();
+	$.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{szqy:szqy},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#ccqy").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				});
+			}
+		});
+	
+		
+}
+	function saveCPLCBJH(){
+		if($("#quming").val()=="请选择区域名称"){
+			alert("请选择区域名称 ");
+			return false;
+		}
+		if($("#ccqy").val()=="请选择企业名称"){
+			alert("请选择企业名称 ");
+			return false;
+		}
+		 $.ajax({
+				url: "${ctxPath}/chengpinliang/saveCPLCBJH.do",
+				dataType: "json",
+				data:$("form").serialize(),
+				success: function(msg) {
+					if (msg.ret) {
+						window.location.href = "chengpinliangCBJH.html";
+					}else{
+						alert(msg.message);
+					}
+				}
+			});
+	}
+	
+</script>
+<%
+	}
+%>

@@ -1,0 +1,37 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+ var kdbm = parameter.kdbm;
+ var obj={};
+%>
+<style>
+
+
+</style>
+
+<body>
+	<ul role="tablist" class="nav nav-tabs nav-justified">
+                
+               </ul>
+	<!-- <li class="dropdown">
+		<a href="#" id="myTabDrop1" class="dropdown-toggle" 
+		   data-toggle="dropdown">Java 
+			<b class="caret"></b>
+		</a>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+			<li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>
+			<li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>
+		</ul>
+	</li> -->
+</ul>
+<div id="myTabContent" class="tab-content" style="padding: 0;">
+	<div class="tab-pane fade in active" id="jj">
+		<iframe id="if1" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/shouchukeshihua/kudianxinxi/kudianjianjie.html?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}"></iframe>
+	</div>
+</div>
+<script type="text/javascript">
+
+</script>
+<%
+	}
+%>

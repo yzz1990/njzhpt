@@ -1,0 +1,192 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!----------dataTables-------------->
+<link href='${ctxPath}/resource/jquery.dataTables.min.css' rel='stylesheet'>
+<script src="${ctxPath}/resource/jquery.dataTables.min.js"></script>
+<script src='${ctxPath}/resource/dataTables.bootstrap.min.js'></script>
+<script src="${ctxPath}/resource/datagrid.js"></script>
+<!----------dataTables-------------->
+
+<style>
+.table>tbody>tr>td {
+   font-size:22px;
+   text-align:right;
+   vertical-align:middle;
+}
+.table>thead>tr>th{
+	text-align:center;
+	vertical-align:middle;
+	font-size:22px;
+	height:60px;
+}
+.div_center{
+	text-align:center;
+}
+</style>
+
+<script type="text/javascript">
+$(function () {
+	$.ajax({
+		url:'${ctxPath}/zonghe/finddjck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+
+			var bt="<tr>";
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[0]+"</th>";
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[1]+"</th>";
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7;border-right: #B5DCFF;'>合计</th>";
+			bt+="<th colspan='7' style='text-align:center;border: 1px solid #7CBDF7;border-left: #B5DCFF;'>其中</th>";
+			bt+="</tr><tr>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>一等</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>二等</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>三等</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>四等</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>五等</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>等外级</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>其他</th>";
+			bt+="</tr>";
+			$("#djck > thead").append(bt);
+
+			var lone = 0;
+			var ltwo = 0;
+			var lthree = 0;
+			var lfour = 0;
+			var lfive = 0;
+			var lother = 0;
+			var nine = 0;
+
+
+			var htmlstr="<tr class='qshj'>";
+			for(var i=0;i<data.hjzck.length;i++){
+				if(i<2){
+					htmlstr+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+data.hjzck[i]+"</th>";
+				}else{
+					htmlstr+="<th class='thhj"+i+"' rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+((data.hjzck[i])*10000).toFixed(0)+"</th>";
+				}
+			}
+			htmlstr+="</tr>"
+			$("#djck > thead").append(htmlstr);
+			for(var i=0;i<data.pzzcklist.length;i++){
+				var trhtml="<tr class='qx"+i+"'>";
+				var qxhj = 0;
+				for(var j=0;j<data.btlist.length+1;j++){
+					if(j<2){
+						trhtml+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+data.pzzcklist[i][j]+"</th>";
+					}else{
+						trhtml+="<th class='th"+j+"' rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+((data.pzzcklist[i][j])*10000).toFixed(0)+"</th>";
+						if(j == 3){
+							//一级
+							lone += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 4){
+							//二级
+							ltwo += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 5){
+							//三级
+							lthree += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 6){
+							//四级
+							lfour += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 7){
+							//五级
+							lfive += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 8){
+							//等外级
+							lother += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 9){
+							//其他
+							nine += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+					}
+				}
+				trhtml+="</tr>";
+
+				$("#djck > thead").append(trhtml);
+				$(".qx"+i).find(".th2").text((qxhj));
+			}
+
+			var sum = lone + ltwo + lthree + lfour + lfive + lother+nine;
+			//alert(sum);
+			$(".thhj2").text((sum));
+			$(".thhj3").text((lone));
+			$(".thhj4").text((ltwo));
+			$(".thhj5").text(Math.round(lthree));
+			$(".thhj6").text((lfour));
+			$(".thhj7").text((lfive));
+			$(".thhj8").text((lother));
+			$(".thhj9").text((nine));
+
+			option5 = {
+				title : {
+					text: '全市粮食分等级库存统计'
+				},
+				tooltip : {
+					trigger: 'item',
+					formatter: "{a} <br/>{b} : {c} 吨({d}%)",
+					position: function (p) {
+						// 位置回调
+						return [p[0]-150, p[1]+15];
+					}
+				},
+				legend: {
+					orient : 'vertical',
+					y:'center',
+					x : 'left',
+					data:data.pzlist
+				},
+
+				color : ['#FFCC00', '#99CC33', '#66CCCC','#CC3399','#666699', '#666633','#FF6666'],
+				calculable : false,
+				series : [{
+					name:'分等级占比',
+					type:'pie',
+					radius : [60, 100],
+					itemStyle : {
+						normal : {
+							label : {
+								show: false
+							},
+							labelLine : {
+								show : false
+							}
+						}
+					},
+					data:data.pzzck
+				}
+				]
+			};
+			myChart=echarts.init(document.getElementById('container4')).setOption(option5);
+			myChart.on(ecConfig.EVENT.CLICK, eConsole4);
+		}
+	});
+	
+});
+</script>
+<meta content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="width:100%;height: 95%;">
+			<span style="width: 200px;font-size: 25px;margin-left:100px">分等级统计</span>&nbsp;&nbsp;<span style="font-size: 25px;">(单位/吨)</span>
+			<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 100%;height: 2px;">
+            <table id="djck"  class="table table-striped table-hover table-bordered datatables" style="width:100%; height:90%;float:left;" >
+				<thead>
+				</thead>
+			</table>	
+         </div>
+	</div>		
+</div>

@@ -1,0 +1,51 @@
+<%
+   if(isNotEmpty(parameter.id)) {
+      obj=@com.zkzy.njzhpt.dao.SecurityEducationDao.findsubjects({"id":parameter.id,"page":1,"rows":15}).getList().get(0);
+      debug(parameter.obj);
+   };
+   print(obj.content);
+   if(obj.type=='judge'){
+      print("<br>");
+      print("<input type='radio' name='judge'>对");
+      print("<input type='radio' name='judge'>错");
+      print("<br>答案:");
+      if(obj.judgeCorrect=='yes')
+      {
+         print("对");
+      }else{
+         print("否");
+      }
+   }else if(obj.type=='single'){
+      print("<br>");
+      print("A<input type='radio' name='selection'>"+obj.A+"&nbsp&nbsp");
+      print("B<input type='radio' name='selection'>"+obj.B+"&nbsp&nbsp");
+      print("C<input type='radio' name='selection'>"+obj.C+"&nbsp&nbsp");
+      print("D<input type='radio' name='selection'>"+obj.D+"&nbsp&nbsp");
+      if(obj.E!='')
+      {
+            print("E<input type='radio' name='selection'>"+obj.E+"&nbsp&nbsp");
+      }
+      if(obj.F!='')
+      {
+            print("F<input type='radio' name='selection'>"+obj.F+"&nbsp&nbsp");
+      }
+      print("<br>答案:");
+      print(obj.SelectCorrect);
+   }else{
+      print("<br>");
+      print("A<input type='checkbox' name='selection'>"+obj.A+"&nbsp&nbsp");
+      print("B<input type='checkbox' name='selection'>"+obj.B+"&nbsp&nbsp");
+      print("C<input type='checkbox' name='selection'>"+obj.C+"&nbsp&nbsp");
+      print("D<input type='checkbox' name='selection'>"+obj.D+"&nbsp&nbsp");
+      if(obj.E!='')
+      {
+      print("E<input type='checkbox' name='selection'>"+obj.E+"&nbsp&nbsp");
+      }
+      if(obj.F!='')
+      {
+      print("F<input type='checkbox' name='selection'>"+obj.F+"&nbsp&nbsp");
+      }
+      print("<br>答案:");
+      print(obj.SelectCorrect);
+}
+%>

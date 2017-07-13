@@ -1,0 +1,42 @@
+body{ font-family:"微软雅黑"; padding:0 0 50px 0; margin:0;}
+a{ text-decoration:none;}
+ul{ padding:0;}
+li{ list-style:none;}
+.top{ height:349px; background:url(../img/top.jpg) no-repeat;}
+.logo{ text-align:center; padding-top:20px;}
+.container{ width:1230px; margin:0 auto; position:relative; padding:0 15px;}
+.login-out{ padding:0 10px; font-size:16px;}
+.login img{ vertical-align:bottom;}
+.login{ line-height:20px; position:absolute; right:0; top:-60px;}
+.login a{ color:#fff; text-decoration:none;}
+.clearfix:before, .clearfix:after{ clear:both; display:table;content: " ";}
+.six-width{ width:1000px; margin:0 auto; text-align:center;}
+.col-xs-2{ width:16.6666667%; float:left; text-align:center;transition:0.5s all; margin-top:20px;}
+.img{ transition:0.5s all; padding:0;}
+.col-xs-2 p{ margin-top:10px; color:#fff; font-size:18px;}
+.col-xs-2:hover .img{ opacity:0.5;transition:0.5s all;}
+.left{ float:left;}
+.right{ float:right;}
+.news{ margin-top:30px; width:340px;}
+.tt{ font-size:18px;}
+.news-img{ width:126px; height:90px; border-radius:4px; overflow:hidden;}
+.news-txt{ width:190px; padding-left:10px; padding-top:5px; font-size:12px; line-height:20px;}
+.red{ color:#c30b0b;}
+.news ul{font-size:12px;}
+.news ul li{ background:url(../img/list.jpg) left center no-repeat; padding-left:10px; border-bottom:dotted 1px #666; padding-bottom:5px; margin-bottom:5px; padding-right:10px;}
+.news ul li a{ color:#626060;}
+.list-width{ width:200px;overflow: hidden; text-overflow: ellipsis;white-space: nowrap;}
+.btn{ width:514px; height:380px; background:url(../img/icon03.png) no-repeat; margin-top:10px; font-size:18px;}
+.btn img{ padding-bottom:5px;}
+.btn a{ color:#49b1fb; display:table; margin:0 auto; transition:0.5s all;}
+.btn-01{ width:180px; margin:0 auto; text-align:center; padding-top:55px;}
+.btn-01 a:hover{ transform:translate(0,-10px);}
+.btn-02{ width:160px; padding-top:30px;}
+.btn-03{ width:174px; padding-top:40px;}
+.btn-04{ width:160px; margin-left:95px; padding-top:10px;}
+.btn-05{ padding-top:10px;}
+.btn-06{ width:514px; padding-top:25px;}
+.notice{ width:290px; margin-top:50px; margin-left:40px;}
+.notice ul li{ width:225px; height:40px; background:url(../img/icon10.png) no-repeat; font-size:12px; padding-left:55px; padding-right:10px; padding-top:5px; margin-bottom:20px;}
+.notice ul li a{ color:#797979;}
+.notice ul li a:hover,.news ul li a:hover,.red:hover{ color:#49b1fb;}

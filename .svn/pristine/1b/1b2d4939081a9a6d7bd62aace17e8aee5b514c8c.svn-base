@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+
+<LINK rel=stylesheet href="${ctxPath}/resource/cssjs/mainstructure.css">
+<LINK rel=stylesheet href="${ctxPath}/resource/cssjs/maincontent.css">
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap.min.css" id="bscss">
+		<script src="${ctxPath}/js/bootstrap.min.js"></script>
+<SCRIPT type=text/javascript src="${ctxPath}/resource/cssjs/engine.js"></SCRIPT>
+<SCRIPT type=text/javascript src="${ctxPath}/resource/cssjs/util.js"></SCRIPT>
+<SCRIPT type=text/javascript src="${ctxPath}/resource/cssjs/jquery-1.7.1.min.js"></SCRIPT>
+<SCRIPT type=text/javascript src="${ctxPath}/resource/cssjs/jquery-ui-1.8.22.custom.min.js"></SCRIPT>
+<LINK rel=stylesheet href="${ctxPath}/resource/cssjs/jquery.ui.all.css">
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.bgiframe-2.1.2.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.ui.core.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.ui.widget.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.ui.mouse.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.ui.button.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.ui.position.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.ui.resizable.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.ui.dialog.js"></SCRIPT>
+<SCRIPT src="${ctxPath}/resource/cssjs/jquery.effects.core.js"></SCRIPT>
+<LINK rel=stylesheet type=text/css href="${ctxPath}/resource/cssjs/theme.css">
+<LINK rel=stylesheet type=text/css href="${ctxPath}/resource/cssjs/fullcalendar.css">
+<SCRIPT type=text/javascript src="${ctxPath}/resource/cssjs/fullcalendar.js"></SCRIPT>
+<LINK rel=stylesheet type=text/css href="${ctxPath}/resource/cssjs/fullcalendar.print.css" media=print>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/resource/cssjs/easyui.css" />
+<script type="text/javascript" src="${ctxPath}/resource/cssjs/easyloader.js"></script>
+
+<!------ datetimepicker ------>
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap-datetimepicker.min.css">
+<script src="${ctxPath}/js/bootstrap-datetimepicker.min.js"></script>
+<script src="${ctxPath}/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!------ datetimepicker ------>
+
+<style type="text/css">
+#boss{
+				background-color: rgb(255, 255, 255);
+	}
+	input{
+				background-color: #fff;
+			    border: 1px solid #8ABADC;
+			    border-radius: 4px;
+			    box-shadow: darkorange;
+			    -moz-box-shadow: inset 0 0 10px #CCC;
+			    -webkit-box-shadow: inset 0 0 10px #CCC;
+			    box-shadow: inset 0 0 20px #E8F2F9;
+		}
+		
+		
+</style>
+<SCRIPT type=text/javascript>
+	var starttime;
+	var endtime;
+	$(function() {
+		
+		using('datetimebox', function() {
+			$.fn.datebox.defaults.formatter = function(date) {
+				var y = date.getFullYear().toString();
+				var m = (date.getMonth() + 1).toString();
+				var d = date.getDate().toString();
+				return y + '-' + (m.length < 2 ? "0" + m : m) + '-'
+						+ (d.length < 2 ? "0" + d : d);
+			}
+			$('#starttime').datetimebox({
+				showSeconds : false
+			});
+			$('#endtime').datetimebox({
+				showSeconds : false
+			});
+			var c = $('#starttime').datebox('calendar').closest(".combo-p");
+			c.css('z-index', "100000");
+			var c = $('#endtime').datebox('calendar').closest(".combo-p");
+			c.css('z-index', "100000");
+		});
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+
+		$('#calendar')
+				.fullCalendar(
+						{
+							theme : true,
+							weekMode : 'liquid',
+							header : {
+								left : 'month,agendaWeek,agendaDay',
+								center : 'title',
+								right : 'prev,next today'
+							},
+							editable : false,
+							events : function(start, end, callback) {
+								var y = start.getFullYear().toString();
+								var m = (start.getMonth() + 1).toString();
+								var d = start.getDate().toString();
+								start = y + '-' + (m.length < 2 ? "0" + m : m)
+										+ '-' + (d.length < 2 ? "0" + d : d);
+								y = end.getFullYear().toString();
+								m = (end.getMonth() + 1).toString();
+								d = end.getDate().toString();
+								end = y + '-' + (m.length < 2 ? "0" + m : m)
+										+ '-' + (d.length < 2 ? "0" + d : d);
+								$("#calendar").fullCalendar('removeEvents');
+								starttime=start;
+								endtime=end;
+							
+								 $.post("${ctxPath}/renyuan/queryWorkPlan", {
+									"starttime" : starttime,
+									"endtime" : endtime,
+									"userid" : $("#userid").val(),
+									"deptid" : $("#deptid").val(),
+								}, 
+								 function(data) {
+									queryPageDataCb(data,
+											callback);
+								},'json'); 
+							},
+							dayClick : function(date, allDay, jsEvent, view) {
+								var selectdate = jQuery.fullCalendar.formatDate(date, "yyyy-MM-dd HH:mm:ss");
+								$("#starttime").datetimepicker({
+									startDate : selectdate,
+									format : 'yyyy-mm-dd hh:ii:ss',
+									language : 'zh-CN', //这里需要修改
+									weekStart : 1,
+									autoclose : 1,
+									todayHighlight :true,
+									startView : 0,
+									minView : 0,
+									forceParse : 0
+								});
+								$('#starttime').datetimepicker('setStartDate', selectdate);
+								$("#endtime").datetimepicker({
+									startDate : selectdate,
+									format : 'yyyy-mm-dd hh:ii:ss',
+									language : 'zh-CN', //这里需要修改
+									weekStart : 1,
+									autoclose : 1,
+									todayHighlight :true,
+									startView : 0,
+									minView : 0,
+									forceParse : 0
+								});
+								$('#endtime').datetimepicker('setStartDate', selectdate);
+								$("#reservebox").dialog({
+													autoOpen : false,
+													height : 450,
+													width : 400,
+													title : '工作日志录入 '
+															+ selectdate,
+													modal : true,
+													position : "center",
+													draggable : false,
+													buttons : {
+														"保存" : function() {
+															$.post("${ctxPath}/renyuan/saveWorkPlan",{
+																				"id" : $("#id").val(),
+																				"userid" : $("#userid").val(),
+																				"rizhitinme":selectdate,
+																				"deptid" : $("#deptid").val(),
+																				"starttime" : $("#starttime").val(),
+																				"endtime" : $("#endtime").val(),
+																				"gongzuoshijian" : $("#gongzuoshijian").find("option:selected").val(),
+																				"content" : $("#content").val()
+																			},
+																			function(data) {
+																				saveDataCb();
+																			});
+														},
+														"取消" : function() {
+															$(this).dialog("close");
+														}
+													},
+													close : function() {
+														allFields.val("").removeClass("ui-state-error");
+													}
+												});
+								$("#reservebox").dialog("open");
+							},
+							eventClick : function(event) {
+								var selectdate = jQuery.fullCalendar.formatDate(date, "yyyy-MM-dd");
+								var fstart = jQuery.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm");
+								var fend = jQuery.fullCalendar.formatDate(
+										event.end, "yyyy-MM-dd HH:mm");
+
+								$("#starttimeInfo").html("起始时间：" + fstart);
+								$("#endtimeInfo").html("结束时间：" + fend);
+								$("#plantypeInfo").html("工作事件：" + event.type);
+
+								if (event.description == null)
+									$("#memoInfo").html("事件简要内容：无");
+								else
+									$("#memoInfo").html(
+											"事件简要内容：" + event.description);
+
+								$("#reserveInfo").dialog({
+													autoOpen : false,
+													height : 300,
+													width : 350,
+													title : (event.uid).substring(0,10)
+															+ '计划详细信息 ',
+													modal : true,
+													position : "center",
+													draggable : false,
+													buttons : {
+														"关闭" : function() {
+															$(this).dialog("close");
+														},
+														"删除" : function() {
+															if (window.confirm("是否确认删除选择的计划?")) {
+																$.post("${ctxPath}/renyuan/deleteWorkPlan",{"id" : event.topic},function(data) {
+																	if(data.ret){
+																		delDataCb();
+																	}else{
+																		alert("删除失败！");
+																	}
+																},'json');
+															}
+														}
+													},
+													close : function() {
+														allFields.val("").removeClass("ui-state-error");
+													}
+												});
+								$("#reserveInfo").dialog("open");
+							}
+						});
+
+	});
+
+	function queryPageDataCb(data, callback) {
+		var events = [];
+		var tempTitle = "";
+		for (var i = 0; i < data.length; i++) {
+			if (data[i]['content'].toString().length >= 14){
+				tempTitle = data[i]['gongzuoshijian'].toString() + "："
+						+ data[i]['content'].toString().substring(0, 13);
+			}else{
+				tempTitle = data[i]['gongzuoshijian'].toString() + "："
+						+ data[i]['content'].toString();
+			}
+
+			if (data[i]['allDay'] == "true") {
+				events.push({
+					title : tempTitle,
+					start : data[i]['starttime'],
+					end : data[i]['endtime'],
+					topic : data[i]['id'],
+					description : data[i]['content'],
+					type : data[i]['gongzuoshijian'],
+					uid:data[i]['rizhitinme']
+				});
+			} else {
+				events.push({
+					title : tempTitle,
+					start : data[i]['starttime'],
+					end : data[i]['endtime'],
+					topic : data[i]['id'],
+					description : data[i]['content'],
+					type : data[i]['gongzuoshijian'],
+					allDay : false,
+					uid:data[i]['rizhitinme']
+				});
+			}
+
+		}
+		callback(events);
+	}
+
+	function saveDataCb(data) {
+		alert("添加成功！");
+		window.location.reload();
+	}
+
+	function delDataCb(data) {
+		alert("删除成功！");
+		window.location.reload();
+	}
+
+	function selectTime() {
+		var hour = $dp.cal.getP('H');
+
+		if (hour > 12 && hour < 17)
+			$dp.$('endtime').value = $dp.cal.getP('y') + "-"
+					+ $dp.cal.getP('M') + "-" + $dp.cal.getP('d') + " 17:00";
+		else
+			$dp.$('endtime').value = $dp.cal.getP('y') + "-"
+					+ $dp.cal.getP('M') + "-" + $dp.cal.getP('d') + " 11:00";
+	}
+</SCRIPT>
+
+<STYLE type=text/css>
+BODY {
+	FONT-SIZE: 14px;
+	FONT-FAMILY: "微软雅黑";
+}
+
+#calendar {
+	WIDTH: 900px;
+	MARGIN: 0px auto
+}
+div{
+ font-size: :14px;
+}
+
+#gongzuoshijian,#content{
+	background-color: #fff;
+    border: 1px solid #8ABADC;
+    border-radius: 4px;
+    box-shadow: darkorange;
+    -moz-box-shadow: inset 0 0 10px #CCC;
+    -webkit-box-shadow: inset 0 0 10px #CCC;
+    box-shadow: inset 0 0 20px #E8F2F9;
+}
+#boss{
+				background-color: rgb(255, 255, 255) !important;
+			}
+</STYLE>
+<META name=GENERATOR content="MSHTML 11.00.9600.16428">
+</HEAD>
+<BODY>
+
+<div class="panel-body" >
+		<DIV id="calendar"></DIV>	
+	</div>
+
+
+<DIV id="reservebox" title="Reserve meeting room" style="DISPLAY: none">
+		<FORM id="reserveformID" method="post">
+		<input type="hidden" id="userid" name="userid" value="${session.userinfo.user.id}">
+		<input type="hidden" id="deptid" name="deptid" value="${session.userinfo.dep.id}">
+		<input type="hidden" id="rizhitinme" name="rizhitinme" value="">
+		<input type="hidden" id="id" name="id" value="">
+			<table>
+				<tr>
+					<td align="left" style="padding:0 10px;width:90px;">开始时间：</td>
+					<td align="left"><INPUT id="starttime" name="starttime" ></td>
+				</tr>
+				<tr>
+					<td align="left" style="padding:0 10px;">结束时间：</td>
+					<td align="left"><INPUT id="endtime" name="endtime" ></td>
+				</tr>
+				<tr>
+					<td align="left" style="padding:0 10px;">工作事件：</td>
+					<td align="left">
+						<SELECT id="gongzuoshijian" name="gongzuoshijian"  style="width:140px;">
+								<OPTION value="">请选择</OPTION>
+								<OPTION value="日常事务">日常事务</OPTION>
+								<OPTION value="会议">会议</OPTION>
+								<OPTION value="出差">出差</OPTION>
+								<OPTION value="学习">学习</OPTION>
+								<OPTION value="公休">公休</OPTION>
+								<OPTION value="病假">病假</OPTION>
+								<OPTION value="其它">其它</OPTION>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" style="padding:0 10px;width: 120px;">事件简要内容：</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<TEXTAREA id="content" style="width:350px;" rows=12 cols=65 name="content"></TEXTAREA>
+					</td>
+				</tr>
+			</table>
+		</FORM>
+	</DIV>
+	<DIV id=reserveInfo title="Reserve meeting room" style="DISPLAY: none">
+		<FORM id=reserveformID method=post>
+			<DIV class=rowElem2>
+				<LABEL id=starttimeInfo>起始时间：</LABEL>
+			</DIV>
+			<DIV class=rowElem2>
+				<LABEL id=endtimeInfo>结束时间：</LABEL>
+			</DIV>
+			<DIV class=rowElem2>
+				<LABEL id=plantypeInfo>工作事件：</LABEL>
+			</DIV>
+			<DIV class=rowElem2>
+				<LABEL id=memoInfo>事件简要内容：</LABEL>
+			</DIV>
+		</FORM>
+	</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,72 @@
+﻿<html>
+<head>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctxPath}/css/BootSideMenu.css">
+<link rel="stylesheet" type="text/css" href="${ctxPath}/css/default.css">
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+
+<script type="text/javascript">
+	function kongzhi(pan, tilt) {
+		var ip = location.search.split('&')[0].split('=')[1];
+		var channel = location.search.split('=')[2];
+		$.post("${ctxPath}/shiping/ajaxcaozuo", {
+			content : "<pan>" + pan + "</pan><tilt>" + tilt + "</tilt>",
+			ipandport : ip,
+			channel : channel
+		});
+	}
+
+	function zoom(zoom) {
+		var ip = location.search.split('&')[0].split('=')[1];
+		var channel = location.search.split('=')[2];
+		$.post("${ctxPath}/shiping/ajaxcaozuo", {
+			content : "<zoom>" + zoom + "</zoom>",
+			ipandport : ip,
+			channel : channel
+		});
+	}
+	function close() {
+		$(window.parent.document).find("#if1").css('width','98%');
+	}
+	function open() {
+		$(window.parent.document).find("#if1").css('width','87%');
+	}
+</script>
+</head>
+<body>
+  <!--Test 2 -->
+  <div id="kongzhi" style="margin-top: 1px;width:55px;height: 290px;">
+  	<table style="margin-left: 8px;margin-top: 10px;">
+	<tr></tr>
+	<tr></tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="${ctxPath}/img/upin.png" onmousedown="kongzhi('0','60')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="${ctxPath}/img/downin.png" onmousedown="kongzhi('0','-60')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="${ctxPath}/img/leftin.png" onmousedown="kongzhi('-60','0')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="${ctxPath}/img/rightin.png" onmousedown="kongzhi('60','0')" onmouseup="kongzhi('0','0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="${ctxPath}/img/zoom-outin.png" onmousedown="zoom('60')" onmouseup="zoom('0')"></td>
+	</tr>
+	<tr>
+		<td style="width: 50px; height: 45px;"><img alt="" style="cursor: pointer;" src="${ctxPath}/img/zoom-inin.png" onmousedown="zoom('-60')" onmouseup="zoom('0')"></td>
+	</tr>
+	</table>
+  </div>
+	
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+    <script src="${ctxPath}/js/BootSideMenu.js"></script>
+    <script type="text/javascript">
+	  $(document).ready(function(){
+	      $('#kongzhi').BootSideMenu({side:"right",autoClose:true});
+	  });
+	</script>
+</body>
+</html>

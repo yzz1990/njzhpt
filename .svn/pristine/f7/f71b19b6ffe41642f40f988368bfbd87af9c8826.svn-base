@@ -1,0 +1,1910 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style>
+
+.tubiao{
+	width:1000px;
+	height:500px;
+}
+.panel-pinzhong{
+	width:50%;
+	float:left;
+}
+</style>
+<script type="text/javascript">
+(function ($) {
+   $.getUrlParam = function (name) {
+         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+         var r = decodeURI(window.location.search).substr(1).match(reg);
+         if (r != null) return unescape(r[2]); return null;
+     }
+ })(jQuery);
+ 
+var pz = $.getUrlParam("pz");
+var year = $.getUrlParam("year");
+var week = $.getUrlParam("week");
+
+var myChart;
+var myChart1;
+var myChart2;
+ 
+ $(function(){
+	 myChart = echarts.init(document.getElementById('divjidu')); 	//季度趋势
+	 myChart1 = echarts.init(document.getElementById('divbannian'));	//半年趋势
+	 myChart2 = echarts.init(document.getElementById('divniandu')); 	//年度趋势
+	 
+	 //获取原粮图标
+	 var ylxmsg = [];
+	 var ylxmck = [];
+	 var ylymsg = [];
+	 var ylymck = [];
+	 var ylddsg = [];
+	 var ylddck = [];
+	 var yldgsg = [];
+	 var yldgck = [];
+	 var ylyczsg = [];
+	 var ylyczck = [];
+	 var ylhsrsg = [];
+	 var ylhsrck = [];
+	 
+	 //获取成品粮图标
+	 var cplmfck = [];
+	 var cplxmck = [];
+	 var cpldmck = [];
+	 var cpldyck = [];
+	 var cplczyck = [];
+	 var cplhsyck = [];
+	 
+	 //获取杂粮图标
+	 var zlldsg = [];
+	 var zlldck = [];
+	 var zlxmsg = [];
+	 var zlxmck = [];
+	 var zlglsg = [];
+	 var zlglck = [];
+	 var zlslsg = [];
+	 var zlslck = [];
+	 
+	 //获取油粕图标
+	 var ypdyls = [];
+	 var ypczyls = [];
+	 var yphsyls = [];
+	 var ypdpls = [];
+	 var ypcpls = [];
+	 var ypmzpls = [];
+	 var ypdycc = [];
+	 var ypczycc = [];
+	 var yphsycc = [];
+	 var ypdpcc = [];
+	 var ypcpcc = [];
+	 var ypmzpcc = [];
+	 
+	 //获取港口报价图标
+	 var gkymdg = [];
+	 var gkymcc = [];
+	 var gkdddg = [];
+	 var gkddcc = [];
+	 var gkzlydg = [];
+	 var gkzlycc = [];
+	 var gkdydg = [];
+	 var gkdycc = [];
+	 var gkczdg = [];
+	 var gkczcc = [];
+	 var gkxmdg = [];
+	 var gkxmcc = [];
+	 
+	 //获取优质品种图标
+	 var yzxmsg = [];
+	 var yzxmck = [];
+	 var yzdgsg = [];
+	 var yzdgck = [];
+	 
+	 //获取年周数
+	 var nianzhou = [];
+	 
+	 $.ajax({
+		url:'${ctxPath}/jiage/coverguoneiprice.do',
+		type:'post',
+		data:{"year":year,"week":week},
+		dataType:'json',
+		success:function(data){
+			
+			var indexlength = 0;
+			var nz = data.list[0].nyear+"年"+data.list[0].nweek+"周";
+			var zhou = data.list[0].nweek;
+			nianzhou.push(nz);
+			for(var i = 0; i < data.list.length; i++){
+				//加载年周
+				if(zhou != data.list[i].nweek){
+					nz = data.list[i].nyear+"年"+data.list[i].nweek+"周";
+					zhou = data.list[i].nweek;
+					nianzhou.push(nz);
+					
+					indexlength = indexlength + 1;
+					if(indexlength > ylxmsg.length){
+						ylxmsg.push(0);
+					}
+					if(indexlength > ylymsg.length){
+						ylymsg.push(0);
+					}
+					if(indexlength > ylxmck.length){
+						ylxmck.push(0);
+					}
+					if(indexlength > ylymck.length){
+						ylymck.push(0);
+					}
+					if(indexlength > ylddsg.length){
+						ylddsg.push(0);
+					}
+					if(indexlength > ylddck.length){
+						ylddck.push(0);
+					}
+					if(indexlength > yldgsg.length){
+						yldgsg.push(0);
+					}
+					if(indexlength > yldgck.length){
+						yldgck.push(0);
+					}
+					if(indexlength > ylyczsg.length){
+						ylyczsg.push(0);
+					}
+					if(indexlength > ylyczck.length){
+						ylyczck.push(0);
+					}
+					if(indexlength > ylhsrsg.length){
+						ylhsrsg.push(0);
+					}
+					if(indexlength > ylhsrck.length){
+						ylhsrck.push(0);
+					}
+					if(indexlength > cplmfck.length){
+						cplmfck.push(0);
+					}
+					if(indexlength > cplxmck.length){
+						cplxmck.push(0);
+					}
+					if(indexlength > cpldmck.length){
+						cpldmck.push(0);
+					}
+					if(indexlength > cpldyck.length){
+						cpldyck.push(0);
+					}
+					if(indexlength > cplczyck.length){
+						cplczyck.push(0);
+					}
+					if(indexlength > cplhsyck.length){
+						cplhsyck.push(0);
+					}
+					if(indexlength > zlldsg.length){
+						zlldsg.push(0);
+					}
+					if(indexlength > zlldck.length){
+						zlldck.push(0);
+					}
+					if(indexlength > zlxmsg.length){
+						zlxmsg.push(0);
+					}
+					if(indexlength > zlxmck.length){
+						zlxmck.push(0);
+					}
+					if(indexlength > zlglsg.length){
+						zlglsg.push(0);
+					}
+					if(indexlength > zlglck.length){
+						zlglck.push(0);
+					}
+					if(indexlength > zlslsg.length){
+						zlslsg.push(0);
+					}
+					if(indexlength > zlslck.length){
+						zlslck.push(0);
+					}
+					if(indexlength > ypdyls.length){
+						ypdyls.push(0);
+					}
+					if(indexlength > ypdycc.length){
+						cpldmck.push(0);
+					}
+					if(indexlength > ypczyls.length){
+						ypczyls.push(0);
+					}
+					if(indexlength > ypczycc.length){
+						ypczycc.push(0);
+					}
+					if(indexlength > yphsyls.length){
+						yphsyls.push(0);
+					}
+					if(indexlength > yphsycc.length){
+						yphsycc.push(0);
+					}
+					if(indexlength > ypdpls.length){
+						ypdpls.push(0);
+					}
+					if(indexlength > ypdpcc.length){
+						ypdpcc.push(0);
+					}
+					if(indexlength > ypcpls.length){
+						ypcpls.push(0);
+					}
+					if(indexlength > ypcpcc.length){
+						ypcpcc.push(0);
+					}
+					if(indexlength > ypmzpls.length){
+						ypmzpls.push(0);
+					}
+					if(indexlength > ypmzpcc.length){
+						ypmzpcc.push(0);
+					}
+					if(indexlength > gkymdg.length){
+						gkymdg.push(0);
+					}
+					if(indexlength > gkymcc.length){
+						gkymcc.push(0);
+					}
+					if(indexlength > gkdddg.length){
+						gkdddg.push(0);
+					}
+					if(indexlength > gkddcc.length){
+						gkddcc.push(0);
+					}
+					if(indexlength > gkzlydg.length){
+						gkzlydg.push(0);
+					}
+					if(indexlength > gkzlycc.length){
+						gkzlycc.push(0);
+					}
+					if(indexlength > gkdydg.length){
+						gkdydg.push(0);
+					}
+					if(indexlength > gkdycc.length){
+						gkdycc.push(0);
+					}
+					if(indexlength > gkczdg.length){
+						gkczdg.push(0);
+					}
+					if(indexlength > gkczcc.length){
+						gkczcc.push(0);
+					}
+					if(indexlength > gkxmdg.length){
+						gkxmdg.push(0);
+					}
+					if(indexlength > gkxmcc.length){
+						gkxmcc.push(0);
+					}
+					if(indexlength > yzxmsg.length){
+						yzxmsg.push(0);
+					}
+					if(indexlength > yzxmck.length){
+						yzxmck.push(0);
+					}
+					if(indexlength > yzdgsg.length){
+						yzdgsg.push(0);
+					}
+					if(indexlength > yzdgck.length){
+						yzdgck.push(0);
+					}
+				}
+				var lslx = data.list[i].lslx;
+				var pzname = data.list[i].pzname;
+				var jglx = data.list[i].jglx;
+				var price = data.list[i].price;
+				
+				if(lslx == "yl"){
+					if(pzname == "xiaomai" && jglx == "001"){
+						ylxmsg.push(price);
+					}
+					if(pzname == "xiaomai" && jglx == "002"){
+						ylxmck.push(price);
+					}
+					if(pzname == "yumi" && jglx == "001"){
+						ylymsg.push(price);
+					}
+					if(pzname == "yumi" && jglx == "002"){
+						ylymck.push(price);
+					}
+					if(pzname == "dadou" && jglx == "001"){
+						ylddsg.push(price);
+					}
+					if(pzname == "dadou" && jglx == "002"){
+						ylddck.push(price);
+					}
+					if(pzname == "daogu" && jglx == "001"){
+						yldgsg.push(price);
+					}
+					if(pzname == "daogu" && jglx == "002"){
+						yldgck.push(price);
+					}
+					if(pzname == "youcaizi" && jglx == "001"){
+						ylyczsg.push(price);
+					}
+					if(pzname == "youcaizi" && jglx == "002"){
+						ylyczck.push(price);
+					}
+					if(pzname == "huashengren" && jglx == "001"){
+						ylhsrsg.push(price);
+					}
+					if(pzname == "huashengren" && jglx == "002"){
+						ylhsrck.push(price);
+					}
+				}
+				
+				if(lslx == "cpl"){
+					if(pzname == "mianfen" && jglx == "004"){
+						cplmfck.push(price);
+					}
+					if(pzname == "xianmi" && jglx == "004"){
+						cplxmck.push(price);
+					}
+					if(pzname == "daomi" && jglx == "004"){
+						cpldmck.push(price);
+					}
+					if(pzname == "douyou" && jglx == "004"){
+						cpldyck.push(price);
+					}
+					if(pzname == "caiziyou" && jglx == "004"){
+						cplczyck.push(price);
+					}
+					if(pzname == "huashengyou" && jglx == "004"){
+						cplhsyck.push(price);
+					}
+				}
+				
+				if(lslx == "zl"){
+					if(pzname == "lvdou" && jglx == "001"){
+						zlldsg.push(price);
+					}
+					if(pzname == "lvdou" && jglx == "002"){
+						zlldck.push(price);
+					}
+					if(pzname == "xiaomi" && jglx == "001"){
+						zlxmsg.push(price);
+					}
+					if(pzname == "xiaomi" && jglx == "002"){
+						zlxmck.push(price);
+					}
+					if(pzname == "gaoliang" && jglx == "001"){
+						zlglsg.push(price);
+					}
+					if(pzname == "gaoliang" && jglx == "002"){
+						zlglck.push(price);
+					}
+					if(pzname == "shulei" && jglx == "001"){
+						zlslsg.push(price);
+					}
+					if(pzname == "shulei" && jglx == "002"){
+						zlslck.push(price);
+					}
+				}
+				
+				if(lslx == "yp"){
+					if(pzname == "douyou" && jglx == "003"){
+						ypdyls.push(price);
+					}
+					if(pzname == "douyou" && jglx == "007"){
+						ypdycc.push(price);
+					}
+					if(pzname == "caiziyou" && jglx == "003"){
+						ypczyls.push(price);
+					}
+					if(pzname == "caiziyou" && jglx == "007"){
+						ypczycc.push(price);
+					}
+					if(pzname == "huashengyou" && jglx == "003"){
+						yphsyls.push(price);
+					}
+					if(pzname == "huashengyou" && jglx == "007"){
+						yphsycc.push(price);
+					}
+					if(pzname == "doupo" && jglx == "003"){
+						ypdpls.push(price);
+					}
+					if(pzname == "doupo" && jglx == "007"){
+						ypdpcc.push(price);
+					}
+					if(pzname == "caipo" && jglx == "003"){
+						ypcpls.push(price);
+					}
+					if(pzname == "caipo" && jglx == "007"){
+						ypcpcc.push(price);
+					}
+					if(pzname == "mianzipo" && jglx == "003"){
+						ypmzpls.push(price);
+					}
+					if(pzname == "mianzipo" && jglx == "007"){
+						ypmzpcc.push(price);
+					}
+				}
+				
+				if(lslx == "gk"){
+					if(pzname == "yumi" && jglx == "006"){
+						gkymdg.push(price);
+					}
+					if(pzname == "yumi" && jglx == "007"){
+						gkymcc.push(price);
+					}
+					if(pzname == "dadou" && jglx == "006"){
+						gkdddg.push(price);
+					}
+					if(pzname == "dadou" && jglx == "007"){
+						gkddcc.push(price);
+					}
+					if(pzname == "zonglvyou" && jglx == "006"){
+						gkzlydg.push(price);
+					}
+					if(pzname == "zonglvyou" && jglx == "007"){
+						gkzlycc.push(price);
+					}
+					if(pzname == "douyou" && jglx == "006"){
+						gkdydg.push(price);
+					}
+					if(pzname == "douyou" && jglx == "007"){
+						gkdycc.push(price);
+					}
+					if(pzname == "caizi" && jglx == "006"){
+						gkczdg.push(price);
+					}
+					if(pzname == "caizi" && jglx == "007"){
+						gkczcc.push(price);
+					}
+					if(pzname == "xiaomai" && jglx == "006"){
+						gkxmdg.push(price);
+					}
+					if(pzname == "xiaomai" && jglx == "007"){
+						gkxmcc.push(price);
+					}
+				}
+				
+				if(lslx == "yz"){
+					if(pzname == "xiaomai" && jglx == "001"){
+						yzxmsg.push(price);
+					}
+					if(pzname == "xiaomai" && jglx == "002"){
+						yzxmck.push(price);
+					}
+					if(pzname == "daogu" && jglx == "001"){
+						yzdgsg.push(price);
+					}
+					if(pzname == "daogu" && jglx == "002"){
+						yzdgck.push(price);
+					}
+				}
+					
+			}
+			
+			//季度原粮价格
+			optionyl1 = {
+				title: {
+			        text: '季度国内原粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["小麦收购","小麦出库","玉米收购","玉米出库","大豆收购","大豆出库",
+			              "稻谷收购","稻谷出库","油菜籽收购","油菜籽出库","花生仁收购","花生仁出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-13)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"小麦收购",
+			            type:'line',
+			            data:ylxmsg.slice(-13),
+			        },
+			        {
+			            name:"小麦出库",
+			            type:'line',
+			            data:ylxmck.slice(-13),
+			        },
+			        {
+			            name:"玉米收购",
+			            type:'line',
+			            data:ylymsg.slice(-13),
+			        },
+			        {
+			            name:"玉米出库",
+			            type:'line',
+			            data:ylymck.slice(-13),
+			        },
+			        {
+			            name:"大豆收购",
+			            type:'line',
+			            data:ylddsg.slice(-13),
+			        },
+			        {
+			            name:"大豆出库",
+			            type:'line',
+			            data:ylddck.slice(-13),
+			        },
+			        {
+			            name:"稻谷收购",
+			            type:'line',
+			            data:yldgsg.slice(-13),
+			        },
+			        {
+			            name:"稻谷出库",
+			            type:'line',
+			            data:yldgck.slice(-13),
+			        },
+			        {
+			            name:"油菜籽收购",
+			            type:'line',
+			            data:ylyczsg.slice(-13),
+			        },
+			        {
+			            name:"油菜籽出库",
+			            type:'line',
+			            data:ylyczck.slice(-13),
+			        },
+			        {
+			            name:"花生仁收购",
+			            type:'line',
+			            data:ylhsrsg.slice(-13),
+			        },
+			        {
+			            name:"花生仁出库",
+			            type:'line',
+			            data:ylhsrck.slice(-13),
+			        }
+			    ]
+			};
+			//半年原粮价格
+			optionyl2 = {
+				title: {
+			        text: '半年度国内原粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["小麦收购","小麦出库","玉米收购","玉米出库","大豆收购","大豆出库",
+			              "稻谷收购","稻谷出库","油菜籽收购","油菜籽出库","花生仁收购","花生仁出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-26)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"小麦收购",
+			            type:'line',
+			            data:ylxmsg.slice(-26),
+			        },
+			        {
+			            name:"小麦出库",
+			            type:'line',
+			            data:ylxmck.slice(-26),
+			        },
+			        {
+			            name:"玉米收购",
+			            type:'line',
+			            data:ylymsg.slice(-26),
+			        },
+			        {
+			            name:"玉米出库",
+			            type:'line',
+			            data:ylymck.slice(-26),
+			        },
+			        {
+			            name:"大豆收购",
+			            type:'line',
+			            data:ylddsg.slice(-26),
+			        },
+			        {
+			            name:"大豆出库",
+			            type:'line',
+			            data:ylddck.slice(-26),
+			        },
+			        {
+			            name:"稻谷收购",
+			            type:'line',
+			            data:yldgsg.slice(-26),
+			        },
+			        {
+			            name:"稻谷出库",
+			            type:'line',
+			            data:yldgck.slice(-26),
+			        },
+			        {
+			            name:"油菜籽收购",
+			            type:'line',
+			            data:ylyczsg.slice(-26),
+			        },
+			        {
+			            name:"油菜籽出库",
+			            type:'line',
+			            data:ylyczck.slice(-26),
+			        },
+			        {
+			            name:"花生仁收购",
+			            type:'line',
+			            data:ylhsrsg.slice(-26),
+			        },
+			        {
+			            name:"花生仁出库",
+			            type:'line',
+			            data:ylhsrck.slice(-26),
+			        }
+			    ]
+			};
+			
+			//年度原粮价格
+			optionyl3 = {
+				title: {
+			        text: '年度国内原粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["小麦收购","小麦出库","玉米收购","玉米出库","大豆收购","大豆出库",
+			              "稻谷收购","稻谷出库","油菜籽收购","油菜籽出库","花生仁收购","花生仁出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"小麦收购",
+			            type:'line',
+			            data:ylxmsg,
+			        },
+			        {
+			            name:"小麦出库",
+			            type:'line',
+			            data:ylxmck,
+			        },
+			        {
+			            name:"玉米收购",
+			            type:'line',
+			            data:ylymsg,
+			        },
+			        {
+			            name:"玉米出库",
+			            type:'line',
+			            data:ylymck,
+			        },
+			        {
+			            name:"大豆收购",
+			            type:'line',
+			            data:ylddsg,
+			        },
+			        {
+			            name:"大豆出库",
+			            type:'line',
+			            data:ylddck,
+			        },
+			        {
+			            name:"稻谷收购",
+			            type:'line',
+			            data:yldgsg,
+			        },
+			        {
+			            name:"稻谷出库",
+			            type:'line',
+			            data:yldgck,
+			        },
+			        {
+			            name:"油菜籽收购",
+			            type:'line',
+			            data:ylyczsg,
+			        },
+			        {
+			            name:"油菜籽出库",
+			            type:'line',
+			            data:ylyczck,
+			        },
+			        {
+			            name:"花生仁收购",
+			            type:'line',
+			            data:ylhsrsg,
+			        },
+			        {
+			            name:"花生仁出库",
+			            type:'line',
+			            data:ylhsrck,
+			        }
+			    ]
+			};
+			
+			//季度成品粮价格
+			optioncpl1 = {
+				title: {
+			        text: '季度国内成品粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["面粉出库","籼米出库","稻米出库","豆油出库","菜籽油出库","花生油出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-13)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"面粉出库",
+			            type:'line',
+			            data:cplmfck.slice(-13),
+			        },
+			        {
+			            name:"籼米出库",
+			            type:'line',
+			            data:cplxmck.slice(-13),
+			        },
+			        {
+			            name:"稻米出库",
+			            type:'line',
+			            data:cpldmck.slice(-13),
+			        },
+			        {
+			            name:"豆油出库",
+			            type:'line',
+			            data:cpldyck.slice(-13),
+			        },
+			        {
+			            name:"菜籽油出库",
+			            type:'line',
+			            data:cplczyck.slice(-13),
+			        },
+			        {
+			            name:"花生油出库",
+			            type:'line',
+			            data:cplhsyck.slice(-13),
+			        }
+			    ]
+			};
+			
+			//半年度成品粮价格
+			optioncpl2 = {
+				title: {
+			        text: '半年度国内成品粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["面粉出库","籼米出库","稻米出库","豆油出库","菜籽油出库","花生油出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-26)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"面粉出库",
+			            type:'line',
+			            data:cplmfck.slice(-26),
+			        },
+			        {
+			            name:"籼米出库",
+			            type:'line',
+			            data:cplxmck.slice(-26),
+			        },
+			        {
+			            name:"稻米出库",
+			            type:'line',
+			            data:cpldmck.slice(-26),
+			        },
+			        {
+			            name:"豆油出库",
+			            type:'line',
+			            data:cpldyck.slice(-26),
+			        },
+			        {
+			            name:"菜籽油出库",
+			            type:'line',
+			            data:cplczyck.slice(-26),
+			        },
+			        {
+			            name:"花生油出库",
+			            type:'line',
+			            data:cplhsyck.slice(-26),
+			        }
+			    ]
+			};
+			
+			//年度成品粮价格
+			optioncpl3 = {
+				title: {
+			        text: '年度国内成品粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["面粉出库","籼米出库","稻米出库","豆油出库","菜籽油出库","花生油出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"面粉出库",
+			            type:'line',
+			            data:cplmfck,
+			        },
+			        {
+			            name:"籼米出库",
+			            type:'line',
+			            data:cplxmck,
+			        },
+			        {
+			            name:"稻米出库",
+			            type:'line',
+			            data:cpldmck,
+			        },
+			        {
+			            name:"豆油出库",
+			            type:'line',
+			            data:cpldyck,
+			        },
+			        {
+			            name:"菜籽油出库",
+			            type:'line',
+			            data:cplczyck,
+			        },
+			        {
+			            name:"花生油出库",
+			            type:'line',
+			            data:cplhsyck,
+			        }
+			    ]
+			};
+			
+			//季度杂粮价格
+			optionzl1 = {
+				title: {
+			        text: '季度国内杂粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["绿豆收购","绿豆出库","小米收购","小米出库","高粱收购","高粱出库","薯类收购","薯类出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-13)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"绿豆收购",
+			            type:'line',
+			            data:zlldsg.slice(-13),
+			        },
+			        {
+			            name:"绿豆出库",
+			            type:'line',
+			            data:zlldck.slice(-13),
+			        },
+			        {
+			            name:"小米收购",
+			            type:'line',
+			            data:zlxmsg.slice(-13),
+			        },
+			        {
+			            name:"小米出库",
+			            type:'line',
+			            data:zlxmck.slice(-13),
+			        },
+			        {
+			            name:"高粱收购",
+			            type:'line',
+			            data:zlglsg.slice(-13),
+			        },
+			        {
+			            name:"高粱出库",
+			            type:'line',
+			            data:zlglck.slice(-13),
+			        },
+			        {
+			            name:"薯类收购",
+			            type:'line',
+			            data:zlslsg.slice(-13),
+			        },
+			        {
+			            name:"薯类出库",
+			            type:'line',
+			            data:zlslck.slice(-13),
+			        }
+			    ]
+			};
+			
+			//半年度杂粮价格
+			optionzl2 = {
+				title: {
+			        text: '半年度国内杂粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["绿豆收购","绿豆出库","小米收购","小米出库","高粱收购","高粱出库","薯类收购","薯类出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-26)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"绿豆收购",
+			            type:'line',
+			            data:zlldsg.slice(-26),
+			        },
+			        {
+			            name:"绿豆出库",
+			            type:'line',
+			            data:zlldck.slice(-26),
+			        },
+			        {
+			            name:"小米收购",
+			            type:'line',
+			            data:zlxmsg.slice(-26),
+			        },
+			        {
+			            name:"小米出库",
+			            type:'line',
+			            data:zlxmck.slice(-26),
+			        },
+			        {
+			            name:"高粱收购",
+			            type:'line',
+			            data:zlglsg.slice(-26),
+			        },
+			        {
+			            name:"高粱出库",
+			            type:'line',
+			            data:zlglck.slice(-26),
+			        },
+			        {
+			            name:"薯类收购",
+			            type:'line',
+			            data:zlslsg.slice(-26),
+			        },
+			        {
+			            name:"薯类出库",
+			            type:'line',
+			            data:zlslck.slice(-26),
+			        }
+			    ]
+			};
+			
+			//年度杂粮价格
+			optionzl3 = {
+				title: {
+			        text: '年度国内杂粮价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["绿豆收购","绿豆出库","小米收购","小米出库","高粱收购","高粱出库","薯类收购","薯类出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"绿豆收购",
+			            type:'line',
+			            data:zlldsg,
+			        },
+			        {
+			            name:"绿豆出库",
+			            type:'line',
+			            data:zlldck,
+			        },
+			        {
+			            name:"小米收购",
+			            type:'line',
+			            data:zlxmsg,
+			        },
+			        {
+			            name:"小米出库",
+			            type:'line',
+			            data:zlxmck,
+			        },
+			        {
+			            name:"高粱收购",
+			            type:'line',
+			            data:zlglsg,
+			        },
+			        {
+			            name:"高粱出库",
+			            type:'line',
+			            data:zlglck,
+			        },
+			        {
+			            name:"薯类收购",
+			            type:'line',
+			            data:zlslsg,
+			        },
+			        {
+			            name:"薯类出库",
+			            type:'line',
+			            data:zlslck,
+			        }
+			    ]
+			};
+			
+			//季度油粕价格
+			optionyp1 = {
+				title: {
+			        text: '季度国内油粕价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["豆油零售","豆油出厂","菜籽油零售","菜籽油出厂","花生油零售","花生油出厂",
+			              "豆粕零售","豆粕出厂","菜粕零售","菜粕出厂","棉籽粕零售","棉籽粕出厂"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-13)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"豆油零售",
+			            type:'line',
+			            data:ypdyls.slice(-13),
+			        },
+			        {
+			            name:"豆油出厂",
+			            type:'line',
+			            data:ypdycc.slice(-13),
+			        },
+			        {
+			            name:"菜籽油零售",
+			            type:'line',
+			            data:ypczyls.slice(-13),
+			        },
+			        {
+			            name:"菜籽油出厂",
+			            type:'line',
+			            data:ypczycc.slice(-13),
+			        },
+			        {
+			            name:"花生油零售",
+			            type:'line',
+			            data:yphsyls.slice(-13),
+			        },
+			        {
+			            name:"花生油出厂",
+			            type:'line',
+			            data:yphsycc.slice(-13),
+			        },
+			        {
+			            name:"豆粕零售",
+			            type:'line',
+			            data:ypdpls.slice(-13),
+			        },
+			        {
+			            name:"豆粕出厂",
+			            type:'line',
+			            data:ypdpcc.slice(-13),
+			        },
+			        {
+			            name:"菜粕零售",
+			            type:'line',
+			            data:ypcpls.slice(-13),
+			        },
+			        {
+			            name:"菜粕出厂",
+			            type:'line',
+			            data:ypcpcc.slice(-13),
+			        },
+			        {
+			            name:"棉籽粕零售",
+			            type:'line',
+			            data:ypmzpls.slice(-13),
+			        },
+			        {
+			            name:"棉籽粕出厂",
+			            type:'line',
+			            data:ypmzpcc.slice(-13),
+			        }
+			    ]
+			};
+			
+			//半年度油粕价格
+			optionyp2 = {
+				title: {
+			        text: '半年度国内油粕价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["豆油零售","豆油出厂","菜籽油零售","菜籽油出厂","花生油零售","花生油出厂",
+			              "豆粕零售","豆粕出厂","菜粕零售","菜粕出厂","棉籽粕零售","棉籽粕出厂"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-26)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"豆油零售",
+			            type:'line',
+			            data:ypdyls.slice(-26),
+			        },
+			        {
+			            name:"豆油出厂",
+			            type:'line',
+			            data:ypdycc.slice(-26),
+			        },
+			        {
+			            name:"菜籽油零售",
+			            type:'line',
+			            data:ypczyls.slice(-26),
+			        },
+			        {
+			            name:"菜籽油出厂",
+			            type:'line',
+			            data:ypczycc.slice(-26),
+			        },
+			        {
+			            name:"花生油零售",
+			            type:'line',
+			            data:yphsyls.slice(-26),
+			        },
+			        {
+			            name:"花生油出厂",
+			            type:'line',
+			            data:yphsycc.slice(-26),
+			        },
+			        {
+			            name:"豆粕零售",
+			            type:'line',
+			            data:ypdpls.slice(-26),
+			        },
+			        {
+			            name:"豆粕出厂",
+			            type:'line',
+			            data:ypdpcc.slice(-26),
+			        },
+			        {
+			            name:"菜粕零售",
+			            type:'line',
+			            data:ypcpls.slice(-26),
+			        },
+			        {
+			            name:"菜粕出厂",
+			            type:'line',
+			            data:ypcpcc.slice(-26),
+			        },
+			        {
+			            name:"棉籽粕零售",
+			            type:'line',
+			            data:ypmzpls.slice(-26),
+			        },
+			        {
+			            name:"棉籽粕出厂",
+			            type:'line',
+			            data:ypmzpcc.slice(-26),
+			        }
+			    ]
+			};
+			
+			//年度油粕价格
+			optionyp3 = {
+				title: {
+			        text: '年度国内油粕价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["豆油零售","豆油出厂","菜籽油零售","菜籽油出厂","花生油零售","花生油出厂",
+			              "豆粕零售","豆粕出厂","菜粕零售","菜粕出厂","棉籽粕零售","棉籽粕出厂"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"豆油零售",
+			            type:'line',
+			            data:ypdyls,
+			        },
+			        {
+			            name:"豆油出厂",
+			            type:'line',
+			            data:ypdycc,
+			        },
+			        {
+			            name:"菜籽油零售",
+			            type:'line',
+			            data:ypczyls,
+			        },
+			        {
+			            name:"菜籽油出厂",
+			            type:'line',
+			            data:ypczycc,
+			        },
+			        {
+			            name:"花生油零售",
+			            type:'line',
+			            data:yphsyls,
+			        },
+			        {
+			            name:"花生油出厂",
+			            type:'line',
+			            data:yphsycc,
+			        },
+			        {
+			            name:"豆粕零售",
+			            type:'line',
+			            data:ypdpls,
+			        },
+			        {
+			            name:"豆粕出厂",
+			            type:'line',
+			            data:ypdpcc,
+			        },
+			        {
+			            name:"菜粕零售",
+			            type:'line',
+			            data:ypcpls,
+			        },
+			        {
+			            name:"菜粕出厂",
+			            type:'line',
+			            data:ypcpcc,
+			        },
+			        {
+			            name:"棉籽粕零售",
+			            type:'line',
+			            data:ypmzpls,
+			        },
+			        {
+			            name:"棉籽粕出厂",
+			            type:'line',
+			            data:ypmzpcc,
+			        }
+			    ]
+			};
+			
+			//季度港口价格
+			optiongk1 = {
+				title: {
+			        text: '季度国内港口价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["玉米到港","玉米出厂","大豆到港","大豆出厂","棕榈油到港","棕榈油出厂",
+			              "豆油到港","豆油出厂","菜籽到港","菜籽出厂","小麦到港","小麦出厂"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-13)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"玉米到港",
+			            type:'line',
+			            data:gkymdg.slice(-13),
+			        },
+			        {
+			            name:"玉米出厂",
+			            type:'line',
+			            data:gkymcc.slice(-13),
+			        },
+			        {
+			            name:"大豆到港",
+			            type:'line',
+			            data:gkdddg.slice(-13),
+			        },
+			        {
+			            name:"大豆出厂",
+			            type:'line',
+			            data:gkddcc.slice(-13),
+			        },
+			        {
+			            name:"棕榈油到港",
+			            type:'line',
+			            data:gkzlydg.slice(-13),
+			        },
+			        {
+			            name:"棕榈油出厂",
+			            type:'line',
+			            data:gkzlycc.slice(-13),
+			        },
+			        {
+			            name:"豆油到港",
+			            type:'line',
+			            data:gkdydg.slice(-13),
+			        },
+			        {
+			            name:"豆油出厂",
+			            type:'line',
+			            data:gkdycc.slice(-13),
+			        },
+			        {
+			            name:"菜籽到港",
+			            type:'line',
+			            data:gkczdg.slice(-13),
+			        },
+			        {
+			            name:"菜籽出厂",
+			            type:'line',
+			            data:gkczcc.slice(-13),
+			        },
+			        {
+			            name:"小麦到港",
+			            type:'line',
+			            data:gkxmdg.slice(-13),
+			        },
+			        {
+			            name:"小麦出厂",
+			            type:'line',
+			            data:gkxmcc.slice(-13),
+			        }
+			    ]
+			};
+			
+			//半年度港口价格
+			optiongk2 = {
+				title: {
+			        text: '半年度国内港口价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["玉米到港","玉米出厂","大豆到港","大豆出厂","棕榈油到港","棕榈油出厂",
+			              "豆油到港","豆油出厂","菜籽到港","菜籽出厂","小麦到港","小麦出厂"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-26)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"玉米到港",
+			            type:'line',
+			            data:gkymdg.slice(-26),
+			        },
+			        {
+			            name:"玉米出厂",
+			            type:'line',
+			            data:gkymcc.slice(-26),
+			        },
+			        {
+			            name:"大豆到港",
+			            type:'line',
+			            data:gkdddg.slice(-26),
+			        },
+			        {
+			            name:"大豆出厂",
+			            type:'line',
+			            data:gkddcc.slice(-26),
+			        },
+			        {
+			            name:"棕榈油到港",
+			            type:'line',
+			            data:gkzlydg.slice(-26),
+			        },
+			        {
+			            name:"棕榈油出厂",
+			            type:'line',
+			            data:gkzlycc.slice(-26),
+			        },
+			        {
+			            name:"豆油到港",
+			            type:'line',
+			            data:gkdydg.slice(-26),
+			        },
+			        {
+			            name:"豆油出厂",
+			            type:'line',
+			            data:gkdycc.slice(-26),
+			        },
+			        {
+			            name:"菜籽到港",
+			            type:'line',
+			            data:gkczdg.slice(-26),
+			        },
+			        {
+			            name:"菜籽出厂",
+			            type:'line',
+			            data:gkczcc.slice(-26),
+			        },
+			        {
+			            name:"小麦到港",
+			            type:'line',
+			            data:gkxmdg.slice(-26),
+			        },
+			        {
+			            name:"小麦出厂",
+			            type:'line',
+			            data:gkxmcc.slice(-26),
+			        }
+			    ]
+			};
+			
+			//年度港口价格
+			optiongk3 = {
+				title: {
+			        text: '年度国内港口价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["玉米到港","玉米出厂","大豆到港","大豆出厂","棕榈油到港","棕榈油出厂",
+			              "豆油到港","豆油出厂","菜籽到港","菜籽出厂","小麦到港","小麦出厂"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"玉米到港",
+			            type:'line',
+			            data:gkymdg,
+			        },
+			        {
+			            name:"玉米出厂",
+			            type:'line',
+			            data:gkymcc,
+			        },
+			        {
+			            name:"大豆到港",
+			            type:'line',
+			            data:gkdddg,
+			        },
+			        {
+			            name:"大豆出厂",
+			            type:'line',
+			            data:gkddcc,
+			        },
+			        {
+			            name:"棕榈油到港",
+			            type:'line',
+			            data:gkzlydg,
+			        },
+			        {
+			            name:"棕榈油出厂",
+			            type:'line',
+			            data:gkzlycc,
+			        },
+			        {
+			            name:"豆油到港",
+			            type:'line',
+			            data:gkdydg,
+			        },
+			        {
+			            name:"豆油出厂",
+			            type:'line',
+			            data:gkdycc,
+			        },
+			        {
+			            name:"菜籽到港",
+			            type:'line',
+			            data:gkczdg,
+			        },
+			        {
+			            name:"菜籽出厂",
+			            type:'line',
+			            data:gkczcc,
+			        },
+			        {
+			            name:"小麦到港",
+			            type:'line',
+			            data:gkxmdg,
+			        },
+			        {
+			            name:"小麦出厂",
+			            type:'line',
+			            data:gkxmcc,
+			        }
+			    ]
+			};
+				
+			//季度优质品种价格
+			optionyz1 = {
+				title: {
+			        text: '季度国内优质品种价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["小麦收购","小麦出库","稻谷收购","稻谷出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-13)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"小麦收购",
+			            type:'line',
+			            data:yzxmsg.slice(-13),
+			        },
+			        {
+			            name:"小麦出库",
+			            type:'line',
+			            data:yzxmck.slice(-13),
+			        },
+			        {
+			            name:"稻谷收购",
+			            type:'line',
+			            data:yzdgsg.slice(-13),
+			        },
+			        {
+			            name:"稻谷出库",
+			            type:'line',
+			            data:yzdgck.slice(-13),
+			        }
+			    ]
+			};
+			
+			//半年度优质品种价格
+			optionyz2 = {
+				title: {
+			        text: '半年度国内优质品种价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["小麦收购","小麦出库","稻谷收购","稻谷出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou.slice(-26)
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"小麦收购",
+			            type:'line',
+			            data:yzxmsg.slice(-26),
+			        },
+			        {
+			            name:"小麦出库",
+			            type:'line',
+			            data:yzxmck.slice(-26),
+			        },
+			        {
+			            name:"稻谷收购",
+			            type:'line',
+			            data:yzdgsg.slice(-26),
+			        },
+			        {
+			            name:"稻谷出库",
+			            type:'line',
+			            data:yzdgck.slice(-26),
+			        }
+			    ]
+			};
+			
+			//年度优质品种价格
+			optionyz3 = {
+				title: {
+			        text: '年度国内优质品种价格趋势图',
+			        x: 'center',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:["小麦收购","小麦出库","稻谷收购","稻谷出库"],
+			        y: 'bottom',
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: nianzhou
+			    },
+			    yAxis: {
+			    	name: '单位:元/50公斤',
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:"小麦收购",
+			            type:'line',
+			            data:yzxmsg,
+			        },
+			        {
+			            name:"小麦出库",
+			            type:'line',
+			            data:yzxmck,
+			        },
+			        {
+			            name:"稻谷收购",
+			            type:'line',
+			            data:yzdgsg,
+			        },
+			        {
+			            name:"稻谷出库",
+			            type:'line',
+			            data:yzdgck,
+			        }
+			    ]
+			};
+			
+			if(pz == "yl"){
+				myChart.setOption(optionyl1);
+				myChart1.setOption(optionyl2);
+				myChart2.setOption(optionyl3);
+			}
+			
+			if(pz == "cpl"){
+				myChart.setOption(optioncpl1);
+				myChart1.setOption(optioncpl2);
+				myChart2.setOption(optioncpl3);
+			}
+			if(pz == "zl"){
+				myChart.setOption(optionzl1);
+				myChart1.setOption(optionzl2);
+				myChart2.setOption(optionzl3);
+			}
+			if(pz == "yp"){
+				myChart.setOption(optionyp1);
+				myChart1.setOption(optionyp2);
+				myChart2.setOption(optionyp3);
+			}
+			if(pz == "gk"){
+				myChart.setOption(optiongk1);
+				myChart1.setOption(optiongk2);
+				myChart2.setOption(optiongk3);
+			}
+			if(pz == "yz"){
+				myChart.setOption(optionyz1);
+				myChart1.setOption(optionyz2);
+				myChart2.setOption(optionyz3);
+			}
+			
+			
+		},
+		error:function(){
+			alert("加载价格错误");
+		}
+ 	});
+			
+		
+	
+ }); 
+	
+ 
+function getjd(){
+	$(".divjidu").css('display','block');
+	$(".divbannian").css('display','none');
+	$(".divniandu").css('display','none');
+}
+
+function getbn(){
+	$(".divjidu").css('display','none');
+	$(".divbannian").css('display','block');
+	$(".divniandu").css('display','none');
+}
+
+function getyn(){
+	$(".divjidu").css('display','none');
+	$(".divbannian").css('display','none');
+	$(".divniandu").css('display','block');
+}
+
+
+</script>
+<div class="panel panel-default">
+	
+
+<div class="panel-heading">
+	<div class="form-inline">
+
+		<div class="clearfix">
+		</div>
+	</div>
+</div>
+
+	<div class="panel-body">
+		<div class="panel-zhouqi" style="width:100%; float:left; text-align:right">
+			<label><input name="zhiliang" type="radio" value="xingzhi" onclick="getjd()" checked="checked"/>&nbsp;季度 </label>&nbsp;&nbsp;  
+			<label><input name="zhiliang" type="radio" value="pinzhong" onclick="getbn()" />&nbsp;半年</label>&nbsp;&nbsp; 
+			<label><input name="zhiliang" type="radio" value="dengji" onclick="getyn()" />&nbsp;一年</label> 
+		</div>
+		
+		<div style="flaot:left;margin-top:20px;">
+			<div id="divjidu" class="tubiao divjidu" style="display:block">
+			</div>
+			<div id="divbannian" class="tubiao divbannian" style="display:none">
+			</div>
+			<div id="divniandu" class="tubiao divniandu" style="display:none">
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<%}%>

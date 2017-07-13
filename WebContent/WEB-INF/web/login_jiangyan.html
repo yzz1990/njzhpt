@@ -1,0 +1,140 @@
+<!DOCTYPE html >
+<html >
+<head>
+<meta charset="UTF-8">
+<meta name="viewpart" content="width=device-width, initial-scale=1, maxium-scale=1, user-scalable=no">
+<title>${systemtitle}</title>
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<!-- 	<script src="jquery.login.js"></script> -->
+<style type="text/css">
+
+	*{
+		margin:0;
+		padding:0;
+		border:0;
+		font-size: 16PX
+	
+	}
+	#content {
+		margin-top:250px;
+	    position: absolute;
+	    left: 50%;
+	    z-index: 2;
+	    height:390px;
+	    line-height: 1.5em;
+	    color: white;
+	    font-family: sans-serif;
+	    font-size: 14px;
+	    width: 435px;
+	    margin-left: -217px;
+	}
+	#logo {
+	    background-repeat: no-repeat;
+		margin-top:150px;
+	    position: absolute;
+	    left: 58%;
+	    z-index: 2;
+	    height:86px;
+	    line-height: 1.5em;
+	    color: white;
+	    font-family: sans-serif;
+	    font-size: 12px;
+	    width: 432px;
+	    margin-left: -292px;
+	}
+	.a:hover{
+		text-decoration:underline;
+	}
+	.button{
+		background:url('image/login.png');
+	}
+	.button:hover{
+		background:url('image/login_hover.png');
+	}
+</style>
+</head>
+<body style="background-image:url('image/background.jpg');" onkeydown="keyLogin();">
+	<div id="logo" style="background-image:url('image/logoy3.png');">
+	</div>
+	<div id="content" style="background-image:url('image/background_center.png');">
+		<form id="loginform" method="post" action="login.action">
+			<div id="divselect" style="background:url('image/input1.png') no-repeat 0px center;margin-top:30px;margin-left:50px;width:328px;height:52px;">
+				<select id="inputselect" class="company" value="" name="company" placeholder="选择企业" id="com" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;background:url('image/row.png') no-repeat 210px center;">
+					<option>${shipinRoot}粮食局</option>
+				</select>
+				<!-- <input id="inputselect" class="company" value="" name="company" placeholder="选择企业" id="com" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;background:url('image/row.png') no-repeat 210px center;"/> -->
+			</div>
+			<div style="background:url('image/input2.png') no-repeat 0px center;margin-top:30px;margin-left:50px;width:328px;height:52px;">
+				<input class="username" value="quxian" name="username" placeholder="用户名" id="uid" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;";/>
+			</div>
+			<div style="background:url('image/input3.png') no-repeat 0px center;margin-top:30px;margin-left:50px;width:328px;height:52px;">
+				<input class="password" value="123456" name="password"  type="password" id="pwd" style="outline:medium;margin-top:5px;width:200px;height: 30px;padding: 5px 10px;font-family:微软雅黑;font-size: 14px;color:#999999;line-height: 1.5;border-radius: 3px;margin-left:50px;"/>
+			</div >
+			<p style="margin:0px auto;margin-left:65px;font-family:微软雅黑;font-size: 14px;color:#FF0000"id="error"></p>
+		</form>
+		<div  class="button" style="margin-top:20px;margin-left:55px;width:320px;height:52px;cursor: pointer;" onclick="login()"></div>
+		<div class="a" style="text-align:center;margin:0px auto;margin-top:52;font-family:微软雅黑;font-size: 14px;color:#FF6600;cursor: pointer;">忘记密码</div>
+		
+	</div>
+</body>
+<script type="text/javascript">
+	function keyLogin(){
+	 	if (event.keyCode==13)  //回车键的键值为13
+		 	login();
+	}
+	$(function(){
+		$("#com").bind("focus", function(){
+			$(this).parent().css("background","url('image/input1_hover.png') no-repeat 0px center");
+		}).bind("blur",function(){
+			$(this).parent().css("background","url('image/input1.png') no-repeat 0px center");
+		});
+		$("#uid").bind("focus", function(){
+			$(this).parent().css("background","url('image/input2_hover.png') no-repeat 0px center");
+		}).bind("blur",function(){
+			$(this).parent().css("background","url('image/input2.png') no-repeat 0px center");
+		});
+		$("#pwd").bind("focus", function(){
+			$(this).parent().css("background","url('image/input3_hover.png') no-repeat 0px center");
+		}).bind("blur",function(){
+			$(this).parent().css("background","url('image/input3.png') no-repeat 0px center");
+		});
+		$("#button").bind("focus", function(){
+			$(this).parent().css("background","url('image/login_hover.png') no-repeat 0px center")
+		});
+	});
+	function login() {
+		var uid = $("#uid").val();//用户名
+		var pwd = $("#pwd").val();//mim
+		//提交    	    			
+		$.post("${ctxPath}/login/doLogin", {
+			loginname : uid,
+			password : pwd},function(data){
+			if(data.ret){
+				if(data.role!="quxian"){
+				<%
+					if(showIndexPage=="true"){
+				%>
+					window.location.href="${ctxPath}/${showindex}";
+				<%
+					}else{
+				%>
+					window.location.href="${ctxPath}/gis/gis.html";
+				<%
+					}
+				%>
+			
+				}else{
+					window.location.href="${ctxPath}/${quxianIndex}";
+				}
+			}else{	 			
+				Ext.Msg.show({
+				     title:'登录提示',
+				     msg: data.message,
+				     buttons: Ext.Msg.YES,
+				     icon: Ext.Msg.WARNING
+				});			
+			 } 
+		},'json') 
+	}
+</script>
+</html>

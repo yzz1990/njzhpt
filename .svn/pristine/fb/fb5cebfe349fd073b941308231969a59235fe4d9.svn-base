@@ -1,0 +1,39 @@
+package com.zkzy.njzhpt.bo;
+
+import java.util.HashMap;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.config.interfaces.ICommond;
+import com.zkzy.njzhpt.dao.QuxuanCommondDao;
+
+public class QuxuanCommondBo implements ICommond {
+
+	@Override
+	public Page<Record> findQiyexinxi(HashMap<String, Object> param)
+			throws Exception {
+		
+		return QuxuanCommondDao.findQiyexinxi(param);
+	}
+
+	@Override
+	public Page<Record> findDiqu(HashMap<String, Object> param)
+			throws Exception {
+		
+		return QuxuanCommondDao.findDiqu(param);
+	}
+
+	@Override
+	public Page<Record> findDiquniandupx(HashMap<String, Object> param)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return QuxuanCommondDao.findDiquniandupx(param);
+	}
+	
+	
+
+}

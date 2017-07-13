@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<META HTTP-EQUIV="expires" CONTENT="Wed,26 Feb 1997 08:21:57 GMT">
+<title>仓内粮食基本信息管理</title>
+<script type="text/javascript" src="../cssjs/jsControl/jsManager.js"></script>
+<style type="text/css">
+.panel {
+	position: absolute;
+}
+</style>
+<script type="text/javascript">
+	$(function() {
+		showvalue(null);
+		$('#jiance_time').val(new Date().format('yyyy-MM-dd'));
+	});
+	function showvalue(value){
+		var str_v="";
+		if(value!=null){
+			str_v=" and chonghaishijian like '%"+value+"%'";
+		}
+		$.ajax({ 
+			type: "POST", 
+			url: findbysql, 
+			dataType: "json", 
+			data:{
+				param : "select cf.orderno,a.zhuyaohaich,a.chomghaimidu,a.chonghaishijian from szlk_cf_info cf LEFT JOIN (select a.cf_name,zhuyaohaich,chomghaimidu,chonghaishijian  from szlk_chongqingjilu_info a INNER JOIN (select cf_name,max(chonghaishijian) as shijian1,max(createtime) as shijian2  "
+					+" from szlk_chongqingjilu_info where 1=1 "+str_v+" GROUP BY cf_name ) b on a.cf_name=b.cf_name and a.chonghaishijian=b.shijian1 AND "
+					+"  a.createtime=b.shijian2 ) a on cf.orderno=a.cf_name" 
+			},
+			cache:false, 
+			ifModified :true,
+			success:function(data){
+				if(data.rows!=null){
+					$.each(data.rows, function(i, n) {
+						$("div[orderno='" + n[0] + "']").removeAttr("data-content");
+						var content = "<p>检查部位："
+								+ (n[2] == null ? "无" : n[2]) + "</p>"
+								+ "<p>主要害虫："
+								+ (n[1] == null ? "无" : n[1]) + "</p>"
+								+ "<p>检查时间："
+								+ (n[3] == null ? "无" : n[3]) + "</p>"
+						$("div[orderno='" + n[0] + "']").attr(
+								"data-content", content);
+
+					});
+					if(value!=null){
+						alert("查询成功！");
+					}
+				}else{
+					alert("查询失败！");
+				}
+				$('.poppppp').popover();
+				}
+			});
+	}
+	function clearvalue(){
+		$.post(
+				findbysql,
+				{
+					param : "select orderno,canghao from szlk_cf_info order by orderno  " 
+				}, function(data) {
+					$.each(data.rows, function(i, n) {
+						$("div[orderno='" + n[0] + "']").attr("data-content", "无时间点数据！");
+					});
+					//$('.poppppp').popover();
+				}, 'json');
+	}
+	window.onresize = function() {
+		$(".panel").css({
+			left : (document.documentElement.clientWidth - 800) / 2
+		});
+	}
+	function showlc(lcname, orderno) {
+		var shijian=$('#jiance_time').val();
+		var time = new Date().getTime();
+		topwindow
+				.$("body")
+				.append(
+						'<div id="'
+						+ time
+						+ '" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="myModalLabel">'
+								+ lcname
+								+ '虫害检查情况</h3></div><div class="modal-body" style="overflow:hidden;padding:0px;height:250px;max-height:250px;"><iframe frameborderno="0" style="width:100%;height:250px;border-width:0px;" src="'
+								+ _rooturl
+								+ '/cangchuzhinenghua/cq_xinan.html?orderno='
+								+ orderno+'&shijian='+shijian
+								+ '"/></div> <div class="modal-footer"><button class="btn btn-primary" type="button" onclick="savescp('+time+','+orderno+')">保存</button><button class="btn" data-dismiss="modal" aria-hidden="true" id="close_btn">关闭</button></div></div>');
+
+		topwindow.$('#' + time).on('hidden', function() {
+			topwindow.$('#' + time).remove();
+		});
+		topwindow.$('#' + time).modal()
+	}
+	function searchcheck(){
+		var shijian=$('#jiance_time').val();
+		//clearvalue();
+		showvalue(shijian);
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'center',noheader:true, border:false" style="position: relative; background-color: #e3f4c5">
+		<div id="content" class="easyui-panel" data-options="left:(document.documentElement.clientWidth-800)/2,noheader:true,border:false,resizable:false" style="width: 800px; height: 573px; position: relative;">
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 340px; top: 140px;" id="div1" onclick="showlc('1号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="1号粮仓虫害检查情况" data-trigger="hover" orderno="1" data-content="无时间点数据！"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 390px; top: 140px;" id="div2" onclick="showlc('2号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="2号粮仓虫害检查情况" data-trigger="hover" orderno="2"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 500px; top: 140px;" id="div3" onclick="showlc('3号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="3号粮仓虫害检查情况" data-trigger="hover" orderno="3"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 590px; top: 140px;" id="div4" onclick="showlc('4号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="4号粮仓虫害检查情况" data-trigger="hover" orderno="4"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 195px; top: 210px;" id="div5" onclick="showlc('5号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="5号粮仓虫害检查情况" data-trigger="hover" orderno="5"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 260px; top: 210px;" id="div6" onclick="showlc('6号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="6号粮仓虫害检查情况" data-trigger="hover" orderno="6"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 330px; top: 210px;" id="div7" onclick="showlc('7号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="7号粮仓虫害检查情况" data-trigger="hover" orderno="7"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 400px; top: 210px;" id="div8" onclick="showlc('8号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="8号粮仓虫害检查情况" data-trigger="hover" orderno="8"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 465px; top: 210px;" id="div9" onclick="showlc('9号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="9号粮仓虫害检查情况" data-trigger="hover" orderno="9"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 525px; top: 210px;" id="div10" onclick="showlc('10号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="10号粮仓虫害检查情况" data-trigger="hover" orderno="10"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 590px; top: 210px;" id="div11" onclick="showlc('11号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="11号粮仓虫害检查情况" data-trigger="hover" orderno="11"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 330px; top: 288px;" id="div12" onclick="showlc('12号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="12号粮仓虫害检查情况" data-trigger="hover" orderno="12"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 400px; top: 288px;" id="div13" onclick="showlc('13号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="13号粮仓虫害检查情况" data-trigger="hover" orderno="13"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 470px; top: 288px;" id="div14" onclick="showlc('14号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="14号粮仓虫害检查情况" data-trigger="hover" orderno="14"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 535px; top: 288px;" id="div15" onclick="showlc('15号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="15号粮仓虫害检查情况" data-trigger="hover" orderno="15"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 590px; top: 288px;" id="div16" onclick="showlc('16号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="16号粮仓虫害检查情况" data-trigger="hover" orderno="16"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 190px; top: 330px;" id="div17" onclick="showlc('17号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="17号粮仓虫害检查情况" data-trigger="hover" orderno="17" data-content="无时间点数据！"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 225px; top: 330px;" id="div18" onclick="showlc('18号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="18号粮仓虫害检查情况" data-trigger="hover" orderno="18"></div>
+			<div class="poppppp" style="filter: alpha(opacity =       10); opacity: .1; background-color: #000; border: 1px dashed rgb(250, 0, 255); border: 1px dashed rgb(250, 0, 255); width: 25px; height: 25px; cursor: pointer; position: absolute; z-index: 120; left: 265px; top: 330px;" id="div19" onclick="showlc('19号粮仓',$(this).attr('orderno'));" data-html="true" data-toggle="popover" data-placement="right" title="19号粮仓虫害检查情况" data-trigger="hover" orderno="19" ></div>
+			<div class="poppppp1" style="background-color: white;  width: 300px; height: 30px; position: absolute; z-index: 300; left: 0px; top: 0px;"  data-html="true" data-toggle="popover" data-placement="right" >
+			   <table style="font-size:14px;">
+				<tr>
+					<td style="width:80px;text-align:right;">检测日期：</td>
+					<td ><input id="jiance_time"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+							class="Wdate" /></td>
+					<td><a href="javascript:void(0);"
+			       class="easyui-linkbutton" data-options="iconCls:'icon-search'"
+				onclick="searchcheck()">查询</a></td>
+				</tr>
+			</table>
+			</div>
+			<img alt="" src="xinan.jpg" style="position: absolute; top: 0px; left: 0px; z-index: 100;">
+		</div>
+	</div>
+</body>
+</html>

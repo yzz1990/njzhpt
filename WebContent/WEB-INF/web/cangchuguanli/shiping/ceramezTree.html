@@ -1,0 +1,94 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>视频监控</b>
+		</span>
+		<button type="button" style="margin-right: 0px;height: 28px;" class="btn btn-sm btn-warning pull-right saveJiaoseCaidan" onclick="javascript:window.open('http://49.65.0.27:8080/components/WebControl_V4.2.2_102682_B20170401_B.exe')" ><i class="fa fa-cloud-download"></i> 海康视频插件下载</button>
+		<button type="button" style="margin-right: 10px;height: 28px;" class="btn btn-sm btn-success pull-right saveJiaoseCaidan" onclick="javascript:reloadCrame()" ><i class="fa fa-refresh"></i> 同步</button>
+	</div>
+	<div class="panel-body">
+		<iframe id="aa"  src="http://49.65.0.27:8080/ShiPin/1/spjk/9800-4.2.2/spjk_main_9800.html" frameborderno="0" frameborder="0"  height="660px" width="100%"></iframe>
+	</div>
+</div>
+<script>
+sessionStorage.setItem("flag",true);
+  function reloadCrame(){
+	  //alert(sessionStorage.getItem("flag"));
+	 if(sessionStorage.getItem("flag")=="true"){
+		    login();
+			setTimeout("firstStep()", 5000);
+			setTimeout("secondStep()", 15000);
+		 
+	 }else{
+		 alert("同步中，请耐心等待！");
+	 }
+	   
+	  
+  }
+  
+  
+  function login() {
+		$.ajax({
+			url : 'http://49.65.0.27:8080/PlatformKit-demo/webService/login2Action',
+			dataType : "json",
+			data : {
+				userName : "admin",
+				pacip : sha256_digest("Zhiyuan001"),
+				serviceIp : "49.65.0.30",
+				servicePort : 80,
+				ip : "localhost:8080",
+				flag : 0,
+				capcha : "输入图片提示的验证码",
+				platformFlag:false,
+				platformSdkIp:"",
+				platformSdkPort:""
+			},
+			success:function(data){
+				//alert(data.result);
+				if(data.result){
+					sessionStorage.setItem("flag",false);
+					
+				}
+			}
+		});
+}
+
+function firstStep(){
+	$.ajax({
+		url : "http://49.65.0.27:8080/PlatformKit-demo/stream/getResourceByPageAction",
+		dataType : "json",
+		data:{
+			resType : 1000
+		},
+		success : function(data) {
+			//alert(data.result);
+		}
+	})
+	
+}
+
+function secondStep(){
+	
+	$.ajax({
+		type:"post",
+		url:"http://49.65.0.27:8080/PlatformKit-demo/stream/getCameraAction",
+		dataType : "json",
+		success:function(data){
+			if(data.result){
+				sessionStorage.setItem("flag",true);
+				
+				alert("同步完成！");
+				location.reload();
+			}
+		}
+	})
+}
+
+
+</script>
+<%}%>

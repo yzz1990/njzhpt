@@ -1,0 +1,57 @@
+package com.zkzy.njzhpt.controller;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+
+import com.ggy.common.utils.ParamUtil;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.zkzy.njzhpt.bo.RemoteBO;
+
+public class RemoteController extends Controller {
+
+	public void index() {
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) RemoteBO.class.getMethod(method, HashMap.class)
+						.invoke(Duang.duang(RemoteBO.class),
+								ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				render("login.html");
+			}
+		} catch (Exception e) {
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+
+	}
+	
+	public void findzongkucun(){
+		String sql = "select vGrainSubTypeCode, sum(dmStock) as sum from kc_CurrentStock where vGrainPropertyCode in (123,122)"
+				+ "group by vGrainSubTypeCode";
+		renderJson(Db.find(sql));
+	}
+	
+	public void findzongjihua(){
+		Calendar a=Calendar.getInstance();
+		String year= a.get(Calendar.YEAR)+"";
+		String sql = "select  sum(jhsl)/1000 as jhsl,sum(cbljh_xm)/1000 as xm, sum(cbljh_jd)/1000 as jd,sum(cbljh_xd) as xd "
+				+ " from njpt_chubeiliangjihua where niandu='"+year+"'";
+		renderJson(Db.find(sql));
+	}
+	
+}

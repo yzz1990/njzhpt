@@ -1,0 +1,734 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+
+</style>
+
+
+<script type="text/javascript">
+
+var qyzzjgdm;
+var kdbm;
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+});
+
+(function ($) {
+     $.getUrlParam = function (name) {
+           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if (r != null) return unescape(r[2]); return null;
+       }
+   })(jQuery);
+   
+$.fn.datetimepicker.dates['zh'] = {  
+        days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],  
+        daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],  
+        daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],  
+        months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],  
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],  
+        meridiem:    ["上午", "下午"],  
+        //suffix:      ["st", "nd", "rd", "th"],  
+        today:       "今天"  
+};  
+   
+$(function() {
+	qyzzjgdm = $.getUrlParam("qyzzjgdm");
+	kdbm = $.getUrlParam("kdbm");
+	
+	$('.form_datetimebegin').datetimepicker({  
+        language:  'zh',  
+        weekStart: 1,  
+        todayBtn:  1,  
+        autoclose: 1,  
+        todayHighlight: 1,  
+        startView: 2,  
+        forceParse: 0,  
+        showMeridian: 1  
+    }).on('changeDate', function (ev) {  
+        $(this).datetimepicker('hide');  
+    });  
+	
+	$('.form_datetimeend').datetimepicker({  
+        language:  'zh',  
+        weekStart: 1,  
+        todayBtn:  1,  
+        autoclose: 1,  
+        todayHighlight: 1,  
+        startView: 2,  
+        forceParse: 0,  
+        showMeridian: 1  
+    }).on('changeDate', function (ev) {  
+        $(this).datetimepicker('hide');  
+    });  
+	//加载品种下拉框
+	$.ajax({
+		url:'${ctxPath}/jiage/findpinzhong.do',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.list.length; i++){
+				
+				var pz = '<option value="'+data.list[i].vCode+'">'+data.list[i].vName+'</option>';
+				
+				$("#pinzhong").append(pz);
+			}
+		},
+		error:function(){
+			alert("加载品种下拉框失败");
+		}
+	});
+	
+	
+	//加载入库列表
+	$(".table-ruku").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=入库");
+	datatable = $('.table-ruku').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					//<label><input name="jiage" class="check_jiage" type="checkbox" value="'+row["jglxbh"]+'" />'+row["jglx"]+'</label>
+					var div = '<div>'+row["jianyanriqi"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+parseInt(row["canghao"])+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["vName"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["harvestyear"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chechuanhao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["dmStock"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["danjubianhao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["shuifen"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zazhi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chucao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["rongzhong"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["buwanshanli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huangli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["guwaicaomi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zhengjingmili"]+'</div>';
+					return div;								
+				}
+			}
+			
+			]
+	});
+	
+	//加载出库质量追溯
+	$(".table-chuku").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=出库");
+	datatable1 = $('.table-chuku').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["jianyanriqi"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+parseInt(row["chechuanhao"])+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+parseInt(row["canghao"])+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["vName"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["dmStock"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["danjubianhao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["shuifen"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zazhi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chucao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["rongzhong"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["buwanshanli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huangli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["guwaicaomi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zhengjingmili"]+'</div>';
+					return div;								
+				}
+			}
+			
+			]
+	});
+	
+	//加载在库质量追溯
+	$(".table-zaiku").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=在库");
+	datatable2 = $('.table-zaiku').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+parseInt(row["canghao"])+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["vName"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chandi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["harvestyear"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["xingzhi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["dmStock"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["jianyanriqi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["shuifen"]+'</div>';
+					return div;								
+				}
+			}
+			,{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zazhi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chucao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["rongzhong"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["buwanshanli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huangli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["guwaicaomi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zhengjingmili"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zhifangsuan"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["sezeqiwei"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["mianjingxsl"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["pinchangpinfenzhi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["jianyandanwei"]+'</div>';
+					return div;								
+				}
+			}
+			
+			]
+	});
+	
+	//加载统仓检测
+	$(".table-tongcang").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=统仓");
+	datatable3 = $('.table-tongcang').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [     
+			{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["jianyanriqi"]+'</div>';	
+					return div;
+				}
+			},
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+parseInt(row["canghao"])+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["vName"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["xingzhi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["harvestyear"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["dmStock"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["shuifen"]+'</div>';
+					return div;								
+				}
+			}
+			,{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zazhi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chucao"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["rongzhong"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["buwanshanli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huangli"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["guwaicaomi"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zhengjingmili"]+'</div>';
+					return div;								
+				}
+			}
+			]
+	});
+	
+	
+});
+
+
+//获取入库质量
+function getrk(){
+	$("#div-ruku").css('display','block');
+	$("#div-chuku").css('display','none');
+	$("#div-zaiku").css('display','none');
+	$("#div-tongcang").css('display','none');
+}
+//获取出库质量
+function getck(){
+	$("#div-ruku").css('display','none');
+	$("#div-chuku").css('display','block');
+	$("#div-zaiku").css('display','none');
+	$("#div-tongcang").css('display','none');
+}
+//获取在库质量
+function getzk(){
+	$("#div-ruku").css('display','none');
+	$("#div-chuku").css('display','none');
+	$("#div-zaiku").css('display','block');
+	$("#div-tongcang").css('display','none');
+}
+//获取统仓检测
+function gettc(){
+	$("#div-ruku").css('display','none');
+	$("#div-chuku").css('display','none');
+	$("#div-zaiku").css('display','none');
+	$("#div-tongcang").css('display','block');
+}
+
+//增加入库质量追溯
+function addruku(){
+	dialog1=top.BootstrapDialog.show({
+	    title: '入库质量追溯填报',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/zhiliangzs/addruku.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1300px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saverukuzhiliang(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+	
+}
+//修改入库质量追溯
+function updateruku(){
+	
+}
+//删除入库质量追溯
+function deleteruku(){
+	
+}
+//条件查询
+function doSearch(){
+	
+	var pz = $("#pinzhong option:selected").attr("value");
+	var starttime = $(".form_datetimebegin").val();
+	var endtime = $(".form_datetimeend").val();
+	var checkval = $('.leixingxz input[name="zhiliang"]:checked ').val();
+	if(starttime>endtime){
+		alert("起始时间不能大于结束时间!");
+		return false;
+	}
+	if(checkval == "rk"){
+		$(".table-ruku").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=入库&pz="+pz+"&starttime="+starttime+"&endtime="+endtime);
+		datatable.ajax.reload(null,true);
+	}
+	
+	if(checkval == "ck"){
+		$(".table-chuku").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=出库&pz="+pz+"&starttime="+starttime+"&endtime="+endtime);
+		datatable1.ajax.reload(null,true);
+	}
+	
+	if(checkval == "zk"){
+		$(".table-zaiku").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=在库&pz="+pz+"&starttime="+starttime+"&endtime="+endtime);
+		datatable2.ajax.reload(null,true);
+	}	
+	
+	if(checkval == "tc"){
+		$(".table-tongcang").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&zhiliangleixing=统仓&pz="+pz+"&starttime="+starttime+"&endtime="+endtime);
+		datatable3.ajax.reload(null,true);
+	}
+}
+</script>
+
+<div class="panel panel-default">
+<div class="panel-heading">
+	<div class="form-inline">
+		<div class="chaxuntiaojian" style="float:left;">
+			<label class="cjd-label">品种:</label>
+			<select id="pinzhong" class="form-control cjd-select" style="width:150px;">
+			</select>	
+			<label style="margin-left:10px">日期:</label>
+			<input size="16" type="text"  readonly class="form_datetimebegin" style="width:100px;">
+			<label>至</label>
+			<input size="16" type="text" readonly class="form_datetimeend" style="width:100px;">
+			<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:10px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		</div>
+		<div class="leixingxz" style="float:right">
+			<label><input name="zhiliang" type="radio" value="rk" onclick="getrk()" checked="checked"/>&nbsp;入库质量 </label>&nbsp;&nbsp;  
+			<label><input name="zhiliang" type="radio" value="ck" onclick="getck()" />&nbsp;出库质量</label>&nbsp;&nbsp; 
+			<label><input name="zhiliang" type="radio" value="zk" onclick="getzk()" />&nbsp;在库质量</label> 
+			<label><input name="zhiliang" type="radio" value="tc" onclick="gettc()" />&nbsp;统仓检测</label> 
+		</div>
+		<div class="clearfix"></div>
+		
+	</div>
+</div>
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px">
+   <!-- 入库质量信息 -->
+   <div class="panel-body">
+   	<div id="div-ruku" >
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover table-bordered datatables table-ruku" data-url="${ctxPath}/zhiliangzs/queryzhiliang.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" style="vertical-align:middle">检验日期</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">仓号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">品种</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">收获年度</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">车船号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">实收数量(公斤)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">入库单编号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">水份(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">杂质(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">出糙(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">容重(g/l)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">不完善粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">黄粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">谷外糙米(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">整精米粒(%)</th>
+	 			</tr>
+			</thead>	
+		</table>
+   	</div>
+   	
+   	<div id="div-chuku" style="display:none">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover table-bordered  datatables table-chuku" data-url="${ctxPath}/zhiliangzs/queryzhiliang.do" >	 
+			<thead>
+				<tr>
+					<th rowspan="1" colspan="1" style="vertical-align:middle">检验日期</th>
+					<th rowspan="1" colspan="1" style="vertical-align:middle">车船号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">仓号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">品种</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">实发数量(公斤)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">出库单编号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">水份(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">杂质(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">出糙(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">容重(g/l)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">不完善粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">黄粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">谷外糙米(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">整精米粒(%)</th>
+	 			</tr>
+			</thead>	
+		</table>
+   	</div>
+   	
+   	<div id="div-zaiku" style="display:none">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  table-bordered datatables table-zaiku" data-url="${ctxPath}/zhiliangzs/queryzhiliang.do" >	 
+			<thead>
+				<tr>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">仓号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">品种</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">产地</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">收获年度</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">性质</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">代表数量(公斤)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">检测日期</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">水份(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">杂质(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">出糙(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">容重(g/l)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">不完善粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">黄粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">谷外糙米(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">整精米粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">脂肪酸值</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">色泽气味</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">面筋吸水率</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">品尝评分值</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">检验单位</th>
+	 			</tr>
+			</thead>	
+		</table>
+   	</div>
+   	
+   	<div id="div-tongcang" style="display:none">
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  table-bordered datatables table-tongcang" data-url="${ctxPath}/zhiliangzs/queryzhiliang.do" >	 
+			<thead>
+				<tr>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">检验日期</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">仓号</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">品种</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">检验性质</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">生产年度</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">代表数量(公斤)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">水份(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">杂质(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">出糙(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">容重(g/l)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">不完善粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">黄粒(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">谷外糙米(%)</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">整精米粒(%)</th>
+	 			</tr>
+			</thead>	
+		</table>
+   	</div>
+</div>
+</div>
+</div>
+</div>
+
+<%}%>

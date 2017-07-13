@@ -1,0 +1,251 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+
+</style>
+
+
+<script type="text/javascript">
+
+var qyzzjgdm;
+var kdbm;
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+});
+
+(function ($) {
+     $.getUrlParam = function (name) {
+           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if (r != null) return unescape(r[2]); return null;
+       }
+   })(jQuery);
+   
+$(function() {
+	
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			var qz = [];
+			var op = '<option value="请选择">请选择</option>';
+			
+			$("#qymc").append(op);
+			
+			$("#qyxz").append(op);
+			
+			for(var i = 0; i < data.list.length; i++){
+				if(!qz.in_array(data.list[i].qyxzmc) && (data.list[i].qyxzmc != null)){
+					qz.push(data.list[i].qyxzmc);
+				}
+				var opqy = '<option value = "'+data.list[i].qymc+'">'+data.list[i].qymc+'</option>';
+				//var opdm = '<option value = "'+data.list[i].qyzzjgdm+'">'+data.list[i].qyzzjgdm+'</option>'
+				$("#qymc").append(opqy);
+				//$("#zzjgdm").append(opdm);
+			}
+			
+			for(var j = 0 ; j < qz.length; j++){
+				var opqz = '<option value = "'+qz[j]+'">'+qz[j]+'</option>';
+				$("#qyxz").append(opqz);
+			}
+		},
+		error:function(){
+			alert("加载下拉框失败");
+		}
+	});
+
+	
+	
+	//加载企业明细
+	datatable = $('.table-qiye').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["qymc"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["qyzzjgdm"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["xzqhdm"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["qyxzmc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["jyywlxmc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["xxdz"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["fddbr"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["lxdh"]+'</div>';
+					return div;								
+				}
+			}/*,{
+				"render": function (data,type,row,meta) {
+					var div = '<div>暂无</div>';
+					return div;								
+				}
+			}*/
+			
+			]
+	});
+});
+
+
+
+
+//条件查询
+function doSearch(){
+	
+	var qymc = $("#qymc option:selected").text();
+	var qyzzjgdm = $("#zzjgdm").val();
+	var qyxzmc = $("#qyxz option:selected").text();
+
+	
+	var querystr = "";
+	if(qymc != null && qymc != "" && qymc != "请选择"){
+		querystr += '&qymc='+qymc;
+	}
+	if(qyzzjgdm != null && qyzzjgdm != "" && qyzzjgdm != "请选择"){
+		querystr += '&qyzzjgdm='+qyzzjgdm;
+	}
+	if(qyxzmc != null && qyxzmc != "" && qyxzmc != "请选择"){
+		querystr += '&qyxzmc='+qyxzmc;
+	}
+	
+	$(".table-qiye").attr("data-queryparam",querystr);
+	datatable.ajax.reload(null,true);
+	
+}
+</script>
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>企业信息维护</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+		<div class="chaxuntiaojian" style="float:left;">
+			<label class="cjd-label" style="margin-top: 5px">企业名称:</label>
+			<select id="qymc" class="form-control cjd-select" style="width:150px;">
+			</select>	
+			<label style="margin-left:20px">组织机构代码:</label>
+			<input class="form-control input-sm" id="zzjgdm" placeholder="组织机构代码"  type="text" style="width:150px;font-size:14px">	
+			<!-- <select id="zzjgdm" class="form-control cjd-select" style="width:150px;">
+			</select> -->
+			<label style="margin-left:20px">企业性质:</label>
+			<select id="qyxz" class="form-control cjd-select" style="width:150px;">
+			</select>
+			<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px">
+   <!-- 入库质量信息 -->
+   <div class="panel-body">
+   	<div id="div-ruku" >
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover table-bordered datatables table-qiye" data-url="${ctxPath}/shouchukeshihua/queryqiye.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" style="vertical-align:middle">企业名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">组织机构代码</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">行政区划代码</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">企业性质</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">企业经营种类</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">通信地址</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">法人名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">联系电话</th>
+	     			<!--  
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">资信情况</th>
+	     			-->
+	 			</tr>
+			</thead>	
+		</table>
+   	</div>
+</div>
+</div>
+</div>
+</div>
+
+<%}%>

@@ -1,0 +1,180 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs_app.html"){}
+%>
+
+<!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+<!--echart样式  -->
+
+<script type="text/javascript">
+$(function () {
+//var ecConfig = require('echarts/config');
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findkczb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			if(data.zcr==0){
+				$("#aa").html("库存总量:0万吨");			 
+			}else{		
+				$("#aa").html("库存总量:"+(data.dmStock/10000000).toFixed(2)+"万吨");
+			}
+			 option = {
+					 	title : {
+					        text: "库存总量:"+(data.dmStock/10000000).toFixed(2)+"万吨",
+					        textStyle:{
+					        	fontSize:20
+					        }
+					    },
+					    tooltip : {
+					        formatter: "{b} : {c}%"
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    
+					    series : [
+					        {
+					            name:'库存占比',
+					            type:'gauge',
+					            center: ['60%', '60%'],
+					            detail : {formatter:'{value}%'},
+					            data:[{value:((data.dmStock/10000000)/(data.zcr)*100).toFixed(2), name: '库存占比'}]
+					        }
+					    ]
+					};
+			 echarts.init(document.getElementById('container')).setOption(option);   
+			}
+		});
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findfqck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			option = {
+				    title : {
+				        text: '全市库存统计',
+				        textStyle:{
+				        	fontSize:20
+				        }
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}万吨 ({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.qylist
+				    },
+				    
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '50%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    series : [{
+				                  name:'库存占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '60%'],
+				                  itemStyle:{
+				                	  normal:{
+						                    label : {
+						                        position : 'inner'
+						                    },
+						                    labelLine : {
+						                        show : false
+						                    }
+				                	  }
+				                  },
+				                  data:[
+				                      {value:(data.cklist[0]/10000000).toFixed(2),name:data.qylist[0],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#ba55d3',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[1]/10000000).toFixed(2), name:data.qylist[1],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#9BBBD4',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[2]/10000000).toFixed(2), name:data.qylist[2],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#7DD688',
+						                	  }
+						                  }},
+				                      {value:(data.cklist[3]/10000000).toFixed(2), name:data.qylist[3],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#28c6b9',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[4]/10000000).toFixed(2), name:data.qylist[4],
+					                    	  itemStyle : {
+							                	  normal : {
+							                		  color:'#84e6f1',
+							                	  }
+							                  }
+				                      },
+				                      {value:(data.cklist[5]/10000000).toFixed(2), name:data.qylist[5],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#A7E9F1',
+						                	  }
+						                  }
+				                      }
+				                  ]
+				              }
+				          ]
+				};
+			myChart = echarts.init(document.getElementById('container1')).setOption(option);	
+			//myChart.on(ecConfig.EVENT.CLICK, eConsole);
+		}
+	});
+	
+});	
+</script>
+<meta content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=0;" name="viewport" />
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well" style="height: 95%;width:100%">
+		  <h4 id="zcr" ></h4>
+          <div id="container" style="width: 50%;height:100%; margin: 0 auto;margin-left: 0px;float: left;"></div>
+          <div id="container1" style="width: 50%;height:100%; margin: 0 auto;float: left;margin-left: 0px;margin-top: 0px;"></div>
+        </div>
+	</div>		
+</div>  

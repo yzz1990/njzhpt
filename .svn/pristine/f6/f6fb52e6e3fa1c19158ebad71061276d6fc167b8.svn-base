@@ -1,0 +1,111 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline" style="float: right;">
+					<label>所属辖区:</label>
+					<input class="form-control input-sm" name="suoshuxiaqu" id="suoshuxiaqu" placeholder="所属辖区" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>所属企业:</label>
+					<input class="form-control input-sm" name="suoshuqiye" id="suoshuqiye" placeholder="所属企业" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>库点名称:</label>
+					<input class="form-control input-sm" name="kudianmc" id="kudianmc" placeholder="库点名称" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>仓号:</label>
+					<input class="form-control input-sm" name="canghao" id="canghao" placeholder="仓号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYaojizz" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "suoshuxiaqu",
+				"title" : "所属辖区"
+			},{
+				"data" : "suoshuqiye",
+				"title" : "所属企业"
+			},{
+				"data" : "kudianmc",
+				"title" : "库点名称"
+			},{
+				"data" : "canghao",
+				"title" : "仓号",
+			},{
+				"data" : "xunzhengtime",
+				"title" : "熏蒸时间"
+			},{
+				"data" : "kaiqitime",
+				"title" : "开启时间"
+			},{
+				"data" : "kongpingshul",
+				"title" : "空瓶数量",
+			},{
+				"data" : "canyuren",
+				"title" : "参与人员",
+			},{
+				"data" : "chulifangshi",
+				"title" : "处理方式"
+			}
+			]
+	});
+});
+
+	
+function doSearch(){
+	var suoshuxiaqu = $("#suoshuxiaqu").val();
+	var suoshuqiye = $("#suoshuqiye").val();
+	var kudianmc = $("#kudianmc").val();
+	var canghao = $("#canghao").val();
+	document.querySelector('.datatables').dataset.queryparam="&suoshuxiaqu="+suoshuxiaqu+"&suoshuqiye="+suoshuqiye+"&kudianmc="+kudianmc+"&canghao="+canghao;
+	datatable.ajax.reload(null,false);
+}
+	
+function delYaojizz(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delYaojizz',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+	
+	
+</script>
+<%
+	}
+%>

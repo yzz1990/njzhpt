@@ -1,0 +1,970 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+	
+	<!----------- shiping ------------>
+	<script src="${ctxPath}/js/preview.js?version=3.0.4.150415"></script>
+	<!----------- shiping ------------>
+	<link rel="stylesheet" href="${ctxPath}/css/bootstrap.css" >
+	<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+	<!--  
+	<script type="text/javascript"  src="${ctxPath}/resource/echarts.simple.min.js"></script>
+	-->
+	 <style type="text/css">
+    	div{
+    		
+    		float:left;
+    	}
+    	.shiping{
+    		width:230px;
+    		margin-right:10px;
+    	}
+    	.biaoge{
+    		width:1000px;
+    		height:200px;
+    	}
+    	#base{
+    	 	width:1000px;
+    	 	height:600px;
+   
+    	}
+    	#mingxixinxi{
+    		height:30px;
+			background:green;
+			color:white;
+			vertical-align:middle;
+			font-size:18px;
+			width:960px;
+			padding-left:10px;
+    	}
+    	.form-inline{
+    		margin-top:20px;
+    		padding-left:10px;
+    	}
+    	.div-lsxz, .div-lspz, .div-lsdj, .div-zylx, .div-time{
+			float:left;
+		}
+		.uu1124{
+			font-size:13px;
+			width:70px;
+			display:inline-block;
+			font-color:black;
+			font-weight:bold;
+			text-align:right;
+			color: black;
+		}
+		.u1128{
+			font-size:13px;
+			width:80px;
+			float:left;
+			display:inline-block;
+			font-weight:bold;
+			color:black;
+		}
+		.lsxzmx{
+			width:180px;
+		}
+		.kczbtb{
+			width:250px;
+			height:200px;
+			margin-left:20px;
+		}
+		.lsxx{
+			width:250px;
+			height:200px;
+			margin-left:20px;
+		}
+		.datatables{
+			color:black;
+		}
+		.zhongjian{
+			border-width: 0 0 0 1px;
+			border-style: solid;
+			border-color: #B0C4DE;
+		}
+		.kcmm{
+			width:180px;
+		}
+		.dataTables_empty{
+			text-align:center;
+		}
+		.pagination{
+			color: red;
+		}
+		
+    </style>
+    
+    <script type="text/javascript">
+    $.fn.datetimepicker.dates['zh'] = {  
+            days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],  
+            daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],  
+            daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],  
+            months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],  
+            monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],  
+            meridiem:    ["上午", "下午"],  
+            //suffix:      ["st", "nd", "rd", "th"],  
+            today:       "今天"  
+    };  
+    Array.prototype.S=String.fromCharCode(2);
+    Array.prototype.in_array=function(e){
+        var r=new RegExp(this.S+e+this.S);
+        return (r.test(this.S+this.join(this.S)+this.S));
+    };
+    (function ($) {
+ 	      $.getUrlParam = function (name) {
+ 	            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+ 	            var r = decodeURI(window.location.search).substr(1).match(reg);
+ 	            if (r != null) return unescape(r[2]); return null;
+ 	        }
+	     })(jQuery);
+    var datatable;
+    var qyzzjgdm = $.getUrlParam("qyzzjgdm");
+	var kdbm = $.getUrlParam("kdbm");
+	var kdmc = $.getUrlParam("kdmc");
+	var date = new Date;
+	var year=parseInt(date.getFullYear());
+	var nowday1 = date.toLocaleDateString();
+    $(function(){
+    	$('#qssj').datetimepicker({
+			minView: "month",
+			format:'yyyy-mm-dd',
+			language: 'zh-CN',
+			autoclose: 1,
+			startView: 2,
+		});
+    	//form_datetimebegin
+    	$('.form_datetimebegin').datetimepicker({  
+    		minView: "month",
+			format:'yyyy-mm-dd',
+			language: 'zh-CN',
+			autoclose: 1,
+			startView: 2,
+           // pickerPosition:bottom-right
+        }).on('changeDate', function (ev) {  
+            $(this).datetimepicker('hide');  
+        });
+    	$('.form_datetimeend').datetimepicker({  
+    		minView: "month",
+			format:'yyyy-mm-dd',
+			language: 'zh-CN',
+			autoclose: 1,
+			startView: 2,
+           // pickerPosition:bottom-right
+        }).on('changeDate', function (ev) {  
+            $(this).datetimepicker('hide');  
+        });  
+    	$(".form_datetimebegin").datetimepicker({format: 'yyyy-mm-dd'});
+    	$(".form_datetimeend").datetimepicker({format: 'yyyy-mm-dd'});
+    	$(".input-sm-zylx").select2();
+    	$(".input-sm-lsxz").select2();
+    	$(".input-sm-lspz").select2();
+    	$(".input-sm-lsdj").select2();
+    	$(".input-sm-nianfen").select2();
+    	var bday = year+"-1-1";
+    	var eday = year+"-12-31";
+    	var nowday = nowday1.replace('/','-').replace('/','-');
+    	$('.form_datetimebegin').val(bday);
+		$('.form_datetimeend').val(nowday);
+    	$(".datatables").removeAttr("data-queryparam");
+    	$(".datatables").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm+"&kdbm="+kdbm+"&dtRegistrateTime="+bday+"&vEndTime="+eday);
+    	datatable = $('.datatables').DataTable({
+    		"pageLength": 5,
+    		"lengthMenu": [
+    		       		[5,10,15,20,10000],
+    		       		[5,10,15,20, "所有"]
+    		       	],
+            "columns": [
+				{
+					height:39,
+					"title" : "流水号",
+					width:80,
+					"render": function (data,type,row,meta) {
+						var vurl = '${ctxPath}/shouchukeshihua/churuku/madan.html/?vSwiftNumber='+row["vSwiftNumber"]+'&qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&kdmc='+kdmc+'&vDirection='+row["vDirection"];
+						var url = encodeURI(vurl);
+						var chakan = "";
+						if(row["vDirection"]=="入库"||row["vDirection"]=="收购"||row["vDirection"]=="出库"||row["vDirection"]=="出库损耗"){		
+							 chakan = '<a  href="javascript:void(0)" onclick="getmadan(\''+url+'\')">'+row["vSwiftNumber"]+'</a>';								
+						}else{
+							 chakan = '<a  href="javascript:void(0)" onclick="javascript:alert(\'无码单信息！\');">'+row["vSwiftNumber"]+'</a>';		
+						} 
+						return chakan;								
+					}
+				},{
+					height:39,
+    				//"data" : "dtRegistrateTime",
+    				"title" : "日期",
+    				width:80,
+    				"render": function (data,type,row,meta) {
+	   					var url = '${ctxPath}/shouchukeshihua/churuku/madan.html';
+	   					var chakan = '<p>'+row["dtRegistrateTime"].substring(0,10)+'</p>';								
+	   					return chakan;								
+   					}
+    			},{
+    				height:39,
+    				"data" : "vViechelNumber",
+    				"title" : "车船号",
+    				width:80
+    			},{
+    				height:39,
+    				"data" : "vName",
+    				"title" : "粮食品种",
+    				width:90
+    			},{
+    				height:39,
+    				"data" : "vGrainProperties",
+    				"title" : "粮食性质",
+    				width:110
+    			},{
+    				height:39,
+    				"title" : "数量(吨)",
+    				width:70,
+    				"render": function (data,type,row,meta) {
+	   					var chakan = '<p>'+(row["dmNW"]/1000).toFixed(3)+'</p>';								
+	   					return chakan;								
+   					}
+    			},{
+    				height:39,
+    				"data" : "vHarvestPeriod",
+    				"title" : "年限",
+    				width:50
+    			},{
+    				height:39,
+    				"data" : "vGrainLevel",
+    				"title" : "等级",
+    				width:40
+    			},{
+    				height:39,
+    				"data" : "vWareHouseCode",
+    				"title" : "仓房号",
+    				width:60
+    			},{
+    				height:39,
+    				"data" : "vDirection",
+    				"title" : "作业类型",
+    				width:80
+    			}
+    			]
+    	});
+    	//==============================datagrid加载完成后处理======================================
+    	$('.datatables').on( 'draw.dt', function () {
+    		/* $('.form_datetimebegin').val(bday);
+    		$('.form_datetimeend').val(nowday); */
+    		
+    	});
+    	//==============================datagrid加载完成处理结束======================================
+    	//=======================================加载年度===============================
+    	for(var i = 0; i < 5; i++){
+    		$(".input-sm-nianfen").append("<option value='"+(year - i)+"'>"+(year - i)+"</option>");	
+    	}	
+    	//==========================加载粮食性质下拉框=========================
+    		var op = '<option value="请选择" selected="selected">全部</option>';
+			$(".input-sm-lsxz").append(op);
+			$(".input-sm-lspz").append(op);
+			$(".input-sm-lsdj").append(op);
+			//$(".input-sm-zylx").append(op);
+			
+			$(".div-lsxz").find(".select2-selection__rendered").text("全部");
+	    	$(".div-lspz").find(".select2-selection__rendered").text("全部");
+	    	$(".div-lsdj").find(".select2-selection__rendered").text("全部");
+	    	$(".div-zylx").find(".select2-selection__rendered").text("全部");
+	    	
+	    	$(".div-lsxz").find(".select2-selection__rendered").attr("title","全部");
+	    	$(".div-lspz").find(".select2-selection__rendered").attr("title","全部");
+	    	$(".div-lsdj").find(".select2-selection__rendered").attr("title","全部");
+	    	$(".div-zylx").find(".select2-selection__rendered").attr("title","全部");
+			
+			$.ajax({
+				url:'${ctxPath}/shouchukeshihua/querylsxz.do',
+				type:'post',
+				dataType:'json',
+				success:function(data){
+					$.each(data.list,function(i, n){
+						op = '<option value='+n.vGrainProperties+'>'+n.vGrainProperties+'</option>';
+						$(".input-sm-lsxz").append(op);
+					});	
+				},
+				error:function(){
+					alert("加载粮食性质下拉框失败");
+				}
+			});
+    		//====================加载粮食品种========================
+    		$.ajax({
+    			url:'${ctxPath}/shouchukeshihua/querylspz.do',
+    			type:'post',
+    			dataType:'json',
+    			success:function(data){
+    				$.each(data.list,function(i, n){
+						op = '<option value='+n.vName+'>'+n.vName+'</option>';
+						$(".input-sm-lspz").append(op);
+					});	
+    			},
+    			error:function(){
+    				alert("加载粮食品种失败");
+    			}
+    		});
+    		//=================加载粮食等级============================
+    		$.ajax({
+    			url:'${ctxPath}/shouchukeshihua/querylsdj.do',
+    			type:'post',
+    			dataType:'json',
+    			success:function(data){
+    				$.each(data.list,function(i, n){
+						op = '<option value='+n.vCode+'>'+n.vLevelName+'</option>';
+						$(".input-sm-lsdj").append(op);
+					});	
+    			},
+    			error:function(){
+    				alert("加载粮食等级失败");
+    			}
+    		});
+    		
+    		//=======================加载作业类型=======================
+    		/*
+    		var pt = [];
+    		var pz = [];
+    		var zy = [];
+    		$.ajax({
+    			url:'${ctxPath}/shouchukeshihua/querymingxi.do',
+    			type:'post',
+    			data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":1000},
+    			dataType:'json',
+    			success:function(data){
+    				var op = '<option value="请选择">请选择</option>';
+    				$(".input-sm-lsxz").append(op);
+    				$(".input-sm-lspz").append(op);
+    				$(".input-sm-lsdj").append(op);
+    				$(".input-sm-zylx").append(op);
+    				
+    				//加载粮食等级
+					for(var i = 1; i <= 4; i++){
+						var op = '<option value='+data.list[i].vGrainLevel+'>'+i+'</option>';
+						$(".input-sm-lsdj").append(op);
+					}
+    				
+    				for(var i = 0; i < data.list.length; i++){
+    					//加载粮食性质
+    					if(!pt.in_array(data.list[i].vGrainProperties) && (data.list[i].vGrainProperties != null)){
+    						pt.push(data.list[i].vGrainProperties);
+    						var op = '<option value='+data.list[i].vGrainProperties+'>'+data.list[i].vGrainProperties+'</option>';
+    						$(".input-sm-lsxz").append(op);
+    					}
+    					//加载粮食品种
+    					if(!pz.in_array(data.list[i].vName) && (data.list[i].vName != null)){
+    						pz.push(data.list[i].vName);
+    						var op = '<option value='+data.list[i].vName+'>'+data.list[i].vName+'</option>';
+    						$(".input-sm-lspz").append(op);
+    					}
+    					
+    					//加载作业类型
+    					if(!zy.in_array(data.list[i].vDirection) && (data.list[i].vDirection != null)){
+    						zy.push(data.list[i].vDirection);
+    						var op = '<option value='+data.list[i].vDirection+'>'+data.list[i].vDirection+'</option>';
+    						$(".input-sm-zylx").append(op);
+    					}
+    				}
+    			},
+    			error:function(){
+    				alert("加载粮食性质下拉框失败");
+    			}
+    		});
+    		*/
+    		//库点名称单击事件展示库点存储状况
+   			var myChart = echarts.init(document.getElementById('kczbtb'));
+   			$.ajax({
+   				url:'${ctxPath}/shouchukeshihua/queryshishi.do',
+   				type:'post',
+   				data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":5},
+   				dataType:'json',
+   				success:function(data){
+   					var kczb = (data.list[0].sum != null ? data.list[0].sum : 0)/1000;
+   					var syzb = parseFloat(data.list[0].cfzcr) - kczb;
+   					$("#ukucun").text(kczb.toFixed(3));
+   					$("#usykucun").text(syzb.toFixed(3));
+   					option = {
+							title : {
+						        x:'left',
+						        textStyle:{
+						        	fontSize:15
+						        }
+						    },
+						    tooltip: {
+						        trigger: 'item',
+						        formatter: "{b}<br/>  ({d}%)"
+						    },
+						    /*
+						    legend: {
+						        orient: 'vertical',
+						        x: 'center',
+						        bottom:0,
+						        data:['库存占比','剩余库存']
+						    },*/
+						    color : ['#61a0a8', '#FFFFFF', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+						    normal: {
+			                    position: 'inner'
+			                },
+						    series: [
+						        {
+						            name:'数量(占比)',
+						            type:'pie',
+						            radius: ['50%', '70%'],
+						            avoidLabelOverlap: false,
+						            label: {
+						                normal: {
+						                	show: true,
+						                    position: 'center',
+						                    textStyle: {
+						                        fontSize: '20',
+						                        fontWeight: 'bold'
+						                    }
+						                },
+						                emphasis: {
+						                    show: true,
+						                    textStyle: {
+						                        fontSize: '25',
+						                        fontWeight: 'bold'
+						                    }
+						                }
+						            },
+						            itemStyle: {
+						            	normal:{
+						            		
+						            		borderColor: "#61a0a8",
+						            		borderWidth: 1,
+						            	}
+						            },
+						            
+						            data:[
+						                {value:kczb.toFixed(3), name:'总仓容'},
+						                {value:syzb.toFixed(3), name:''},
+						            ]
+						        }
+						    ]
+						};
+   					myChart.setOption(option);	
+   				},
+   				error:function(){
+   					alert("加载库点错误");
+   				}
+   			});
+    		//==================================库点名称单击结束======================================
+    			
+    		//==========================加载粮食性质=================================================
+    		var zycb = 0;
+			var sjcb = 0;
+			var shjcb = 0;
+			var xjcb = 0;
+			var lscb = 0;
+			var spl = 0;
+    		var myChart1 = echarts.init(document.getElementById('lsxx'));
+    		$.ajax({
+    			url:'${ctxPath}/shouchukeshihua/queryliangqing.do',
+    			type:'post',
+    			data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm,"page":1,"rows":100},
+    			dataType:'json',
+    			success:function(data){
+    				for(var i = 0; i < data.list.length; i++){
+    					if(data.list[i].vGrainPropertyId.substring(0,2) == '11'){
+    						var num = (parseFloat(data.list[i].sum/1000)).toFixed(3);
+   							if(isNaN(num)){
+ 								num = 0;
+ 							}
+    						zycb += parseFloat(num);
+    					}
+    					if(data.list[i].vGrainPropertyId == '121'){
+    						var num = (parseFloat(data.list[i].sum/1000)).toFixed(3);
+   							if(isNaN(num)){
+ 								num = 0;
+ 							}
+    						sjcb = num;
+    						$("#uu1126").text(sjcb.toFixed(3));
+    					}
+    					if(data.list[i].vGrainPropertyId == '122'){
+    						var num = (parseFloat(data.list[i].sum/1000)).toFixed(3);
+   							if(isNaN(num)){
+ 								num = 0;
+ 							}
+    						shjcb = num;
+    						$("#uu1128").text(shjcb.toFixed(3));
+    					}
+    					if(data.list[i].vGrainPropertyId == '123'){
+    						
+    						var num = (parseFloat(data.list[i].sum/1000)).toFixed(3);
+   							if(isNaN(num)){
+ 								num = 0;
+ 							}
+    						xjcb = num;
+    						$("#uu1130").text(xjcb.toFixed(3));
+
+    					}
+    					if(data.list[i].vGrainPropertyId.substring(0,1) == '2'){
+    						var num = (parseFloat(data.list[i].sum/1000)).toFixed(3);
+   							if(isNaN(num)){
+ 								num = 0;
+ 							}
+    						spl += parseFloat(num);
+    					}
+    					if(data.list[i].vGrainPropertyId == '32'){
+    						var num = (parseFloat(data.list[i].sum/1000)).toFixed(3);
+   							if(isNaN(num)){
+ 								num = 0;
+ 							}
+    						lscb = num;
+    						$("#uu1132").text(lscb.toFixed(3));
+    					}
+    					$("#uu1122").text(zycb+sjcb+shjcb+xjcb+lscb+spl);
+    					
+    					
+    				}
+    				$("#uu1124").text(zycb.toFixed(3));
+    				$("#uu1134").text(spl.toFixed(3));
+    				option1 = {
+							title : {
+						        x:'left',
+						        textStyle:{
+						        	fontSize:15
+						        }
+						    },
+						    tooltip: {
+						        trigger: 'item',
+						        formatter: "{b}:<br/> ({d}%)"
+						    },
+						    /*
+						    legend: {
+						        orient: 'vertical',
+						        x: 'center',
+						        bottom:0,
+						        data:['库存占比','剩余库存']
+						    },*/
+						    color : ['#b6a2de', '#5ab1ef', '#ffb980','#d87a80','#8d98b3', '#f5994e','#9370DB', '#0000FF', '#c4ccd3'],
+						    normal: {
+			                    position: 'inner',
+			                    /*
+			                    label: { show: function () {
+		                            if (value == 0.00)
+		                            { return false; }
+			                        } ()
+		                        },
+		                        labelLine: { show: function () {
+		                            if (value == 0.00)
+		                            { return false; }
+			                        } ()
+		                        }*/
+			                },
+						    series: [
+						        {
+						            name:'数量(占比)',
+						            type:'pie',
+						            radius: ['0%', '70%'],
+						            avoidLabelOverlap: false,
+						            label: {
+						                normal: {
+						                	show: false,
+						                    //position: 'center'
+						                     
+						                },
+						                
+						                /*
+						                emphasis: {
+						                    show: true,
+						                    textStyle: {
+						                        fontSize: '10',
+						                        fontWeight: 'bold'
+						                    }
+						                }
+						                */
+						                
+						            },
+						            /*
+						            itemStyle: {
+						            	normal:{
+						            		
+						            		borderColor: "#61a0a8",
+						            		borderWidth: 1,
+						            	}
+						            },
+						            */
+						            data:[
+						                {value:zycb, name:'中央储备',
+						                	itemStyle: {
+						                         normal: {
+						                             label: { show: function () {
+						                                 if (zycb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             },
+						                             labelLine: { show: function () {
+						                                 if (zycb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             }
+						                         }
+						                     }
+						                },
+						                {value:sjcb, name:'省级储备',
+						                	itemStyle: {
+						                         normal: {
+						                             label: { show: function () {
+						                                 if (sjcb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             },
+						                             labelLine: { show: function () {
+						                                 if (sjcb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             }
+						                         }
+						                     }
+						                },
+						                {value:shjcb, name:'市级储备',
+						                	itemStyle: {
+						                         normal: {
+						                             label: { show: function () {
+						                                 if (shjcb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             },
+						                             labelLine: { show: function () {
+						                                 if (shjcb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             }
+						                         }
+						                     }
+						                },
+						                {value:xjcb, name:'县级储备',
+						                	itemStyle: {
+						                         normal: {
+						                             label: { show: function () {
+						                                 if (xjcb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             },
+						                             labelLine: { show: function () {
+						                                 if (xjcb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             }
+						                         }
+						                     }
+						                },
+						                {value:lscb, name:'临时储备',
+						                	itemStyle: {
+						                         normal: {
+						                             label: { show: function () {
+						                                 if (lscb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             },
+						                             labelLine: { show: function () {
+						                                 if (lscb == 0.00)
+						                                 { return false; }
+						                             } ()
+
+						                             }
+						                         }
+						                     }
+						                },
+						                {value:spl, name:'商品粮',
+						                	itemStyle: {
+						                         normal: {
+						                             label: { show: function () {
+						                                 if (spl == 0.00)
+						                                 { return false; }
+						                             } ()
+						                             },
+						                             labelLine: { show: function () {
+						                                 if (spl == 0.00)
+						                                 { return false; }
+						                             } ()
+						                             }
+						                         }
+						                     }
+						                },
+						            ]
+						        }
+						    ]
+						};
+   					myChart1.setOption(option1);	
+   					//alert("中央储备:"+zycb+",省级储备："+sjcb+",市级储备："+shjcb+",县级储备："+xjcb+",临时储备:"+lscb+"商品粮:"+spl);
+    				
+    				
+    			},
+    			error:function(){
+    				
+    			}
+    		});
+    		//==========================加载粮食性质=================================================
+    });
+    
+    function getmadan(url){
+    	if($("#u1125if").attr("src") != "" && $("#u1125if").attr("src") != null){
+    		$("#spclose").hide();
+    	}
+    	dialog1=top.BootstrapDialog.show({
+		    title: '出入库明细',
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="'+url+'"/>'),
+		    onshow:function(dlg){
+	       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	       },
+		});
+    }
+
+    function doSearch(){
+    	var liushui = $(".input-sm-liushui").val();
+    	var time = $(".form_datetimebegin").val();
+    	var cfbh = $(".input-sm-cfbh").val();
+    	var lsxz = $(".input-sm-lsxz option:selected").val();
+    	var endtime = $(".form_datetimeend").val();
+    	var zylx = $(".input-sm-zylx option:selected").val();
+    	var lspz = $(".input-sm-lspz option:selected").val();
+    	var lsdj = $(".input-sm-lsdj option:selected").val();
+    	var nianfen = $(".input-sm-nianfen option:selected").val();
+    	/*
+    	$(".div-lsxz").find(".select2-selection__rendered").text("请选择");
+    	$(".div-lspz").find(".select2-selection__rendered").text("请选择");
+    	$(".div-lsdj").find(".select2-selection__rendered").text("请选择");
+    	$(".div-zylx").find(".select2-selection__rendered").text("请选择");
+    	
+    	$(".input-sm-lsxz").find("option[text='请选择']").attr("selected",true);
+    	$(".input-sm-zylx").find("option[text='请选择']").attr("selected",true);
+    	$(".input-sm-lspz").find("option[text='请选择']").attr("selected",true);
+    	$(".input-sm-lsdj").find("option[text='请选择']").attr("selected",true);
+    	
+    	$(".div-lsxz").find(".select2-selection__rendered").attr("title","请选择");
+    	$(".div-lspz").find(".select2-selection__rendered").attr("title","请选择");
+    	$(".div-lsdj").find(".select2-selection__rendered").attr("title","请选择");
+    	$(".div-zylx").find(".select2-selection__rendered").attr("title","请选择");
+    	*/
+    	$(".datatables").removeAttr("data-queryparam");
+    	$(".datatables").attr("data-queryparam","&qyzzjgdm="+qyzzjgdm);
+    	$(".datatables").attr("data-queryparam","&kdbm="+kdbm);
+    	var attrstr = "&qyzzjgdm=" + qyzzjgdm + "&kdbm=" + kdbm;
+    	if(liushui != "" && liushui != null){
+    		attrstr += "&vSwiftNumber="+liushui;
+    	}
+    	if(time != "" && time != null){
+    		attrstr += "&dtRegistrateTime="+time;
+    	}
+    	if(cfbh != "" && cfbh != null && cfbh != "请选择"){
+    		attrstr += "&vWareHouseCode="+cfbh;
+    	}
+    	if(lsxz != "" && lsxz != null && lsxz != "请选择"){
+    		attrstr += "&vGrainProperties="+lsxz;
+    	}
+    	if(endtime != "" && endtime != null){
+    		attrstr += "&vEndTime="+endtime;
+    	}
+    	if(zylx != "" && zylx != null && zylx != "请选择"){
+    		attrstr += "&vDirection="+zylx;
+    	}
+    	if(lspz != "" && lspz != null && lspz != "请选择"){
+    		attrstr += "&vName="+lspz;
+    	}
+    	if(lsdj != "" && lsdj != null && lsdj != "请选择"){
+    		attrstr += "&vGrainLevel="+lsdj;
+    	}
+    	if(nianfen != "" && nianfen != null && nianfen != "请选择"){
+    		attrstr += "&vHarvestPeriod="+nianfen;
+    	}
+    	$(".datatables").attr("data-queryparam",attrstr);
+    	datatable.ajax.reload(null,true);
+    }
+    
+    function showsp(){
+    	if($("#u1125if").attr("src") == ""){
+    		//加载视频
+        	$.ajax({
+        		url:'${ctxPath}/shouchukeshihua/readshiping',
+        		type:'post',
+        		data:{"qyzzjgdm":qyzzjgdm,"kdbm":kdbm},
+        		dataType:'json',
+        		success:function(data){
+        			var videoip = data[0].ip;
+        			var user = data[0].user;
+        			var password = data[0].password;
+        			for(var i = 0; i < data.length ; i++){
+        				var cameraIndex = data[i].videopoint;
+        				if(data[i].videoname == "报港处"){
+        					var spurl = '${ctxPath}/shouchukeshihua/churuku/shiping.html?videoip='+videoip+'&user='+user+'&password='+password+'&cameraIndex='+cameraIndex;
+        					$("#u1125if").attr("src",spurl);
+        				}else if(data[i].videoname == "质检处"){
+        					var spurl = "${ctxPath}/shouchukeshihua/churuku/shiping.html"+
+        					"?videoip="+videoip+"&user="+user+"&password="+password+"&cameraIndex="+cameraIndex;
+        					$("#u1127if").attr("src",spurl);
+        				}else if(data[i].videoname == "称重处"){
+        					var spurl = "${ctxPath}/shouchukeshihua/churuku/shiping.html"+
+        					"?videoip="+videoip+"&user="+user+"&password="+password+"&cameraIndex="+cameraIndex;
+        					$("#u1129if").attr("src",spurl);
+        				}else if(data[i].videoname == "入库处"){
+        					var spurl = "${ctxPath}/shouchukeshihua/churuku/shiping.html"+
+        					"?videoip="+videoip+"&user="+user+"&password="+password+"&cameraIndex="+cameraIndex;
+        					$("#u1131if").attr("src",spurl);
+        				}
+        			}
+        		},
+        		error:function(){
+        			alert("error");
+        		}
+        	});
+    	}
+    	 $("#spclose").toggle();	 
+    }
+
+    </script>
+
+    <div id="base" class="">
+    
+    <div style="width:100%">
+    	<p style="padding-right:20px;width:100%;text-align:right">单位：吨</p>
+    	<div style="width:50%">
+    		<h5 style="color:black;width:100%;font-weight:bold;text-align:center">库存占比</h5>
+    		
+	    	<div id="kczbtb" class="kczbtb">
+	    	
+	    	</div>
+	    	<div id="kcmm" class="kcmm">
+	    		<p  class="u1128">实时库存:</p><p id="ukucun" class="uu1124">0.000</p>
+				<p  class="u1128">剩余仓容:</p><p id="usykucun" class="uu1124">0.000</p>
+	    	</div>
+    	</div>
+    	
+    	<div class="zhongjian"  style="width:50%">
+    		<h5 style="color:black;width:100%;font-weight:bold;text-align:center">当季各粮食性质收购量</h5>
+    		<div id="lsxx" class="lsxx">
+    			
+    		</div>
+	    	<div class="lsxzmx">
+	    	<!-- 
+	    		<p  class="u1128">总库存:</p><p id="uu1122" class="uu1124">0.000</p>
+	    	-->
+	    		<p  class="u1128">中央储备粮:</p><p id="uu1124" class="uu1124">0.000</p>
+				<p  class="u1128">省级储备粮:</p><p id="uu1126" class="uu1124">0.000</p>
+				<p  class="u1128">市级储备粮:</p><p id="uu1128" class="uu1124">0.000</p>
+				<p  class="u1128">区级储备粮:</p><p id="uu1130" class="uu1124">0.000</p>
+				<p  class="u1128">临时储备粮:</p><p id="uu1132" class="uu1124">0.000</p>
+				<p  class="u1128">商品粮:</p><p id="uu1134" class="uu1124">0.000</p>
+	    	</div>
+    	</div>
+    </div>
+    
+    <div style="width:300px">
+		<a href="javascript:void(0)" onclick="showsp()">显示/隐藏视频</a>
+	</div>
+
+	<div id="spclose" style="width:980px; display:none">
+      <!-- Unnamed (图片) -->
+      <div id="u1125" class="shiping">
+      	<p>报港:</p>
+      	<iframe id="u1125if" src=""  style="width:230px;height:230px"></iframe>
+     
+        <!-- Unnamed () -->
+        <div id="u1126" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1127" class="shiping">
+      	<p>质检:</p>
+        <iframe id="u1127if" src=""  style="width:230px;height:230px"></iframe>
+        <!-- Unnamed () -->
+        <div id="u1128" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1129" class="shiping">
+      	<p>称重:</p>
+        <iframe id="u1129if" src=""  style="width:230px;height:230px"></iframe>
+        <!-- Unnamed () -->
+        <div id="u1130" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片) -->
+      <div id="u1131" class="shiping">
+      	<p>入库:</p>
+        <iframe id="u1131if" src=""  style="width:230px;height:230px"></iframe>
+        <!-- Unnamed () -->
+        <div id="u1132" class="text" style="display: none; visibility: hidden">
+          <p><span style="font-family:'应用字体 Regular', '应用字体';"></span></p>
+        </div>
+      </div>
+      </div>
+      
+      <div class="form-inline" >
+      		<div class = "div-nianfen">
+				<label>年份:</label>
+				<select class="form-control input-sm input-sm-nianfen" style="width:80px;" name="gongdi" style="width:100px;">
+					<option value="请选择">全部</option>
+				</select>
+			</div>
+      		<div class = "div-time" style="margin-left:10px">
+				<label>日期:</label>
+				<input size="16" type="text"  readonly class="form_datetimebegin" style="width:100px;"> 
+				<!-- 
+				<input class="form-control input-sm input-sm-time"  name="gongdi" style="width:80px;" type="date" />
+				 -->
+				<label>至</label>
+				<input size="16" type="text" readonly class="form_datetimeend" style="width:100px;">
+				<!-- 
+				<input class="form-control input-sm input-sm-endtime"  name="gongdi" style="width:80px;" type="date" />
+				 -->
+			</div>
+			<div class = "div-lsxz" style="margin-left:10px">
+				<label>性质:</label>
+				<select class="form-control input-sm input-sm-lsxz" name="gongdi" style="width:80px;">
+				</select>
+			</div>
+			<div class = "div-lspz" style="margin-left:10px">
+				<label>品种:</label>
+				<select class="form-control input-sm input-sm-lspz" name="gongdi" style="width:80px;">
+				</select>
+			</div>
+			<div class = "div-lsdj" style="margin-left:10px">
+				<label>等级:</label>
+				<select class="form-control input-sm input-sm-lsdj" name="gongdi" style="width:70px;">
+				</select>
+			</div>
+			<div class = "div-zylx" style="margin-left:10px">
+				<label>作业类型:</label>
+				<select class="form-control input-sm input-sm-zylx" name="gongdi" style="width:80px;">
+					<option value = "请选择">全部</option>
+					<option value = "入库">入库</option>
+					<option value = "出库">出库</option>
+					<option value = "出库损耗">出库损耗</option>
+					<option value = "收购">收购</option>
+					<option value = "销售">销售</option>
+					<option value = "倒仓">倒仓</option>
+					<option value = "定性">定性</option>
+				</select>	
+			</div>
+			<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left:10px"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+	  </div>
+      <!-- Unnamed (表格) -->
+      
+      <div id="u1133" class="biaoge" style="width:1000px"> 
+         <div  style="width:100%;margin-left:0px">
+          	<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/shouchukeshihua/querymingxi.do?isedit=2" >
+   			</table>
+		</div>
+      </div>
+    </div>
+<%
+	}
+%>
+  

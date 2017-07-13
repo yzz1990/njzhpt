@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<head>
+	<title>SVG-VML-3D-Example - Function Plot</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+	<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+	<META HTTP-EQUIV="expires" CONTENT="Wed,26 Feb 1997 08:21:57 GMT">
+	<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+	<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+	<style>
+		v\:* {
+			behavior: url(#default#VML);
+		}
+		
+		* {
+			maigin: 0px;
+			padding: 0px;
+			font-size: 14px;
+		}
+		
+		p {
+			margin: 5px 0;
+		}
+	</style>
+	<script src="${ctxPath}/yewu/cangchuzhinenghua/svgvml3d/svgvml3d_2.js" type="text/javascript"></script>
+	<script src="${ctxPath}/yewu/cangchuzhinenghua/svgvml3d/boundingbox_2.js" type="text/javascript"></script>
+
+	<script>
+		var i, j, xmin, xmax, n_x = 10,
+			ymin, ymax, n_y = 10,
+			zmin, zmax, x0, x1, y0, y1, z, x, y;
+		var arraylist = [];
+		//x轴开始的位置
+		xmin = 0;
+		xmax = 7;
+		//y轴开始的位置
+		ymin = 0;
+		ymax = 7;
+		//z轴开始的位置
+		zmin = 0;
+		zmax = Number(parent.parent.z)+1;
+		xmax = parent.parent.x;
+		ymax = parent.parent.y;
+
+		arraylist = parent.parent.liangwen.split(",");
+		arraylist = arraylist.reverse();
+		arraylist.shift();
+		Init();
+
+		function random(vv) {
+			return(Math.floor(Math.random() * vv));
+		}
+		var S, B;
+		var viewerzoomed = 0,
+			picturezoomed = 0;
+		zPoly = new Array(n_x);
+		for(i = 0; i < n_x; i++)
+			zPoly[i] = new Array(35);
+
+		function Init() {
+			if(useSVG) {
+				if(!SVGObjects[0]) {
+					setTimeout("Init()", 100);
+					return;
+				}
+				S = new Scene3D(SVGObjects[0], 0, 440, 440);
+			} else {
+				S = new Scene3D(document.getElementById("Scene1"), 1);
+			}
+			S.DiffuseLight = 1;
+			B = new BoundingBox(S, "#ffffff", "rgba(228, 17, 17, 0.23)");
+			n_f = 0;
+
+			var h, m, n;
+			//判断显示/隐藏
+			var showtemp = [];
+			for(var i = 0; i < zmax - 1; i++) {
+				showtemp.push(i);
+			}
+			for(h = 0; h < showtemp.length; h++) {
+				//10*10个格子
+				for(m = 0; m < ymax; m++) {
+					for(n = 0; n < xmax; n++) {
+						//正面颜色,背面颜色,墙体颜色
+						zPoly[h][n + xmax * m] = new Poly3D(S, "#00FF99",
+							"#00FF99", "#808080", 2);
+						zPoly[h][n + xmax * m]
+							.AddPoint(n, (m + 1), showtemp[h] + 1);
+						zPoly[h][n + xmax * m].AddPoint((n + 1), (m + 1),
+							showtemp[h] + 1);
+						zPoly[h][n + xmax * m]
+							.AddPoint((n + 1), m, showtemp[h] + 1);
+						zPoly[h][n + xmax * m].AddPoint(n, m, showtemp[h] + 1);
+						zPoly[h][n + xmax * m].Update();
+					}
+				}
+			}
+			S.AutoCenter();
+			B.SetBorder(xmin, ymin, zmin, xmax, ymax, zmax);
+			S.ChangeViewer(-30, -210);
+			S.ChangeLight(-30, 30);
+			S.OrderWeight.z = 0.01;
+			S.Sort();
+			S.Draw();
+		}
+
+		function UpdateFunction(id) {
+			var h = Number(id.substr(4)) - 1,
+				m, n;
+
+			for(var i = 0; i < zPoly[h].length; i++) {
+				if(zPoly[h][i]) {
+					zPoly[h][i].Visibility = parent.document.getElementById(id).checked ? "visible" :
+						"hidden";
+					zPoly[h][i].Update();
+				}
+			}
+			S.Sort();
+			S.Draw();
+		}
+
+		function SelectFunction(nn) {
+			if((nn == 0) || (nn == 1)) {
+				document.forms[0].xmin.value = -1;
+				document.forms[0].xmax.value = 1;
+				document.forms[0].ymin.value = -1;
+				document.forms[0].ymax.value = 1;
+			} else {
+				document.forms[0].xmin.value = -5;
+				document.forms[0].xmax.value = 5;
+				document.forms[0].ymin.value = -5;
+				document.forms[0].ymax.value = 5;
+			}
+			if(nn == 0)
+				document.forms[0].z.value = "x*x-y*y";
+			if(nn == 1)
+				document.forms[0].z.value = "4*x*x+4*y*y";
+			if(nn == 2)
+				document.forms[0].z.value = "(cos(x)+cos(y))/(4+abs(x)+abs(y))";
+			if(nn == 3)
+				document.forms[0].z.value = "10-abs(x)-abs(y)";
+			UpdateFunction();
+		}
+
+		function f(xx, yy) {
+			x = xx;
+			y = yy;
+			var ff;
+			ff = EvalSafe(parent.document.forms[0].z.value);
+			return(ff);
+		}
+
+		function EvalSafe(ss) {
+			var jj = "";
+			if(ss.indexOf("^") >= 0)
+				return("");
+			try {
+				with(Math)
+				jj = eval(ss);
+			} catch(error) {
+				return("");
+			}
+			return(jj);
+		}
+
+		function ChangeViewer(ttheta, ffi) {
+			S.ChangeViewer(ttheta, ffi);
+			S.Sort();
+			S.Draw();
+		}
+
+		function ChangeLight(ttheta, ffi) {
+			S.ChangeLight(ttheta, ffi);
+			S.Draw();
+		}
+
+		function ZoomViewer(vv) {
+			if((viewerzoomed + vv > 5) || (viewerzoomed + vv < -5))
+				return;
+			viewerzoomed += vv;
+			if(vv > 0)
+				S.Dist *= 0.8;
+			else
+				S.Dist /= 0.8;
+			S.Sort();
+			S.Draw();
+		}
+
+		function Shift(hh, vv) {
+			S.XM += hh;
+			S.YM += vv;
+			S.Draw();
+		}
+
+		function ZoomPicture(vv) {
+			if((picturezoomed + vv > 5) || (picturezoomed + vv < -5))
+				return;
+			picturezoomed += vv;
+			if(vv > 0)
+				S.ZoomAll *= 1.1;
+			else
+				S.ZoomAll /= 1.1;
+			S.Draw();
+		}
+
+		var isRotating = false;
+		var a;
+
+		function clickxuanzhuan() {
+			if(isRotating) {
+				isRotating = false;
+				parent.document.getElementById("xuanzhuan").innerHTML = '<span class="glyphicon glyphicon-repeat" title="旋转" style="font-size: 20px;width: 30px;" aria-hidden="true"></span>';
+				clearInterval(a);
+			} else {
+				isRotating = true;
+				parent.document.getElementById("xuanzhuan").innerHTML = '<span class="glyphicon glyphicon-off" title="停止" style="font-size: 20px;width: 30px;" aria-hidden="true"></span>';
+				Rotate();
+				a = setInterval("Rotate()", 200);
+			}
+		}
+
+		function Rotate() {
+			S.ChangeViewer(0, -5);
+			S.ChangeLight(0, -5);
+			S.Sort();
+			S.Draw();
+		}
+
+		function checkshow(id) {
+			UpdateFunction(id);
+
+		}
+	</script>
+</head>
+
+<body bgcolor=#F9F9F9>
+	<table noborder>
+		<tr>
+			<td>
+				<embed name='Scene1' src='${ctxPath}/yewu/cangchuzhinenghua/svgvml3d/scene.svg' wmode='transparent' type='image/svg+xml' style="height: 500px;width: 500px" />
+			</td>
+		</tr>
+	</table>
+</body>
+
+</html>

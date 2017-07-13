@@ -1,0 +1,45 @@
+<script src="${resourcePath}/jquery/js/jquery.min.js"></script>
+<input type="text" hidden="true" id="id" >
+<script type="text/javascript">
+(function ($) {
+    $.getUrlParam = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+})(jQuery);
+
+$(function(){
+	var quming=$.getUrlParam("quming");
+	var ccqy=$.getUrlParam("ccqy");
+	var cckd=$.getUrlParam("cckd");
+	var niandu=$.getUrlParam("niandu");
+	var q="";
+	
+	if(quming!=""&&quming!=null){
+		q =q + "&quming="+quming;
+	}
+	if(ccqy!=""&&ccqy!=null){
+		q =q + "&ccqy="+ccqy;
+	}
+	if(cckd!=""&&cckd!=null){
+		q =q + "&cckd="+cckd;
+	}
+	if(niandu!=""&&niandu!=null){
+		q =q + "&niandu="+niandu;
+	}
+	var url;
+	url = 'http://localhost:8075/WebReport/ReportServer?reportlet=%5B5e02%5D%5B7ea7%5D%5B50a8%5D%5B5907%5D%5B7cae%5D%5B627f%5D%5B50a8%5D%5B8ba1%5D%5B5212%5D%5B5206%5D%5B89e3%5D%5B8868%5D.cpt'+q+'';
+	//url = 'http://58.214.246.30:1000/WebReport/ReportServer?reportlet=chubeiliangjh_xq.cpt'+q+;
+	window.open(url);
+});
+
+
+
+
+</script>
+
+	<div class="panel panel-default">
+		<iframe id="CBLjihuahuizong" style="width:1360px; height:630px" src=''></iframe>
+	</div>
+

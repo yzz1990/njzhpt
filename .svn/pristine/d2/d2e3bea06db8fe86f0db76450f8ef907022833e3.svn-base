@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<META HTTP-EQUIV="expires" CONTENT="Wed,26 Feb 1997 08:21:57 GMT">
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+
+<title>仓内粮食基本信息管理</title>
+<style type="text/css">
+* {
+	font-size: 16px;
+}
+</style>
+<script type="text/javascript">
+    $(function () {
+    	$.post("${ctxPath}/yewu/queryCangRongCangFangInfo.do",{vcode:"${parameter.code}",qyzzjgdm:"${parameter.qyzzjgdm}",kdbm:"${parameter.kdbm}"},function(data){
+       		data=data[0];
+       		$("#a1").html(Number(data.congrong));
+       		$("#a2").html(Number(data.shuliang));
+       	    $("#a4").html(data.xingzhi);
+       		$("#a3").html(data.pinzhong);
+       		$("#a6").html(data.dengji);
+			$("#a5").html(data.niandu + "年");
+    	},'json');
+    });
+</script>
+<body class="easyui-layout">
+	<div data-options="region:'center',noheader:true, border:false">
+		<table style="width: 98%; margin-top: 20px;">
+			<tr height="30">
+				<td align="right" width="25%">粮仓容量(吨):</td>
+				<td id="a1" width="25%"></td>
+				<td align="right" width="25%">粮食数量(公斤):</td>
+				<td style="text-align: left;" id="a2" width="25%"></td>
+			</tr>
+			<tr height="30">
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;粮食品种:</td>
+				<td id="a3"></td>
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;粮食性质:</td>
+				<td style="text-align: left;" id="a4"></td>
+			</tr>
+			<tr height="30">
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;收获年度:</td>
+				<td id="a5"></td>
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;粮食等级:</td>
+				<td style="text-align: left;" id="a6"></td>
+			</tr>
+			<tr height="30">
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;水份(%):</td>
+				<td style="text-align: left;" id="a8">/</td>
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;杂质(%):</td>
+				<td id="a9">/</td>
+			</tr>
+			<tr height="30">
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;出糙(%):</td>
+				<td style="text-align: left;" id="a10">/</td>
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容重(g/l):</td>
+				<td id="a14">/</td>
+			</tr>
+			<tr height="30">
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;黄粒(%):</td>
+				<td style="text-align: left;" id="a15">/</td>
+				<td align="right">&nbsp;&nbsp;&nbsp;不完善率(%):</td>
+				<td id="a16">/</td>
+			</tr>
+			<tr height="30">
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;色泽气味:</td>
+				<td style="text-align: left;" id="a12">/</td>
+				<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;检测日期:</td>
+				<td id="a13">/</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

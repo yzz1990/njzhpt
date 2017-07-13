@@ -1,0 +1,411 @@
+
+<script src="${ctxPath}/resource/jquery.js"></script>
+<!------ jquery-easyui-1.4.5 ------>
+<script src="${ctxPath}/resource/bootstrap.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+<!----------dataTables-------------->
+<link href='${ctxPath}/resource/jquery.dataTables.min.css' rel='stylesheet'>
+<script src="${ctxPath}/resource/jquery.dataTables.min.js"></script>
+<script src='${ctxPath}/resource/dataTables.bootstrap.min.js'></script>
+<script src="${ctxPath}/resource/datagrid.js"></script>
+<!----------dataTables-------------->
+<!-- bootstrap-dialog -->
+<script src="${ctxPath}/resource/select2.min.js"></script>
+<script src="${ctxPath}/resource/zh-CN.js"></script>
+<link href="${ctxPath}/resource/select2.min.css" rel="stylesheet">
+<!----------select-------------->
+<!------ jquery-easyui-1.4.5 ------>
+<link href="${ctxPath}/resource/font-awesome.min.css" rel="stylesheet">
+<link href="${ctxPath}/resource/bootstrap.min.css" rel="stylesheet">
+<link href="${ctxPath}/resource/new.css" rel="stylesheet">
+<link rel="stylesheet" href="${ctxPath}/js/jquery-easyui-1.4.5/easyui.css">
+<link rel="stylesheet" href="${ctxPath}/js/jquery-easyui-1.4.5/icon.css">
+<link rel="stylesheet" href="${ctxPath}/js/jquery-easyui-1.4.5/demo/demo.css">
+
+<style>
+
+
+body{
+padding: 0px;
+    background: #FFFFFF;
+}
+
+.cjd-select{
+	width:200px;
+	float:left;
+
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia, #div-baojia{
+	height:800px;
+	overflow-y:auto;
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein , .pinleiqs{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+.wenben{
+	text-align:center;
+	height:40px;
+}
+.shuju{
+	text-align:right;
+	height:40px;
+}
+
+
+.form-control {
+    color: #333;
+}
+option{
+    color: black;
+}
+</style>
+<script type="text/javascript">
+var mydate = new Date();
+var tyear = mydate.getFullYear();
+
+var priceStyle;
+$(function(){
+	//加载年度下拉框
+	/*
+	for(var i = 0; i < 5 ; i++){
+		var op = '<option value="'+(tyear-i)+'">'+(tyear-i)+'</option>';
+		$("#niandu").append(op);
+	}
+	*/
+	
+	for(var i = 0 ; i < 5; i++){
+		var op;
+		if(i == 0){
+			op= '<option selected="selected" value = "'+(tyear - i)+'" >'+(tyear - i)+'</option>';
+		}else{
+			op= '<option value = "'+(tyear - i)+'">'+(tyear - i)+'</option>';
+		}
+		$("#niandu").append(op);
+	}
+	$("#select2-cjnd-container").text(tyear);
+	
+	//加载价格类型下拉框
+	
+	$.ajax({
+		url:'${ctxPath}/jiage/queryjglx.do',
+		type:'post',
+		dataType:'json',
+		async:false,
+		success:function(data){
+			priceStyle=data.list;
+			/*
+			for(var i = 0; i < data.list.length; i++){
+				var jglxid = data.list[i].jglxid;
+				var jglxname = data.list[i].jglxname;
+				var op = '<option value="'+jglxid+'">'+jglxname+'</option>';
+				$("#jglx").append(op);
+			}
+			*/
+		},
+		error:function(){
+			alert("加载价格类型失败");
+		}
+	});
+	
+	//初始化星期数据
+	/*
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":tyear,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#nianzs").empty();
+			for(var i = 0; i < data.list.length; i++){	
+				var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+				$("#nianzs").append(op);
+			}
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+	*/
+	
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":tyear,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#cjzs").empty();
+			var selected="";
+			for(var i = 0; i <data.list.length ; i++){
+				if(tyear==new Date().getFullYear())
+				{
+					if(i<getYearWeek(new Date())-1)
+					{
+						var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+						$("#nianzs").append(op);
+					}
+				}else{
+					var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+					$("#nianzs").append(op);
+				}
+			}
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+	
+	
+	
+	
+	$(".select2").select2();
+});
+
+
+//获取当前周数
+function getYearWeek(date){
+	var date2=new Date(date.getFullYear(), 0, 1);
+	var day1=date.getDay();
+	if(day1==0) day1=7;
+	var day2=date2.getDay();
+	if(day2==0) day2=7;
+	d = Math.round((date.getTime() - date2.getTime()+(day2-day1)*(24*60*60*1000)) / 86400000);
+	return Math.ceil(d /7)+1;
+}
+
+function Change(){
+	var year = $("#niandu option:selected").val();
+	//生成星期数据
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":year,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#nianzs").empty();
+			
+			for(var i = 0; i < data.list.length; i++){	
+	
+				if(year==new Date().getFullYear())
+				{
+					if(i<getYearWeek(new Date())-1)
+					{
+						var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+						$("#nianzs").append(op);
+					}
+				}else{
+					var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+					$("#nianzs").append(op);
+				}
+				
+
+				
+			}
+			
+			
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+}
+
+function doSearch(){
+	var year = $("#niandu option:selected").val();
+	var week = $("#nianzs option:selected").val();
+	//var jglxid = $("#jglx").val();
+	var jglxid = $('#jglx').combobox('getValues');
+	var jglxname = $(".textbox-text").val().split(",");
+	//var jglxname = $("#jglx option:selected").text();
+	if(year != null && year != ""){
+		if(week != null && week != ""){
+			if(jglxid != null && jglxid != ""){
+				$("#jgleixin").text(jglxname);
+				$.ajax({
+					url:'${ctxPath}/jiage/querycjdpzjg.do',
+					type:'post',
+					data:{"year":year,"week":week,"jglxid":jglxid,"page":1,"rows":10000},
+					dataType:'json',
+					success:function(data){
+						console.log(data);
+						$("#exctable-caijia").find("tbody").empty();
+						for(var jglx in data.data) {
+							var head='<tr><th rowspan="" colspan="6" id="jgleixin" class="leixin" style="vertical-align:left;text-align:left">';
+							for(var temp in priceStyle)
+							{
+								if(priceStyle[temp]["jglxid"]==jglx){
+									head+=priceStyle[temp]["jglxname"];
+									head+='</th><th rowspan="" colspan="2" class="leixin" style="text-align:right"><a href="javascript:void(0)" target="_black" class="btn btn-xs btn-success pjax purchasemx" onclick="readjgqs(\''+jglx+'\',\''+priceStyle[temp]["jglxname"]+'\')"';
+								}
+							}
+							head+='>价格趋势</a></th></tr>';
+							$("#exctable-caijia").append(head);
+							for (var i = 0; i < data.data[jglx].list.length; i++) {
+                                 console.log(data.data[jglx].list[i].cjdname);
+								var cjdname = data.data[jglx].list[i].cjdname;
+								var price = data.data[jglx].list[i].price;
+								var pzname =data.data[jglx].list[i].pzname;
+								var level = data.data[jglx].list[i].level;
+								var tbprice = data.data[jglx].list[i].tbprice;
+								var hbprice = data.data[jglx].list[i].hbprice;
+								var tbzz = price - tbprice;
+								var hbzz = price - hbprice;
+								var tbzf = "";
+								var hbzf = "";
+								if (tbprice != 0) {
+									tbzf = (tbzz / tbprice * 100).toFixed(2);
+								}
+								if (hbprice != 0) {
+									hbzf = (hbzz / hbprice * 100).toFixed(2);
+								}
+								var op = '<tr>';
+								op += '<td class="wenben">' + cjdname + '</td>';
+								op += '<td class="wenben">' + pzname + '</td>';
+								op += '<td class="wenben">' + level + '</td>';
+								op += '<td class="shuju">' + price.toFixed(2) + '</td>';
+								op += '<td class="shuju">' + tbzz.toFixed(2) + '</td>';
+								op += '<td class="shuju">' + tbzf + '%</td>';
+								op += '<td class="shuju">' + hbzz.toFixed(2) + '</td>';
+								op += '<td class="shuju">' + hbzf + '%</td>';
+								op += '</tr>';
+								op+='<tr></tr>';
+								$("#exctable-caijia").append(op);
+							}
+						}
+					},
+					error:function(){
+						alert("加载价格失败");
+					}
+				});
+			}else{
+				alert("请选择价格类型");	
+			}
+		}else{	
+			alert("请选择周数");
+		}
+	}else{
+		alert("请选择年度");
+	}
+}
+
+//读取价格期数
+function readjgqs(jglxid,jglxname){
+	var year = $("#niandu option:selected").val();
+	var week = $("#nianzs option:selected").val();
+	//var jglxid = $("#jglx option:selected").val();
+	//var jglxname = $("#jglx option:selected").text();
+	var url = '${ctxPath}/jiage/xianhuobaobiao/shineijgqs.html?&year='+year+'&week='+week+'&jglxid='+jglxid;
+	
+	dialog1=BootstrapDialog.show({
+	    title: jglxname+'趋势',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src='+url+'/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+       },
+       buttons: [{
+	        label: '关闭',
+	        cssClass: 'btn-xs btn-danger',
+	        action: function(dialog) {
+	        	dialog.close();
+	        }
+	    }]
+	});
+}
+
+
+</script>
+<div class="panel panel-default"  style="height: 900px;background-color: white;width: 100%;">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>市内价格</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+	 	<div class="cjd-div niandu-div">
+			<label class="cjd-label">年度:</label>
+			<select id="niandu"  class="form-control cjd-select " onchange="Change()" style="width: 100px;">
+			</select>
+		</div>
+		<div class="cjd-div nianzs-div" style="margin-left:20px">
+			<label class="cjd-label">年周数:</label>
+			<select id="nianzs" class="form-control cjd-select" style="width: 250px;">
+			</select>
+		</div>
+		<div class="cjd-div jglx-div" style="margin-left:20px">
+			<label class="cjd-label">价格类型:</label>
+			<select id="jglx" multiple   class="easyui-combobox" style="width: 200px; height:38px;">
+				<option value="001">进厂价</option>
+				<option value="002">出厂价</option>
+				<option value="003">批发价</option>
+				<option value="004">农贸市场价</option>
+				<option value="005">超市零售价</option>
+			</select>
+		</div>
+	 	<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		<div style="float:right;width:20%;text-align:right;">
+			单位:元/50公斤
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="width:100%; float:left;">
+  		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="${ctxPath}/jiage/querycjdpzjg.do" >	 
+		<thead>
+			<tr>
+    			<th rowspan="1" colspan="1" style="vertical-align:middle">采价点</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">品种</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">等级</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">价格</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">同比增长额</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">同比增幅</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">环比增长额</th>
+     			<th rowspan="1" colspan="1" id="" style="vertical-align:middle">环比增幅</th>
+ 			</tr>
+		</thead>	
+		<tbody>
+		
+		</tbody>
+	</table>
+</div>
+
+</div>
+</div>
+

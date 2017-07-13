@@ -1,0 +1,217 @@
+package com.zkzy.njzhpt.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import net.sf.json.JSONArray;
+
+import com.ggy.common.utils.ParamUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.bo.CangchuglBo;
+import com.zkzy.njzhpt.bo.SaveMailBO;
+import com.zkzy.njzhpt.dao.FindPerson;
+import com.zkzy.njzhpt.validator.addFayoujianValidator;
+
+
+
+public class MailxinxiController extends Controller{
+	/**
+	 * 加载收件箱
+	 * @throws Exception
+	 */
+	public void findshoujian() throws Exception{
+		/*HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		List<Record> send =Duang.duang(CangchuglBo.class).findshoujian(queryparam).getList();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		try {
+			map.put("rows", send);
+			map.put("total", send.size());
+		} catch (Exception ex) {
+			map.put("ret", false);
+		}
+		renderJson(map);*/
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).findshoujian(queryparam));
+	}
+	
+	/**
+	 * 加载垃圾箱
+	 * @throws Exception
+	 */
+	public void findlajixiang() throws Exception{
+		/*HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		List<Record> send =Duang.duang(CangchuglBo.class).findlaji(queryparam).getList();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		try {
+			map.put("rows", send);
+			map.put("total", send.size());
+		} catch (Exception ex) {
+			map.put("ret", false);
+		}
+		renderJson(map);*/
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).findlaji(queryparam));
+	}
+	
+	/**
+	 * 加载草稿箱
+	 * @throws Exception
+	 */
+	public void findcaogaoxiang() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		List<Record> send =Duang.duang(CangchuglBo.class).findcaogao(queryparam).getList();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		try {
+			map.put("rows", send);
+			map.put("total", send.size());
+		} catch (Exception ex) {
+			map.put("ret", false);
+		}
+		renderJson(map);
+	}
+	/**
+	 * 加载发件箱
+	 * @throws Exception
+	 */
+	public void findfajianxiang() throws Exception{
+		/*HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		List<Record> send =Duang.duang(CangchuglBo.class).findfajian(queryparam).getList();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		try {
+			map.put("rows", send);
+			map.put("total", send.size());
+		} catch (Exception ex) {
+			map.put("ret", false);
+		}
+		renderJson(map);*/
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).findfajian(queryparam));
+	}
+	/**
+	 * 查询 每个单位的人员
+	 * @throws Exception
+	 */
+	public void findPerson() throws Exception{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		String sql="select *from fw_dep where parentid ='root'";
+		List<Record> Root = Db.find(sql);
+		List<Record> djbexlist = new ArrayList<Record>();
+		for (Record djb : Root) {
+			Record djbex = new Record();
+			List<Record> res = FindPerson.findDepsById(djb.getStr("id"));
+			List<Record> show = new ArrayList<Record>();
+			for (Record res1 : res) {
+				Record res11 = new Record();
+				res11.set("id", res1.getStr("id"));
+				res11.set("text", res1.getStr("name"));
+				res11.set("children", "");
+				res11.set("person", JSONArray.fromObject(FindPerson.findUserByDepId(res11.getStr("id"))).toString());
+				show.add(res11);
+			}
+			djbex.set("id", djb.getStr("id"));
+			djbex.set("text",djb.getStr("name"));
+			djbex.set("children",show);
+			djbex.set("person", JSONArray.fromObject(FindPerson.findUserByDepId(djbex.getStr("id"))).toString());
+			djbexlist.add(djbex);
+			
+		}
+		map.put("rows", djbexlist);
+		map.put("total", djbexlist.size());
+		renderJson(map);
+		
+	}
+	/**
+	 * 保存邮件至草稿箱
+	 * @throws Exception
+	 */
+	public void ajaxsaveMail() throws Exception {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		try {
+			//bo.saveMail(mailInfo);
+			map.put("ret", true);
+		} catch (Exception ex) {
+			map.put("ret", false);
+		}
+		/*JSONObject json = JSONObject.fromObject(map);
+		String jsonString = json.toString();
+		result = new ByteArrayInputStream(jsonString.getBytes("UTF-8"));
+		return "ajax";*/
+	}
+	/**
+	 * 加载草稿箱
+	 * @throws Exception
+	 */
+	public void findcaogao() throws Exception{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		try {
+			List<Record> send =Duang.duang(SaveMailBO.class).findcgx(null);
+			map.put("rows", send);
+			map.put("total", send.size());
+			//map.put("ret", true);
+		} catch (Exception ex) {
+			map.put("ret", false);
+		}
+		renderJson(map);
+	}
+	/**
+	 *文件的上传
+	 *//*
+	public String ajaxuploadFile() throws Exception {
+		String ret = FileUploadBo.saveUploadFile(upload, uploadContentType,
+				uploadFileName);
+		// 设置返回“图像”选项卡
+		String callback = ServletActionContext.getRequest().getParameter(
+				"CKEditorFuncNum");
+		String callbackret = "<script type=\"text/javascript\">";
+		callbackret += "window.parent.CKEDITOR.tools.callFunction(" + callback
+				+ ",'/wujin_oa/_FCKFileUpload?uploadFileName=" + ret
+				+ "&fileName=" + uploadFileName + "','')";
+		callbackret += "</script>";
+		String jsonString = callbackret;
+		result = new ByteArrayInputStream(jsonString.getBytes("UTF-8"));
+		return "ajax";
+	}*/
+	
+	/**
+	 * 发邮件
+	 */
+	@Before(addFayoujianValidator.class)
+	public void sendemail(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).sendemail(param).getData());
+	}
+	/**
+	 * 邮件的保存至草稿箱
+	 */
+	public void addemail(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).addemail(param).getData());
+	}
+	/**
+	 * 邮件的彻底删除
+	 */
+	public void delemail(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).delemail(param).getData());
+	}
+	/**
+	 * 邮件的删除
+	 */
+	public void upemail(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).upemail(param).getData());
+	}
+	/**
+	 * 邮件的恢复
+	 */
+	public void huifuemail(){
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(CangchuglBo.class).huifuemail(param).getData());
+	}
+}

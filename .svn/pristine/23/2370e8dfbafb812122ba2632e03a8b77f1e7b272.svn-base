@@ -1,0 +1,166 @@
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<%
+	var obj={};var url=ctxPath+'/renyuan/editshenpi';
+	if(!isEmpty(parameter.id)){
+		obj=@com.zkzy.njzhpt.dao.RenyuanDao.findliucheng({page:1,rows:1,id:parameter.id}).getList().get(0);
+		debug(obj.isedit);
+	}
+	
+%>
+<style>
+	.dashboard-wrapper-lg{
+	    min-height: 100px;
+	}
+</style>
+<body>
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+			<input type="hidden" name="id" class="form-control" value="${obj.id}"> 		
+			<input type="hidden" name="liuchenghao" id="liuchenghao" class="form-control" value="${obj.liuchenghao}"> 
+			<div class="col-lg-12 col-md-12">
+				<div class="widget">
+					<div class="widget-body">
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="name">
+									<font color="red" style="font-size: large;">*</font>流程名称:</label> 
+									<input  name="name" id="name" class="form-control" value="${obj.name}"> 
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="shenpibumen">
+									<font color="red" style="font-size: large;">*</font>审批部门:</label> 
+									<select id="shenpibumen" name="shenpibumen" class="form-control selects" onchange="getRenyuan()">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="shenpiren">
+									<font color="red" style="font-size: large;">*</font>审批人:</label> 
+									<select id="shenpiren" name="shenpiren" class="form-control ">
+									
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="isedit">
+									<font color="red" style="font-size: large;">*</font>是否可编辑:</label> 
+									<select id="isedit" name="isedit" class="form-control">
+										<option value="">请选择</option>
+										<option value="0" ${obj.isedit=='0'?'selected'}>否</option>
+										<option value="1" ${obj.isedit=='1'?'selected'}>是</option>
+									</select>
+								</div>
+							</div>
+						</div>	
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript">
+	$(function(){
+		$(".selects").select2();
+		if("${obj.id}"!=""){
+			$.ajax({
+				 url:'${ctxPath}/renyuan/findUserDep',
+				 type:'post',
+				 data:{deptid:"${obj.shenpibumen}"},
+				 dataType:'json',
+				 success:function(data){
+					  	$("#shenpiren").append("<option value=''>请选择</option>"); 
+						$.each(data.list,function(i, n){
+							if(n.id=="${obj.shenpiren}"){
+								$("#shenpiren").append("<option value="+n.id+" selected>"+n.realname+"</option>");
+							}else{
+								$("#shenpiren").append("<option value="+n.id+">"+n.realname+"</option>");
+							}
+						});
+				 }
+			});
+		}
+		
+		
+		/* 加载部门*/
+		$.ajax({
+			 url:'${ctxPath}/renyuan/findDept',
+			 type:'post',
+			 dataType:'json',
+			 success:function(data){
+				 $("#shenpibumen").append("<option value=''>请选择</option>"); 
+				$.each(data,function(i, n){
+					if("${obj.shenpibumen}"==n.id){
+						$("#shenpibumen").append("<option value="+n.id+" selected>"+n.name+"</option>");
+					}else{
+						$("#shenpibumen").append("<option value="+n.id+">"+n.name+"</option>");
+					}
+				});
+			 }
+		});
+		
+		/* 获取流程名称 */
+		$.ajax({
+			url:'${ctxPath}/renyuan/findlc',
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				$("#liuchenghao").append("<option value=''>请选择</option>");
+				$.each(data.list,function(i,n){
+					$("#liuchenghao").append("<option value="+n.liuchenghao+">"+n.name+"</option>");
+				});
+			}
+		});
+	});
+	
+	
+	/*获取人员信息  */
+	function getRenyuan(){
+		$("#shenpiren").empty();
+		var deptid=	$("#shenpibumen").find("option:selected").val();
+		$.ajax({
+			 url:'${ctxPath}/renyuan/findUserDep',
+			 type:'post',
+			 data:{deptid:deptid},
+			 dataType:'json',
+			 success:function(data){
+				 $("#shenpiren").append("<option value=''>请选择</option>"); 
+				$.each(data.list,function(i, n){
+						$("#shenpiren").append("<option value="+n.id+">"+n.realname+"</option>");
+				});
+			 }
+		});
+	}
+	
+	/*保存流程信息*/
+	function updateLiucheng(){
+		var form=$("#contentform");
+		$.ajax({
+			url:'${ctxPath}/renyuan/updateliucheng',
+			type:'post',
+			dataType:'json',
+			data : form.serialize(),
+			success:function(data){
+				if(data.ret){
+					alert("保存成功！");
+					window.parent.frames["if1"].edit();
+					window.parent.frames["if1"].datatable.ajax.reload(null,true);
+				}
+			}
+		});
+	} 
+	
+	function setLcName(){
+		
+		var name= $("#liuchenghao").find("option:selected").text();
+		$("#name").val(name);
+	}
+	
+	</script>
+	
+</body>

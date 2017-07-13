@@ -1,0 +1,134 @@
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<%
+	var obj={};var url=ctxPath+'/renyuan/addRenyuan';
+	 if(parameter.id!="undefined"){
+	 		obj=@com.zkzy.njzhpt.dao.RenyuanDao.findRenyuan({page:1,rows:1,id:parameter.id}).getList().get(0);
+	 }
+%>
+
+<style type="text/css">
+	.dashboard-wrapper-lg {
+   		 min-height: 0px;
+	}
+	.widget {
+		margin-top: 20px;
+	}
+	textarea{
+		background-color: #fff;
+	    border: 1px solid #8ABADC;
+	    border-radius: 4px;
+	    box-shadow: darkorange;
+	    -moz-box-shadow: inset 0 0 10px #CCC;
+	    -webkit-box-shadow: inset 0 0 10px #CCC;
+	    box-shadow: inset 0 0 20px #E8F2F9;
+	}
+	
+</style>
+<body>
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<form id="contentform" role="form" action="${url}" method="post" style="overflow: hidden;">
+			<input type="hidden" name="id" class="form-control quxianid" value="${obj.id}"> 
+			<div class="col-lg-12 col-md-12">
+				<div class="widget">
+					<div class="widget-body">
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="name">
+									<font color="red" style="font-size: large;">*</font>姓名:</label> 
+									<input id="name" name="name" class="form-control" placeholder="姓名" value="${obj.name}">
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="phone">
+									<font color="red" style="font-size: large;">*</font>电话:</label> 
+									<input id="phone" name="phone" class="form-control" placeholder="电话" value="${obj.phone}">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="deptname">
+									<font color="red" style="font-size: large;">*</font>部门:</label> 
+									<select id="deptname" name="deptname" class="form-control">
+										<option value="">请选择部门</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label for="zhiwei">职位:</label> 
+									<input id="zhiwei" name="zhiwei" class="form-control" placeholder="职位" value="${obj.zhiwei}">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<label for="remark">备注:</label> 
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<textarea  id="remark" name="remark" style="width: 905px;height: 100px;border-color: #8ABADC"></textarea>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<script type="text/javascript">
+	
+	$(function(){
+		/* 加载部门*/
+		$.ajax({
+			 url:'${ctxPath}/renyuan/findDept',
+			 type:'post',
+			 dataType:'json',
+			 success:function(data){
+				$.each(data,function(i, n){
+					if(n.id=="${obj.deptname}"){
+						$("#deptname").append("<option value="+n.id+"  selected>"+n.name+"</option>");
+					}else{
+						$("#deptname").append("<option value="+n.id+">"+n.name+"</option>");
+					}
+				
+				});
+			 }
+		});
+		
+		
+	});
+	
+	
+	function saverenyuan() {
+		var form = $(".dashboard-wrapper-lg form");
+		$.ajax({
+			url : form.attr("action"),
+			type : 'post',
+			dataType : "json",
+			data : form.serialize(),
+			success : function(msg) {
+				if (msg.ret){
+					alert("保存成功！");
+					parent.window.dialogAdd.close();
+		        	parent.window.datatable.ajax.reload(null,true);
+				}else{
+					alert(msg.message);
+				}
+			}
+		});
+	}
+	
+	
+	
+	</script>
+</body>

@@ -1,0 +1,193 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>企业备案详情</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+
+    <link href="${ctxPath}/resource/newes.css" rel="stylesheet">
+	<!-- uploadifive所需js和css -->
+    <script src="${ctxPath}/resource/jquery.uploadifive.min.js"></script>
+    <link href='${ctxPath}/resource/uploadifive.css'/>
+    <!-- alert样式 -->
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/resource/showBo.css"/>
+	<script src="${ctxPath}/resource/showBo.js" type="text/javascript" charset="utf-8"></script>
+	
+    
+  </head>
+
+  <body>
+
+        <div class="dashboard-wrapper-lg">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+              
+              <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	下载文档                                     
+                    </div>
+                  </div>
+                  
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="">
+							<div class="row">
+								<div class="col-xs-6">	
+									<label for="beianbianhao"></label>
+									<div class="form-group">
+										 <a class="btn btn-sm btn-info" href="${ctxPath}/download/南京市粮油仓储单位备案表.doc">请点击下载，填写企业备案申请单</a>
+									</div>	
+								</div>
+								
+							</div>
+						</form>
+				 </div>
+                  
+              </div>
+              
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	企业备案详情                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="">
+					       <div class="row">
+					       		<div class="col-xs-6">
+									<div class="form-group">
+									<!-- 尝试通过自动生成10位随机备案编号 -->
+										<label for="beianbianhao">备案编号:</label>
+										<input id="beianbianhao" name="beianbianhao" class="form-control" placeholder="备案编号" value="">
+									</div>
+								</div>
+								
+					       </div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qiyemc">备案企业名称:</label>
+										<input id="qiyemc" name="qiyemc" class="form-control" placeholder="备案企业名称" value="">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="">
+									</div>	
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="faren">法人代表:</label>
+										<input id="faren" name="faren" class="form-control" placeholder="法人代表" value="">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="dizhi">地址:</label>
+										<input id="dizhi" name="dizhi" class="form-control" placeholder="地址" value="">
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="qiyexingzhi">企业性质:</label>
+										<input id="qiyexingzhi" name="qiyexingzhi" class="form-control" placeholder="企业性质" value="">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="jingyfanw">经营范围:</label>
+										<input id="jingyfanw" name="jingyfanw" class="form-control" placeholder="经营范围" value="">
+									</div>	
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="zhuyyw">主营业务:</label>
+										<input id="zhuyyw" name="zhuyyw" class="form-control" placeholder="主营业务" value="">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="shouchupz">收储粮食主要品种:</label>
+										<input id="shouchupz" name="shouchupz" class="form-control" placeholder="收储粮食主要品种" value="">
+									</div>
+								</div>
+							</div>
+							
+					</form>
+					</br>
+		<div class="panel-footer"  style="overflow:hidden;" align="center">
+			<button type="button" class="btn btn-success float-right" onclick="saveQiye()"><em class="fa fa-check fa-fw"></em>保存</button>
+			 <a class="btn btn-sm btn-info"><input class="file_upload " type="file" name="file" /></a>
+			<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+		</div>
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+</body>
+<script type="text/javascript">
+
+$(function(){
+	 $('.file_upload').uploadifive({
+		'auto' : true,   //自动上传 
+        'uploadScript' : '${ctxPath}/cangchugl/uploadFile',  //处理上传文件Action路径 
+        'buttonClass' : 'file_upload',
+        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传企业备案申请单',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.doc',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+  	    	var obj = JSON.parse(data);
+  	    	var count = obj.ret;
+  	    	var txt= "<span style='font-size:17px;text-align:center;line-height：2pt;'>"+count+"</span>";
+  	    	Showbo.Msg.alert(txt);
+         }
+    });
+	  
+});
+
+function saveQiye(){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addQiyebeian",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功，请确认上传成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+
+
+</script>
+</html>  
+<%
+	}
+%>

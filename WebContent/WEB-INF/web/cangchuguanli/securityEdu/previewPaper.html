@@ -1,0 +1,106 @@
+<!--
+ * Created by dx 
+ * Date: 2017/5/10
+ * Time: 15:39
+ * Description:预览试卷
+ -->
+<!--试卷标题-->
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+<center><div>${session.paperBaseInfo.paperName}</div><br>
+<!--试卷分值等信息说明部分-->
+<span>（总分${session.paperBaseInfo.score}，其中单选题${session.paperBaseInfo.singleNums}题，每题${session.paperBaseInfo.singleScore}分；多选题${session.paperBaseInfo.multiNums}题，每题${session.paperBaseInfo.multiScore}分；判断题${session.paperBaseInfo.judgeNums}题，每题${session.paperBaseInfo.judgeScore}分）</span>
+</center>
+<br><br>
+<form action="${ctxPath}/securityedu/calcExam">
+<%
+    if(!isEmpty(session.singleSelections)){
+        print("一、单选题"+"<br>");
+        print("<div style='margin-left: 20px'>");
+        for(subject in session.singleSelections){
+            print(subjectLP.index+"、"+subject.content+"<br>");
+            print("<div style='margin-left: 20px'>");
+            print("A<input type='radio' value='A'  name='singleSelection"+subjectLP.index+"'>"+subject.A+"&nbsp&nbsp");
+            print("B<input type='radio' value='B'  name='singleSelection"+subjectLP.index+"'>"+subject.B+"&nbsp&nbsp");
+            print("C<input type='radio' value='C'  name='singleSelection"+subjectLP.index+"'>"+subject.C+"&nbsp&nbsp");
+            print("D<input type='radio' value='D'  name='singleSelection"+subjectLP.index+"'>"+subject.D+"&nbsp&nbsp");
+            if(subject.E!=''){
+                print("E<input type='radio' value='E'  name='singleSelection"+subjectLP.index+"'>"+subject.E+"&nbsp&nbsp");
+            }
+            if(subject.F!=''){
+                print("F<input type='radio' value='F'  name='singleSelection"+subjectLP.index+"'>"+subject.F+"&nbsp&nbsp");
+            }
+            print("</div>");
+            print("<br>");
+        }
+        print("</div>");
+    }
+    if(!isEmpty(session.multiSelections)){
+        print("二、多选题"+"<br>");
+        print("<div style='margin-left: 20px'>");
+        for(subject in session.multiSelections){
+            print(subjectLP.index+"、"+subject.content+"<br>");
+            print("<div style='margin-left: 20px'>");
+            print("A<input type='checkbox' value='A'  name='multiSelection"+subjectLP.index+"'>"+subject.A+"&nbsp&nbsp");
+            print("B<input type='checkbox' value='B'  name='multiSelection"+subjectLP.index+"'>"+subject.B+"&nbsp&nbsp");
+            print("C<input type='checkbox' value='C'  name='multiSelection"+subjectLP.index+"'>"+subject.C+"&nbsp&nbsp");
+            print("D<input type='checkbox' value='D'  name='multiSelection"+subjectLP.index+"'>"+subject.D+"&nbsp&nbsp");
+            if(subject.E!=''){
+            print("E<input type='checkbox' value='E'  name='multiSelection"+subjectLP.index+"'>"+subject.E+"&nbsp&nbsp");
+            }
+            if(subject.F!=''){
+            print("F<input type='checkbox' value='F' name='multiSelection"+subjectLP.index+"'>"+subject.F+"&nbsp&nbsp");
+            }
+            print("</div>");
+            print("<br>");
+        }
+        print("</div>");
+    }
+    if(!isEmpty(session.judgeSelections)){
+        print("三、判断题"+"<br>");
+        print("<div style='margin-left: 20px'>");
+        for(subject in session.judgeSelections){
+            print(subjectLP.index+"、"+subject.content+"<br>");
+            print("<div style='margin-left: 20px'>");
+            print("<br>");
+            print("<input type='radio' value='yes'  name='judgeSelection"+subjectLP.index+"'>对");
+            print("<input type='radio' value='no'  name='judgeSelection" +subjectLP.index+"'style='margin-left: 50px'>错");
+            print("</div>");
+            print("<br>");
+    }
+    print("<br>");
+ }
+%>
+</form>
+<script type="text/javascript">
+function doSubmit()
+{
+    isAllComplete=true;
+    //未做题目验证
+    $("input").each(function(){
+        if(typeof $('input[name='+this.name+']:checked').val()=='undefined')
+        {
+            alert("尚有题目未完成，请检查后提交");
+            isAllComplete=false;
+            return false;
+        }
+    })
+    if(isAllComplete){
+        var form=$("form");
+    //提交数据
+        $.ajax({
+            url:form.attr("action"),
+            data:form.serialize(),
+            dataType:'json',
+            success: function (data) {
+                if(data.ret)
+                {
+                    parent.dialogPaper.close();
+                    parent.datatable3.ajax.reload(null, false);
+                }else{
+                        alert(data.message);
+                }
+            }
+        });
+    }
+}
+</script>

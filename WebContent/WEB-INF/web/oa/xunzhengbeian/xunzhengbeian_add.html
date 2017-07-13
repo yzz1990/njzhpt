@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>企业备案</title>
+<link rel="stylesheet"
+	href="${ctxPath}/css/font-awesome.min.css">
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+</head>
+<% 
+	var obj={}, url=ctxPath+"/renyuan/addXzBa",title="新增熏蒸备案信息"; 
+	if(isNotEmpty(parameter.id)) { 
+		obj=object;
+		title = "编辑企业备案信息"; 
+	}; 
+%>
+<style type="text/css">
+.select2-container--default .select2-selection--single{
+	    height: 32px;
+}
+.yaoji-table{
+	border:1px solid;
+	width:800px;
+	margin-top: 10px;
+}
+.cf-table{
+	border:1px solid;
+	width:800px;
+	margin-top: 10px;
+}
+.ry-table{
+	border:1px solid;
+	width:800px;
+	margin-top: 10px;
+}
+.yaoji-table th,td{
+	border:1px solid;
+	text-align:center;
+}
+.cf-table th,td{
+	border:1px solid;
+	text-align:center;
+}
+.ry-table th,td{
+	border:1px solid;
+	text-align:center;
+}
+body{
+ overflow-x : hidden;
+}
+</style>
+<body>
+
+	<div class="dashboard-wrapper-lg" style="padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">熏蒸备案信息</div>
+					</div>
+					<div class="widget-body">
+						<form id="contentform" role="form" action="${url}" method="post"
+							style="overflow: hidden;">
+							<input type="hidden" name="id" value="${obj.id}">
+							<input type="hidden" name="status" value="${obj.status}">
+							<input type="hidden" name="beianriqi" value="${obj.beianriqi}">
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="beianbianhao"><font color="red" style="font-size:large;">*</font>备案编号:</label> 
+										<input 	id="beianbianhao" name="beianbianhao" class="form-control" placeholder="备案编号" value="${obj.beianbianhao}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qiyeid"><font color="red" style="font-size:large;">*</font>备案企业:</label> 
+										<select id="qiyeid" name="qiyeid" class="form-control js-example-basic-single" style="height: 120px;" disabled="true">
+											
+										</select>
+									</div>
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="liuchenghao"><font color="red" style="font-size:large;">*</font>备案流程:</label> 
+										<select id="liuchenghao" name="liuchenghao"  class="form-control" onchange="getliucheng()">
+											
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="kudian"><font color="red" style="font-size:large;">*</font>熏蒸库点:</label> 
+										<!-- <input id="kudian" name="kudian" class="form-control" placeholder="熏蒸库点" value="${obj.kudian}"> -->
+										<select id="kudian" name="kudian" class="form-control js-example-basic-single" style="height: 120px;" onchange="getcangfang()" >
+											
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								
+								<!-- <div class="col-xs-6">
+									<div class="form-group">
+										<label for="shuliang"><font color="red" style="font-size:large;">*</font>药剂数量(kg):</label> 
+										<input id="shuliang" name="shuliang" class="form-control" placeholder="药剂数量(kg)" value="${obj.shuliang}"
+										onkeyup="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}"
+										onkeypress="if(!this.value.match(/^\d+\.?\d{0,2}$/)){ if(typeof(this.t_value)=='undefined'){this.t_value=this.value;} else{this.value='';}}else {this.t_value=this.value;}" required="required"
+										>
+									</div>
+								</div> -->
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="fuzeren">熏蒸负责人:</label> 
+										<input id="fuzeren" name="fuzeren" class="form-control" placeholder="熏蒸负责人" value="${obj.fuzeren}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+									<label for="sqrq">申请日期:</label> 
+									<input id="sqrq" name="sqrq" class="form-control" placeholder="申请日期" value="${obj.sqrq}">
+										<!-- <label for="fangshi"><font color="red" style="font-size:large;">*</font>熏蒸方式:</label> 
+										<select id="fangshi" name="fangshi"  class="form-control" >	
+										</select> -->
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="remark">备注:</label>
+										<input id="remark" name="remark" class="form-control" value="${obj.remark}">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="yingjiyuan">应急预案:</label> 
+										<input id="yingjiyuan" name="yingjiyuan" class="form-control" placeholder="应急预案:" value="${obj.yingjiyuan}">
+									</div>
+								</div>
+							
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="remark">附件:</label>
+										<input id="fujianpath" name="fujianpath" type="hidden">
+										<input id="fujianname" name="fujianname" type="hidden">
+											<a class="btn btn-sm btn-info" style="font-size:1px" >
+												<input  class="file_upload"  type="file"  />
+											</a>
+											<a id="scfilename" style="float:right;width: 270px;margin-top:4px; " ></a>
+											<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<a class="btn btn-sm btn-info" href="${ctxPath}/download/江苏省粮油熏蒸作业备案表.xlsx" id="zpmbxz">&nbsp;下载模板</a>
+									</div>
+								</div>
+								
+							</div>
+							<div class="widget-header">
+                  		  		<div class="title">
+                        			作业人员                                
+                   				 </div>
+                  			</div>
+                  					<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<a class="btn btn-xs btn-success" onclick="tianjiary()" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;添加人员</a>
+										<div>
+							<table class="ry-table">
+								<thead>
+									<tr>
+										<th>序号</th>
+										<th>姓名</th>
+										<th>职业资质</th>
+									</tr>
+								</thead>
+								<tbody id="firstry">
+									<tr >
+										<td>1</td>
+										<td>
+											<input type="hidden" id="qyzz" name="qyzzjgdm" value="${obj.qyzzjgdm}">
+											<input type="hidden" id="xingming" name="xingming" value="${obj.xingming}">
+					       					<input type="hidden" id="zz" name="zz" value="${obj.zz}">
+											<input id="xingming1"  style="width: 100%;height: 100%;border: 0">
+										</td>
+										<td>
+											<input id="zz1"  style="width: 100%;height: 100%;border: 0">
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							</div>
+									</div>
+								</div>
+							
+							</div>
+							<div class="widget-header">
+                  		  		<div class="title">
+                        			熏蒸对象                                        
+                   				 </div>
+                  			</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<a class="btn btn-xs btn-success" onclick="tianjiacf()" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;添加仓房</a>
+										<div>
+							<table class="cf-table">
+								<thead>
+									<tr>
+										<th>序号</th>
+										<th>仓房名称</th>
+										<th>粮食品种</th>
+										<th>粮食数量(吨)</th>
+										<th>计划用药量(kg)</th>
+									</tr>
+								</thead>
+								<tbody id="firstcf">
+									<tr >
+										<td>1</td>
+										<td>
+											<input type="hidden" id="cfmc" name="cfmc" value="${obj.cfmc}">
+											<input type="hidden" id="lspz" name="lspz" value="${obj.lspz}">
+											<input type="hidden" id="lssl" name="lssl" value="${obj.lssl}">
+											<input type="hidden" id="jhyyl" name="jhyyl" value="${obj.jhyyl}">
+											<select id="cfmc1"  style="width:100%;height: 100%;border: 0" onchange="getcfmx()">
+												<option value="">请选择</option>
+											</select>
+										</td>
+										<td>
+											<input id="lspz1"  style="width: 100%;height: 100%;border: 0">
+										</td>
+										<td>
+											<input id="lssl1"  style="width: 100%;height: 100%;border: 0">
+										</td>
+										<td>
+											<input id="jhyyl1"  style="width: 100%;height: 100%;border: 0">
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							</div>
+									</div>
+								</div>
+							
+							</div>
+							<div class="widget-header">
+                  		  		<div class="title">
+                        			药剂信息                                        
+                   				 </div>
+                  			</div>
+                  			<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<a class="btn btn-xs btn-success" onclick="tianjiayj()" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;添加药剂</a>
+										<div>
+							<table class="yaoji-table">
+								<thead>
+									<tr>
+										<th>序号</th>
+										<th>仓房名称</th>
+										<th>药剂名称</th>
+										<th>品牌</th>
+										<th>规格</th>
+										<th>单位</th>
+										<th>厂家</th>
+										<th>数量(瓶)</th>
+										<th>施药量(kg)</th>
+										<th>熏蒸方式</th>
+									</tr>
+								</thead>
+								<tbody id="first">
+									<tr >
+										<td>1</td>
+										<td>
+											<input type="hidden" id="cfmcyj" name="cfmcyj" value="${obj.cfmcyj}">
+											<input type="hidden" id="yjmc" name="yjmc" value="${obj.yjmc}">
+					       					<input type="hidden" id="pp" name="pp" value="${obj.pp}">
+					      					<input type="hidden" id="gg" name="gg" value="${obj.gg}">
+					      					<input type="hidden" id="lysl" name="lysl" value="${obj.lysl}">
+					      					<input type="hidden" id="dw" name="dw" value="${obj.dw}">
+					      					<input type="hidden" id="sccj" name="sccj" value="${obj.sccj}">
+					      					<input type="hidden" id="syl" name="syl" value="${obj.syl}">
+					      					<input type="hidden" id="fangshi" name="fangshi" value="${obj.fangshi}">
+											<select id="cfmcyj1"  style="width:100%;height: 100%;border: 0" onchange="bijiao()">
+												<option value="">请选择</option>
+											</select>
+										</td>
+										<td>
+											<select id="yaojim1"  style="width: 100%;height: 100%;border: 0" onchange="getpp()">
+												<option value="">请选择</option>
+											</select>
+										</td>
+										<td>
+											<select id="pp1"  style="width: 100%;height: 100%;border: 0" onchange="getgg()" >
+												<option value="">请选择</option>
+											</select>
+										</td>
+										<td>
+											<select id="gg1"  style="width: 100%;height: 100%;border: 0" onchange="getdw()" >
+												<option value="">请选择</option>
+											</select>
+										</td>
+										<td>
+											<select id="dw1"  style="width: 100%;height: 100%;border: 0" onchange="getcj()">
+												<option value="">请选择</option>
+											</select>
+										</td>
+										<td>
+											<select id="sccj1"  style="width: 100%;height: 100%;border: 0" >
+												<option value="">请选择</option>
+											</select>
+										</td>
+										<td>
+											<input id="lysl1"  style="width: 100%;height: 100%;border: 0">
+										</td>
+										<td>
+											<input id="syl1"  style="width: 100%;height: 100%;border: 0">
+										</td>
+										<td>
+											<select id="fangshi1"  style="width: 100%;height: 100%;border: 0"  >
+												<option value="">请选择</option>	
+											</select> 
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							</div>
+									</div>
+								</div>
+							
+							</div>
+							
+						</form>
+					</div>
+					<div class="widget-body"  style="height: 132px;">
+						 <div id="liuchengtu" style="margin-top: -45px">
+						 </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	Array.prototype.S=String.fromCharCode(2);
+	Array.prototype.in_array=function(e){
+	    var r=new RegExp(this.S+e+this.S);
+	    return (r.test(this.S+this.join(this.S)+this.S));
+	};
+	$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	  $("#liuchenghao").select2();
+	});
+	
+	$(function(){
+		//新增时获取当前时间作为备案编号
+		if("${parameter.id}"==""){
+			
+			var date=new Date();
+			var nowday1 = date.toLocaleDateString();
+			var ss=nowday1.split('/');
+	    	if(ss[1]<10){
+	    		ss[1]="0"+ss[1];
+	    	}
+	    	if(ss[2]<10){
+	    		ss[2]="0"+ss[2];
+	    	}
+	    	var nowday = ss[0]+""+ss[1]+""+ss[2];
+	    	var bianhao="";
+	    	if("${session.userinfo.area.name}"=="市区"){
+	    		$("#beianbianhao").val("宁"+nowday+"01")
+	    		bianhao="宁"+nowday;
+	    		$.ajax({
+					url: "${ctxPath}/renyuan/findXzbeianxinxi",
+					dataType: "json",
+					data:{beianbianhao:"bianhao"},
+					success: function(data) {
+						if(data.list.length==0){
+							$("#beianbianhao").val("宁"+nowday+"01");
+						}else{
+							var bh=data.list[0].beianbianhao.substring(9,11);
+							var ja="";
+							if(parseInt(bh)<9){
+								ja="0"+(parseInt(bh)+1);
+							}else{
+								ja=parseInt(bh)+1;
+							}
+							$("#beianbianhao").val("宁"+nowday+ja);
+						}
+					}
+				});
+	    	}else{
+	    		bianhao="${session.userinfo.area.name}".substring(0,1)+nowday;
+	    		
+	    		$.ajax({
+					url: "${ctxPath}/renyuan/findXzbeianxinxi",
+					dataType: "json",
+					data:{beianbianhao:bianhao},
+					success: function(data) {
+						if(data.list.length==0){
+							$("#beianbianhao").val("${session.userinfo.area.name}".substring(0,1)+nowday+"01");
+						}else{
+							var bh=data.list[0].beianbianhao.substring(9,11);
+							var ja="";
+							if(parseInt(bh)<9){
+								ja="0"+(parseInt(bh)+1);
+							}else{
+								ja=parseInt(bh)+1;
+							}
+							$("#beianbianhao").val("${session.userinfo.area.name}".substring(0,1)+nowday+ja);
+						}
+					}
+				});
+	    		
+	    	}
+		}
+		$("#sqrq").datetimepicker({
+			
+			format : 'yyyy-mm-dd',
+			language : 'zh-CN', //这里需要修改
+			weekStart : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			minView : 2,
+			forceParse : 0
+		});
+		if("${obj.id}"!=""){
+			$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtu?liuchenghao=${obj.liuchengid}");
+		}
+		
+		$('.file_upload').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/excel/uploadlhpzxwFile',  //处理上传文件Action路径
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传附件',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'onUploadComplete' : function(file, data) { //文件上传成功后执行
+		    	var obj = JSON.parse(data);
+		    	$("#scfilename").html(obj.scfilename);
+		    	$("#fujianname").val(obj.scfilename);
+		    	//alert(obj.filepath);
+		    	$("#scfilename").attr("href","${ctxPath}"+obj.filepath);
+		    	$("#scfilename").attr("download",obj.scfilename);
+		    	$("#fujianpath").val(obj.filepath);
+	    	}
+		});
+	});
+	//验证药剂仓号信息是否与熏蒸对象信息一致
+		function bijiao(){
+			var cfm=$("#cfmcyj1 option:selected").val();
+			var index=1;
+			for(var i=1;i<=indexcf;i++){
+				var cf=$("#cfmc"+i+" option:selected").val();
+				if(cf==cfm){
+					index=2;
+				}
+			}
+			if(index==1){
+				alert("仓房名称应与熏蒸对象仓房名称一致！");
+				$("#cfmcyj1").empty();
+				$("#cfmcyj1").append("<option value=''>请选择</option>");
+				var qyzzjgdm=$("#qiyeid option:selected").attr("qydm");
+				var kdbm=$("#kudian option:selected").val();
+				$.ajax({
+					url: "${ctxPath}/lunhuan/selectCH.do",
+					dataType: "json",
+					data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+					success: function(data) {
+						$.each(data.list,function(i, n){
+							$("#cfmcyj1").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+						});
+					}
+				});
+			}
+			
+		}
+		function bijiao2(aa){
+			var cfm=$("#cfmcyj"+aa+" option:selected").val();
+			var index=1;
+			for(var i=1;i<=indexcf;i++){
+				var cf=$("#cfmc"+i+" option:selected").val();
+				if(cf==cfm){
+					index=2;
+				}
+			}
+			if(index==1){
+				alert("仓房名称应与熏蒸对象仓房名称一致！");
+				$("#cfmcyj"+aa).empty();
+				$("#cfmcyj"+aa).append("<option value=''>请选择</option>");
+				var qyzzjgdm=$("#qiyeid option:selected").attr("qydm");
+				var kdbm=$("#kudian option:selected").val();
+				$.ajax({
+					url: "${ctxPath}/lunhuan/selectCH.do",
+					dataType: "json",
+					data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+					success: function(data) {
+						$.each(data.list,function(i, n){
+							$("#cfmcyj"+aa).append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+						});
+					}
+				});
+			}
+			
+		}
+		function savexzba() {
+			if($("#beianbianhao").val()==""){
+				alert("请填写备案编号!")
+				return false;
+			}else if($("#liuchenghao").val()==""){
+				alert("请选择备案流程！")
+				return false;
+			}else if($("#kudian").val()==""){
+				alert("请选择熏蒸库点！")
+				return false;
+			}else if($("#fuzeren").val()==""){
+				alert("请填写负责人！")
+				return false;
+			}
+			
+			for(var i=1;i<=indexry;i++){
+				if($("#xingming"+i).val()==""||$("#zz"+i).val()==""){
+					alert("请填完作业人员信息!");
+					return false;
+				}
+			}
+			
+			//作业人员信息拼接
+			var xingming="";
+			var zz="";
+			for(var i=1;i<=indexry;i++){
+				xingming+=$("#xingming"+i).val()+",";
+				zz+=$("#zz"+i).val()+",";
+			}
+			$("#xingming").val(xingming);
+			$("#zz").val(zz);
+			
+			for(var i=1;i<=indexcf;i++){
+				if($("#cfmc"+i).val()==""||$("#lssl"+i).val()==""||$("#jhyyl"+i).val()==""){
+					alert("请填完熏蒸对象信息!");
+					return false;
+				}
+			}
+			
+			//熏蒸对象信息拼接
+			var cfmc="";
+			var lspz="";
+			var	lssl="";
+			var jhyyl="";	
+			for(var i=1;i<=indexcf;i++){
+				cfmc+=$("#cfmc"+i).val()+",";
+				lspz+=$("#lspz"+i).val()+",";
+				lssl+=$("#lssl"+i).val()+",";
+				jhyyl+=$("#jhyyl"+i).val()+",";
+			}
+			
+			$("#cfmc").val(cfmc);
+			$("#lspz").val(lspz);
+			$("#lssl").val(lssl);
+			$("#jhyyl").val(jhyyl);
+			
+			
+			for(var i=1;i<=index;i++){
+				if($("#cfmcyj"+i).val()==""||$("#yaojim"+i).val()==""||$("#pp"+i).val()==""||$("#gg"+i).val()==""||$("#dw"+i).val()==""||$("#sccj"+i).val()==""||$("#lysl"+i).val()==""||$("#syl"+i).val()==""||$("#fangshi"+i).val()==""){
+					alert("请填完药剂信息!");
+					return false;
+				}
+			}
+			//药剂信息拼接
+			var cfmcyj="";
+			var yjmc="";
+			var pp="";
+			var gg="";
+			var dw="";
+			var sccj="";
+			var lysl="";
+			var syl="";
+			var fangshi="";
+			for(var i=1;i<=index;i++){
+				cfmcyj+=$("#cfmcyj"+i).val()+",";
+				yjmc+=$("#yaojim"+i).val()+",";
+				pp+=$("#pp"+i).val()+",";
+				gg+=$("#gg"+i).val()+",";
+				dw+=$("#dw"+i).val()+",";
+				sccj+=$("#sccj"+i).val()+",";
+				/* $.ajax({
+					url: "${ctxPath}/lunhuan/findyjkc",
+					dataType: "json",
+					data:{yjmc:$("#yaojim"+i).val(),pp:$("#pp"+i).val(),gg:$("#gg"+i).val(),danwei:$("#dw"+i).val(),cj:$("#sccj"+i).val()},
+					success: function(data) {
+						alert(data[0].kcsl);
+					}
+				}); */
+				
+				lysl+=$("#lysl"+i).val()+",";
+				syl+=$("#syl"+i).val()+",";
+				fangshi+=$("#fangshi"+i).val()+",";
+				
+			}
+			$("#cfmcyj").val(cfmcyj);
+			$("#yjmc").val(yjmc);
+			$("#pp").val(pp);
+			$("#gg").val(gg);
+			$("#dw").val(dw);
+			$("#sccj").val(sccj);
+			$("#lysl").val(lysl);
+			$("#syl").val(syl);
+			$("#fangshi").val(fangshi);
+			
+			  var form = $(".widget-body form");
+			$("#qiyeid").attr("disabled",false);
+			$.ajax({
+				url : form.attr("action"),
+				dataType : "json",
+				data : form.serialize(),
+				success : function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("保存成功");
+						parent.window.dialog1.close();
+		        	    parent.window.datatable.ajax.reload(null,true);
+					}
+				}
+			});   
+		}
+		/*药剂名称*/
+		var ch=[];
+		$.ajax({
+			url:'${ctxPath}/renyuan/findyjkcxinxi',
+			type:'post',
+			data:{"page":1,"rows":1000},
+			dataType:'json',
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					if(!ch.in_array(n.yjmc)){
+						$("#yaojim1").append("<option value="+n.yjmc+">"+n.yjmc+"</option>");	
+					}
+					ch.push(n.yjmc);
+				});
+			},
+			error:function(){
+				//alert("error");
+			}
+		});
+		/* 获取流程名称 */
+		$.ajax({
+			url:'${ctxPath}/renyuan/findlc',
+			type:'post',
+			dataType:'json',
+			data:{"liuchengtype":1,"shenpibumen":"${session.userinfo.dep.parentid}","nowstatus":0},
+			success:function(data){
+				$("#liuchenghao").append("<option value=''>请选择</option>");
+				$.each(data.list,function(i,n){
+					if("${obj.liuchenghao}"==n.liuchenghao){
+						$("#liuchenghao").append("<option value="+n.liuchenghao+" selected>"+n.name+"</option>");
+					}else{
+						$("#liuchenghao").append("<option value="+n.liuchenghao+">"+n.name+"</option>");
+					}
+				});
+			}
+		});
+		
+		/* 获取企业名称 */
+		$.ajax({
+			url:'${ctxPath}/renyuan/findQiye',
+			type:'post',
+			dataType:'json',
+			 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.dep.name:''}"},
+			success:function(data){
+				//$("#qiyeid").append("<option value=''>请选择</option>");
+				$.each(data.list,function(i,n){
+					if("${obj.qiyeid}"==n.ID){
+						$("#qiyeid").append("<option qydm="+n.qyzzjgdm+" value="+n.ID+" selected>"+n.qymc+"</option>");
+					}else{
+						$("#qiyeid").append("<option qydm="+n.qyzzjgdm+" value="+n.ID+">"+n.qymc+"</option>");
+					}
+					
+				});
+			}
+		});
+		
+		$.ajax({
+			url: "${ctxPath}/lunhuan/selectKDMC.do",
+			dataType: "json",
+			data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+				,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+			success: function(data) {
+				$("#kudian").append("<option value=''>请选择</option>");
+				$.each(data.list,function(i, n){
+					
+					if(n.kdbm=="${obj.kdbm}"){
+						$("#kudian").append("<option value="+n.kdbm+"  selected>"+n.kdmc+"</option>");
+					}else{
+						$("#kudian").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+					}
+				});
+			}
+		});
+
+		/* 获取熏蒸名称 */
+		$.ajax({
+			url:'${ctxPath}/renyuan/findXunzhengname',
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				$.each(data.list,function(i,n){
+					if("${obj.fangshi}"==n.name){
+						$("#fangshi1").append("<option value="+n.name+" selected>"+n.name+"</option>");
+					}else{
+						$("#fangshi1").append("<option value="+n.name+">"+n.name+"</option>");
+					}
+					
+				});
+			}
+		});
+		function getcfmx(){
+			if($("#cfmc1 option:selected").val()==""){
+				$("#lspz1").val('');
+				$("#lssl1").val('');
+				$("#jhyyl1").val('');
+			}else{
+				$("#lspz1").val('');
+				$("#lssl1").val('');
+				$("#jhyyl1").val('');
+				var qyzzjgdm=$("#qiyeid option:selected").attr("qydm");
+				var kdbm=$("#kudian option:selected").val();
+				var cfmc=$("#cfmc1 option:selected").val();
+				$.ajax({
+					url: "${ctxPath}/lunhuan/selectPZ.do",
+					dataType: "json",
+					data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm,cfmc:cfmc},
+					success: function(data) {
+						if(data.list.length>0){
+							$.each(data.list,function(i, n){
+								$("#lspz1").val(n.vName);
+							});
+						}else{
+							alert("该仓房目前无粮食,请重新选择!");
+							$("#cfmc1").empty();
+							$("#cfmc1").append("<option value=''>请选择</option>");
+
+							$.ajax({
+								url: "${ctxPath}/lunhuan/selectCH.do",
+								dataType: "json",
+								data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+								success: function(data) {
+									$.each(data.list,function(i, n){
+										$("#cfmc1").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+									});
+								}
+							});
+						}
+						
+					}
+				});
+			}
+			
+		}
+		function getcfmx2(aa){
+			if($("#cfmc"+aa+" option:selected").val()==""){
+				$("#lspz"+aa).val('');
+			}else{
+				$("#lspz"+aa).val('');
+				var qyzzjgdm=$("#qiyeid option:selected").attr("qydm");
+				var kdbm=$("#kudian option:selected").val();
+				var cfmc=$("#cfmc"+aa+" option:selected").val();
+				$.ajax({
+					url: "${ctxPath}/lunhuan/selectPZ.do",
+					dataType: "json",
+					data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm,cfmc:cfmc},
+					success: function(data) {
+						if(data.list.length>0){
+							$.each(data.list,function(i, n){
+									$("#lspz"+aa).val(n.vName);
+							});
+						}else{
+							alert("该仓房目前无粮食,请重新选择!");
+							$("#cfmc"+aa).empty();
+							$("#cfmc"+aa).append("<option value=''>请选择</option>");
+
+							$.ajax({
+								url: "${ctxPath}/lunhuan/selectCH.do",
+								dataType: "json",
+								data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+								success: function(data) {
+									$.each(data.list,function(i, n){
+										$("#cfmc"+aa).append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+									});
+								}
+							});
+						}
+					}
+				});
+			}
+			
+		}
+		function getcangfang(){
+			$(".ry-table tr:not(:first):not(:eq(0))").remove();
+			indexry=1;
+			$(".cf-table tr:not(:first):not(:eq(0))").remove();
+			indexcf=1;
+			$(".yaoji-table tr:not(:first):not(:eq(0))").remove();
+			index=1;
+			
+			if($("#kudian option:selected").val()==""){
+				$("#xingming1").val('');
+				$("#zz1").val('');
+				$("#cfmc1").empty();
+				//开始情况药剂信息下的下拉
+				
+				$("#yaojim1").empty();
+				$("#pp1").empty();
+				$("#gg1").empty();
+				$("#dw1").empty();
+				$("#sccj1").empty();
+				
+				$("#yaojim1").append("<option value=''>请选择</option>");
+				$("#pp1").append("<option value=''>请选择</option>");
+				$("#gg1").append("<option value=''>请选择</option>");
+				$("#dw1").append("<option value=''>请选择</option>");
+				$("#sccj1").append("<option value=''>请选择</option>");
+				//结束
+				$("#lysl1").val('');
+				$("#syl1").val('');
+				$("#lspz1").val('');
+				$("#lssl1").val('');
+				$("#jhyyl1").val('');
+				$("#cfmc1").append("<option value=''>请选择</option>");
+				$("#cfmcyj1").empty();
+				$("#cfmcyj1").append("<option value=''>请选择</option>");
+			}else{
+				$("#xingming1").val('');
+				$("#zz1").val('');
+				$("#cfmc1").empty();
+				//开始情况药剂信息下的下拉
+				$("#yaojim1").empty();
+				$("#pp1").empty();
+				$("#gg1").empty();
+				$("#dw1").empty();
+				$("#sccj1").empty();
+				
+				$("#yaojim1").append("<option value=''>请选择</option>");
+				$("#pp1").append("<option value=''>请选择</option>");
+				$("#gg1").append("<option value=''>请选择</option>");
+				$("#dw1").append("<option value=''>请选择</option>");
+				$("#sccj1").append("<option value=''>请选择</option>");
+				
+				/*药剂名称*/
+				var ch=[];
+				$.ajax({
+					url:'${ctxPath}/renyuan/findyjkcxinxi',
+					type:'post',
+					data:{"page":1,"rows":1000},
+					dataType:'json',
+					success: function(data) {
+						$.each(data.list,function(i, n){
+							if(!ch.in_array(n.yjmc)){
+								$("#yaojim1").append("<option value="+n.yjmc+">"+n.yjmc+"</option>");	
+							}
+							ch.push(n.yjmc);
+						});
+					},
+					error:function(){
+						//alert("error");
+					}
+				});
+				//结束
+				$("#lspz1").val('');
+				$("#lssl1").val('');
+				$("#jhyyl1").val('');
+				$("#lysl1").val('');
+				$("#syl1").val('');
+				$("#cfmcyj1").empty();
+				var qyzzjgdm=$("#qiyeid option:selected").attr("qydm");
+				var kdbm=$("#kudian option:selected").val();
+				$("#qyzz").val(qyzzjgdm);
+				$("#cfmc1").append("<option value=''>请选择</option>");
+				$("#cfmcyj1").append("<option value=''>请选择</option>");
+				$.ajax({
+					url: "${ctxPath}/lunhuan/selectCH.do",
+					dataType: "json",
+					data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+					success: function(data) {
+						$.each(data.list,function(i, n){
+								$("#cfmc1").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+								$("#cfmcyj1").append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+						});
+					}
+				});
+			}
+			
+		}
+		
+		var index=1;
+		function tianjiayj(){
+			index++;
+			var text="<tr><td>"+index+"</td>"
+			+'<td><select id="cfmcyj'+index+'"  style="width: 100%;height: 100%;border: 0" onchange="bijiao2('+index+')"></select></td>'
+			+'<td><select id="yaojim'+index+'"  style="width: 100%;height: 100%;border: 0" onchange="getpp2('+index+')"><option value="">请选择</option></select></td>'
+			+'<td><select id="pp'+index+'"  style="width: 100%;height: 100%;border: 0" onchange="getgg2('+index+')"><option value="">请选择</option></select></td>'
+			+'<td><select id="gg'+index+'" style="width: 100%;height: 100%;border: 0" onchange="getdw2('+index+')"><option value="">请选择</option></select></td>'
+			+'<td><select id="dw'+index+'"  style="width: 100%;height: 100%;border: 0" onchange="getcj2('+index+')"><option value="">请选择</option></select></td>'
+			+'<td><select id="sccj'+index+'" style="width: 100%;height: 100%;border: 0"><option value="">请选择</option></select></td>'
+			+'<td><input id="lysl'+index+'"  style="width: 100%;height: 100%;border: 0"></td>'
+			+'<td><input id="syl'+index+'"  style="width: 100%;height: 100%;border: 0"></td>'
+			+'<td><select id="fangshi'+index+'" style="width: 100%;height: 100%;border: 0" ><option value="">请选择</option></select></td>'
+			+'</tr>'
+			$("#first").append(text);
+			/* 获取熏蒸名称 */
+			getxzname2(index);
+			var ch=[];
+			$.ajax({
+				url:'${ctxPath}/renyuan/findyjkcxinxi',
+				type:'post',
+				data:{"page":1,"rows":1000},
+				dataType:'json',
+				success: function(data) {
+					$.each(data.list,function(i, n){
+						if(!ch.in_array(n.yjmc)){
+							$("#yaojim"+index).append("<option value="+n.yjmc+">"+n.yjmc+"</option>");
+						}
+						ch.push(n.yjmc);
+					});
+				},
+				error:function(){
+					//alert("error");
+				}
+			});
+			
+			var qyzzjgdm=$("#qiyeid option:selected").attr("qydm");
+			var kdbm=$("#kudian option:selected").val();
+			$("#qyzz").val(qyzzjgdm);
+			$("#cfmcyj"+index).append("<option value=''>请选择</option>");
+			$.ajax({
+				url: "${ctxPath}/lunhuan/selectCH.do",
+				dataType: "json",
+				data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+							$("#cfmcyj"+index).append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+					});
+				}
+			});
+			
+		}
+		function getxzname2(index){
+			$.ajax({
+				url:'${ctxPath}/renyuan/findXunzhengname',
+				type:'post',
+				dataType:'json',
+				success:function(data){
+					$.each(data.list,function(i,n){
+							$("#fangshi"+index).append("<option value="+n.name+">"+n.name+"</option>");
+						
+					});
+				}
+			});
+		}
+		var indexcf=1;
+		function tianjiacf(){
+			indexcf++;
+			var text="<tr><td>"+indexcf+"</td>"
+			+'<td><select id="cfmc'+indexcf+'"  style="width: 100%;height: 100%;border: 0" onchange="getcfmx2('+indexcf+')"></select></td>'
+			+'<td><input id="lspz'+indexcf+'" style="width: 100%;height: 100%;border: 0" ></td>'
+			+'<td><input id="lssl'+indexcf+'"  style="width: 100%;height: 100%;border: 0"></td>'
+			+'<td><input id="jhyyl'+indexcf+'"  style="width: 100%;height: 100%;border: 0"></td>'
+			+'</tr>'
+			$("#firstcf").append(text);
+			var qyzzjgdm=$("#qiyeid option:selected").attr("qydm");
+			var kdbm=$("#kudian option:selected").val();
+			$("#qyzz").val(qyzzjgdm);
+			$("#cfmc"+indexcf).append("<option value=''>请选择</option>");
+			$.ajax({
+				url: "${ctxPath}/lunhuan/selectCH.do",
+				dataType: "json",
+				data:{kdbm:kdbm,qyzzjgdm:qyzzjgdm},
+				success: function(data) {
+					$.each(data.list,function(i, n){
+							$("#cfmc"+indexcf).append("<option value="+n.cfbm+">"+n.cfmc+"</option>");
+					});
+				}
+			});
+		}
+		
+		
+		var indexry=1;
+		function tianjiary(){
+			indexry++;
+			var text="<tr><td>"+indexry+"</td>"
+			+'<td><input id="xingming'+indexry+'"  style="width: 100%;height: 100%;border: 0"></td>'
+			+'<td><input id="zz'+indexry+'"  style="width: 100%;height: 100%;border: 0"></td>'
+			+'</tr>'
+			$("#firstry").append(text);
+		}
+		function getliucheng(){
+			var liuchenghao=$("#liuchenghao").find("option:selected").val();
+			if(liuchenghao!=""){
+				$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtu1?liuchenghao="+liuchenghao);
+			}
+		}
+
+		//以此往下为药剂信息中的 各种联动方法 
+		/*
+		//打倒b
+		//g
+		//t
+		//逻辑众多,代码复杂 ,注意双眼
+		/
+		//
+		*/
+		/*获取品牌*/
+function getpp(){
+	$("#pp1").empty();
+	$("#gg1").empty();
+	$("#dw1").empty();
+	$("#dw1").append("<option value=''>请选择</option>");
+	$("#sccj1").empty();
+	$("#sccj1").append("<option value=''>请选择</option>");
+	$("#lysl1").val("");
+	$("#pp1").append("<option value=''>请选择</option>");
+	$("#gg1").append("<option value=''>请选择</option>");
+	var yjmc = $("#yaojim1 option:selected").text();
+	var ch=[];
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"yjmc":yjmc},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if(!ch.in_array(n.pp)){
+					$("#pp1").append("<option value="+n.pp+">"+n.pp+"</option>");	
+				}
+				ch.push(n.pp)
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+
+/*获取规格*/
+function getgg(){
+	$("#gg1").empty();
+	$("#lysl1").val("");
+	$("#dw1").empty();
+	$("#sccj1").empty();
+	$("#sccj1").append("<option value=''>请选择</option>");
+	$("#gg1").append("<option value=''>请选择</option>");
+	$("#dw1").append("<option value=''>请选择</option>");
+	var ch=[];
+	var pp = $("#pp1 option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"pp":pp},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				
+				if(!ch.in_array(n.gg)){
+					$("#gg1").append("<option value="+n.gg+">"+n.gg+"</option>");
+				}
+				ch.push(n.gg);
+			
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+/*获取规格*/
+function getdw(){
+	$("#dw1").empty();
+	$("#lysl1").val("");
+	$("#sccj1").empty();
+	$("#sccj1").append("<option value=''>请选择</option>");
+	$("#dw1").append("<option value=''>请选择</option>");
+	var ch=[];
+	var yjmc = $("#yaojim1 option:selected").text();
+	var pp = $("#pp1 option:selected").val();
+	var gg = $("#gg1 option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"pp":pp,"gg":gg,"yjmc":yjmc},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				
+				var dw=n.danwei.replace("(","").replace(")","");
+				if(!ch.in_array(dw)){
+					$("#dw1").append("<option value="+n.danwei+">"+n.danwei+"</option>");
+				}
+				ch.push(dw);
+			
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+/*获取规格*/
+function getdw2(index){
+	$("#dw"+index).empty();
+	$("#lysl"+index).val("");
+	$("#sccj"+index).empty();
+	$("#sccj"+index).append("<option value=''>请选择</option>");
+	$("#dw"+index).append("<option value=''>请选择</option>");
+	var ch=[];
+	var yjmc = $("#yaojim"+index+" option:selected").text();
+	var pp = $("#pp"+index+" option:selected").val();
+	var gg = $("#gg"+index+" option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"pp":pp,"gg":gg,"yjmc":yjmc},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				var dw=n.danwei.replace("(","").replace(")","");
+				if(!ch.in_array(dw)){
+					$("#dw"+index).append("<option value="+n.danwei+">"+n.danwei+"</option>");
+				}
+				ch.push(dw);
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+/*获取规格*/
+function getcj(){
+	$("#sccj1").empty();
+	$("#sccj1").append("<option value=''>请选择</option>");
+	var yjmc = $("#yaojim1 option:selected").text();
+	var pp = $("#pp1 option:selected").val();
+	var gg = $("#gg1 option:selected").val();
+	var dw = $("#dw1 option:selected").val();
+	var ch=[];
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"pp":pp,"gg":gg,"yjmc":yjmc,"dw":dw},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if(!ch.in_array(n.cj)){
+					$("#sccj1").append("<option value="+n.cj+">"+n.cj+"</option>");
+				}
+				ch.push(n.cj);
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+/*获取规格*/
+function getcj2(index){
+	$("#sccj"+index).empty();
+	$("#sccj"+index).append("<option value=''>请选择</option>");
+	var yjmc = $("#yaojim"+index+" option:selected").text();
+	var pp = $("#pp"+index+" option:selected").val();
+	var gg = $("#gg"+index+" option:selected").val();
+	var dw = $("#dw"+index+" option:selected").val();
+	var ch=[];
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"pp":pp,"gg":gg,"yjmc":yjmc,"dw":dw},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if(!ch.in_array(n.cj)){
+					$("#sccj"+index).append("<option value="+n.cj+">"+n.cj+"</option>");
+				}
+				ch.push(n.cj);
+			
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+/*获取品牌*/
+function getpp2(index){
+	$("#pp"+index).empty();
+	$("#gg"+index).empty();
+	$("#lysl"+index).val("");
+	$("#dw"+index).empty();
+	$("#dw"+index).append("<option value=''>请选择</option>");
+	$("#sccj"+index).empty();
+	$("#sccj"+index).append("<option value=''>请选择</option>");
+	$("#pp"+index).append("<option value=''>请选择</option>");
+	$("#gg"+index).append("<option value=''>请选择</option>");
+	var yjmc = $("#yaojim"+index+" option:selected").text();
+	var ch=[];
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"yjmc":yjmc},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if(!ch.in_array(n.pp)){
+					$("#pp"+index).append("<option value="+n.pp+">"+n.pp+"</option>");	
+				}
+				ch.push(n.pp)
+					
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+/*获取规格*/
+function getgg2(index){
+	$("#gg"+index).empty();
+	$("#lysl"+index).val("");
+	$("#dw"+index).empty();
+	$("#dw"+index).append("<option value=''>请选择</option>");
+	$("#sccj"+index).empty();
+	$("#sccj"+index).append("<option value=''>请选择</option>");
+	$("#gg"+index).append("<option value=''>请选择</option>");
+	var ch=[];
+	var pp = $("#pp"+index+" option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/renyuan/findyjkcxinxi',
+		type:'post',
+		data:{"page":1,"rows":1000,"pp":pp},
+		dataType:'json',
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				if(!ch.in_array(n.gg)){
+					$("#gg"+index).append("<option value="+n.gg+">"+n.gg+"</option>");
+				}
+				ch.push(n.gg);
+			});
+		},
+		error:function(){
+			//alert("error");
+		}
+	});
+}
+		
+		
+	</script>
+
+</body>
+</html>

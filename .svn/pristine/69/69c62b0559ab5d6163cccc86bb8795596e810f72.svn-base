@@ -1,0 +1,63 @@
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="${ctxPath}/css/weui.min.css">
+    <script src="${ctxPath}/js/jquery-2.1.4.min.js"></script>
+<style>
+
+.weui_cell:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid #d9d9d9;
+    color: #d9d9d9;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+     left: 0px; 
+}
+</style>
+
+
+<script type="text/javascript">
+	var jsonData;
+    function getData() {
+        var tableHtml='';
+    	 $.ajax({
+    		 url:'${ctxPath}/shouchukeshihua/findquxianhk',
+    		 type:'post',
+    		 data:{"level":2},
+    		 dataType:'json',
+    		 success:function(data){
+    			 for (var i = 0; i < data.length; i++) {
+    	                var str='<a class="weui_cell" style="color: inherit" href="javascript:getkudian('+data[i].id+');">'+
+    	                		'<img alt="" src="${ctxPath}/shipin/area.png"  style="margin-top: 15px"><div style="margin-top: 10px">..</div><div class="weui_cells weui_cells_access">'+data[i].name+'</div>'+
+    	                		'</a>';
+    	                tableHtml+=str;
+    	            }
+    			 document.body.innerHTML = tableHtml;
+    		 },
+    		 error:function(){
+    			 alert("error");
+    		 }
+    	  });
+    }
+    function getkudian(id){
+    	location.href="kudian.html?id="+id;
+    	
+    }
+    $(function(){
+ 	   getData();
+    })
+  						
+</script>
+
+<body style="overflow:hidden;">
+
+
+</body>
+

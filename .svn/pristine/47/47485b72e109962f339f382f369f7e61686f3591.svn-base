@@ -1,0 +1,1651 @@
+package com.zkzy.njzhpt.dao;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+public class ChuBeiLiangJHDAO {
+
+	private static final int DIQU_NUM = 6;
+	private static final int XINGZHI_NUM = 5;
+	private static final int PINZHONG_NUM = 3;
+
+	public static Ret bianji(HashMap<String, Object> map) throws Exception {
+		Record record = new Record();
+		record.setColumns(map);
+		boolean bool = false;
+		Ret ret=new Ret();
+		String id = (String) map.get("id");
+		String pz = (String) map.get("pinzhong");
+		
+		String niandu=(String)map.get("niandu");
+		String quming=(String)map.get("quming");
+		String ccqy=(String)map.get("ccqy");
+		String cckd=(String)map.get("cckd");
+		String ccch=(String)map.get("ccch");
+		
+		List<Record> listrecord=Db.find("select * from njpt_chubeiliangjihua where niandu=? and quming=? and ccqy=? and cckd=? and ccch=? ",niandu,quming,ccqy,cckd,ccch);
+		if(!listrecord.isEmpty()){
+			return ret.put("ret",bool).put("msg","保存失败，同一年度该仓已存在储备粮计划！");
+		}
+		else{
+		if (StrKit.isBlank(id)) {
+			record.set("id", SqlUtil.uuid());
+			if ("111".equals(pz)) {
+				record.set("cbljh_xm", map.get("jhsl"));
+				record.set("cbljh_jd", 0);
+				record.set("cbljh_xd", 0);
+			} else if ("1132".equals(pz)) {
+				record.set("cbljh_jd", map.get("jhsl"));
+				record.set("cbljh_xm", 0);
+				record.set("cbljh_xd", 0);
+			} else if ("1131".equals(pz)) {
+				record.set("cbljh_xm", 0);
+				record.set("cbljh_jd", 0);
+				record.set("cbljh_xd", map.get("jhsl"));
+			}
+			record.set("cbljh_xj", map.get("jhsl"));
+			bool = Db.save("njpt_chubeiliangjihua", record);
+		} else {
+			record.set("id", map.get("id"));
+			if ("111".equals(pz)) {
+				record.set("cbljh_xm", map.get("jhsl"));
+				record.set("cbljh_jd", 0);
+				record.set("cbljh_xd", 0);
+			} else if ("1132".equals(pz)) {
+				record.set("cbljh_jd", map.get("jhsl"));
+				record.set("cbljh_xm", 0);
+				record.set("cbljh_xd", 0);
+			} else if ("1131".equals(pz)) {
+				record.set("cbljh_xd", map.get("jhsl"));
+				record.set("cbljh_xm", 0);
+				record.set("cbljh_jd", 0);
+			}
+			record.set("cbljh_xj", map.get("jhsl"));
+			bool = Db.update("njpt_chubeiliangjihua", record);
+		}
+		return ret.put("ret",bool).put("msg","保存失败");
+		}
+	}
+	
+	/**
+	 * 获取仓廒数量
+	 * @param map
+	 * @return
+	 */
+	public static List<Record>  findcangaolist(HashMap<String, Object> map){
+		List<Record> listrecord = Db.find("select cfbm,cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? order BY cfbm ", map.get("qyzzjgdm"),map.get("kdbm"));
+		return listrecord;
+	}
+	/**
+	 * 获取仓廒数量
+	 * @param map
+	 * @return
+	 */
+	public static Record  findcangaosl(HashMap<String, Object> map){
+		
+		Record record = Db.findFirst("select COUNT(*) as cangaosl from tz_cangfang where qyzzjgdm=? and kdbm=? ", map.get("qyzzjgdm"),map.get("kdbm"));
+		return record;
+	}
+	/**
+	 * 获取该仓房下的储备粮计划分品种库存
+	 * @param map
+	 * @return
+	 * @throws Exception 
+	 */
+	public static Record  findcbljhkudiankc(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and quming = ?", "xzqhdm");
+		p.put("and ccqy = ?", "qyzzjgdm");
+		p.put("and cckd = ?", "kdbm");
+		p.put("and niandu = ?", "niandu");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Record record=new Record();
+		record = Db.findFirst("select  ISNULL(sum(cbljh_xj)/1000, 0) as cbljh_xj,ISNULL(sum(cbljh_xm)/1000, 0) as cbljh_xm,ISNULL(sum(cbljh_jd)/1000, 0) as cbljh_jd,ISNULL(sum(cbljh_xd)/1000, 0) as cbljh_xd from njpt_chubeiliangjihua  where 1=1 and quming = ? and ccqy = ? and cckd = ? and niandu = ? ",map.get("xzqhdm"),map.get("qyzzjgdm"),map.get("kdbm"),map.get("niandu"));
+		if(record!=null){
+		
+		}else{
+			Record emp=new Record();
+			emp.set("cbljh_xj", 0);
+			emp.set("cbljh_xm", 0);
+			emp.set("cbljh_jd", 0);
+			emp.set("cbljh_xd", 0);
+			record=emp;
+		}
+		record.set("xingzhi", "");
+		return record;
+	}
+	/**
+	 * 获取该仓房下的储备粮计划分品种库存
+	 * @param map
+	 * @return
+	 * @throws Exception 
+	 */
+	public static Record  findcbljhpzkucun(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and ccqy = ?", "qyzzjgdm");
+		p.put("and cckd = ?", "kdbm");
+		p.put("and ccch = ?", "cfbm");
+		p.put("and niandu = ?", "niandu");
+		//p.put("and xingzhi = ?", "xingzhi");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Record record=new Record();
+		record = Db.findFirst("select ISNULL(xingzhi, '') as xingzhi, ISNULL(cbljh_xj/1000, 0) as cbljh_xj,ISNULL(cbljh_xm/1000, 0) as cbljh_xm,ISNULL(cbljh_jd/1000, 0) as cbljh_jd,ISNULL(cbljh_xd/1000, 0) as cbljh_xd from njpt_chubeiliangjihua  where 1=1 "+ s.getSql(), s.getParam().toArray(new Object[0]));
+		if(record!=null){
+			
+			Record xingzhi=Db.findFirst("select *  from tz_GrainProperties where vCode=? ",record.getStr("xingzhi"));
+			if(xingzhi!=null){
+				record.set("xingzhi", xingzhi.getStr("vGrainProperties"));
+			}
+		}else{
+			Record emp=new Record();
+			emp.set("xingzhi", "--");
+			emp.set("cbljh_xj", 0);
+			emp.set("cbljh_xm", 0);
+			emp.set("cbljh_jd", 0);
+			emp.set("cbljh_xd", 0);
+			record=emp;
+		}
+		return record;
+	}
+	/**
+	 * 获取该仓房下的实物库存分品种库存
+	 * @param map
+	 * @return
+	 */
+	public static Record  findcfpzkucun(HashMap<String, Object> map){
+		String type = (String) map.get("lspz");
+		String sql = "select sum(dmStock) as "+type+" from kc_CurrentStock where "
+				+ "qyzzjgdm=? and kdbm=? and vWareHouseCode=? and vGrainSubTypeCode=? and vGrainPropertyCode in('122','123')";
+		Record record = Db.findFirst(sql, map.get("qyzzjgdm"),map.get("kdbm"),map.get("cfbm"),map.get("lspzbm"));
+		return record;
+	}
+	/**
+	 * 获取各粮食品种库存
+	 * @param map
+	 * @return
+	 */
+	public static Record  findpzkucun(HashMap<String, Object> map){
+		String type = (String) map.get("lspz");
+		String sql = "select sum(dmStock) as "+type+" from kc_CurrentStock where "
+				+ "qyzzjgdm=? and kdbm=? and vGrainSubTypeCode=? and vGrainPropertyCode in('122','123')";
+		Record record = Db.findFirst(sql, map.get("qyzzjgdm"),map.get("kdbm"),map.get("lspzbm"));
+		return record;
+	}
+	public static Page<Record> quECharts(HashMap<String, Object> map) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		int yearInt = cal.get(Calendar.YEAR);
+		String niandu=String.valueOf(yearInt);
+		List<Record> list=new ArrayList<>();
+		//南京市
+				Record nanjingshi=nanjingshiEChart(niandu);
+				Record nanjinshijhs=new Record()
+						.set("leixing", "jhs")
+						.set("shuliang", nanjingshi.get("jhsl"));
+				Record nanjinshiswkc=new Record()
+						.set("leixing", "swkc")
+						.set("shuliang", nanjingshi.get("swkc"));
+				list.add(nanjinshijhs);
+				list.add(nanjinshiswkc);
+				
+		//区
+				String[] qu = { "320115", "320116", "320111", "320124" };// 江宁 六合 浦口 溧水
+				for(String xzqhdm:qu){
+					Record quRecord=quEChart(xzqhdm,niandu);
+					Record qujhs=new Record()
+							.set("leixing", "jhs")
+							.set("shuliang", quRecord.get("jhsl"));
+					Record quswkc=new Record()
+							.set("leixing", "swkc")
+							.set("shuliang", quRecord.get("swkc"));
+					list.add(qujhs);
+					list.add(quswkc);
+				}
+		
+		//高淳
+				Record gaochunRecord=gaochunEChart(niandu);
+				Record gaochunjhs=new Record()
+						.set("leixing", "jhs")
+						.set("shuliang", gaochunRecord.get("jhsl"));
+				Record gaochunswkc=new Record()
+						.set("leixing", "swkc")
+						.set("shuliang", gaochunRecord.get("swkc"));
+				list.add(gaochunjhs);
+				list.add(gaochunswkc);
+		//其他
+				
+				Record qitaRecord= qitaEchart(niandu);
+				Record qitajhs=new Record()
+						.set("leixing", "jhs")
+						.set("shuliang", qitaRecord.get("jhsl"));
+				Record qitaswkc=new Record()
+						.set("leixing", "swkc")
+						.set("shuliang", qitaRecord.get("swkc"));
+				list.add(qitajhs);
+				list.add(qitaswkc);
+		//南京市属企业实物库存和储备粮计划
+				Record shishuqiyeRecord=shishuqiyeEChart(niandu);
+				Record shishujhs=new Record()
+						.set("leixing", "jhs")
+						.set("shuliang", shishuqiyeRecord.get("jhsl"));
+				Record shishuswkc=new Record()
+						.set("leixing", "swkc")
+						.set("shuliang", shishuqiyeRecord.get("swkc"));
+				list.add(shishujhs);
+				list.add(shishuswkc);
+		
+		Page<Record> listRecord =new Page<>(list, 1, 15, 1, 15);
+		return listRecord;
+
+		
+	}
+	public static Record nanjingshiEChart(String niandu){
+		Record record=new Record();
+		Record qujhs = Db.findFirst(
+				"select sum(jhsl) as jhsl from njpt_chubeiliangjihua where  niandu=?",niandu);
+		Record quswkc = Db.findFirst(
+				"select SUM(k.dmStock) as swkc from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm and k.vGrainPropertyCode in(122,123)");
+		record.set("jhsl", qujhs.get("jhsl",new BigDecimal(0.0)))
+			  .set("swkc", quswkc.get("swkc",new BigDecimal(0.0)))
+		;
+		return record;
+	}
+	public static Record gaochunEChart(String niandu){
+		Record record=new Record();
+		Record qujhs = Db.findFirst(
+				"select sum(jhsl) as jhsl from njpt_chubeiliangjihua where pinzhong in('1131','1132') and quming='320125' and niandu=?",niandu);
+		Record quswkc = Db.findFirst(
+				"select SUM(k.dmStock) as swkc from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm and k.vGrainPropertyCode in(122,123) and vGrainSubTypeCode in('1131','1132') and d.xzqhdm='320125'");
+		record.set("jhsl", qujhs.get("jhsl",new BigDecimal(0.0)))
+			  .set("swkc", quswkc.get("swkc",new BigDecimal(0.0)))
+		;
+		return record;
+		
+	}
+	public static Record quEChart(String xzqhdm,String niandu){
+		Record record=new Record();
+		Record qujhs = Db.findFirst(
+				"select sum(jhsl) as jhsl from njpt_chubeiliangjihua where quming=? and niandu=?",xzqhdm,niandu);
+		Record quswkc = Db.findFirst(
+				"select SUM(k.dmStock) as swkc from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm and k.vGrainPropertyCode in(122,123) and d.xzqhdm=?",xzqhdm);
+		record.set("jhsl", qujhs.get("jhsl",new BigDecimal(0.0)))
+			  .set("swkc", quswkc.get("swkc",new BigDecimal(0.0)))
+		;
+		return record;
+		
+	}
+	
+	public static Record qitaEchart(String niandu){
+		Record record=new Record();
+		Record qiyejhs = Db.findFirst(
+				"select sum(jhsl) as jhsl from njpt_chubeiliangjihua where ccqy in('765432125','765432126') and pinzhong in('1131','1132') and niandu=?",niandu);
+		Record qiyeswkc = Db.findFirst(
+				"select SUM(k.dmStock) as swkc from  kc_CurrentStock k where k.vGrainPropertyCode in(122,123) and vGrainSubTypeCode in('1131','1132') and k.qyzzjgdm in ('765432125','765432126')");
+		record.set("jhsl", qiyejhs.get("jhsl",new BigDecimal(0.0)))
+			  .set("swkc", qiyeswkc.get("swkc",new BigDecimal(0.0)))
+		;
+		return record;
+		
+	}
+	public static Record shishuqiyeEChart(String niandu){
+		Record record=new Record();
+		Record qiyejhs = Db.findFirst(
+				"select sum(jhsl) as jhsl from njpt_chubeiliangjihua where ccqy in('765432124','660696497') and pinzhong in('111','1132') and niandu=?",niandu);
+		Record qiyeswkc = Db.findFirst(
+				"select SUM(k.dmStock) as swkc from  kc_CurrentStock k where k.vGrainPropertyCode in(122,123) and vGrainSubTypeCode in('111','1132') and k.qyzzjgdm in ('765432124','660696497')");
+		record.set("jhsl", qiyejhs.get("jhsl",new BigDecimal(0.0)))
+			  .set("swkc", qiyeswkc.get("swkc",new BigDecimal(0.0)))
+		;
+		return record;
+		
+	}
+	public static Page<Record> fpzECharts(HashMap<String, Object> map) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		int yearInt = cal.get(Calendar.YEAR);
+		String niandu=String.valueOf(yearInt);
+		List<Record> list=new ArrayList<>();
+		//分品种储备粮计划
+		Record cbljh=new Record();
+		cbljh=Db.findFirst("select SUM(cbljh_xm) as xm,sum(cbljh_jd) as jd,SUM(cbljh_xd) as xd,sum(cbljh_xj) as xj FROM njpt_chubeiliangjihua where niandu=?",niandu);
+		//求实物库存
+		Record qsxmRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xm from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode like '%111%' and k.vGrainPropertyCode in(122,123)");
+		Record qsjdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode like '%1132%' and k.vGrainPropertyCode in(122,123)");
+		Record qsxdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode like '%1131%' and k.vGrainPropertyCode in(122,123)");
+		BigDecimal qsxmSWKC = qsxmRrcord.get("xm",new BigDecimal(0.0));
+		BigDecimal qsjdSWKC = qsjdRrcord.get("jd",new BigDecimal(0.0));
+		BigDecimal qsxdSWKC = qsxdRrcord.get("xd",new BigDecimal(0.0));
+		double qsxjSWKC = qsxmSWKC.doubleValue() + qsjdSWKC.doubleValue() + qsxdSWKC.doubleValue();
+		//小麦储备粮计划和实物库存
+		Record xmjhs=new Record().set("shuliang", cbljh.get("xm")).set("leixing", "jhs");
+		Record xmswkc=new Record().set("shuliang", qsxmSWKC).set("leixing", "swkc");
+		//粳稻储备粮计划和实物库存
+		Record jdjhs=new Record().set("shuliang", cbljh.get("jd")).set("leixing", "jhs");
+		Record jdswkc=new Record().set("shuliang", qsjdSWKC).set("leixing", "swkc");
+		//籼稻储备粮计划和实物库存
+		Record xdjhs=new Record().set("shuliang", cbljh.get("xd")).set("leixing", "jhs");
+		Record xdswkc=new Record().set("shuliang", qsxdSWKC).set("leixing", "swkc");
+		//总量储备粮计划和实物库存
+		Record xjjhs=new Record().set("shuliang", cbljh.get("xj")).set("leixing", "jhs");
+		Record xjswkc=new Record().set("shuliang", qsxjSWKC).set("leixing", "swkc");
+		list.add(xjjhs);
+		list.add(xjswkc);
+		list.add(xdjhs);
+		list.add(xdswkc);
+		list.add(jdjhs);
+		list.add(jdswkc);
+		list.add(xmjhs);
+		list.add(xmswkc);
+		Page<Record> listRecord =new Page<>(list, 1, 15, 1, 15);
+		return listRecord;
+
+		/*
+		 * String niandu=(String) map.get("niandu"); return getDataList(niandu);
+		 */
+	}
+	public static Page<Record> queryswkc(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		p.put("and d.xzqhdm = ?", "xzqhdm");
+		p.put("and q.qyzzjgdm = ?", "qyzzjgdm");
+		p.put("and k.kdbm = ?", "kdbm");
+		p.put("and k.kdmc like ?", "kdmc","%%%s%%");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select d.xzqhdm as xzqhdm,q.qyzzjgdm as qyzzjgdm,k.kdbm as kdbm,fw.name as quyu,q.qymc as qymc,k.kdmc as kdmc,fw.orderno as orderno ",
+				"from njpt_diqu d inner join fw_area fw on d.areaid=fw.id inner JOIN  tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN tz_kudian k on q.qyzzjgdm=k.qyzzjgdm where 1=1 " + s.getSql()+" ORDER BY fw.orderno,q.qyzzjgdm,k.kdbm", s.getParam().toArray(new Object[0]));
+		return page;
+
+		/*
+		 * String niandu=(String) map.get("niandu"); return getDataList(niandu);
+		 */
+	}
+	
+
+	/**
+	 * 获取全市 储备粮计划和实物库存
+	 * 
+	 * @param year
+	 * @param pz
+	 * @return
+	 */
+	public static Record quanshi(String year) {
+		Record record = new Record();
+		// 储备粮计划数
+		//铁心桥，下关（小麦，粳稻，籼稻）
+		Record tiexinqiao =Db.findFirst("select sum(cbljh_xm) as xm,sum(cbljh_jd) as jd,sum(cbljh_xd) as xd from njpt_chubeiliangjihua where xingzhi='122' and niandu=? and ccqy in('765432124','660696497')",year);
+		//军粮（粳稻，籼稻）
+		Record junliang =Db.findFirst("select sum(cbljh_jd) as jd,sum(cbljh_xd) as xd from njpt_chubeiliangjihua where xingzhi='122' and niandu=? and ccqy=?",year,"660696498");
+		//江宁，浦口，六合（小麦，粳稻，籼稻）
+		Record jnpklh =Db.findFirst("select sum(cbljh_xm) xm,sum(cbljh_jd) as jd,sum(cbljh_xd) as xd from njpt_chubeiliangjihua where xingzhi='122' and niandu=? and quming in('320115','320111','320116')",year);
+		//溧水，高淳(粳稻)
+		Record lsgc =Db.findFirst("select sum(cbljh_jd) as jd from njpt_chubeiliangjihua where xingzhi='122' and niandu=? and quming in('320124','320125')",year);
+		//沙塘(粳稻)
+		Record shatang =Db.findFirst("select sum(cbljh_jd) as jd from njpt_chubeiliangjihua where xingzhi='122' and niandu=? and ccqy=?",year,"765432126");
+		//海悦
+		Record haiyue =Db.findFirst("select sum(cbljh_xm) as xm from njpt_chubeiliangjihua where xingzhi='122' and niandu=? and ccqy=?",year,"765432125");
+		//小麦储备粮总计划
+		double xm=(((BigDecimal)tiexinqiao.get("xm",new BigDecimal(0))).doubleValue()+((BigDecimal)jnpklh.get("xm",new BigDecimal(0))).doubleValue()+((BigDecimal)haiyue.get("xm",new BigDecimal(0))).doubleValue())/1000;
+		//粳稻储备粮计划
+		double jd=(((BigDecimal)tiexinqiao.get("jd",new BigDecimal(0))).doubleValue()+((BigDecimal)junliang.get("jd",new BigDecimal(0))).doubleValue()+((BigDecimal)jnpklh.get("jd",new BigDecimal(0))).doubleValue()+((BigDecimal)lsgc.get("jd",new BigDecimal(0))).doubleValue())/1000;
+		//籼稻储备粮计划
+		double xd=(((BigDecimal)tiexinqiao.get("xd",new BigDecimal(0))).doubleValue()+((BigDecimal)junliang.get("xd",new BigDecimal(0))).doubleValue()+((BigDecimal)jnpklh.get("xd",new BigDecimal(0))).doubleValue())/1000;
+				
+				
+		Record quanshijhs = Db.findFirst(
+				"select sum(cbljh_xm) xm,sum(cbljh_jd) as jd,sum(cbljh_xd) as xd from njpt_chubeiliangjihua where xingzhi='122' and niandu=?",year);
+
+		/*BigDecimal qsxmcbljh = quanshijhs.get("xm", new BigDecimal(0.0));
+		BigDecimal qsjdcbljh = quanshijhs.get("jd", new BigDecimal(0.0));
+		BigDecimal qsxdcbljh = quanshijhs.get("xd", new BigDecimal(0.0));
+		double qsxjcbljh = (qsxmcbljh.doubleValue() + qsjdcbljh.doubleValue() + qsxdcbljh.doubleValue())/1000;*/
+		double qsxjcbljh =(xm+jd+xd);
+		record.set("xmcbljh", xm);
+		record.set("jdcbljh", jd);
+		record.set("xdcbljh", xd);
+		record.set("xjcbljh", qsxjcbljh);
+		// 全市实物库存
+		Record qsxmRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xm from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode like '%111%' and k.vGrainPropertyCode in(122)");
+		Record qsjdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode like '%1132%' and k.vGrainPropertyCode in(122)");
+		Record qsxdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode like '%1131%' and k.vGrainPropertyCode in(122)");
+		BigDecimal qsxmSWKC = qsxmRrcord.get("xm",new BigDecimal(0.0));
+		BigDecimal qsjdSWKC = qsjdRrcord.get("jd",new BigDecimal(0.0));
+		BigDecimal qsxdSWKC = qsxdRrcord.get("xd",new BigDecimal(0.0));
+		double qsxjSWKC = (qsxmSWKC.doubleValue() + qsjdSWKC.doubleValue() + qsxdSWKC.doubleValue())/1000;
+		record.set("xmswkc", qsxmSWKC.doubleValue()/1000)
+				.set("jdswkc", qsjdSWKC.doubleValue()/1000)
+				.set("xdswkc", qsxdSWKC.doubleValue()/1000)
+				.set("xjswkc", qsxjSWKC);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+		// 实际库存占计划数%
+		String qssjkczb="100%";
+		if(qsxjSWKC==0.0&&qsxjcbljh==0.0){
+			record.set("sjkczb", qssjkczb);
+			record.set("sjkczbbool", "1");
+		}else{
+			
+			qssjkczb = nf.format(qsxjSWKC / qsxjcbljh);
+			record.set("sjkczb", qssjkczb);
+			if(qsxjSWKC / qsxjcbljh>=1){
+				record.set("sjkczb", "100%");
+			}else {
+				record.set("sjkczb", qssjkczb);
+			}
+			if (((qsxjSWKC / qsxjcbljh) - 0.5) >= 0) {
+				record.set("sjkczbbool", "1");
+			} else {
+				record.set("sjkczbbool", "0");
+			}
+		}
+		// 实际粳稻库存占计划数%
+		String qssjjdzb="100%";
+		if((qsjdSWKC.doubleValue())==0.0&&(jd)==0.0){
+			record.set("sjjdzb", qssjjdzb);
+			record.set("sjjdzbbool", "1");
+		}else {
+			qssjjdzb = nf.format(qsjdSWKC.doubleValue() / jd);
+			if(qsjdSWKC.doubleValue() / jd>=1){
+				record.set("sjjdzb", "100%");
+			}else {
+				record.set("sjjdzb", qssjjdzb);
+			}
+			if (((qsjdSWKC.doubleValue() / jd) - (1.0 / 4.0)) >= 0) {
+				record.set("sjjdzbbool", "1");
+			} else {
+				record.set("sjjdzbbool", "0");
+			}
+		}
+		// 实际籼稻库存占计划数%
+		String qssjxdzb="100%";
+		if((qsxdSWKC .doubleValue())==0.0&&(xd)==0.0){
+			record.set("sjxdzb", qssjxdzb);
+			record.set("sjxdzbbool", "1");
+		}else {
+			qssjxdzb = nf.format(qsxdSWKC .doubleValue()/ xd);
+			if(qsxdSWKC .doubleValue()/ xd>=1){
+				record.set("sjxdzb", "100%");
+			}else{
+			record.set("sjxdzb", qssjxdzb);
+			
+			}
+			if (((qsxdSWKC.doubleValue() / xd) - (1.0 / 3.0)) >= 0) {
+				record.set("sjxdzbbool", "1");
+			} else {
+				record.set("sjxdzbbool", "0");
+			}
+		}
+		// 实际小麦库存占计划数%
+		String qssjxmzb="100%";
+		if((qsxmSWKC.doubleValue())==0.0&&xm==0.0){
+			record.set("sjxmzb", qssjxmzb);
+			record.set("sjxmzbbool", "1");
+		}else {
+			qssjxmzb = nf.format(qsxmSWKC.doubleValue() / xm);
+		
+			if(qsxmSWKC.doubleValue() / xm>=1){
+				record.set("sjxmzb", "100%");
+			}else {
+			
+				record.set("sjxmzb", qssjxmzb);
+			}
+			if (((qsxmSWKC.doubleValue() / xm) - (1.0 / 2.0)) >= 0) {
+				record.set("sjxmzbbool", "1");
+			} else {
+				record.set("sjxmzbbool", "0");
+			}
+		}
+		return record;
+
+	}
+
+	public static Record gaochunShiWuKuCun(String xzqhdm, String year) {
+		Record record = new Record();
+		// 得到区域名称
+		Record quyu = Db.findFirst("select * from njpt_diqu where xzqhdm=?", xzqhdm);
+		String quming = Db.findFirst("select * from fw_area where id=?",quyu.getStr("areaid")).getStr("name");
+		
+		record.set("quming", quming);
+		record.set("xzqhdm", xzqhdm);
+
+		// 得到区的小麦，粳稻，籼稻 --计划数
+		Record jihuashu = Db.findFirst(
+				"select sum(cbljh_jd) as jd from njpt_chubeiliangjihua where xingzhi='122' and  quming=? and niandu=?",
+				xzqhdm, year);
+		BigDecimal jdcbljh = jihuashu.get("jd",new BigDecimal(0.0));
+		record.set("jdcbljh", jdcbljh.doubleValue()/1000);
+		// 得到高淳的小麦，粳稻，籼稻 --实物库存
+		Record jdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  where d.xzqhdm=? and k.vGrainSubTypeCode like '%1132%' and k.vGrainPropertyCode in(122)",
+				xzqhdm);
+		BigDecimal jdSWKC = jdRrcord.get("jd",new BigDecimal(0.0));
+		record.set("jdswkc", jdSWKC.doubleValue()/1000);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+		// String zlbl = nf.format(budiyu);
+
+		// 实际库存占计划数%
+		String sjkczb="100%";
+		if((jdSWKC.doubleValue())==0.0&&(jdcbljh.doubleValue())==0.0){
+			record.set("sjkczb", sjkczb);
+			record.set("sjkczbbool", "1");
+		}else {
+			sjkczb = nf.format((jdSWKC.doubleValue()) / (jdcbljh.doubleValue()));
+			if(((jdSWKC.doubleValue()) / (jdcbljh.doubleValue()))>=1){
+				record.set("sjkczb", "100%");
+			}else {
+				record.set("sjkczb", sjkczb);
+			}
+			if ((((jdSWKC.doubleValue()) / (jdcbljh.doubleValue())) - 0.5) >= 0) {
+				record.set("sjkczbbool", "1");
+			} else {
+				record.set("sjkczbbool", "0");
+			}
+		}
+		// 实际粳稻库存占计划数%
+		String sjjdzb="100%";
+		if((jdSWKC.doubleValue())==0.0&&(jdcbljh.doubleValue())==0.0){
+			record.set("sjjdzb", sjjdzb);
+			record.set("sjjdzbbool", "1");
+		}else {
+			sjjdzb = nf.format(jdSWKC.doubleValue() / jdcbljh.doubleValue());
+			if((jdSWKC.doubleValue() / jdcbljh.doubleValue())>=1){
+				record.set("sjjdzb", "100%");
+			}else {
+				record.set("sjjdzb", sjjdzb);
+			}
+			if (((jdSWKC.doubleValue() / jdcbljh.doubleValue()) - (1.0 / 4.0)) >= 0) {
+				record.set("sjjdzbbool", "1");
+			} else {
+				record.set("sjjdzbbool", "0");
+			}
+		}
+		// 实际籼稻库存占计划数%
+				record.set("sjxdzb", "");
+				record.set("sjxdzbbool", "1");
+		// 实际小麦库存占计划数%(高淳没有)
+		record.set("sjxmzb", "");
+		record.set("sjxmzbbool", "1");
+
+		return record;
+
+	}
+	public static Record haiyueqita(String qyzzjgdm, String year) {
+		Record record = new Record();
+		// 得到企业名称
+		Record qiyemc = Db.findFirst("select qymc from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+		if(qiyemc!=null){
+			record.set("qymc", qiyemc.get("qymc"));
+			record.set("qyzzjgdm", qyzzjgdm);
+		}else{
+			record.set("qymc", "");
+			record.set("qyzzjgdm", qyzzjgdm);
+		}
+		
+		// 得到企业下的储备粮计划
+		Record qiyejhs = Db.findFirst(
+				"select sum(cbljh_xm) as xm from njpt_chubeiliangjihua where xingzhi='122' and  pinzhong in('111') and ccqy=? and niandu=? ",
+				qyzzjgdm, year);
+		BigDecimal qyxmcbljh = qiyejhs.get("xd",new BigDecimal(0.0));
+		record.set("xmcbljh", qyxmcbljh.doubleValue()/1000);
+		// 得到该企业实物库存
+		Record qyxmRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xm from  kc_CurrentStock k where k.vGrainSubTypeCode like '%111%' and k.vGrainPropertyCode in(122) and k.qyzzjgdm=?",qyzzjgdm);
+		BigDecimal qyxmSWKC = qyxmRrcord.get("xm",new BigDecimal(0.0));
+		record.set("xmswkc", qyxmSWKC.doubleValue()/1000);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+
+		// 实际库存占计划数%
+		String qysjkczb="100%";
+		if((qyxmSWKC.doubleValue())==0.0&&(qyxmcbljh.doubleValue())==0.0){
+			record.set("sjkczb", qysjkczb);
+			record.set("sjkczbbool", "1");
+		}else {
+			qysjkczb = nf.format((qyxmSWKC.doubleValue()) / (qyxmcbljh.doubleValue()));
+			if(((qyxmSWKC.doubleValue()) / (qyxmcbljh.doubleValue()))>=1){
+				record.set("sjkczb", "100%");
+			}else {
+				record.set("sjkczb", qysjkczb);
+			}
+			if ((((qyxmSWKC.doubleValue()) / (qyxmcbljh.doubleValue())) - 0.5) >= 0) {
+				record.set("sjkczbbool", "1");
+			} else {
+				record.set("sjkczbbool", "0");
+			}
+		}
+		// 实际粳稻库存占计划数%
+		
+			record.set("sjjdzb", "");
+			record.set("sjjdzbbool", "1");
+		
+		// 实际籼稻库存占计划数%
+		
+			record.set("sjxdzb", "");
+			record.set("sjxdzbbool", "1");
+		
+
+		// 实际小麦库存占计划数%(其他 没有小麦为空)
+			String qitasjxmzb="100%";
+			if((qyxmSWKC.doubleValue())==0.0&&(qyxmcbljh.doubleValue())==0.0){
+				record.set("sjxmzb", qitasjxmzb);
+				record.set("sjxmzbbool", "1");
+			}else {
+				qitasjxmzb = nf.format(qyxmSWKC.doubleValue() / qyxmcbljh.doubleValue());
+				if((qyxmSWKC.doubleValue() / qyxmcbljh.doubleValue())>=1){
+					record.set("sjxmzb", "100%");
+				}else {
+				record.set("sjxmzb", qitasjxmzb);
+				}
+				if (((qyxmSWKC.doubleValue() / qyxmcbljh.doubleValue()) - (1.0 / 2.0)) >= 0) {
+					record.set("sjxmzbbool", "1");
+				} else {
+					record.set("sjxmzbbool", "0");
+				}
+			}
+		return record;
+	}
+	public static Record shatangqita(String qyzzjgdm, String year) {
+		Record record = new Record();
+		// 得到市属企业名称
+		Record qiyemc = Db.findFirst("select qymc from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+		//record.set("qymc", qiyemc.get("qymc"));
+		//record.set("qyzzjgdm", qyzzjgdm);
+			record.set("qymc", "沙塘庵市场");
+			record.set("qyzzjgdm", qyzzjgdm);
+		// 得到市属企业下的储备粮计划
+		Record qiyejhs = Db.findFirst(
+				"select sum(cbljh_jd) as jd from njpt_chubeiliangjihua where xingzhi='122' and  pinzhong in('1132') and ccqy=? and niandu=? ",
+				qyzzjgdm, year);
+		BigDecimal qyjdcbljh = qiyejhs.get("jd",new BigDecimal(0.0));
+		record.set("jdcbljh", qyjdcbljh.doubleValue()/1000);
+		// 得到该企业实物库存
+		Record qyjdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  kc_CurrentStock k where k.vGrainSubTypeCode like '%1132%' and k.vGrainPropertyCode in(122) and k.qyzzjgdm=?",qyzzjgdm);
+		BigDecimal qyjdSWKC = qyjdRrcord.get("jd",new BigDecimal(0.0));
+		record.set("jdswkc", qyjdSWKC.doubleValue()/1000);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+
+		// 实际库存占计划数%
+		String qysjkczb="100%";
+		if((qyjdcbljh.doubleValue())==0.0&&(qyjdSWKC.doubleValue())==0.0){
+			record.set("sjkczb", qysjkczb);
+			record.set("sjkczbbool", "1");
+		}else {
+			qysjkczb = nf.format((qyjdcbljh.doubleValue()) / (qyjdSWKC.doubleValue()));
+			if(((qyjdcbljh.doubleValue()) / (qyjdSWKC.doubleValue()))>=1){
+				record.set("sjkczb", "100%");
+			}else {
+				record.set("sjkczb", qysjkczb);
+			}
+			if ((((qyjdcbljh.doubleValue()) / (qyjdSWKC.doubleValue())) - 0.5) >= 0) {
+				record.set("sjkczbbool", "1");
+			} else {
+				record.set("sjkczbbool", "0");
+			}
+		}
+		// 实际粳稻库存占计划数%
+		String qysjjdzb="100%";
+		if((qyjdSWKC.doubleValue())==0.0&&qyjdcbljh.doubleValue()==0.0){
+			record.set("sjjdzb", qysjjdzb);
+			record.set("sjjdzbbool", "1");
+		}else {
+			
+			qysjjdzb = nf.format(qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue());
+			if((qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue())>=1){
+				record.set("sjjdzb", "100%");
+			}else {
+				record.set("sjjdzb", qysjjdzb);
+			}
+			if (((qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue()) - (1.0 / 4.0)) >= 0) {
+				record.set("sjjdzbbool", "1");
+			} else {
+				record.set("sjjdzbbool", "0");
+			}
+		}
+		// 实际籼稻库存占计划数%
+		
+			record.set("sjxdzb", "");
+			record.set("sjxdzbbool", "1");
+		
+
+		// 实际小麦库存占计划数%(其他 没有小麦为空)
+		record.set("sjxmzb", "");
+		record.set("sjxmzbbool", "1");
+
+		return record;
+	}
+	public static Record qitashiwukucun(String qyzzjgdm, String year) {
+		Record record = new Record();
+		// 得到市属企业名称
+		Record qiyemc = Db.findFirst("select qymc from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+		if(qiyemc!=null){
+			record.set("qymc", qiyemc.get("qymc"));
+			record.set("qyzzjgdm", qyzzjgdm);
+		}else{
+			record.set("qymc", "");
+			record.set("qyzzjgdm", qyzzjgdm);
+		}
+		
+		// 得到市属企业下的储备粮计划
+		Record qiyejhs = Db.findFirst(
+				"select sum(cbljh_xd) xd,sum(cbljh_jd) as jd from njpt_chubeiliangjihua where xingzhi='122' and  pinzhong in('1131','1132') and ccqy=? and niandu=? ",
+				qyzzjgdm, year);
+		BigDecimal qyjdcbljh = qiyejhs.get("jd",new BigDecimal(0.0));
+		BigDecimal qyxdcbljh = qiyejhs.get("xd",new BigDecimal(0.0));
+		double qyxjcbljh = (qyxdcbljh.doubleValue() + qyjdcbljh.doubleValue())/1000;
+		record.set("xdcbljh", qyxdcbljh.doubleValue()/1000);
+		record.set("jdcbljh", qyjdcbljh.doubleValue()/1000);
+		record.set("xjcbljh", qyxjcbljh);
+		// 得到该企业实物库存
+		Record qyxdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xd from  kc_CurrentStock k where k.vGrainSubTypeCode like '%1131%' and k.vGrainPropertyCode in(122) and k.qyzzjgdm=?",qyzzjgdm);
+		Record qyjdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  kc_CurrentStock k where k.vGrainSubTypeCode like '%1132%' and k.vGrainPropertyCode in(122) and k.qyzzjgdm=?",qyzzjgdm);
+		BigDecimal qyxdSWKC = qyxdRrcord.get("xd",new BigDecimal(0.0));
+		BigDecimal qyjdSWKC = qyjdRrcord.get("jd",new BigDecimal(0.0));
+		double qyxjSWKC = (qyxdSWKC.doubleValue() + qyjdSWKC.doubleValue())/1000;
+		record.set("xdswkc", qyxdSWKC.doubleValue()/1000)
+			.set("jdswkc", qyjdSWKC.doubleValue()/1000)
+			.set("xjswkc", qyxjSWKC);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+
+		// 实际库存占计划数%
+		String qysjkczb="100%";
+		if(qyxjSWKC==0.0&&qyxjcbljh==0.0){
+			record.set("sjkczb", qysjkczb);
+			record.set("sjkczbbool", "1");
+		}else {
+			qysjkczb = nf.format(qyxjSWKC / qyxjcbljh);
+		
+			if((qyxjSWKC / qyxjcbljh)>=1){
+				record.set("sjkczb", "100%");
+			}else {
+				record.set("sjkczb", qysjkczb);
+			}
+			if (((qyxjSWKC / qyxjcbljh) - 0.5) >= 0) {
+				record.set("sjkczbbool", "1");
+			} else {
+				record.set("sjkczbbool", "0");
+			}
+		}
+		// 实际粳稻库存占计划数%
+		String qysjjdzb="100%";
+		if((qyjdSWKC.doubleValue())==0.0&&qyjdcbljh.doubleValue()==0.0){
+			record.set("sjjdzb", qysjjdzb);
+			record.set("sjjdzbbool", "1");
+		}else {
+			
+			qysjjdzb = nf.format(qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue());
+			if((qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue())>=1){
+				record.set("sjjdzb", "100%");
+			}else {
+				record.set("sjjdzb", qysjjdzb);
+			}
+			if (((qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue()) - (1.0 / 4.0)) >= 0) {
+				record.set("sjjdzbbool", "1");
+			} else {
+				record.set("sjjdzbbool", "0");
+			}
+		}
+		// 实际籼稻库存占计划数%
+		if (qyxdSWKC.doubleValue() == 0.0 && qyxdcbljh.doubleValue() == 0.0) {
+			record.set("sjxdzb", "100%");
+			record.set("sjxdzbbool", "1");
+		} else {
+			String qysjxdzb = nf.format(qyxdSWKC.doubleValue() / qyxdcbljh.doubleValue());
+			if((qyxdSWKC.doubleValue() / qyxdcbljh.doubleValue())>=1){
+				record.set("sjxdzb", "100%");
+			}else {
+				record.set("sjxdzb", qysjxdzb);
+			}
+			if (((qyxdSWKC.doubleValue() / qyxdcbljh.doubleValue()) - (1.0 / 3.0)) >= 0) {
+				record.set("sjxdzbbool", "1");
+			} else {
+				record.set("sjxdzbbool", "0");
+			}
+		}
+
+		// 实际小麦库存占计划数%(其他 没有小麦为空)
+		record.set("sjxmzb", "");
+		record.set("sjxmzbbool", "1");
+
+		return record;
+	}
+
+	public static Record shishuqiyeshiwukucun(String qyzzjgdm, String year) {
+		Record record = new Record();
+		// 得到市属企业名称
+		Record qiyemc = Db.findFirst("select qymc from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+		if(qyzzjgdm.equals("134967560")){
+			record.set("qymc", "铁心桥粮库");
+		}else if(qyzzjgdm.equals("660696497")){
+			record.set("qymc", "下关粮库");
+		}
+		record.set("qyzzjgdm", qyzzjgdm);
+		// 得到市属企业下的储备粮计划
+		Record qiyejhs = Db.findFirst(
+				"select sum(cbljh_xm) xm,sum(cbljh_jd) as jd,sum(cbljh_xd) as xd from njpt_chubeiliangjihua where xingzhi='122' and  ccqy=? and niandu=?",qyzzjgdm, year);
+		BigDecimal qyxmcbljh = qiyejhs.get("xm", new BigDecimal(0.0));
+		BigDecimal qyjdcbljh = qiyejhs.get("jd", new BigDecimal(0.0));
+		BigDecimal qyxdcbljh = qiyejhs.get("xd", new BigDecimal(0.0));
+		double qyxjcbljh = (qyxmcbljh.doubleValue() + qyjdcbljh.doubleValue()+qyxdcbljh.doubleValue())/1000;
+		record.set("xmcbljh", qyxmcbljh.doubleValue()/1000);
+		record.set("jdcbljh", qyjdcbljh.doubleValue()/1000);
+		record.set("xdcbljh", qyxdcbljh.doubleValue()/1000);
+		record.set("xjcbljh", qyxjcbljh);
+		// 得到该企业实物库存
+		Record qyxmRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xm from  kc_CurrentStock k where k.vGrainSubTypeCode='111' and k.vGrainPropertyCode in(122) and k.qyzzjgdm=?",qyzzjgdm);
+		Record qyjdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  kc_CurrentStock k where k.vGrainSubTypeCode='1132' and k.vGrainPropertyCode in(122) and k.qyzzjgdm=?",qyzzjgdm);
+		Record qyxdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xd from  kc_CurrentStock k where k.vGrainSubTypeCode='1131' and k.vGrainPropertyCode in(122) and k.qyzzjgdm=?",qyzzjgdm);
+		BigDecimal qyxmSWKC =qyxmRrcord.get("xm",new BigDecimal(0.0));
+		BigDecimal qyjdSWKC = qyjdRrcord.get("jd",new BigDecimal(0.0));
+		BigDecimal qyxdSWKC = qyxdRrcord.get("xd",new BigDecimal(0.0));
+		double qyxjSWKC = (qyxmSWKC.doubleValue() + qyjdSWKC.doubleValue()+qyxdSWKC.doubleValue())/1000;
+		record.set("xmswkc", qyxmSWKC.doubleValue()/1000)
+			.set("jdswkc", qyjdSWKC.doubleValue()/1000)
+			.set("xdswkc", qyxdSWKC.doubleValue()/1000)
+			.set("xjswkc", qyxjSWKC);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+		// 实际库存占计划数%
+		String qysjkczb="100%";
+		if(qyxjSWKC==0.0&&qyxjcbljh==0.0){
+			record.set("sjkczb", qysjkczb);
+			record.set("sjkczbbool", "1");
+		}else {
+			qysjkczb = nf.format(qyxjSWKC / qyxjcbljh);
+			if((qyxjSWKC / qyxjcbljh)>=1){
+				record.set("sjkczb", "100%");
+			}else {
+				record.set("sjkczb", qysjkczb);
+			}
+			if (((qyxjSWKC / qyxjcbljh) - 0.5) >= 0) {
+				record.set("sjkczbbool", "1");
+			} else {
+				record.set("sjkczbbool", "0");
+			}
+		}
+		// 实际粳稻库存占计划数%
+		String qysjjdzb="100%";
+		if((qyjdSWKC.doubleValue())==0.0&&(qyjdcbljh.doubleValue())==0.0){
+			record.set("sjjdzb", qysjjdzb);
+			record.set("sjjdzbbool", "1");
+		}else {
+			qysjjdzb = nf.format(qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue());
+		
+			if((qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue())>=1){
+				record.set("sjjdzb", "100%");
+			}else {
+				record.set("sjjdzb", qysjjdzb);
+			}
+			if (((qyjdSWKC.doubleValue() / qyjdcbljh.doubleValue()) - (1.0 / 4.0)) >= 0) {
+				record.set("sjjdzbbool", "1");
+			} else {
+				record.set("sjjdzbbool", "0");
+			}
+		}
+		// 实际籼稻库存占计划数%（市属没有籼稻为空）
+		
+		String qysjxdzb="100%";
+		if((qyxdSWKC.doubleValue())==0.0&&(qyxdcbljh.doubleValue())==0.0){
+			record.set("sjxdzb", qysjxdzb);
+			record.set("sjxdzbbool", "1");
+		}else {
+			qysjxdzb = nf.format(qyxdSWKC.doubleValue() / qyxdcbljh.doubleValue());
+		
+			if((qyxdSWKC.doubleValue() / qyxdcbljh.doubleValue())>=1){
+				record.set("sjxdzb", "100%");
+			}else {
+				record.set("sjxdzb", qysjxdzb);
+			}
+			if (((qyxdSWKC.doubleValue() / qyxdcbljh.doubleValue()) - (1.0 / 4.0)) >= 0) {
+				record.set("sjxdzbbool", "1");
+			} else {
+				record.set("sjxdzbbool", "0");
+			}
+		}
+		// 实际小麦库存占计划数%
+		String qysjxmzb="100%";
+		if((qyxmSWKC.doubleValue())==0.0&&(qyxmcbljh.doubleValue())==0.0){
+			record.set("sjxmzb", qysjxmzb);
+			record.set("sjxmzbbool", "1");
+		}else {
+			qysjxmzb = nf.format(qyxmSWKC.doubleValue() / qyxmcbljh.doubleValue());
+			if((qyxmSWKC.doubleValue() / qyxmcbljh.doubleValue())>=1){
+				record.set("sjxmzb", "100%");
+			}else {
+			record.set("sjxmzb", qysjxmzb);
+			}
+			if (((qyxmSWKC.doubleValue() / qyxmcbljh.doubleValue()) - (1.0 / 2.0)) >= 0) {
+				record.set("sjxmzbbool", "1");
+			} else {
+				record.set("sjxmzbbool", "0");
+			}
+		}
+		return record;
+	}
+
+	public static List<Record> quanshiShiWuKuCun(String year) {
+		List<Record> quanshilist = new ArrayList<>();
+		Record hejiRecord = new Record();
+		Record xmRecord = new Record();
+		Record jdRecord = new Record();
+		Record xdRecord = new Record();
+		Record record = new Record();
+		record.set("quming", "南京市");
+		record.set("xzqhdm", "nanjingshi");
+		// 得到全市储备粮计划数
+		Record quanshijhs = Db.findFirst(
+				"select sum(cbljh_xm) xm,sum(cbljh_jd) as jd,sum(cbljh_xd) as xd from njpt_chubeiliangjihua where niandu=?",
+				year);
+		double qsxmcbljh = 0.0;
+		double qsjdcbljh = 0.0;
+		double qsxdcbljh = 0.0;
+		if (quanshijhs.get("xm") != null) {
+			qsxmcbljh = ((BigDecimal) quanshijhs.get("xm")).doubleValue();
+		}
+		if (quanshijhs.get("jd") != null) {
+			qsjdcbljh = ((BigDecimal) quanshijhs.get("jd")).doubleValue();
+		}
+		if (quanshijhs.get("xd") != null) {
+			qsxdcbljh = ((BigDecimal) quanshijhs.get("xd")).doubleValue();
+		}
+		double qsxjcbljh = qsxmcbljh + qsjdcbljh + qsxdcbljh;
+		record.set("xmcbljh", qsxmcbljh);
+		record.set("jdcbljh", qsjdcbljh);
+		record.set("xdcbljh", qsxdcbljh);
+		record.set("xjcbljh", qsxjcbljh);
+
+		// 得到全市实物库存
+		Record qsxmRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xm from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode='111' and k.vGrainPropertyCode in(132,133)");
+		Record qsjdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode='430' and k.vGrainPropertyCode in(132,133)");
+		Record qsxdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  and k.vGrainSubTypeCode='431' and k.vGrainPropertyCode in(132,133)");
+		double qsxmSWKC = 0.0;
+		double qsjdSWKC = 0.0;
+		double qsxdSWKC = 0.0;
+		if (qsxdRrcord.get("xm") != null) {
+			qsxmSWKC = ((BigDecimal) qsxmRrcord.get("xm")).doubleValue();
+		}
+		if (qsjdRrcord.get("jd") != null) {
+			qsjdSWKC = ((BigDecimal) qsjdRrcord.get("jd")).doubleValue();
+		}
+		if (qsxdRrcord.get("xd") != null) {
+			qsxdSWKC = ((BigDecimal) qsxdRrcord.get("xd")).doubleValue();
+		}
+		double qsxjSWKC = qsxmSWKC + qsjdSWKC + qsxdSWKC;
+		record.set("xmswkc", qsxmSWKC).set("jdswkc", qsjdSWKC).set("xdswkc", qsxdSWKC).set("xjswkc", qsxjSWKC);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+		// 实际库存占计划数%
+		String qssjkczb = nf.format(qsxjSWKC / qsxjcbljh);
+		record.set("sjkczb", qssjkczb);
+		if (((qsxjSWKC / qsxjcbljh) - 0.5) >= 0) {
+			record.set("sjkczbbool", true);
+		} else {
+			record.set("sjkczbbool", false);
+		}
+
+		// 实际粳稻库存占计划数%
+		String qssjjdzb = nf.format(qsjdSWKC / qsjdcbljh);
+		record.set("sjjdzb", qssjjdzb);
+		if (((qsjdSWKC / qsjdcbljh) - (1.0 / 4.0)) >= 0) {
+			record.set("sjjdzbbool", true);
+		} else {
+			record.set("sjjdzbbool", false);
+		}
+
+		// 实际籼稻库存占计划数%
+		String qssjxdzb = nf.format(qsxdSWKC / qsxdcbljh);
+		record.set("sjxdzb", qssjxdzb);
+		if (((qsxdSWKC / qsxdcbljh) - (1.0 / 3.0)) >= 0) {
+			record.set("sjxdzbbool", true);
+		} else {
+			record.set("sjxdzbbool", false);
+		}
+
+		// 实际小麦库存占计划数%
+		String qssjxmzb = nf.format(qsxmSWKC / qsxmcbljh);
+		record.set("sjxmzb", qssjxmzb);
+		if (((qsxmSWKC / qsxmcbljh) - (1.0 / 2.0)) >= 0) {
+			record.set("sjxmzbbool", true);
+		} else {
+			record.set("sjxmzbbool", false);
+		}
+
+		hejiRecord.set("quming", "南京市").set("qymc", "").set("pz", "合计").set("cbljh", qsxjcbljh).set("sjkc", qsxjSWKC)
+				.set("sjkczb", qssjkczb).set("sjjdzb", qssjjdzb).set("sjxdzb", qssjxdzb).set("sjxmzb", qssjxmzb);
+		xmRecord.set("quming", "南京市").set("qymc", "").set("pz", "小麦").set("cbljh", qsxmcbljh).set("sjkc", qsxmSWKC)
+				.set("sjkczb", qssjkczb).set("sjjdzb", qssjjdzb).set("sjxdzb", qssjxdzb).set("sjxmzb", qssjxmzb);
+		jdRecord.set("quming", "南京市").set("qymc", "").set("pz", "粳稻").set("cbljh", qsjdcbljh).set("sjkc", qsjdSWKC)
+				.set("sjkczb", qssjkczb).set("sjjdzb", qssjjdzb).set("sjxdzb", qssjxdzb).set("sjxmzb", qssjxmzb);
+		xdRecord.set("quming", "南京市").set("qymc", "").set("pz", "籼稻").set("cbljh", qsxdcbljh).set("sjkc", qsxdSWKC)
+				.set("sjkczb", qssjkczb).set("sjjdzb", qssjjdzb).set("sjxdzb", qssjxdzb).set("sjxmzb", qssjxmzb);
+		quanshilist.add(hejiRecord);
+		quanshilist.add(xmRecord);
+		quanshilist.add(jdRecord);
+		quanshilist.add(xdRecord);
+		return quanshilist;
+
+	}
+
+	public static Record quShiWuKuCun(String xzqhdm, String year) {
+		Record record = new Record();
+		// 得到区域名称
+		Record quyu = Db.findFirst("select * from njpt_diqu where xzqhdm=?", xzqhdm);
+		
+		String quming = Db.findFirst("select * from fw_area where id=?",quyu.getStr("areaid")).getStr("name");
+		
+		
+		record.set("quming", quming);
+		record.set("xzqhdm", xzqhdm);
+
+		// 得到区的小麦，粳稻，籼稻 --计划数
+		Record jihuashu = Db.findFirst(
+				"select sum(cbljh_xm) xm,sum(cbljh_jd) as jd,sum(cbljh_xd) as xd from njpt_chubeiliangjihua where xingzhi='122' and  quming=? and niandu=?",
+				xzqhdm, year);
+		BigDecimal xmcbljh = jihuashu.get("xm",new BigDecimal(0.0));
+		BigDecimal jdcbljh = jihuashu.get("jd",new BigDecimal(0.0));
+		BigDecimal xdcbljh = jihuashu.get("xd",new BigDecimal(0.0));
+		double xjcbljh = (xmcbljh.doubleValue() + jdcbljh.doubleValue() + xdcbljh.doubleValue())/1000;
+		record.set("xmcbljh", xmcbljh.doubleValue()/1000)
+			.set("jdcbljh", jdcbljh.doubleValue()/1000)
+			.set("xdcbljh", xdcbljh.doubleValue()/1000)
+			.set("xjcbljh", xjcbljh);
+		// 得到区的小麦，粳稻，籼稻 --实物库存
+		Record xmRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xm from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  where d.xzqhdm=? and k.vGrainSubTypeCode like '%111%' and k.vGrainPropertyCode in(122)",
+				xzqhdm);
+		Record jdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as jd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  where d.xzqhdm=? and k.vGrainSubTypeCode like '%1132%' and k.vGrainPropertyCode in(122)",
+				xzqhdm);
+		Record xdRrcord = Db.findFirst(
+				"select SUM(k.dmStock) as xd from  njpt_diqu d INNER JOIN tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN kc_CurrentStock k on q.qyzzjgdm=k.qyzzjgdm  where d.xzqhdm=? and k.vGrainSubTypeCode like '%1131%' and k.vGrainPropertyCode in(122)",
+				xzqhdm);
+		BigDecimal xmSWKC = xmRrcord.get("xm",new BigDecimal(0.0));
+		BigDecimal jdSWKC = jdRrcord.get("jd",new BigDecimal(0.0));
+		BigDecimal xdSWKC = xdRrcord.get("xd",new BigDecimal(0.0));
+		double xjSWKC = (xmSWKC.doubleValue() + jdSWKC.doubleValue() + xdSWKC.doubleValue())/1000;
+		record.set("xmswkc", xmSWKC.doubleValue()/1000)
+			.set("jdswkc", jdSWKC.doubleValue()/1000)
+			.set("xdswkc", xdSWKC.doubleValue()/1000)
+			.set("xjswkc", xjSWKC);
+		// 转成百分比
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);// 设置保留小数位
+		nf.setRoundingMode(RoundingMode.HALF_UP); // 设置舍入模式
+		// String zlbl = nf.format(budiyu);
+
+		// 实际库存占计划数%
+		String sjkczb="100%";
+		if(xjSWKC==0.0&&xjcbljh==0.0){
+			record.set("sjkczb", sjkczb);
+			record.set("sjkczbbool", "1");
+		}else {
+			
+			sjkczb = nf.format(xjSWKC / xjcbljh);
+			if((xjSWKC / xjcbljh)>=1){
+				record.set("sjkczb", "100%");
+			}else {
+				record.set("sjkczb", sjkczb);
+			}
+			if (((xjSWKC / xjcbljh) - 0.5) >= 0) {
+				record.set("sjkczbbool", "1");
+			} else {
+				record.set("sjkczbbool", "0");
+			}
+		}
+		// 实际粳稻库存占计划数%
+		String sjjdzb="100%";
+		if((jdSWKC.doubleValue())==0.0&&(jdcbljh.doubleValue())==0.0){
+			record.set("sjjdzb", sjjdzb);
+			record.set("sjjdzbbool", "1");
+		}else {
+			sjjdzb = nf.format(jdSWKC.doubleValue() / jdcbljh.doubleValue());
+			if((jdSWKC.doubleValue() / jdcbljh.doubleValue())>=1){
+				record.set("sjjdzb", "100%");
+			}else {
+				record.set("sjjdzb", sjjdzb);
+			}
+			if (((jdSWKC.doubleValue() / jdcbljh.doubleValue()) - (1.0 / 4.0)) >= 0) {
+				record.set("sjjdzbbool", "1");
+			} else {
+				record.set("sjjdzbbool", "0");
+			}
+		}
+		// 实际籼稻库存占计划数%
+		String sjxdzb="100%";
+		if ((xdSWKC.doubleValue())==0.0&&(xdcbljh.doubleValue())==0.0) {
+			record.set("sjxdzb", sjxdzb);
+			record.set("sjxdzbbool", "1");
+		}else {
+			sjxdzb = nf.format(xdSWKC.doubleValue() / xdcbljh.doubleValue());
+			if((xdSWKC.doubleValue() / xdcbljh.doubleValue())>=1){
+				record.set("sjxdzb", "100%");
+			}else {
+				record.set("sjxdzb", sjxdzb);
+			}
+			if (((xdSWKC.doubleValue() / xdcbljh.doubleValue()) - (1.0 / 3.0)) >= 0) {
+				record.set("sjxdzbbool", "1");
+			} else {
+				record.set("sjxdzbbool", "0");
+			}
+		}
+		// 实际小麦库存占计划数%
+		String sjxmzb="100%";
+		if((xmSWKC.doubleValue())==0.0&&(xmcbljh.doubleValue())==0.0){
+			record.set("sjxmzb", sjxmzb);
+			record.set("sjxmzbbool", "1");
+		}else {
+			
+			sjxmzb = nf.format(xmSWKC.doubleValue() / xmcbljh.doubleValue());
+		
+			if((xmSWKC.doubleValue() / xmcbljh.doubleValue())>=1){
+				record.set("sjxmzb", "100%");
+			}else {
+				record.set("sjxmzb", sjxmzb);
+			}
+			if (((xmSWKC.doubleValue() / xmcbljh.doubleValue()) - (1.0 / 2.0)) >= 0) {
+				record.set("sjxmzbbool", "1");
+			} else {
+				record.set("sjxmzbbool", "0");
+			}
+		}
+		return record;
+
+	}
+	/**
+	 * 储备粮计划（点击加号时显示详情）
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public static Page<Record> chakanxiangxich(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		p.put("and niandu = ?", "niandu");
+		p.put("and ccqy = ?", "ccqy");
+		p.put("and cckd = ?", "cckd");
+		p.put("and xingzhi = ?", "xingzhi");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select *",
+				"from njpt_chubeiliangjihua where 1=1 " + s.getSql()+" order by ccch", s.getParam().toArray(new Object[0]));
+		for (Record r : page.getList()) {
+			Object qyzzjgdm = r.get("ccqy");
+			Object kdbm = r.get("cckd");
+			Object cfbm = r.get("ccch");
+			Object lsxzbm = r.get("xingzhi");
+			Record qymc = Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+			if (qymc != null) {
+				r.set("ccqy", qymc.getStr("qymc"));
+				// r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+				r.set("quming", qymc.getStr("xian"));
+			}
+			Record kdmc = Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?", kdbm, qyzzjgdm);
+			if (kdmc != null) {
+				r.set("cckd", kdmc.getStr("kdmc"));
+			}
+			Record cfmc = Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ", qyzzjgdm,
+					kdbm, cfbm);
+			if (cfmc != null) {
+				r.set("ccch", cfmc.getStr("cfmc"));
+			}
+			Record xz = Db.findFirst("select vCode,vGrainProperties from tz_GrainProperties where vCode=?", lsxzbm);
+			if (xz != null) {
+				r.set("xingzhi", xz.getStr("vGrainProperties"));
+			}
+		}
+
+		return page;
+
+		/*
+		 * String niandu=(String) map.get("niandu"); return getDataList(niandu);
+		 */
+	}
+	
+	
+	/**
+	 *  储备粮汇总 （仓号为几个）
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public static Page<Record> chubeilianghuizongb(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		p.put("and cbl.niandu = ?", "niandu");
+		p.put("and d.xzqhdm = ?", "quming");
+		p.put("and q.qyzzjgdm = ?", "ccqy");
+		p.put("and k.kdbm = ?", "cckd");
+		p.put("and cbl.xingzhi = ?", "xingzhi");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select d.xzqhdm,q.qyzzjgdm,k.kdbm, COUNT(c.cfbm) as ccchsl,SUM(ISNULL(cbljh_xm,0)) as cbljh_xm,sum(ISNULL(cbljh_jd,0)) as cbljh_jd,sum(ISNULL(cbljh_xd,0)) as cbljh_xd,sum(ISNULL(cbljh_xj,0)) as cbljh_xj ",
+				" from njpt_diqu d LEFT JOIN tz_qiye q on d.xzqhdm=q.xzqhdm LEFT JOIN tz_kudian k ON q.qyzzjgdm=k.qyzzjgdm LEFT JOIN tz_cangfang c on k.qyzzjgdm=c.qyzzjgdm and k.kdbm=c.kdbm LEFT JOIN  njpt_chubeiliangjihua cbl on c.qyzzjgdm=cbl.ccqy and c.kdbm=cbl.cckd and c.cfbm=cbl.ccch where 1=1 " + s.getSql() + " group by d.orderno,d.xzqhdm,q.qyzzjgdm,k.kdbm order by d.orderno ",
+				s.getParam().toArray(new Object[0]));
+		for (Record r : page.getList()) {
+			Object qyzzjgdm = r.get("qyzzjgdm");
+			Object kdbm = r.get("kdbm");
+			// Object lsxzbm=r.get("lsxz");
+			Record qymc = Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+			if (qymc != null) {
+				r.set("ccqy", qymc.getStr("qymc"));
+				r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+				r.set("quming", qymc.getStr("xian"));
+			}
+			Record kdmc = Db.findFirst("select kdmc,kdbm from tz_kudian where kdbm=? and qyzzjgdm=?", kdbm, qyzzjgdm);
+			if (kdmc != null) {
+				r.set("cckd", kdmc.getStr("kdmc"));
+				r.set("kdbm", kdmc.getStr("kdbm"));
+			}else{
+				r.set("cckd", "");
+				r.set("kdbm", "");
+			}
+			r.set("xingzhi", "");
+		}
+/*
+ * Param p = new Param();
+		p.put("and niandu = ?", "niandu");
+		p.put("and quming = ?", "quming");
+		p.put("and ccqy = ?", "ccqy");
+		p.put("and cckd = ?", "cckd");
+		p.put("and xingzhi = ?", "xingzhi");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select ccqy,cckd, COUNT(ccch) as ccchsl,SUM(cbljh_xm) as cbljh_xm,sum(cbljh_jd) as cbljh_jd,sum(cbljh_xd) as cbljh_xd,sum(cbljh_xj) as cbljh_xj ",
+				" from njpt_chubeiliangjihua where 1=1 " + s.getSql() + " group by ccqy,cckd",
+				s.getParam().toArray(new Object[0]));
+		for (Record r : page.getList()) {
+			Object qyzzjgdm = r.get("ccqy");
+			Object kdbm = r.get("cckd");
+			// Object lsxzbm=r.get("lsxz");
+			Record qymc = Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+			if (qymc != null) {
+				r.set("ccqy", qymc.getStr("qymc"));
+				r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+				r.set("quming", qymc.getStr("xian"));
+			}
+			Record kdmc = Db.findFirst("select kdmc,kdbm from tz_kudian where kdbm=? and qyzzjgdm=?", kdbm, qyzzjgdm);
+			if (kdmc != null) {
+				r.set("cckd", kdmc.getStr("kdmc"));
+				r.set("kdbm", kdmc.getStr("kdbm"));
+			}
+			r.set("xingzhi", "");
+		}
+
+ */
+		return page;
+
+		/*
+		 * String niandu=(String) map.get("niandu"); return getDataList(niandu);
+		 */
+	}
+
+	public static Page<Record> shengchenghuizongb(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		p.put("and c.niandu = ?", "niandu");
+		p.put("and c.quming = ?", "quming");
+		p.put("and c.ccqy = ?", "ccqy");
+		p.put("and c.cckd = ?", "cckd");
+		p.put("and fw.name = ?", "xian");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select fw.name,c.*",
+				" from njpt_chubeiliangjihua c LEFT JOIN njpt_diqu d on c.quming=d.xzqhdm left join fw_area fw on d.areaid=fw.id where 1=1 " + s.getSql()+" order by d.orderno,c.ccqy,c.cckd,c.ccch ", s.getParam().toArray(new Object[0]));
+		for (Record r : page.getList()) {
+			Object qyzzjgdm = r.get("ccqy");
+			Object kdbm = r.get("cckd");
+			Object cfbm = r.get("ccch");
+			// Object lsxzbm=r.get("lsxz");
+			Record qymc = Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+			if (qymc != null) {
+				r.set("ccqy", qymc.getStr("qymc"));
+				r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+			}
+			Record kdmc = Db.findFirst("select kdmc,kdbm from tz_kudian where kdbm=? and qyzzjgdm=?", kdbm, qyzzjgdm);
+			if (kdmc != null) {
+				r.set("cckd", kdmc.getStr("kdmc"));
+				r.set("kdbm", kdmc.getStr("kdbm"));
+			}
+			Record cfmc = Db.findFirst("select cfmc,cfbm from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",
+					qyzzjgdm, kdbm, cfbm);
+			if (cfmc != null) {
+				r.set("ccch", cfmc.getStr("cfmc"));
+				r.set("cfbm", cfmc.getStr("cfbm"));
+			}
+		}
+
+		return page;
+
+		/*
+		 * String niandu=(String) map.get("niandu"); return getDataList(niandu);
+		 */
+	}
+
+	public static Page<Record> querycbljhById(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		p.put("and id = ?", "id");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select * ",
+				"from njpt_chubeiliangjihua where 1=1 " + s.getSql(), s.getParam().toArray(new Object[0]));
+		for (Record r : page.getList()) {
+			Object qyzzjgdm = r.get("ccqy");
+			Object kdbm = r.get("cckd");
+			Object cfbm = r.get("ccch");
+			Record qymc = Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+			if (qymc != null) {
+				r.set("ccqy", qymc.getStr("qymc"));
+				r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+				r.set("quyumc", qymc.getStr("xian"));
+			}
+			Record kdmc = Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?", kdbm, qyzzjgdm);
+			if (kdmc != null) {
+				r.set("kudianmc", kdmc.getStr("kdmc"));
+			}
+			Record cfmc = Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ", qyzzjgdm,
+					kdbm, cfbm);
+			if (cfmc != null) {
+				r.set("canghaomc", cfmc.getStr("cfmc"));
+			}
+
+		}
+
+		return page;
+	}
+
+	public static String[] areaCode = new String[] { "320115", "320111", "320116", "320124", "320125", "210008" };
+	public static String[] areaCode1 = new String[] { "江宁区", "浦口区", "六合区", "溧水区", "高淳区", "市区" };
+
+	public static String[] xingzhi = new String[] { "中央储备", "省级储备", "市级储备", "区级储备", "临时储备" };
+	public static String[] xingzhi1 = new String[] { "zycb_", "shenjcb_", "shijicb_", "qujcb_", "lscb_" };
+	public static String[] pinzhong = new String[] { "小麦", "籼稻", "粳稻" };
+	public static String[] pinzhong1 = new String[] { "xm", "xd", "jd" };
+
+	private static List<Record> getDataList(String niandu) {
+
+		List<Record> dataList = new ArrayList<Record>();
+
+		// 先遍历区名
+		for (int i = 0; i <= DIQU_NUM; i++) {
+			double total_total = 0;
+			Record sub_list = new Record();
+			// 再遍历性质
+			for (int j = 0; j <= XINGZHI_NUM; j++) {
+				// 最后遍历品种
+				for (int k = 0; k <= PINZHONG_NUM; k++) {
+					double total_num = getBlockNumner(niandu, areaCode[i], xingzhi[j], pinzhong[k]);
+					sub_list.set(xingzhi1[j] + pinzhong1[k], total_num);
+					total_total += total_num;
+				}
+			}
+			sub_list.set("quming", areaCode1[i]);
+			sub_list.set("niandu", niandu);
+			sub_list.set("zjh", total_total);
+			dataList.add(sub_list);
+		}
+		return dataList;
+	}
+
+	private static double getBlockNumner(String niandu, String quming, String xingzhi, String pinzhong) {
+		Record total_jhsl = Db.findFirst(
+				"select sum(jhsl) as total_jhsl from njpt_chubeiliangjihua where niandu = ? and quming = ? and xingzhi=? and pinzhong=?",
+				niandu, quming, xingzhi, pinzhong);
+		if (total_jhsl != null) {
+			return total_jhsl.get("total_jhsl");
+		} else {
+
+			return 0;
+		}
+	}
+
+	public static void HandleXingZhi(Record record, Record qu) {
+		switch (record.getStr("xingzhi")) {
+		case "中央储备":
+			break;
+		case "省级储备":
+
+			break;
+		case "市级储备":
+
+			break;
+		case "区级储备":
+
+			break;
+		case "临时储备":
+
+			break;
+
+		}
+
+	}
+
+	public static void HandleDiQu(Record record) {
+		switch (record.getStr("pinzhong")) {
+		case "小麦":
+
+			break;
+		case "籼稻":
+
+			break;
+		case "粳稻":
+
+			break;
+		}
+
+	}
+
+	public static Page<Record> selectCBLJH(HashMap<String, Object> map) throws Exception {
+		/*
+		 * double zjh; double zjh_xm; double zjh_xd; double zjh_jd;
+		 */
+		Param p = new Param();
+		p.put("and ccqy like ?", "ccqy", "%%%s%%");
+		p.put("and cckd like ?", "cckd", "%%%s%%");
+		p.put("and ccch like ?", "ccch", "%%%s%%");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select * ",
+				"from njpt_chubeiliangjihua where pdyh=1 " + s.getSql() + " order by niandu desc",
+				s.getParam().toArray(new Object[0]));
+		// List<Record> records = page.getList();
+		// for (int i = 0; i < records.size(); i++) {
+		// //records.get(i).set("ccqy", Db.findFirst("select qymc
+		// from tz_qiye where
+		// qyzzjgdm=?",records.get(i).get("ccqy")).get("qymc"));
+		// //records.get(i).set("cckd", Db.findFirst("select kdmc
+		// from tz_kudian where qyzzjgdm=? and
+		// kdbm=?",records.get(i).get("ccqy"),records.get(i).get("cckd")).get("kdmc"));
+		// //records.get(i).set("ccch", Db.findFirst("select cfmc
+		// from tz_cangfang where qyzzjgdm=? and kdbm=? and
+		// cfbm=?",records.get(i).get("ccqy"),records.get(i).get("cckd"),records.get(i).get("ccch")).get("cfmc"));
+		// zjh_xm=(double)records.get(i).get("zycb_xm")+(double)records.get(i).get("shenjcb_xm")+(double)records.get(i).get("shijcb_xm")+(double)records.get(i).get("qjcb_xm")+(double)records.get(i).get("lscb_xm");
+		// zjh_xd=(double)records.get(i).get("zycb_xd")+(double)records.get(i).get("shenjcb_xd")+(double)records.get(i).get("shijcb_xd")+(double)records.get(i).get("qjcb_xd")+(double)records.get(i).get("lscb_xd");
+		// zjh_jd=(double)records.get(i).get("zycb_jd")+(double)records.get(i).get("shenjcb_jd")+(double)records.get(i).get("shijcb_jd")+(double)records.get(i).get("qjcb_jd")+(double)records.get(i).get("lscb_jd");
+		// zjh=zjh_xm+zjh_xd+zjh_jd;
+		// records.get(i).set("zjh_xm", zjh_xm);
+		// records.get(i).set("zjh_xd", zjh_xd);
+		// records.get(i).set("zjh_jd", zjh_jd);
+		// records.get(i).set("zjh", zjh);
+		// }
+
+		return page;
+
+	}
+
+	public static Page<Record> chakanCBLJH(HashMap<String, Object> map) throws Exception {
+		double zjh;
+		double zjh_xm;
+		double zjh_xd;
+		double zjh_jd;
+		Param p = new Param();
+		p.put("and ccqy=?", "ccqy");
+		/* p.put("and cckd=?", "cckd"); */
+		p.put("and quming=?", "quming");
+		p.put("and niandu=?", "nian");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select *",
+				"from njpt_chubeiliangjihua where pdyh=2" + s.getSql(), s.getParam().toArray(new Object[0]));
+		List<Record> records = page.getList();
+		for (int i = 0; i < records.size(); i++) {
+			// records.get(i).set("ccqy", Db.findFirst("select qymc
+			// from tz_qiye where
+			// qyzzjgdm=?",records.get(i).get("ccqy")).get("qymc"));
+			// records.get(i).set("cckd", Db.findFirst("select kdmc
+			// from tz_kudian where qyzzjgdm=? and
+			// kdbm=?",records.get(i).get("ccqy"),records.get(i).get("cckd")).get("kdmc"));
+			// records.get(i).set("ccch", Db.findFirst("select cfmc
+			// from tz_cangfang where qyzzjgdm=? and kdbm=? and
+			// cfbm=?",records.get(i).get("ccqy"),records.get(i).get("cckd"),records.get(i).get("ccch")).get("cfmc"));
+			zjh_xm = (double) records.get(i).get("zycb_xm") + (double) records.get(i).get("shenjcb_xm")
+					+ (double) records.get(i).get("shijcb_xm") + (double) records.get(i).get("qjcb_xm")
+					+ (double) records.get(i).get("lscb_xm");
+			zjh_xd = (double) records.get(i).get("zycb_xd") + (double) records.get(i).get("shenjcb_xd")
+					+ (double) records.get(i).get("shijcb_xd") + (double) records.get(i).get("qjcb_xd")
+					+ (double) records.get(i).get("lscb_xd");
+			zjh_jd = (double) records.get(i).get("zycb_jd") + (double) records.get(i).get("shenjcb_jd")
+					+ (double) records.get(i).get("shijcb_jd") + (double) records.get(i).get("qjcb_jd")
+					+ (double) records.get(i).get("lscb_jd");
+			zjh = zjh_xm + zjh_xd + zjh_jd;
+			records.get(i).set("zjh_xm", zjh_xm);
+			records.get(i).set("zjh_xd", zjh_xd);
+			records.get(i).set("zjh_jd", zjh_jd);
+			records.get(i).set("zjh", zjh);
+		}
+
+		return page;
+
+	}
+
+	public static Page<Record> selectCBLJHHZ(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		p.put("and uuid=?", "uuid");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select *",
+				"from njpt_cbljh_linshib where 1=1 " + s.getSql(), s.getParam().toArray(new Object[0]));
+		return page;
+
+	}
+
+	public static Page<Record> liebiaoSWKC(HashMap<String, Object> map) throws Exception {
+		Param p = new Param();
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))), "select *",
+				"from kc_CurrentStock where 1=1 " + s.getSql(), s.getParam().toArray(new Object[0]));
+		for (Record r : page.getList()) {
+			Object qyzzjgdm = r.get("qyzzjgdm");
+			Object kdbm = r.get("kdmc");
+			Object cfbm = r.get("vWareHouseCode");
+			Object aojinabm = r.get("house");
+			Object huoweibm = r.get("allocation");
+			Object pinzhong = r.get("vGrainSubTypeCode");// 品种
+			Object xingzhi = r.get("vGrainPropertyCode");// 粮食性质
+			// 转换成企业名称和 地区名称
+			Record qymc = Db.findFirst("select qymc,xian,xzqhdm from tz_qiye where qyzzjgdm=?", qyzzjgdm);
+			if (qymc != null) {
+				r.set("qyzzjgdm", qymc.getStr("qymc"));
+				r.set("szqy", qymc.getStr("xian"));
+			}
+			// 转换成库点名称
+			Record kdmc = Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?", kdbm, qyzzjgdm);
+			if (kdmc != null) {
+				r.set("kdbm", kdmc.getStr("kdmc"));
+			}
+			// 转换成仓房名称
+			Record cfmc = Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ", qyzzjgdm,
+					kdbm, cfbm);
+			if (cfmc != null) {
+				r.set("vWareHouseCode", cfmc.getStr("cfmc"));
+			}
+			// 转换成廒间名称
+			Record aojianmc = Db.findFirst(
+					"select ajmc from tz_aojian where qyzzjgdm=? and kdbm=? and cfbm=? and ajbh=? ", qyzzjgdm, kdbm,
+					cfbm, aojinabm);
+			if (aojianmc != null) {
+				r.set("house", aojianmc.getStr("ajmc"));
+			}
+			// 转换成货位名称
+			Record huoweiMC = Db.findFirst(
+					"select hwmc from tz_huowei where qyzzjgdm=? and kdbm=? and cfbm=? and ajbh=? and hwbh=? ",
+					qyzzjgdm, kdbm, cfbm, aojinabm, huoweibm);
+			if (aojianmc != null) {
+				r.set("allocation", huoweiMC.getStr("hwmc"));
+			}
+			// 转换成品种名称
+			Record pinzhongMC = Db.findFirst("select vName from tz_GrainType where vCode=?", pinzhong);
+			if (pinzhongMC != null) {
+				r.set("vGrainSubTypeCode", pinzhongMC.getStr("vName"));
+			}
+			// 转换成性质名称
+			Record xingzhiMC = Db.findFirst("select vGrainProperties from tz_GrainProperties where vCode=?", xingzhi);
+			if (xingzhiMC != null) {
+				r.set("vGrainPropertyCode", xingzhiMC.getStr("vGrainProperties"));
+			}
+		}
+		return page;
+
+	}
+
+	public static boolean saveCBLJH(HashMap<String, Object> map) throws Exception {
+		Record record = new Record();
+		record.set("id", SqlUtil.uuid());
+		record.setColumns(map);
+		record.set("pdyh", 1);
+		boolean bool = Db.save("njpt_chubeiliangjihua", "id", record);
+		return bool;
+
+	}
+
+	public static boolean saveQYCBLJH(HashMap<String, Object> map) throws Exception {
+		Record record = new Record();
+		record.set("id", SqlUtil.uuid());
+		record.setColumns(map);
+		record.set("pdyh", 2);
+		boolean bool = Db.save("njpt_chubeiliangjihua", "id", record);
+		return bool;
+
+	}
+}

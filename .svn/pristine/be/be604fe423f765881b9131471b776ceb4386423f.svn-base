@@ -1,0 +1,64 @@
+<%
+	include("/WEB-INF/web/ui/cssjs.html"){}
+		var obj=object;
+		var title = "驳回理由"; 
+
+%>
+<div class="dashboard-wrapper-lg" style="padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget">
+					<div class="widget-header">
+						<div class="title">驳回理由</div>
+					</div>
+					<div class="widget-body">
+					<form id="contentform" role="form"  method="post" style="overflow: hidden;">
+					<input type="hidden" id="id" name="id" value="${obj.id}">
+					<input type="hidden" id="status" name="status" value="${obj.status}">
+					<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<label for="shenpiren">审批人:</label> 
+									<input class="form-control" placeholder="审批人" value="${session.userinfo.user.realname}" readonly="readonly">
+								</div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<label for="liyou">驳回理由:</label> 
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<textarea rows="3" cols="" id="liyou" name="liyou" class="form-control">${obj.liyou}</textarea>
+								</div>
+							</div>
+						</div>
+					 </form>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+<script>
+ function bohui(){
+	 var form = $(".widget-body form");
+	 $.ajax({
+			url:'${ctxPath}/renyuan/saveBohuixz',
+			type:'post',
+			dataType:'json',
+			data : form.serialize(),
+			success:function(data){
+				
+			}
+		});
+	 
+ }
+
+
+</script>
+					

@@ -1,0 +1,648 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia{
+	height:800px;
+	overflow-y:auto;
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:35px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:right;
+	height:35px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+</style>
+
+<script type="text/javascript">
+var mydate = new Date();
+var vyear = mydate.getFullYear();
+var vmonth = mydate.getMonth();
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+	//加载年度下拉框
+	for(var i = 0; i < 5 ; i++){
+		var op = '<option value="'+(vyear-i)+'">'+(vyear-i)+'</option>';
+		$("#niandu").append(op);
+	}
+	//初始化采价点下拉框
+	$("#niandu").val("");
+    $("#niandu-div").find(".select2-selection__rendered").text("");
+	$("#niandu-div").find(".select2-selection__rendered").attr("title","");
+	//初始化采价点下拉框
+	$("#yuedu").val("");
+    $("#yuedu-div").find(".select2-selection__rendered").text("");
+	$("#yuedu-div").find(".select2-selection__rendered").attr("title","");
+	
+});
+
+$(function(){
+	var qmonth;
+	var qyear;
+	if(vmonth > 0){
+		qmonth = vmonth;
+		qyear = vyear;
+	}else{
+		qmonth = 12;
+		qyear = vyear - 1;
+	}
+	searchym(qyear,qmonth);	
+});
+
+//生成期货价格表
+function doSearch(){
+	var year = $("#niandu option:selected").val();
+	var month = $("#yuedu option:selected").val();
+	searchym(year,month);
+}
+
+function searchym(year,month){
+	$.ajax({
+		url:'${ctxPath}/jiage/findqihuo',
+		type:'post',
+		data:{"year":year,"month":month},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list.list,function(i, n){
+				if(n.pinzhong == "豆粕"){
+					$("#dp_price").text(n.price);
+					if((n.price - n.hprice) > 0){
+						$("#dp_price").html(n.price + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+					}else if((n.price - n.hprice) < 0){
+						$("#dp_price").html(n.price + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+					}
+					$("#tb_dp_zze").text(n.price - n.tprice);
+					$("#tb_dp_zf").text(((n.price / n.tprice - 1) * 100).toFixed(2) + "%");
+					$("#hb_dp_zze").text(n.price - n.hprice);
+					$("#hb_dp_zf").text(((n.price / n.hprice - 1) * 100).toFixed(2) + "%");
+				}
+				if(n.pinzhong == "大豆"){
+					$("#dd_price").text(n.price);
+					if((n.price - n.hprice) > 0){
+						$("#dd_price").html(n.price + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+					}else if((n.price - n.hprice) < 0){
+						$("#dd_price").html(n.price + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+					}
+					$("#tb_dd_zze").text(n.price - n.tprice);
+					$("#tb_dd_zf").text(((n.price / n.tprice - 1) * 100).toFixed(2) + "%");
+					$("#hb_dd_zze").text(n.price - n.hprice);
+					$("#hb_dd_zf").text(((n.price / n.hprice - 1) * 100).toFixed(2) + "%");
+				}
+				if(n.pinzhong == "豆油"){
+					$("#dy_price").text(n.price);
+					if((n.price - n.hprice) > 0){
+						$("#dy_price").html(n.price + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+					}else if((n.price - n.hprice) < 0){
+						$("#dy_price").html(n.price + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+					}
+					$("#tb_dy_zze").text(n.price - n.tprice);
+					$("#tb_dy_zf").text(((n.price / n.tprice - 1) * 100).toFixed(2) + "%");
+					$("#hb_dy_zze").text(n.price - n.hprice);
+					$("#hb_dy_zf").text(((n.price / n.hprice - 1) * 100).toFixed(2) + "%");
+				}
+				if(n.pinzhong == "玉米"){
+					$("#ym_price").text(n.price);
+					if((n.price - n.hprice) > 0){
+						$("#ym_price").html(n.price + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+					}else if((n.price - n.hprice) < 0){
+						$("#ym_price").html(n.price + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+					}
+					$("#tb_ym_zze").text(n.price - n.tprice);
+					$("#tb_ym_zf").text(((n.price / n.tprice - 1) * 100).toFixed(2) + "%");
+					$("#hb_ym_zze").text(n.price - n.hprice);
+					$("#hb_ym_zf").text(((n.price / n.hprice - 1) * 100).toFixed(2) + "%");
+				}
+				if(n.pinzhong == "菜油"){
+					$("#cy_price").text(n.price);
+					if((n.price - n.hprice) > 0){
+						$("#cy_price").html(n.price + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+					}else if((n.price - n.hprice) < 0){
+						$("#cy_price").html(n.price + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+					}
+					$("#tb_cy_zze").text(n.price - n.tprice);
+					$("#tb_cy_zf").text(((n.price / n.tprice - 1) * 100).toFixed(2) + "%");
+					$("#hb_cy_zze").text(n.price - n.hprice);
+					$("#hb_cy_zf").text(((n.price / n.hprice - 1) * 100).toFixed(2) + "%");
+				}
+				if(n.pinzhong == "强麦"){
+					$("#qm_price").text(n.price);
+					if((n.price - n.hprice) > 0){
+						$("#qm_price").html(n.price + '<img src="${ctxPath}/img/jiage/redarray.png" width="10"  height="20">');
+					}else if((n.price - n.hprice) < 0){
+						$("#qm_price").html(n.price + '<img src="${ctxPath}/img/jiage/greenarray.png" width="10"  height="20">');
+					}
+					$("#tb_qm_zze").text(n.price - n.tprice);
+					$("#tb_qm_zf").text(((n.price / n.tprice - 1) * 100).toFixed(2) + "%");
+					$("#hb_qm_zze").text(n.price - n.hprice);
+					$("#hb_qm_zf").text(((n.price / n.hprice - 1) * 100).toFixed(2) + "%");
+				}
+			});
+		},
+		error:function(){
+			alert("生成期货价格表失败");
+		}
+	});
+	
+	
+	$.ajax({
+		url:'${ctxPath}/jiage/queryqihuo.do',
+		type:'post',
+		data:{"year":year,"month":month},
+		dataType:'json',
+		success:function(data){
+			var pz = ["豆粕","大豆","豆油","玉米","菜油","强麦"];
+			//年月
+			var jdny = [];
+			var bnny = [];
+			var ndny = [];
+			//季度价格
+			var jddpprice = [];
+			var jdddprice = [];
+			var jddyprice = [];
+			var jdymprice = [];
+			var jdcyprice = [];
+			var jdqmprice = [];
+			//半年度价格
+			var bndpprice = [];
+			var bnddprice = [];
+			var bndyprice = [];
+			var bnymprice = [];
+			var bncyprice = [];
+			var bnqmprice = [];
+			//年度
+			var nddpprice = [];
+			var ndddprice = [];
+			var nddyprice = [];
+			var ndymprice = [];
+			var ndcyprice = [];
+			var ndqmprice = [];
+			//季度
+			var lmonth = month;
+			jdny.push(year+"年"+month+"月");
+			bnny.push(year+"年"+month+"月");
+			ndny.push(year+"年"+month+"月");
+			for(var i = 0; i < 72; i ++){
+				//把时间放入数组
+				if(data.list[i].month != lmonth ){
+					jdny.push(data.list[i].year+"年"+data.list[i].month+"月");
+					bnny.push(data.list[i].year+"年"+data.list[i].month+"月");
+					ndny.push(data.list[i].year+"年"+data.list[i].month+"月");
+					lmonth = data.list[i].month;
+				}
+				if(data.list[i].pinzhong == "豆粕"){
+					jddpprice.push(data.list[i].price);
+					bndpprice.push(data.list[i].price);
+					nddpprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "大豆"){
+					jdddprice.push(data.list[i].price);
+					bnddprice.push(data.list[i].price);
+					ndddprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "豆油"){
+					jddyprice.push(data.list[i].price);
+					bndyprice.push(data.list[i].price);
+					nddyprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "玉米"){
+					jdymprice.push(data.list[i].price);
+					bnymprice.push(data.list[i].price);
+					ndymprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "菜油"){
+					jdcyprice.push(data.list[i].price);
+					bncyprice.push(data.list[i].price);
+					ndcyprice.push(data.list[i].price);
+				}
+				if(data.list[i].pinzhong == "强麦"){
+					jdqmprice.push(data.list[i].price);
+					bnqmprice.push(data.list[i].price);
+					ndqmprice.push(data.list[i].price);
+				}
+				
+			}
+			//截取季度和半年度的时间及价格
+			jdny = jdny.slice(0,3);
+			bnny = bnny.slice(0,6);
+			//豆粕
+			jddpprice = jddpprice.slice(0,3);
+			bndpprice = bndpprice.slice(0,6);
+			//大豆
+			jdddprice = jdddprice.slice(0,3);
+			bnddprice = bnddprice.slice(0,6);
+			//豆油
+			jddyprice = jddyprice.slice(0,3);
+			bndyprice = bndyprice.slice(0,6);
+			//玉米
+			jdymprice = jdymprice.slice(0,3);
+			bnymprice = bnymprice.slice(0,6);
+			//菜油
+			jdcyprice = jdcyprice.slice(0,3);
+			bncyprice = bncyprice.slice(0,6);
+			//强麦
+			jdqmprice = jdqmprice.slice(0,3);
+			bnqmprice = bnqmprice.slice(0,6);
+			jdny.reverse();
+			bnny.reverse();
+			ndny.reverse();
+			//季度价格
+			jddpprice.reverse();
+			jdddprice.reverse();
+			jddyprice.reverse();
+			jdymprice.reverse();
+			jdcyprice.reverse();
+			jdqmprice.reverse();
+			//半年度价格
+			bndpprice.reverse();
+			bnddprice.reverse();
+			bndyprice.reverse();
+			bnymprice.reverse();
+			bncyprice.reverse();
+			bnqmprice.reverse();
+			//年度
+			nddpprice.reverse();
+			ndddprice.reverse();
+			nddyprice.reverse();
+			ndymprice.reverse();
+			ndcyprice.reverse();
+			ndqmprice.reverse();
+			
+			
+			var myChart = echarts.init(document.getElementById('paneljidu')); 	//季度趋势
+			var myChart1 = echarts.init(document.getElementById('panelbannian'));	//半年趋势
+			var myChart2 = echarts.init(document.getElementById('panelniandu')); 	//年度趋势
+			//季度折线图
+			option = {
+			    title: {
+			        text: '季度国内期货价格趋势图',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:pz
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: jdny
+			    },
+			    yAxis: {
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:pz[0],
+			            type:'line',
+			            data:jddpprice,
+			        },
+			        {
+			            name:pz[1],
+			            type:'line',
+			            data:jdddprice,
+			        },
+			        {
+			            name:pz[2],
+			            type:'line',
+			            data:jddyprice,
+			        }
+			        ,
+			        {
+			            name:pz[3],
+			            type:'line',
+			            data:jdymprice,
+			        },
+			        {
+			            name:pz[4],
+			            type:'line',
+			            data:jdcyprice,
+			        },
+			        {
+			            name:pz[5],
+			            type:'line',
+			            data:jdqmprice,
+			        }
+			        
+			    ]
+			};
+			myChart.setOption(option);
+			
+			//半年度折线图
+			option1 = {
+			    title: {
+			        text: '半年国内期货价格趋势图',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:pz
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: bnny
+			    },
+			    yAxis: {
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:pz[0],
+			            type:'line',
+			            data:bndpprice,
+			        },
+			        {
+			            name:pz[1],
+			            type:'line',
+			            data:bnddprice,
+			        },
+			        {
+			            name:pz[2],
+			            type:'line',
+			            data:bndyprice,
+			        }
+			        ,
+			        {
+			            name:pz[3],
+			            type:'line',
+			            data:bnymprice,
+			        },
+			        {
+			            name:pz[4],
+			            type:'line',
+			            data:bncyprice,
+			        },
+			        {
+			            name:pz[5],
+			            type:'line',
+			            data:bnqmprice,
+			        }
+			        
+			    ]
+			};
+			myChart1.setOption(option1);
+			
+			//半年度折线图
+			option2 = {
+			    title: {
+			        text: '一年国内期货价格趋势图',
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:pz
+			    },
+			    xAxis:  {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: ndny
+			    },
+			    yAxis: {
+			        type: 'value',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    },
+			    series: [
+			        {
+			            name:pz[0],
+			            type:'line',
+			            data:nddpprice,
+			        },
+			        {
+			            name:pz[1],
+			            type:'line',
+			            data:ndddprice,
+			        },
+			        {
+			            name:pz[2],
+			            type:'line',
+			            data:nddyprice,
+			        }
+			        ,
+			        {
+			            name:pz[3],
+			            type:'line',
+			            data:ndymprice,
+			        },
+			        {
+			            name:pz[4],
+			            type:'line',
+			            data:ndcyprice,
+			        },
+			        {
+			            name:pz[5],
+			            type:'line',
+			            data:ndqmprice,
+			        }
+			        
+			    ]
+			};
+			myChart2.setOption(option2);
+			
+		},
+		error:function(){
+			alert("遍历国内期货连续失败");
+		}
+	});
+}
+
+function getjd(){
+	$("#paneljidu").css('display','block');
+	$("#panelbannian").css('display','none');
+	$("#panelniandu").css('display','none');
+}
+function getbn(){
+	$("#paneljidu").css('display','none');
+	$("#panelbannian").css('display','block');
+	$("#panelniandu").css('display','none');
+}
+function getyn(){
+	$("#paneljidu").css('display','none');
+	$("#panelbannian").css('display','none');
+	$("#panelniandu").css('display','block');
+}
+
+</script>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>期货价格</b></span>
+	</div>
+
+<div class="panel-heading">
+		<div class="form-inline">
+   <div class="caozuo">
+   		<div class="cjd-div niandu-div">
+			<label class="cjd-label">年度:</label>
+			<select id="niandu"  class="form-control cjd-select" onchange = ""  style="width: 100px;">
+			</select>
+		</div>
+		<div class="cjd-div yuedu-div" style="margin-left:20px">
+			<label class="cjd-label">月度:</label>
+			<select id="yuedu" class="form-control cjd-select" style="width: 100px;">
+				<option value="1">1月</option>
+				<option value="2">2月</option>
+				<option value="3">3月</option>
+				<option value="4">4月</option>
+				<option value="5">5月</option>
+				<option value="6">6月</option>
+				<option value="7">7月</option>
+				<option value="8">8月</option>
+				<option value="9">9月</option>
+				<option value="10">10月</option>
+				<option value="11">11月</option>
+				<option value="12">12月</option>
+			</select>
+		</div>
+		<div style="float:right">
+			国内期货价格为每月最后一个交易日收盘价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单位：元(人民币/吨)
+		</div>
+   		<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+   </div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px;width:100%; float:left;">
+  	<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="${ctxPath}/jiage/querycaijia.do" >	 
+		<thead>
+			<tr>
+    			<th rowspan="2" colspan="1" id="col3" style="vertical-align:middle">价格类型</th>
+    			<th rowspan="2" colspan="1" id="col6" style="vertical-align:middle">当期价格</th>
+     			<th rowspan="1" colspan="2" id="col4" style="vertical-align:middle">同比</th>
+     			<th rowspan="1" colspan="2" id="col5" style="vertical-align:middle">环比</th>
+ 			</tr>
+ 			<tr>
+     			<th rowspan="1" colspan="1" id="col9" class="rowtwo" style="vertical-align:middle">增长额</th>
+     			<th rowspan="1" colspan="1" id="col6" class="rowtwo" style="vertical-align:middle">增幅</th>
+     			<th rowspan="1" colspan="1" id="col7" class="rowtwo" style="vertical-align:middle">增长额</th>
+     			<th rowspan="1" colspan="1" id="col8" class="rowtwo" style="vertical-align:middle">增幅</th>
+ 			</tr>
+		</thead>	
+		<tbody>
+			<tr>
+				<td rowspan="" colspan="10" class="leixin" style="vertical-align:left">大商所</td>
+			</tr>
+			<tr>
+				<td rowspan="1" colspan="1" class="pinlein" style="text-align:center">豆粕</td>
+				<td rowspan="1" colspan="1" id="dp_price" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_dp_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_dp_zf" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_dp_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_dp_zf" class="pinlei" style=""></td>
+			</tr>
+			<tr>
+				<td rowspan="1" colspan="1" class="pinlein" style="text-align:center">大豆</td>
+				<td rowspan="1" colspan="1" id="dd_price" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_dd_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_dd_zf" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_dd_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_dd_zf" class="pinlei" style=""></td>
+			</tr>
+			<tr>
+				<td rowspan="1" colspan="1" class="pinlein" style="text-align:center">豆油</td>
+				<td rowspan="1" colspan="1" id="dy_price" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_dy_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_dy_zf" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_dy_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_dy_zf" class="pinlei" style=""></td>
+			</tr>
+			<tr>
+				<td rowspan="1" colspan="1" class="pinlein" style="text-align:center">玉米</td>
+				<td rowspan="1" colspan="1" id="ym_price" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_ym_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_ym_zf" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_ym_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_ym_zf" class="pinlei" style=""></td>
+			</tr>
+			<tr>
+				<td rowspan="" colspan="10"  class="leixin" style="vertical-align:left">郑商所</td>
+			</tr>
+			<tr>
+				<td rowspan="1" colspan="1" class="pinlein" style="text-align:center">菜油</td>
+				<td rowspan="1" colspan="1" id="cy_price" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_cy_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_cy_zf" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_cy_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_cy_zf" class="pinlei" style=""></td>
+			</tr>
+			<tr>
+				<td rowspan="1" colspan="1" class="pinlein" style="text-align:center">强麦</td>
+				<td rowspan="1" colspan="1" id="qm_price" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_qm_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="tb_qm_zf" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_qm_zze" class="pinlei" style=""></td>
+				<td rowspan="1" colspan="1" id="hb_qm_zf" class="pinlei" style=""></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div id="panel-tubiao" class="panel-tubiao" style="width:100%; float:left; heigth:500px;">
+
+	<div class="panel-zhouqi" style="width:100%; float:left; text-align:right">
+		<label><input name="zhiliang" type="radio" value="xingzhi" onclick="getjd()" checked="checked"/>&nbsp;季度 </label>&nbsp;&nbsp;  
+		<label><input name="zhiliang" type="radio" value="pinzhong" onclick="getbn()" />&nbsp;半年</label>&nbsp;&nbsp; 
+		<label><input name="zhiliang" type="radio" value="dengji" onclick="getyn()" />&nbsp;一年</label> 
+	</div>
+	<div id="paneljidu" style="width:1300px; float:left; height:300px;">
+		
+	</div>
+	<div id="panelbannian" style="width:1300px; float:left; height:300px; display:none">
+		
+	</div>
+	<div id="panelniandu" style="width:1300px; float:left; height:300px; display:none">
+		
+	</div>
+</div>
+
+</div>
+</div>
+
+<%}%>

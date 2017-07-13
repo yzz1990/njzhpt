@@ -1,0 +1,792 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+ <!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    
+}
+
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+}
+.table-bordered {
+    border: 1px solid #7CBDF7;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+}
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+</style>
+   <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 350px;">
+		   				<h4 id="aa" ></h4>
+		   				<h4 id="bb" ></h4>
+		              <div id="container" style="min-width: 35%; max-width: 45%; height: 300px; margin: 0 auto;margin-left: 10px;float: left;"></div>
+		             <hr size=100 width="1" color="#A9B2B8" style="position: absolute;margin-left: 45%;border: 2px;height: 270px;margin-top: -20px;">
+		              <div id="container1" style=" min-width: 30%; max-width: 40%; height: 300px; margin: 0 auto;float: left;margin-left: 25%;margin-top: -20px;"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		    <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 450px;">
+		   				<span style="width: 200px;font-size: 18px;">分品种统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+		   				
+		   				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+		              	<table id="pzck"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+							<thead>
+		           					
+		        			</thead>
+						</table>
+		              <div id="container2" style="min-width: 30%; max-width: 40%; height: 350px; margin: 0 auto;float: left;margin-left: 50px"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		    <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 450px;">
+		   				<span style="width: 200px;font-size: 18px;">分性质统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+		   				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+		              	<table id="lxck"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+						<thead>
+	        			</thead>
+					</table>
+		              <div id="container3" style="min-width: 30%; max-width: 40%; height: 350px; margin: 0 auto;float: left;margin-left: 3%"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		    <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 450px;">
+		   				<span style="width: 200px;font-size: 18px;">分等级统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+		   				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+		              	<table id="djck"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+						<thead>
+	           				
+	        			</thead>
+					</table>
+		              <div id="container4" style="min-width: 30%; max-width: 40%; height: 350px; margin: 0 auto;float: left;margin-left: 50px"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		     
+		    <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 450px;">
+		   				<span style="width: 200px;font-size: 18px;">分年限统计</span>&nbsp;&nbsp;<span style="font-size: 16px;">(单位/吨)</span>
+		   				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+		              	<table id="nxck"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+							<thead>
+									
+							</thead>
+						</table>
+		              <div id="container5" style="min-width: 30%; max-width: 40%; height: 350px; margin: 0 auto;float: left;margin-left: 50px"></div>
+		            </div>
+		   		</div>		
+		   </div> 
+		  
+		   
+<script>
+$(function () {
+	var ecConfig = require('echarts/config');
+	var constructData=[];
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findkczb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			if(data.zcr==0){
+				$("#aa").html("库存总量：0吨");	
+				$("#bb").html("全市仓房总仓容："+((data.zcr)*10000).toFixed(0)+"吨");	
+			}else{		
+				$("#aa").html("库存总量："+(data.dmStock/10000000).toFixed(2)*10000+"吨");
+				$("#bb").html("全市仓房总仓容："+((data.zcr)*10000).toFixed(0)+"吨");
+				
+			}
+			 option = {
+					    tooltip : {
+					        formatter: "{b} : {c}%"
+					    },
+					   
+					    series : [
+					        {
+					            name:'库存占比',
+					            type:'gauge',
+					            center: ['70%', '50%'],
+					            detail : {formatter:'{value}%',textStyle:{fontSize: 20}},
+					            data:[{value:((data.dmStock/10000000)/(data.zcr)*100).toFixed(2), name: '库存占比'}]
+								, title: {
+								textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+									fontSize: 10,
+								}
+							}
+							}
+					    ]
+					};
+			 echarts.init(document.getElementById('container')).setOption(option);   
+			}
+		});
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findfqck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			option = {
+				    title : {
+				        text: '全市库存统计',
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨 ({d}%)",
+				        position: function (p) {
+		                    // 位置回调
+		                    return [p[0]-190, p[1]+10];
+		                }
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.qylist
+				    },
+				    calculable : false,
+				    series : [{
+				                  name:'库存占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '50%'],
+				                  itemStyle:{
+				                	  normal:{
+						                    label : {
+						                    	show: false 
+						                    },
+						                    labelLine : {
+						                        show : false
+						                    }
+				                	  }
+				                  },
+				                  data:[
+				                      {value:(data.cklist[0]/10000000).toFixed(2)*10000,name:data.qylist[0],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'rgb(0,153,204)',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[1]/10000000).toFixed(2)*10000, name:data.qylist[1],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'rgb(102,102,153)',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[2]/10000000).toFixed(2)*10000, name:data.qylist[2],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'rgb(204,102,0)',
+						                	  }
+						                  }},
+				                      {value:((data.cklist[3]/10000000).toFixed(2)*10000).toFixed(0), name:data.qylist[3],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'rgb(255,153,153)',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[4]/10000000).toFixed(2)*10000, name:data.qylist[4],
+					                    	  itemStyle : {
+							                	  normal : {
+							                		  color:'rgb(255,204,153)',
+							                	  }
+							                  }
+				                      },
+				                      {value:(data.cklist[5]/10000000).toFixed(2)*10000, name:data.qylist[5],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'rgb(153,204,0)',
+						                	  }
+						                  }
+				                      }
+				                  ]
+				              }
+				          ]
+				};
+			myChart = echarts.init(document.getElementById('container1')).setOption(option);	
+			myChart.on(ecConfig.EVENT.CLICK, eConsole);
+		}
+	});
+	//库存统计弹出来框
+	var dialog;
+	function eConsole(param){
+		//alert(param.dataIndex);
+		dialog=parent.window.BootstrapDialog.show({
+		    title: '详细',
+			closeByBackdrop: true,
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/zonghe/lttj_sxdetail.html?index='+param.dataIndex+'"/>'),
+		    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+		});
+	}
+	
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/findpzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			var bt="<tr>";	
+				bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[0]+"</th>";
+				bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[1]+"</th>";
+				bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7;border-right: #B5DCFF;'>"+data.btlist[2]+"</th>";
+				bt+="<th colspan='5' style='text-align:center;border: 1px solid #7CBDF7;border-left: #B5DCFF;'>其中</th>";										  
+			    bt+="</tr><tr>";			    
+			    bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>小麦</th>";		
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>稻谷</th>";		
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>玉米</th>";		
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>大豆</th>";
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>其他</th>";
+				 bt+="</tr>";
+			$("#pzck > thead").append(bt);
+			var temp={};
+			var htmlstr="<tr>";
+			for(var i=0;i<data.hjzck.length;i++){
+				if(i<2){
+					htmlstr+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+data.hjzck[i]+"</th>";
+				}else{
+					htmlstr+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+((data.hjzck[i]*1000/1000).toFixed(4)*10000).toFixed(0)+"</th>";
+					if(i>=3) {
+						((data.hjzck[i] * 1000 / 1000).toFixed(4) * 10000).toFixed(0);
+						temp={};
+						if(i==3){
+							temp.name="小麦";
+						}else if(i==4){
+							temp.name="稻谷";
+
+						}else if(i==5){
+							temp.name="玉米";
+
+						}else if(i==6){
+							temp.name="大豆";
+						}else if(i==7){
+							temp.name="其他";
+						}
+						temp.value=((data.hjzck[i] * 1000 / 1000).toFixed(4) * 10000).toFixed(0);
+                        constructData.push(temp);
+					}
+				}
+
+			}
+			htmlstr+="</tr>"
+			$("#pzck > thead").append(htmlstr);
+			for(var i=0;i<data.pzzcklist.length;i++){
+
+				var trhtml="<tr>";
+				for(var j=0;j<data.btlist.length;j++){
+					if(j<2){
+						trhtml+="<th rowspan='1' style='text-align:center;border: 1px solid #7CBDF7'>"+data.pzzcklist[i][j]+"</th>";
+					}else{
+						trhtml+="<th rowspan='1' style='text-align:center;border: 1px solid #7CBDF7'>"+((data.pzzcklist[i][j]*1000/1000).toFixed(4)*10000).toFixed(0)+"</th>";
+
+					}
+
+
+				}
+				trhtml+="</tr>"
+				$("#pzck > thead").append(trhtml);
+			}
+			option2 = {
+				    title : {
+				        text: '全市粮食分品种库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨({d}%)",
+				        position: function (p) {
+		                    // 位置回调
+		                    return [p[0]-190, p[1]+10];
+		                }
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.pzlist
+				    },
+				    color:['#99CC33','#FF6666','#0099CC','#CC6600','#666699'],
+				   
+				    calculable : false,
+				    series : [{
+				                  name:'粮食品种占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '50%'],
+				                  itemStyle:{
+				                	  normal:{			                		  
+						                    label : {
+						                    	show: false 
+						                    },
+						                    labelLine : {
+						                        show : false
+						                    }
+				                	  }
+				                  },
+				                  data:constructData
+				              }
+				          ]
+				};
+			myChart=echarts.init(document.getElementById('container2')).setOption(option2);
+			myChart.on(ecConfig.EVENT.CLICK, eConsole1);
+		}
+	});
+	
+	var dialog1;
+	function eConsole1(param){
+		//alert(param.dataIndex);
+		dialog1=parent.window.BootstrapDialog.show({
+		    title: '详细',
+			closeByBackdrop: true,
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/zonghe/lttj_pzdetail.html?index='+param.dataIndex+'"/>'),
+		    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","300px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+		});
+	}
+	
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findxzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			var bt="<tr>";	
+				bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[0]+"</th>";			
+				bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[1]+"</th>";		
+				bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7;border-right: #B5DCFF;'>"+data.btlist[2]+"</th>";		
+				bt+="<th colspan='8' style='text-align:center;border: 1px solid #7CBDF7;border-left: #B5DCFF;'>其中</th>";										  
+			    bt+="</tr><tr>";			    
+			    bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>央储</th>";		
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>省储</th>";		
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>市储</th>";		
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>县储</th>";
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>临储</th>";
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>商品粮</th>";
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>最低价</th>";
+				bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>其他</th>";
+			    bt+="</tr>";
+		
+			$("#lxck > thead").append(bt);
+			
+			var htmlstr="<tr>";
+			for(var i=0;i<data.hjzck.length;i++){
+				if(i<2){
+					htmlstr+="<th rowspan='1' style='text-align:center;border: 1px solid #7CBDF7'>"+data.hjzck[i]+"</th>";
+				}else{
+					htmlstr+="<th rowspan='1' style='text-align:center;border: 1px solid #7CBDF7'>"+((data.hjzck[i]*1000/1000).toFixed(4)*10000).toFixed(0)+"</th>";
+				}
+					
+			}
+			htmlstr+="</tr>"
+			$("#lxck > thead").append(htmlstr);
+			for(var i=0;i<data.pzzcklist.length;i++){
+				var trhtml="<tr>";
+				for(var j=0;j<data.btlist.length;j++){
+					if(j<2){
+						trhtml+="<th rowspan='1' style='text-align:center;border: 1px solid #7CBDF7'>"+data.pzzcklist[i][j]+"</th>";
+					}else{
+						trhtml+="<th rowspan='1' style='text-align:center;border: 1px solid #7CBDF7'>"+((data.pzzcklist[i][j]*1000/1000).toFixed(4)*10000).toFixed(0)+"</th>";
+					}
+				}
+				trhtml+="</tr>"
+				$("#lxck > thead").append(trhtml);
+			}
+		
+			option4 ={
+					title : {
+				        text: '全市粮食分性质库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} 吨({d}%)",
+				        position: function (p) {
+		                    // 位置回调
+		                    return [p[0]-150, p[1]+15];
+		                }
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x : 'left',
+				        data:data.pzlist
+				    },
+				    color : ['#66CCCC', '#99CC33', '#FF9900','#CC3399','#666633', '#666699','#ff1493', '#00bfff'],
+				    
+				    calculable : false,
+				    series : [{
+				            name:'分性质占比',
+				            type:'pie',
+				            radius : [60, 100],
+				            itemStyle : {
+				                normal : {
+				                    label : {
+				                    	show: false 
+				                    },
+				                    labelLine : {
+				                        show : false
+				                    }
+				                }
+				            },
+				            data:data.pzzck
+				        }
+				    ]
+				};                
+			
+			myChart=echarts.init(document.getElementById('container3')).setOption(option4);	
+			myChart.on(ecConfig.EVENT.CLICK, eConsole3);
+		}
+	});
+	
+	var dialog3;
+	function eConsole3(param){
+		//alert(param.dataIndex);
+		dialog3=parent.window.BootstrapDialog.show({
+		    title: '详细',
+			closeByBackdrop: true,
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/zonghe/lttj_xzdetail.html?index='+param.dataIndex+'"/>'),
+		    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","300px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+		});
+	}
+	
+
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/finddjck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			
+			var bt="<tr>";	
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[0]+"</th>";			
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[1]+"</th>";		
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7;border-right: #B5DCFF;'>合计</th>";		
+			bt+="<th colspan='7' style='text-align:center;border: 1px solid #7CBDF7;border-left: #B5DCFF;'>其中</th>";										  
+		    bt+="</tr><tr>";			    
+		    bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>一等</th>";		
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>二等</th>";		
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>三等</th>";		
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>四等</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>五等</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>等外级</th>";
+			bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>其他</th>";
+		    bt+="</tr>";
+			$("#djck > thead").append(bt);
+			
+			var lone = 0;
+			var ltwo = 0;
+			var lthree = 0;
+			var lfour = 0;
+			var lfive = 0;
+			var lother = 0;
+			var nine = 0;
+			
+			
+			 var htmlstr="<tr class='qshj'>";
+			for(var i=0;i<data.hjzck.length;i++){
+				if(i<2){
+					htmlstr+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+data.hjzck[i]+"</th>";		
+				}else{
+					htmlstr+="<th class='thhj"+i+"' rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+((data.hjzck[i])*10000).toFixed(0)+"</th>";
+				}
+			}
+			htmlstr+="</tr>"
+			$("#djck > thead").append(htmlstr); 
+			for(var i=0;i<data.pzzcklist.length;i++){
+				var trhtml="<tr class='qx"+i+"'>";
+				var qxhj = 0;
+				for(var j=0;j<data.btlist.length+1;j++){
+					if(j<2){
+						trhtml+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+data.pzzcklist[i][j]+"</th>";	
+					}else{
+						trhtml+="<th class='th"+j+"' rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+((data.pzzcklist[i][j])*10000).toFixed(0)+"</th>";
+						if(j == 3){
+							//一级
+							lone += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 4){
+							//二级
+							ltwo += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 5){
+							//三级
+							lthree += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 6){
+							//四级
+							lfour += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 7){
+							//五级
+							lfive += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 8){
+							//等外级
+							lother += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+						if(j == 9){
+							//其他
+							nine += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+							qxhj += parseFloat(((data.pzzcklist[i][j])*10000).toFixed(0));
+						}
+					}
+				}
+				trhtml+="</tr>";
+			
+				$("#djck > thead").append(trhtml);
+				$(".qx"+i).find(".th2").text((qxhj));
+			}
+			
+			var sum = lone + ltwo + lthree + lfour + lfive + lother+nine;
+			//alert(sum);
+			$(".thhj2").text((sum));
+			$(".thhj3").text((lone));
+			$(".thhj4").text((ltwo));
+			$(".thhj5").text(Math.round(lthree));
+			$(".thhj6").text((lfour));
+			$(".thhj7").text((lfive));
+			$(".thhj8").text((lother));
+			$(".thhj9").text((nine));
+			
+			option5 = {
+					title : {
+				        text: '全市粮食分等级库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} 吨({d}%)",
+				        position: function (p) {
+		                    // 位置回调
+		                    return [p[0]-150, p[1]+15];
+		                }
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x : 'left',
+				        data:data.pzlist
+				    },
+				   
+				    color : ['#FFCC00', '#99CC33', '#66CCCC','#CC3399','#666699', '#666633','#FF6666'],    
+				    calculable : false,
+				    series : [{
+				            name:'分等级占比',
+				            type:'pie',
+				            radius : [60, 100],
+				            itemStyle : {
+				                normal : {
+				                    label : {
+				                    	show: false 
+				                    },
+				                    labelLine : {
+				                        show : false
+				                    }
+				                }
+				            },
+				            data:data.pzzck
+				        }
+				    ]
+				}; 
+			myChart=echarts.init(document.getElementById('container4')).setOption(option5);
+			myChart.on(ecConfig.EVENT.CLICK, eConsole4);
+		}
+	});
+	
+	var dialog4;
+	function eConsole4(param){
+		dialog4=parent.window.BootstrapDialog.show({
+		    title: '详细',
+			closeByBackdrop: true,
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/zonghe/lttj_djdetail.html?index='+param.dataIndex+'"/>'),
+		    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","300px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+		});
+	}
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findnxck',
+		type:'post',
+		dataType:'json',
+		success:function(data){	
+		
+			var bt="<tr>";	
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[0]+"</th>";			
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7'>"+data.btlist[1]+"</th>";		
+			bt+="<th rowspan='2' style='text-align:center;vertical-align: middle;border: 1px solid #7CBDF7;border-right: #B5DCFF;'>合计</th>";		
+			bt+="<th colspan='"+(data.btlist.length-2)+"' style='text-align:center;border: 1px solid #7CBDF7;border-left: #B5DCFF;'>其中</th>";										  
+		    bt+="</tr><tr>";
+		    for(var i=2;i<data.btlist.length;i++){
+		    	bt+="<th rowspan='1' style='text-align:center;background-color:#B5DCFF;border: 1px solid #7CBDF7'>"+data.btlist[i]+"</th>";		
+		    }
+			
+		    bt+="</tr><tr>";
+		    for(var g=0;g<data.hjzck.length;g++){
+		    	if(g>1){
+		    		bt+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+(data.hjzck[g]*10000).toFixed(0)+"</th>";	
+		    	}else{
+		    		bt+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+data.hjzck[g]+"</th>";		    		
+		    	}
+		    }
+		    	bt+="</tr>";
+		    
+		    for(var j=0;j<data.pzzcklist.length;j++){
+		    		bt+="<tr>";
+		    	for(k=0;k<data.pzzcklist[j].length;k++){
+		    		if(k>1){
+			    		bt+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+(data.pzzcklist[j][k]*10000).toFixed(0)+"</th>";
+		    		}else{
+			    		bt+="<th rowspan='1' style='text-align:center;border:1px solid #7CBDF7'>"+(data.pzzcklist[j][k])+"</th>";	    			
+		    		}
+		    	}
+			    	bt+="</tr>";
+		    }
+			$("#nxck > thead").append(bt);
+
+			option5 = {
+				    title : {
+				        text: '全市粮食分年限库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}吨({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.pzlist
+				    },
+				    color :  ['#FFCC00', '#99CC33', '#66CCCC','#CC3399','#666699', '#666633','#FF6666'],
+				   
+				    calculable : false,
+				    series : [{
+				                  name:'粮食分年限占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '60%'],
+				                  itemStyle:{
+				                	  normal:{
+						                    label : {
+						                    	show: false 
+						                    },
+						                    labelLine : {
+						                        show : false
+						                    }
+				                	  }
+				                  },
+				                  data:data.pzzck
+				              }
+				          ]
+				};
+			myChart=echarts.init(document.getElementById('container5')).setOption(option5);
+			myChart.on(ecConfig.EVENT.CLICK, eConsole2);
+		}
+	});
+	
+	
+	var dialog2;
+	function eConsole2(param){
+
+		dialog2=parent.window.BootstrapDialog.show({
+		    title: '详细',
+			closeByBackdrop: true,
+		    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/zonghe/lttj_nfdetail.html?index='+param.dataIndex+'"/>'),
+		    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","300px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+	       }]
+		});
+	}
+	
+});
+</script>
+
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

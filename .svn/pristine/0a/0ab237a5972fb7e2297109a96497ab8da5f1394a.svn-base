@@ -1,0 +1,297 @@
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<!-- =============== VENDOR STYLES ===============-->
+<link href='${ctxPath}/css/jquery.dataTables.min.css'
+	rel='stylesheet'>
+<!-- SIMPLE LINE ICONS-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/simple-line-icons.css">
+<!-- ANIMATE.CSS-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/animate.min.css">
+<!-- WHIRL (spinners)-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/whirl.css">
+<!-- =============== PAGE VENDOR STYLES ===============-->
+<!-- =============== BOOTSTRAP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap.css"
+	id="bscss">
+<!-- =============== APP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath}/css/app.css"
+	id="maincss">
+<link rel="stylesheet"
+	href="${ctxPath}/css/bootstrap-slider.min.css">
+<script src="${ctxPath}/js/jquery.min.js"></script>
+<!----------select-------------->
+<link rel="stylesheet"
+	href="${ctxPath}/css/select2.css">
+<link rel="stylesheet"
+	href="${ctxPath}/css/select2-bootstrap.css">
+<script src="${ctxPath}/js/select2.js"></script>
+<script src="${ctxPath}/js/echarts.min.js"></script>
+
+<script src="${ctxPath}/web/jquery.uploadifive.min.js"></script>
+  <link href='${ctxPath}/web/uploadifive.css'/>
+ 
+
+<script src="${ctxPath}/js/bootstrap.min.js"></script>
+<link href="${ctxPath}/css/bootstrap-dialog.min.css" rel="stylesheet">
+<script src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+<!----------select-------------->
+<!---------kindeditor--------->
+	<script src='${ctxPath}/js/kindeditor-all-min.js'></script>
+	<script src='${ctxPath}/js/zh-CN.js'></script>
+	<link rel="stylesheet" href='${ctxPath}/css/default.css'>
+	<link rel="stylesheet" href='${ctxPath}/css/default.css'>
+	<link rel="stylesheet" href='${ctxPath}/css/prettify.css'>
+	<script src='${ctxPath}/js/modal.js'></script>
+	<script src='${ctxPath}/js/transition.js'></script>
+	
+	<link rel="stylesheet" href='${ctxPath}/css/animate.css'>
+<!------ datetimepicker ------>
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap-datetimepicker.min.css">
+<script src="${ctxPath}/js/bootstrap-datetimepicker.min.js"></script>
+<script src="${ctxPath}/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="${ctxPath}/js/bootstrap-datetimepicker.fr.js"></script>
+<!------ datetimepicker ------>
+<!-- bootstrap-table-->
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap-table.css">
+<script src="${ctxPath}/js/bootstrap-table-filter.js"></script>
+<script src="${ctxPath}/js/bootstrap-table-export.js"></script>
+<script src="${ctxPath}/js/bootstrap-table.js"></script>
+	<!----------dataTables-------------->
+	<script src="${ctxPath}/js/jquery.dataTables.min.js"></script>
+	<script src='${ctxPath}/js/dataTables.bootstrap.min.js'></script>
+	<!----------dataTables-------------->
+	<script src='${ctxPath}/resource/datagrid.js'></script>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+
+
+  <ul class="nav nav-tabs" >
+    <li class="active" data-toggle="tab" id="lipz" onclick="jiazailhpz()" ><a href="#lunhaunpizhun">轮换批准</a></li>
+    <li><a href="#querensheniqng" data-toggle="tab" id="liqrsq" onclick="jiazaiqrsq()">确认申请</a></li>
+    <li><a href="#querentongzhi" data-toggle="tab" id="liqrtz" onclick="jiazaiqrtz()">确认通知</a></li>
+  </ul>
+
+<div id="myTabContent" class="tab-content">
+	<div class="tab-pane fade in active" id="lunhaunpizhun" >
+		<table id="tb" data-param="" class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/lunhuan/selectlunhuan.do"></table>
+	</div>	
+	<div class="tab-pane fade" id="querensheniqng" >
+		<table id="tb1" data-param="" class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/lunhuan/selectQRSQ.do"></table>
+	</div>
+	<div class="tab-pane fade" id="querentongzhi" >
+		<table id="tb2" data-param="" class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/lunhuan/selectQRTZ.do"></table>
+	</div>	
+</div>
+<script type="text/javascript">
+var datatable;
+var datatable2;
+var datatable3;
+$(function(){
+	(function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+	var q="";
+	var lhsq_sqwh =$.getUrlParam("lhsq_sqwh");
+	if(q!=""||q!=null){
+		q =q + "&lhsq_sqwh="+lhsq_sqwh;
+	}
+	document.querySelector('#tb').dataset.queryparam=q;
+	datatable = $('#tb').DataTable({
+        "columns": [
+            {"data":"szqy","title":"所在区域"},
+            {"data":"qymc","title":"企业名称"},
+            {"data":"lhsq_sqwh","title":"申请文号"},
+            {"data":"lhsq_kdmc","title":"库点名称"},
+            {"data":"lhsq_ch","title":"仓号"},
+            {"data":"lhsq_pz","title":"品种"},
+            {"data":"lhsq_scnx","title":"生产年限"},
+            {"data":"lhsq_lhsl","title":"轮换数量"},
+            {"data":"lhsq_lrqx","title":"轮入期限"},
+            {"data":"lhsq_pzbg","title":"品种变更"},
+            {"data":"lhsq_kdbg","title":"库点变更"},
+            {"data":"lhsq_chbg","title":"仓号变更"},
+            {"title":"操作",
+            	"render":function(data,type,row,meta){
+            		var result='<button type="button" class="btn btn-default" onclick="lunhuanpizhun(\''+row["lhsq_sqwh"]+'\')"><span style="color:green">审批</span></button>';
+            		return result;
+            	}
+            }]
+	});
+	datatable2 = $('#tb1').DataTable({
+        "columns": [
+            {"data":"szqymc","title":"所在区域"},
+            {"data":"qymc","title":"企业名称"}, 
+            {"data":"ccjh_xj","title":"小计"},
+            {"data":"ccjh_xm","title":"小麦"},
+            {"data":"ccjh_jd","title":"粳稻"},
+            {"data":"ccjh_xd","title":"籼稻"},
+            {"data":"lhsq_sqwh","title":"申请文号"},
+            {"data":"lhsq_kdmc","title":"库点名称"},
+            {"data":"lhsq_ch","title":"仓号"},
+            {"data":"lhsq_pz","title":"品种"},
+            {"data":"lhsq_scnx","title":"生产年限"},
+            {"data":"lhsq_lrsl","title":"轮入数量"},
+            {"data":"lhsq_zldj","title":"质量等级"},
+            {"data":"lhsq_rkjj","title":"入库均价"},
+            {"title":"操作",
+            	"render":function(data,type,row,meta){
+            		var result='<button type="button" class="btn btn-default" onclick="querenshenqing(\''+row["lhsq_sqwh"]+'\')"><span style="color:green">确认申请</span></button>';
+            		return result;
+            	}
+            }]
+	});
+	datatable3 = $('#tb2').DataTable({
+        "columns": [
+            {"data":"szqy","title":"所在区域"},
+            {"data":"qymc","title":"企业名称"},
+            {"data":"lhsq_sqwh","title":"申请文号"},
+            {"data":"lhsq_qrwh","title":"确认文号"},
+            {"data":"lhsq_kdmc","title":"库点名称"},
+            {"data":"lhsq_ch","title":"仓号"},
+            {"data":"lhsq_pz","title":"品种"},
+            {"data":"lhsq_scnx","title":"生产年限"},
+            {"data":"lhsq_lrsl","title":"轮入数量"},
+            {"data":"lhsq_zldj","title":"质量等级"},
+            {"data":"lhsq_rkjj","title":"入库均价"},
+            {"title":"操作",
+            	"render":function(data,type,row,meta){
+            		var result='<button type="button" class="btn btn-default" onclick="querentongzhi(\''+row["lhsq_sqwh"]+'\')"><span style="color:green">确认通知</span></button>';
+            		return result;
+            	}
+            }]
+	});
+});
+//点击轮换批准时加载table
+function jiazailhpz(){
+	(function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+	var w="";
+	var lhsq_sqwh =$.getUrlParam("lhsq_sqwh");
+	if(w!=""||w!=null){
+		w =w + "&lhsq_sqwh="+lhsq_sqwh;
+	}
+	document.querySelector('#tb').dataset.queryparam=w;
+	datatable.ajax.reload(null,true);
+	
+}
+//点击时加载 确认申请
+function jiazaiqrsq(){
+	(function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+	var e="";
+	var lhsq_sqwh =$.getUrlParam("lhsq_sqwh");
+	if(e!=""||e!=null){
+		e =e + "&lhsq_sqwh="+lhsq_sqwh;
+	}
+	document.querySelector('#tb1').dataset.queryparam=e;
+	datatable2.ajax.reload(null,true);
+}
+
+
+
+//确认通知
+function jiazaiqrtz(){
+	(function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+	var r="";
+	var lhsq_sqwh =$.getUrlParam("lhsq_sqwh");
+	if(r!=""||r!=null){
+		r =r + "&lhsq_sqwh="+lhsq_sqwh;
+	}
+	document.querySelector('#tb2').dataset.queryparam=r;
+	datatable3.ajax.reload(null,true);
+	
+}
+ function lunhuanpizhun(lhsq_sqwh){
+	 $.ajax({url:"${ctxPath}/lunhuan/selectlhpz.do",data:{lhsq_sqwh:lhsq_sqwh},dataType:'json',success:function(data){
+		 var lhpzts_qszlbl=data.ret.lhpzts_qszlbl;
+			var lhpzts_zlbl=data.ret.lhpzts_zlbl;
+			var lhpzts_fpzbl=data.ret.lhpzts_fpzbl;
+			var lhpzts_zzscnx=data.ret.lhpzts_zzscnx;
+		
+	 BootstrapDialog.show({
+		 	title: '质量详情',
+		    message:'<label>全市总量比例:　</label><b>'+lhpzts_qszlbl+'</b><br><label>总量比例:</label><b>'+lhpzts_zlbl+'</b><br><label>分品种比例:</label><b>'+lhpzts_fpzbl+'</b><br><label>最早生产年限:</label><b>'+lhpzts_zzscnx+'</b>',
+		    buttons: [{
+		        label: '确认审批',
+		        cssClass: 'btn-primary',
+		        action: function(dialog) {
+		        	 $.ajax({
+	 				url: "${ctxPath}/lunhuan/lunhuanpizhunTG.do",
+	 				dataType: "json",
+	 				data: {lhsq_sqwh:lhsq_sqwh},
+	 				success: function(msg) {
+	 					if(msg.ret) {
+	 						alert("轮换批准通知成功！");
+	 						dialog.close();
+	 						datatable.ajax.reload(null,true);
+	 					}else{
+	 						alert("轮换批准通知失败！");
+	 						datatable.ajax.reload(null,true);
+	 					}
+	 				}
+	 			}); 
+		        }
+		        },{
+		        	label: '关闭',
+			        action: function(dialog) {
+			        	dialog.close();
+			        }
+		        }]
+		
+		    });
+	 
+	 }});
+			
+} 
+ function querenshenqing(lhsq_sqwh){
+
+ 	$.ajax({
+			url: "${ctxPath}/lunhuan/querenshenqing.do",
+			dataType: "json",
+			data: {lhsq_sqwh:lhsq_sqwh},
+			success: function(msg) {
+					if(msg.ret) {
+						alert("确认申请成功！");
+						datatable.ajax.reload(null,true);
+					}else{
+						alert("确认申请失败！");
+					}
+			}
+		});
+
+
+}
+</script>

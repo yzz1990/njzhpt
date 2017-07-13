@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>企业备案</title>
+<link rel="stylesheet"
+	href="${ctxPath}/css/font-awesome.min.css">
+
+<%include("/WEB-INF/web/ui/cssjs.html"){}%>
+</head>
+<% 
+	var obj={}, url=ctxPath+"/renyuan/addQiyebeian",title="新增企业备案信息"; 
+	if(isNotEmpty(parameter.id)) { 
+		obj=object;
+		title = "编辑企业备案信息"; 
+	}; 
+%>
+<body>
+<!--startprint-->
+	<div class="dashboard-wrapper-lg" style="min-height: 0px;padding: 0">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<div class="widget" style="margin-bottom: 0px;">
+					<div class="widget-header">
+						<div class="title">企业备案信息</div>
+					</div>
+					<div class="widget-body">
+						<form id="contentform" role="form" action="${url}" method="post"
+							style="overflow: hidden;">
+							<input type="hidden" name="id" value="${obj.id}">
+							<input type="hidden" name="status" value="${obj.status}">
+							<input type="hidden" name="beianriqi" value="${obj.beianriqi}">
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="beianbianhao"><font color="red" style="font-size:large;">*</font>备案编号:</label> 
+										<input 	id="beianbianhao" name="beianbianhao" class="form-control" placeholder="备案编号" value="${obj.beianbianhao}" readonly="readonly">
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="qiyeid"><font color="red" style="font-size:large;">*</font>备案企业:</label> 
+										<select id="qiyeid" name="qiyeid" class="form-control" disabled="disabled" >
+											
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="liuchenghao"><font color="red" style="font-size:large;">*</font>备案流程:</label> 
+										<select id="liuchenghao" name="liuchengid"  class="form-control" onchange="getliucheng()" disabled="disabled">
+											
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="remark">备注:</label>
+										<input  id="remark" name="remark" class="form-control" value="${obj.remark}" readonly="readonly">
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="remark">附件:</label>
+										<input id="fujianpath" name="fujianpath" type="hidden" value="${obj.fujianpath}">
+										<input id="fujianname" name="fujianname" type="hidden" value="${obj.fujianname}">
+											<a id="seefujian" class="btn btn-xs btn-info" href="${obj.fujianpath!=null?ctxPath+obj.fujianpath}" download="${obj.fujianname!=null?obj.fujianname}" style="font-size:1px" >
+												查看附件
+											</a>
+											<a id="scfilename" style="float:right;width: 270px;margin-top:4px; " href="${obj.fujianpath!=null?ctxPath+obj.fujianpath}" download="${obj.fujianname!=null?obj.fujianname}">${obj.fujianname!=null?obj.fujianname}</a>
+											<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+									</div>
+								</div>
+								<div class="col-xs-6">
+										<a id="dayin" class="btn btn-xs btn-info"  style="font-size:1px;float: right; margin-right: 20px;" onclick="dayin()">
+												打印
+											</a>
+								</div>
+								
+							</div>
+						</form>
+					</div>
+					<div class="widget-body"  style="height: 142px;">
+						 <div id="liuchengtu" style="margin-top: -20px">
+						 </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--endprint-->
+	<script type="text/javascript">
+	
+	$(function(){
+		if("${obj.fujianname}"==null||"${obj.fujianname}"==""){
+			$("#seefujian").attr("href","javascript:void(0)");
+			$("#seefujian").removeAttr("download");
+		}
+		$("#qiyeid").select2();
+		$("#liuchenghao").select2();
+		if("${obj.id}"!=""){
+			var ri="${obj.beianriqi}";
+			var riqi=ri.split(" ");
+			$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtu?liuchenghao=${obj.liuchengid}&qiyeid=${obj.qiyeid}&nyr="+riqi[0]+"&sfm="+riqi[1]+"");
+		}
+		
+		
+		$('.file_upload').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/excel/uploadlhpzxwFile',  //处理上传文件Action路径
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传附件',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+//	  		'fileTypeExts'     : '*.xlsx;*.xls;*.png',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file, data) { //文件上传成功后执行
+		    	var obj = JSON.parse(data);
+		    	$("#scfilename").html(obj.scfilename);
+		    	$("#fujianname").val(obj.scfilename);
+		    	$("#scfilename").attr("href","${ctxPath}"+obj.filepath);
+		    	$("#scfilename").attr("download",obj.scfilename);
+		    	$("#fujianid").val(obj.filepath);
+	    	}
+		});
+	});
+	
+		function saveqyba() {
+			var form = $(".widget-body form");
+			$.ajax({
+				url : form.attr("action"),
+				dataType : "json",
+				data : form.serialize(),
+				success : function(msg) {
+					if (!msg.ret) {
+						alert(msg.message);
+					} else {
+						alert("保存成功");
+						parent.window.dialog1.close();
+		        	    parent.window.datatable.ajax.reload(null,true);
+					}
+				}
+			});
+		}
+		
+		/* 获取流程名称 */
+		$.ajax({
+			url:'${ctxPath}/renyuan/findlc',
+			type:'post',
+			dataType:'json',
+			data:{"liuchengtype":0,"nowstatus":2},
+			success:function(data){
+				$("#liuchenghao").append("<option value=''>请选择</option>");
+				$.each(data.list,function(i,n){
+					
+					if("${obj.liuchengid}"==n.liuchenghao){
+						$("#liuchenghao").append("<option value="+n.liuchenghao+" selected>"+n.name+"</option>");
+					}else{
+						$("#liuchenghao").append("<option value="+n.liuchenghao+">"+n.name+"</option>");
+					}
+				});
+			}
+		});
+		
+		/* 获取企业名称 */
+		$.ajax({
+			url:'${ctxPath}/renyuan/findQiye',
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				$("#qiyeid").append("<option value=''>请选择</option>");
+				$.each(data.list,function(i,n){
+					if("${obj.qiyeid}"==n.ID){
+						$("#qiyeid").append("<option value="+n.ID+" selected>"+n.qymc+"</option>");
+					}else{
+						$("#qiyeid").append("<option value="+n.ID+">"+n.qymc+"</option>");
+					}
+					
+				});
+			}
+		});
+		
+		
+		function getliucheng(){
+			var liuchengid=$("#liuchengid").find("option:selected").val();
+			if(liuchengid!=""){
+				$("#liuchengtu").load("${ctxPath}/renyuan/liuchengtu?liuchenghao="+liuchengid);
+			}
+		}
+		function dayin() {
+			bdhtml=window.document.body.innerHTML;
+			sprnstr="<!--startprint-->"; //开始打印的地方
+			eprnstr="<!--endprint-->";  //结束打印标记
+			prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17);
+			prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+			window.document.body.innerHTML=prnhtml;
+			window.print();
+			 }
+
+	</script>
+
+</body>
+</html>

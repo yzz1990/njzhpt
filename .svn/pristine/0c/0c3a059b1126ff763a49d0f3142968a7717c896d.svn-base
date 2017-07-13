@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Basic DataGrid - jQuery EasyUI Demo</title>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.4.5/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.4.5/themes/icon.css">
+    <script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+    	$.fn.datagrid.defaults.fit=true;
+    	$.fn.datagrid.defaults.pagination=true;
+    	$.fn.datagrid.defaults.rownumbers=true;
+    	$.fn.datagrid.defaults.singleSelect=true;
+    	$.fn.datagrid.defaults.pageSize=100;
+    	$.fn.datagrid.defaults.pageList=[100];
+    	$.fn.combobox.defaults.panelHeight='auto';
+    </script>
+</head>
+<body>
+    <table id="dg" class="easyui-datagrid" data-options="toolbar:'#tb',url:'${ctxPath}/yewu/queryChushi.do',method:'get'">
+        <thead>
+            <tr>
+                <th data-options="field:'vWareHouseCode',width:100">仓房编号</th>
+                <th data-options="field:'cangfangmingcheng',width:150">仓房名称</th>
+                <th data-options="field:'dmOpeningStock',width:150">初始重量(公斤)</th>
+                <th data-options="field:'xingzhi',width:150">粮食性质</th>
+                <th data-options="field:'leibie',width:150">粮食类别</th>
+                <th data-options="field:'pinzhong',width:150">粮食品种</th>
+            </tr>
+        </thead>
+    </table>
+	<div id="tb" style="padding:5px;">
+        <a href="javascript:newBaozhuang();" target="_blank" class="easyui-linkbutton" iconCls="icon-add">新增</a>
+        <a href="javascript:editBaozhuang();" target="_blank" class="easyui-linkbutton" iconCls="icon-edit">编辑</a>
+        <a href="javascript:destroyBaozhuang()" target="_blank" class="easyui-linkbutton" iconCls="icon-remove">删除</a>
+	</div>
+	
+	<div id="dlg" class="easyui-dialog" style="width:700px;height:500px;padding:10px 20px" closed="true" buttons="#dlg-buttons">
+		<div class="ftitle">初始存粮信息</div>
+		<form id="fm" method="post" novalidate>
+			<input name="ID" type="hidden">
+			<div class="fitem">
+				<label>仓房编号:</label>
+				<select name="vWareHouseCode" class="easyui-combobox" style="width:183px;" editable="false" prompt="请选择" required="required" tabindex="1">
+					<%
+					var cangfangList=@com.zkzy.szlk.tag.ComboboxTag.findRecord("cangfang");
+					for(record in cangfangList){
+					%>
+					<option value="${record.value}">${record.name}</option>
+					<%
+					}
+					%>
+				</select>
+				<label>水分:</label>
+				<input name="dmMoisture" class="easyui-textbox" required="true" tabindex="11">
+			</div>
+			<div class="fitem">
+				<label>粮食性质:</label>
+				<select name="vGrainProperty" class="easyui-combobox" style="width:183px;" editable="false" prompt="请选择" required="required" tabindex="2">
+					<%
+					var xingzhiList=@com.zkzy.szlk.tag.ComboboxTag.findRecord("xingzhi");
+					for(record in xingzhiList){
+					%>
+					<option value="${record.value}">${record.name}</option>
+					<%
+					}
+					%>
+				</select>
+				<label>杂质:</label>
+				<input name="dmImpurity" class="easyui-textbox" required="true" tabindex="12">
+			</div>
+			<div class="fitem">
+				<label>粮食类别:</label>
+				<select name="vGrainType" class="easyui-combobox" style="width:183px;" editable="false" prompt="请选择" required="required"  tabindex="3" data-options="onChange:changeFenlei">
+					<%
+					var personList=@com.zkzy.szlk.tag.ComboboxTag.findRecord("leibie");
+					for(record in personList){
+					%>
+					<option value="${record.value}">${record.name}</option>
+					<%
+					}
+					%>
+				</select>
+				<label>不完善粒:</label>
+				<input name="dmUnPrefect" class="easyui-textbox" required="true" tabindex="13">
+			</div>
+			<div class="fitem">
+				<label>粮食品种:</label>
+				<select name="vGrainSubType" id="vGrainSubType" class="easyui-combobox" style="width:183px;" editable="false" prompt="请选择" required="required" tabindex="4">
+					<%
+					var pinzhongList=@com.zkzy.szlk.tag.ComboboxTag.findRecord("pinzhong");
+					for(record in pinzhongList){
+					%>
+					<option value="${record.value}">${record.name}</option>
+					<%
+					}
+					%>
+				</select>
+				<label>容重:</label>
+				<input name="dmGamma" class="easyui-textbox" required="true" tabindex="14">
+			</div>
+			<div class="fitem">
+				<label>库存重量:</label>
+				<input name="dmOpeningStock" class="easyui-textbox" tabindex="5" required="required">
+				<label>整精米率:</label>
+				<input name="dmMilledRice" class="easyui-textbox" required="true" tabindex="15">
+			</div>
+			<div class="fitem">
+				<label>收获年度:</label>
+				<input name="vHavestPeriod" class="easyui-textbox" tabindex="6" required="required">
+				<label>黄粒米率:</label>
+				<input name="dmYellowRiceKernel" class="easyui-textbox" required="true" tabindex="16">
+			</div>
+			<div class="fitem">
+				<label>包装方式:</label>
+				<select name="vPackageType" class="easyui-combobox" style="width:183px;" editable="false" prompt="请选择" required="required" tabindex="7">
+					<%
+					var baozhuangList=@com.zkzy.szlk.tag.ComboboxTag.findRecord("baozhuang");
+					for(record in baozhuangList){
+					%>
+					<option value="${record.value}">${record.name}</option>
+					<%
+					}
+					%>
+				</select>
+				<label>出糙率:</label>
+				<input name="dmBRRatio" class="easyui-textbox" required="true" tabindex="17">
+			</div>
+			<div class="fitem">
+				<label>产地:</label>
+				<input name="vHarvestPosition" class="easyui-textbox" required="true" tabindex="18">
+				<label>谷外糙米:</label>
+				<input name="dmVBRRatio" class="easyui-textbox" required="true" tabindex="18">
+			</div>
+			<div class="fitem">
+				<label>入库时期:</label>
+				<input name="dtTime" class="easyui-datebox" tabindex="9" editable="false" required="required">
+				<label>色泽气味:</label>
+				<select name="dmOdor" class="easyui-combobox" style="width:183px;" editable="false" prompt="请选择" required="required" tabindex="19">
+					<option value="1">正常</option>
+					<option value="0">不正常</option>
+				</select>
+			</div>
+			<div class="fitem">
+				<label style="visibility: hidden;"></label>
+				<input style="visibility: hidden;">
+				<label>硬度:</label>
+				<input name="dmHardness" class="easyui-textbox" required="true" tabindex="20">
+			</div>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveBaozhuang()" style="width:90px">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
+	</div>
+
+	<script type="text/javascript">
+		var url;
+		function newBaozhuang(){
+			$('#dlg').dialog('open').dialog('center').dialog('setTitle','新增初始存粮');
+			$('#fm').form('clear');
+			url = '${ctxPath}/yewu/saveChushi.do';
+		}
+		function editBaozhuang(){
+			var row = $('#dg').datagrid('getSelected');
+			if (!row){
+				$.messager.alert('提示',"请先选择一条数据!");
+			}
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$('#dlg').dialog('open').dialog('center').dialog('setTitle','编辑初始存粮');
+				$('#fm').form('load',row);
+				url = '${ctxPath}/yewu/updateChushi.do';
+			}
+		}
+		function saveBaozhuang(){
+			$('#fm').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(result){
+					var result = eval('('+result+')');
+					if (result.errorMsg){
+						$.messager.show({
+							title: 'Error',
+							msg: result.errorMsg,
+							width:400,
+							height:200
+						});
+					} else {
+						$('#dlg').dialog('close');		// close the dialog
+						$('#dg').datagrid('reload');	// reload the user data
+					}
+				}
+			});
+		}
+		
+		function destroyBaozhuang(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$.messager.confirm('确认提示','确认删除初始存粮信息['+row.cangfangmingcheng+']?',function(r){
+					if (r){
+						$.post('${ctxPath}/yewu/deleteChushi.do',row,function(result){
+							if (result.ret){
+								$('#dg').datagrid('reload');	// reload the user data
+							} else {
+								$.messager.show({	// show error message
+									title: 'Error',
+									msg: result.errorMsg
+								});
+							}
+						},'json');
+					}
+				});
+			}
+		}
+		
+		var changeFenlei=function(newValue,oldValue){
+			$("#vGrainSubType").combobox('reload',"${ctxPath}/combobox/findRecord/pinzhong-"+newValue);
+		}
+
+	</script>
+	<style type="text/css">
+		#fm{
+			margin:0;
+			padding:10px 30px;
+		}
+		.ftitle{
+			font-size:14px;
+			font-weight:bold;
+			padding:5px 0;
+			margin-bottom:10px;
+			border-bottom:1px solid #ccc;
+		}
+		.fitem{
+			margin-bottom:5px;
+		}
+		.fitem label{
+			display:inline-block;
+			width:80px;
+		}
+		.fitem input{
+			width:160px;
+		}
+		.easyui-dialog input{
+			width:180px;
+		}
+		.fitem label:nth-of-type(2){
+			margin-left:30px;
+		}
+	</style>
+</body>
+</html>

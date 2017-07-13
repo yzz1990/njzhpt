@@ -1,0 +1,402 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var obj={};
+obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.queryquxiancontent({"xzqhdm":parameter.xzqhdm,page:1,rows:1}).getList().get(0);
+var xzqhdm = parameter.xzqhdm;
+%>
+<style type="text/css">
+	.content{
+		width:700px;
+		overflow:visible;
+	}
+	.ttt{
+		width:160px;
+		height:300px;
+		float:left;
+	}
+</style>
+
+<script type="text/javascript">
+	$(window).load(function() { 
+		if($(".textcontent").text().trim() ==null || $(".textcontent").text().trim() =="" ){
+			$(".textcontent").css('display','none'); 
+	    	$(".ccwjj").css('display','block'); 
+		}else{
+			$(".textcontent").css('display','block'); 
+	    	$(".ccwjj").css('display','none'); 
+		}
+	});
+	
+	$(function(){
+		var zcr = 0;
+		var kcxm = 0;
+		var kcsd = 0;
+		var qyxz = [];
+		var qysl = [];
+		var myChart = echarts.init(document.getElementById('zcr'));
+		var myChart1 = echarts.init(document.getElementById('zkc'));
+		var myChart2 = echarts.init(document.getElementById('qiyeshu'));
+		
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/findzcr',
+			type:'post',
+			data:{"xzqhdm":"${xzqhdm}"},
+			dataType:'json',
+			success:function(data){
+				zcr = data.sum;
+				$.ajax({
+					url:'${ctxPath}/shouchukeshihua/findxskucun',
+					type:'post',
+					data:{"xzqhdm":"${xzqhdm}"},
+					dataType:'json',
+					success:function(data){
+						for(var i = 0; i < data.length; i++){
+							if(data[i].vpc.substring(0,3) == "111"){
+								kcxm += parseFloat(data[i].sum/1000);
+							}
+							if(data[i].vpc.substring(0,3) == "113"){
+								kcsd += parseFloat(data[i].sum/1000);
+							}
+						}
+						
+						$.ajax({
+							url:'${ctxPath}/shouchukeshihua/findqiyexinzhi',
+							type:'post',
+							data:{"xzqhdm":"${xzqhdm}"},
+							dataType:'json',
+							success:function(data){
+								for(var j = 0; j < data.length; j++){
+									qyxz.push(data[j].qyxzmc);
+									qysl.push(data[j].co);
+								}
+								
+								
+
+								
+								option = {
+								    tooltip : {
+								        trigger: 'axis',
+								        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+								            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+								        }
+								    },
+								    
+								    grid: {
+								        left: '3%',
+								        right: '4%',
+								        bottom: '3%',
+								        containLabel: true
+								    },
+								    xAxis:  {
+								    	type: 'category',
+								        data: ['总仓容']
+								        
+								    },
+								    yAxis: {
+								    	type: 'value'
+								    },
+								    series: [
+								        {
+								            name: '总仓容',
+								            type: 'bar',
+								            stack: '总量',
+								            label: {
+								                normal: {
+								                    show: true,
+								                    position: 'insideRight'
+								                }
+								            },
+								            data: [zcr]
+								        },
+								        
+								        
+								    ]
+								};
+								option1 = {
+									    tooltip : {
+									        trigger: 'axis',
+									        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+									            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+									        }
+									    },
+									   
+									    grid: {
+									        left: '3%',
+									        right: '4%',
+									        bottom: '3%',
+									        containLabel: true
+									    },
+									    xAxis:  {
+									        
+								        	 type: 'category',
+										     data: ['库存']
+									    },
+									    yAxis: {
+									    	type: 'value'
+									    },
+									    series: [
+									        {
+									            name: '小麦',
+									            type: 'bar',
+									            stack: '总量',
+									            label: {
+									                normal: {
+									                    show: true,
+									                    //position: 'insideRight'
+									                }
+									            },
+									            data: [kcxm.toFixed(2)]
+									        },
+									        {
+									            name: '水稻',
+									            type: 'bar',
+									            stack: '总量',
+									            label: {
+									                normal: {
+									                    show: true,
+									                    //position: 'insideRight'
+									                }
+									            },
+									            data: [kcsd.toFixed(2)]
+									        },
+									        
+									       
+									    ]
+									};
+								
+								option2 = {
+									    tooltip : {
+									        trigger: 'axis',
+									        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+									            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+									        }
+									    },
+									    grid: {
+									        left: '3%',
+									        right: '4%',
+									        bottom: '3%',
+									        containLabel: true
+									    },
+									    xAxis:  {
+									    	type: 'category',
+									        data: ['数量'],
+									    },
+									    yAxis: {
+									        type: 'value'
+									    },
+									    series: [
+									        	{
+										            name: qyxz[0],
+										            type: 'bar',
+										            stack: '总量',
+										            label: {
+										                normal: {
+										                    show: true,
+										                    position: 'insideRight'
+										                }
+										            },
+										            data: [qysl[0]],
+										        },
+										        {
+										            name: qyxz[1],
+										            type: 'bar',
+										            stack: '总量',
+										            label: {
+										                normal: {
+										                    show: true,
+										                    position: 'insideRight'
+										                }
+										            },
+										            data: [qysl[1]],
+										        },
+										        {
+										            name: qyxz[2],
+										            type: 'bar',
+										            stack: '总量',
+										            label: {
+										                normal: {
+										                    show: true,
+										                    position: 'insideRight'
+										                }
+										            },
+										            data: [qysl[2]],
+										        },
+										        {
+										            name: qyxz[3],
+										            type: 'bar',
+										            stack: '总量',
+										            label: {
+										                normal: {
+										                    show: true,
+										                    position: 'insideRight'
+										                }
+										            },
+										            data: [qysl[3]],
+										        },
+										        {
+										            name: qyxz[4],
+										            type: 'bar',
+										            stack: '总量',
+										            label: {
+										                normal: {
+										                    show: true,
+										                    position: 'insideRight'
+										                }
+										            },
+										            data: [qysl[4]],
+										        },
+									        
+									        
+									       
+									    ]
+									};
+							
+
+								/*
+								option = {
+								    tooltip : {
+								        trigger: 'axis',
+								        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+								            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+								        }
+								    },
+								    legend: {
+								        data: ['直接访问', '邮件营销','联盟广告','视频广告','搜索引擎']
+								    },
+								    grid: {
+								        left: '3%',
+								        right: '4%',
+								        bottom: '3%',
+								        containLabel: true
+								    },
+								    xAxis:  {
+								        type: 'value'
+								    },
+								    yAxis: {
+								        type: 'category',
+								        data: ['周一','周二','周三','周四','周五','周六','周日']
+								    },
+								    series: [
+								        {
+								            name: '直接访问',
+								            type: 'bar',
+								            stack: '总量',
+								            label: {
+								                normal: {
+								                    show: true,
+								                    position: 'insideRight'
+								                }
+								            },
+								            data: [320, 302, 301, 334, 390, 330, 320]
+								        },
+								        {
+								            name: '邮件营销',
+								            type: 'bar',
+								            stack: '总量',
+								            label: {
+								                normal: {
+								                    show: true,
+								                    position: 'insideRight'
+								                }
+								            },
+								            data: [120, 132, 101, 134, 90, 230, 210]
+								        },
+								        {
+								            name: '联盟广告',
+								            type: 'bar',
+								            stack: '总量',
+								            label: {
+								                normal: {
+								                    show: true,
+								                    position: 'insideRight'
+								                }
+								            },
+								            data: [220, 182, 191, 234, 290, 330, 310]
+								        },
+								        {
+								            name: '视频广告',
+								            type: 'bar',
+								            stack: '总量',
+								            label: {
+								                normal: {
+								                    show: true,
+								                    position: 'insideRight'
+								                }
+								            },
+								            data: [150, 212, 201, 154, 190, 330, 410]
+								        },
+								        {
+								            name: '搜索引擎',
+								            type: 'bar',
+								            stack: '总量',
+								            label: {
+								                normal: {
+								                    show: true,
+								                    position: 'insideRight'
+								                }
+								            },
+								            data: [820, 832, 901, 934, 1290, 1330, 1320]
+								        }
+								    ]
+								};
+								*/
+								
+								
+								myChart.setOption(option);
+								myChart1.setOption(option1);
+								myChart2.setOption(option2);
+								
+								
+							},
+							error:function(){
+								alert("加载数据失败");
+							}
+						});
+						
+						
+						
+						
+					},
+					error:function(){
+						alert("加载数据失败");
+					}
+				});
+				
+				
+				
+			},
+			error:function(){
+				alert("加载数据失败");
+			}
+		});
+		
+	});
+</script>
+
+
+<div class="textcontent" style="height:60%;overflow-x:hidden; overflow-y:auto;word-wrap: break-word;word-break: normal;font-size: 15px;text-indent:2em;" >
+		${obj.textcontent}
+</div>
+
+<div class="ccwjj" style="height:60%;word-wrap: break-word;word-break: normal;font-size: 20px;text-align:center;line-height:200px;display:none">
+	-----此处无简介-----
+</div>
+
+<div class="tubiao">
+		<div id="zcr" class="ttt">
+	
+		</div>
+		<div id="zkc" class="ttt">
+			
+		</div>
+		<div id="qiyeshu" class="ttt">
+			
+		</div>
+		
+	</div>
+
+<script type="text/javascript">
+</script>
+<%
+	}
+%>

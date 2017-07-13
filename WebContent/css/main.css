@@ -1,0 +1,29 @@
+*{padding:0; margin:0; border: none;}
+html {height:100%; max-height:100%; background:#fff; font-size:12px; }
+body {height:100%; line-height: 1em; max-height:100%;overflow: hidden; margin: 0;border: none;padding: 0;}
+div{padding:0; margin:0; border: none;}
+h3{font-size: 14px;}
+img{
+    border-style:none;
+}
+.inner,#innerFooter{
+	border-color:#DDDDDD;
+}
+#header {position:absolute;top:0; left:0; display:block; width:100%; height:80px;  z-index: 21;}
+#footer {position:absolute;bottom:0; left:0px; display:block; width:100%; height:30px; z-index: 21;background: url(../images/undercolor.png) repeat}
+#innerHeader{margin:0px 0px; height: 60px; background-color: #efefef;}
+#innerFooter{margin:0px 0px;padding:6px;border-width:0px;border-style: solid;}
+#selector {position:absolute;left:0px;width:86px;}
+#gird{position:absolute;left: 86px;right: 0px;}
+#xbar{position: absolute; top:70px; bottom: 60px; left: 180px;width:5px; cursor: e-resize;}
+#selector{top:80px; bottom:0px;z-index: 16;}
+#gird{top:80px;bottom: 30px; right:0px; z-index: 9;}
+#selector .inner{height: 100%;border: none;background: url(../images/under02.png)  repeat-y;}
+#selector .inner div{padding-top: 10px;}
+.inner p a{ display:block; float:left; margin-right:10px;}
+#pages .inner{line-height:24px;height:24px;}
+#gird .inner{height: 100%;overflow: auto;}
+.inner{border-width:0px;border-style: solid;padding:0px;background-color:#fff;overflow:auto;margin: 0;}
+* html #selector{height:100%; top:0; bottom:0; border-top:126px solid #fff; border-bottom:60px solid #fff;}
+* html #gird{height:100%; top:0; bottom:0; border-top:150px solid #fff; border-bottom:96px solid #fff;}
+* html #xbar{height:100%; top:0; bottom:0; border-top:70px solid #fff; border-bottom:60px solid #fff;}

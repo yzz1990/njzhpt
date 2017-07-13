@@ -1,0 +1,219 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(5){
+		width: 100px;
+	}
+	.table-striped>tbody>tr>td:nth-child(1){
+		text-align: left;
+	}
+	.table-striped>tbody>tr>td:nth-child(2){
+		text-align: left;
+	}
+    </style>
+<div class="panel panel-default">
+	<div class="panel-heading" ${parameter.isedit=="1"?" hidden"}>
+		<div class="form-inline"> </div>
+		<!-- 一个页面导入对应一个liucid -->
+		<input type="hidden" id="liucid" name="liucid" value="e583be2bfa404fe4b79dadac566e2eb8">
+		<input type="hidden" id="qyzzjgdm222" name="qyzzjgdm222" value="${qyzzjgdm}">
+		<a class="btn btn-success btn-xs" type="button" onclick="addKudian()" style="margin-left:95%" ><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增</a>
+		<!-- 
+		<a class="btn btn-success btn-xs pull-right" type="button" onclick="daoru()"><i class="fa fa-indent" aria-hidden="true" ></i>&nbsp;导入</a>
+		 -->
+	</div>
+	<div class="panel-body" style="padding: 0">
+			<table id="kudian" class="table table-striped table-hover table-bordered datatables" data-url="${qyzzjgdm!=null?ctxPath+'/jibenxinxi/findKudian?qyzzjgdm='+qyzzjgdm:''}" ></table>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+var datatableKudian;
+$(function(){
+	
+	datatableKudian = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "kdmc",
+				"title" : "库点名称",width:100,
+				"render": function (data,type,row,meta) {	
+					return '<a href="javascript:void(0)" onclick="chakan(\''+row["ID"]+'\',\''+row["qyzzjgdm"]+'\',\''+row["kdbm"]+'\')" style="text-decoration: none;" >'+data+'</a>';
+				}
+			},{
+				"data" : "xxdz",
+				"title" : "地址",width:140
+			},{
+				"data" : "kdlxmc",
+				"title" : "库点类型",width:140
+			},{
+				"data" : "tbr",
+				"title" : "填报人",width:100
+			}
+			<%
+				if(parameter.isedit!="1"){
+			%>
+			,{
+				"title":"操作",
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upKudian(\''+row["ID"]+'\',\''+row["qyzzjgdm"]+'\',\''+row["kdbm"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delKudian(\''+row["qyzzjgdm"]+'\',\''+row["kdbm"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+			<%
+				}
+            %>
+			]
+	});
+});
+
+
+var qyzzjgdm = $("#qyzzjgdm222").val();
+var dialogKudianAdd;
+function addKudian(){
+	
+	var xian=parent.document.getElementById('if1').contentWindow.$("#xian").val();
+	var shi=parent.document.getElementById('if1').contentWindow.$("#shi").val();
+	var sheng=parent.document.getElementById('if1').contentWindow.$("#sheng").val();
+	dialogKudianAdd=top.BootstrapDialog.show({
+	    title: '新增库点信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0" name="kudianedit" id="kudianedit" style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/jibenxinxi/kudianxinxi_zsg.html?qyzzjgdm='+qyzzjgdm+'&xian='+xian+'&shi='+shi+'&sheng='+sheng+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+	
+}
+
+
+var dialog1;
+function upKudian(ID,qyzzjgdm,kdbm){
+	var xian=parent.document.getElementById('if1').contentWindow.$("#xian").val();
+	var shi=parent.document.getElementById('if1').contentWindow.$("#shi").val();
+	var sheng=parent.document.getElementById('if1').contentWindow.$("#sheng").val();
+	dialog1=top.BootstrapDialog.show({
+	    title: '编辑库点信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0" name="editKudian" style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/jibenxinxi/kudianxinxi_zsg.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&ID='+ID+'&xian='+xian+'&shi='+shi+'&sheng='+sheng+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+	
+}
+
+
+var dialog2;
+function chakan(ID,qyzzjgdm,kdbm){
+	var xian=parent.document.getElementById('if1').contentWindow.$("#xian").val();
+	var shi=parent.document.getElementById('if1').contentWindow.$("#shi").val();
+	var sheng=parent.document.getElementById('if1').contentWindow.$("#sheng").val();
+	dialog2=top.BootstrapDialog.show({
+	    title: '查看库点信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0" name="editKudian" style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/jibenxinxi/kudianxinxi_chakan.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&ID='+ID+'&xian='+xian+'&shi='+shi+'&sheng='+sheng+'&isedit=${parameter.isedit}"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+	
+}
+
+
+function edit(){
+	dialog1.close();
+	datatableKudian.ajax.reload(null,true);
+	parent.window.edit();
+}
+function add(){
+	dialogKudianAdd.close();
+	datatableKudian.ajax.reload(null,true);
+}
+
+function delKudian(qyzzjgdm,kdbm){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/jibenxinxi/delKudian',
+			type:'post',
+			data:{'qyzzjgdm':qyzzjgdm,'kdbm':kdbm},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatableKudian.ajax.reload(null,true);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+function daoru(){
+	var liucid = $("#liucid").val();
+	dialog1=top.BootstrapDialog.show({
+	    title: '导入',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/daoru/biaoqianye_kudian.html?liucid='+liucid+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+</script>
+<%
+	}
+%>

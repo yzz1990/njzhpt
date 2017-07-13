@@ -1,0 +1,100 @@
+package com.zkzy.njzhpt.config;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.jfinal.core.Const;
+import com.zkzy.njzhpt.controller.*;
+import org.beetl.ext.jfinal.BeetlRenderFactory;
+
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.config.Constants;
+import com.jfinal.config.Handlers;
+import com.jfinal.config.Interceptors;
+import com.jfinal.config.JFinalConfig;
+import com.jfinal.config.Plugins;
+import com.jfinal.config.Routes;
+import com.jfinal.kit.PropKit;
+import com.zkzy.framework.controller.FrameworkController;
+import com.zkzy.jfinal.plugin.QuartzPlugin;
+import com.zkzy.njzhpt.bo.PeizhiBO;
+import com.zkzy.njzhpt.interceptor.AuthorityInterceptor;
+import com.zkzy.njzhpt.interceptor.JfinalSkipHandler;
+
+public class NjzhptConfig extends JFinalConfig {
+	@Override
+	public void configConstant(Constants arg0) {
+		//默认10M,此处设置为最大1000M
+		arg0.setMaxPostSize(100* Const.DEFAULT_MAX_POST_SIZE);
+		arg0.setDevMode(true);
+		BeetlRenderFactory beetl = new BeetlRenderFactory();
+		arg0.setMainRenderFactory(beetl);
+		// 设置主配置文件
+		PropKit.use("njzhpt.txt");
+	}
+
+	@Override
+	public void configHandler(Handlers arg0) {
+		arg0.add(new JfinalSkipHandler());
+	}
+
+	@Override
+	public void configInterceptor(Interceptors arg0) {
+		arg0.add(new AuthorityInterceptor());
+	}
+
+	@Override
+	public void configPlugin(Plugins arg0) {
+		SqlUtil.initDb(arg0);
+		arg0.add(new QuartzPlugin());
+
+	}
+	@Override
+	public void configRoute(Routes arg0) {
+		arg0.add("/", MainController.class, "/WEB-INF/web/");
+		arg0.add("/login", LoginController.class, "/WEB-INF/web/");
+		arg0.add("/framework", FrameworkController.class,
+				"/WEB-INF/web/framework");
+		arg0.add("/remote", RemoteController.class, "/WEB-INF/web/");
+		arg0.add("/chubeiliangjihua", ChuBeiLiangController.class,
+				"/WEB-INF/web/");
+		arg0.add("/lunhuan", LunHuanGuanLiController.class, "/WEB-INF/web/");
+		arg0.add("/qitiJC", QiTiJCController.class, "/WEB-INF/web/");
+		arg0.add("/chubeiliangJH", ChuBeiLiangJHController.class,
+				"/WEB-INF/web/");
+		arg0.add("/chengpinliang", ChengPinLiangController.class,
+				"/WEB-INF/web/");
+		arg0.add("/zhiliangGL", ZhiLiangGLController.class, "/WEB-INF/web/");
+		arg0.add("/jibenxinxi", JibenxinxiController.class, "/WEB-INF/web");
+		arg0.add("/cangchugl", CangchuglController.class, "/WEB-INF/web/");
+		arg0.add("/shouchukeshihua", ShouchukeshihuaController.class,
+				"/WEB-INF/web/shouchukeshihua/");
+		arg0.add("/excel", ExcelController.class, "/WEB-INF/web");
+		arg0.add("/tianqi", TianqiController.class, "/WEB-INF/web/framework");
+		arg0.add("/yewu", YewuController.class, "/WEB-INF/web/yewu");
+		arg0.add("/renyuan", RenyuanController.class, "/WEB-INF/web/oa");
+		arg0.add("/jiage", JiageController.class, "/WEB-INF/web/jiage");
+		arg0.add("/quxian", QuxianController.class,
+				"/WEB-INF/web/quxianpingtai");
+		arg0.add("/zonghe", ZongHeController.class, "/WEB-INF/web/zonghefenxi");
+		arg0.add("/zhiliangzs", ZhiliangzsController.class,
+				"/WEB-INF/web/zhiliangzs");
+		arg0.add("/shoujian", MailxinxiController.class, "/WEB-INF/web/nbyj");
+		arg0.add("/emergency", EmergencyController.class,
+				"/WEB-INF/web/emergency");
+		arg0.add("/gonggong", GonggongController.class,
+				"/WEB-INF/web/gonggongfuwu");
+		arg0.add("/oa",JibenxinxiController.class, "/WEB-INF/web/oa");
+		arg0.add("/securityedu",SecurityEducationController.class, "/WEB-INF/web/cangchuguanli/securityEdu");
+		arg0.add("/app",AppController.class, "/WEB-INF/web");
+	}
+
+	@Override
+	public void afterJFinalStart() {
+		Map<String, Object> sharedVars = new HashMap<String, Object>();
+		sharedVars.put("resourcePath", PropKit.get("resourcePath"));
+		sharedVars.put("qykdimgPath", PropKit.get("qykdimgPath"));
+		sharedVars.putAll(new PeizhiBO().getTProperty().getColumns());
+		BeetlRenderFactory.groupTemplate.setSharedVars(sharedVars);
+	}
+}

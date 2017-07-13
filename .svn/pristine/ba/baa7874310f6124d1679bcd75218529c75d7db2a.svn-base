@@ -1,0 +1,96 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+    </style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="form-inline pull-right">
+						<a href="${ctxPath}/cangchuguanli/yewuguanli/churuku.html" class="btn btn-primary btn-sm" type="button">出入库</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/tongfengxinxi.html" class="btn btn-primary btn-sm" type="button">通风作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/lengquexinxi.html" class="btn btn-primary btn-sm" type="button">冷却作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/xunzhengxinxi.html" class="btn btn-primary btn-sm" type="button">熏蒸作业</a>
+				</div>
+				<div class="form-inline" style="float: left;">
+					<label>出入库:</label>
+					<select class="form-control input-sm" name="vDirection" id="vDirection" placeholder="出入库" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">
+						<option>入库</option>
+						<option>出库</option>
+					</select>	
+					<label>粮食类别:</label>
+					<input class="form-control input-sm" name="lslb" id="lslb" placeholder="粮食类别" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>粮食性质:</label>
+					<input class="form-control input-sm" name="lsxz" id="lsxz" placeholder="粮食性质" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-sm" type="button" onclick="doSearch()">查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findChuruku"></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "vSwiftNumber",
+				"title" : "流水号"
+			},{
+				"data" : "vDirection",
+				"title" : "出入库标识"
+			},{
+				"data" : "dtRegistrateTime",
+				"title" : "报港时间"
+			},{
+				"data" : "vViechelNumber",
+				"title" : "车船号",
+			},{
+				"data" : "lsxz",
+				"title" : "粮食性质",
+			},{
+				"data" : "lslb",
+				"title" : "粮食类别",
+			},{
+				
+				"title" : "粮食品种",
+			},{
+				"data" : "vProvinceCode",
+				"title" : "产地",
+			},{
+				"data" : "vCustomerCode",
+				"title" : "货主名",
+			},{
+				"data" : "dmCheckNumber",
+				"title" : "结算金额",
+			}
+			]
+	});
+	
+});
+
+
+function doSearch(){
+	var vDirection = $("#vDirection").val();
+	var lsxz = $("#lsxz").val();
+	var lslb = $("#lslb").val();
+	document.querySelector('.datatables').dataset.queryparam="&vDirection="+vDirection+"&lsxz="+lsxz+"&lslb="+lslb;
+	datatable.ajax.reload(null,false);
+}
+
+</script>
+<%
+	}
+%>

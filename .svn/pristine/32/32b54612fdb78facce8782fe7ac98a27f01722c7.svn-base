@@ -1,0 +1,87 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<title>jQuery自动轮播图片</title>
+		<link rel="stylesheet" href="${ctxPath}/css/assets/css/style.css">
+		<script src="${ctxPath}/css/assets/js/jquery-1.8.3.min.js"></script> 
+	    <script src="${ctxPath}/css/assets/js/slider.js"></script>     
+	    <script type="text/javascript" src="${ctxPath}/css/assets/sysvar.js"></script>
+	</head>	
+	<style>
+		.cssJJ {
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    width: 20em;
+		    font-family: 微软雅黑;
+		    font-size: 16px;
+		    color: #000000;
+		}
+		.slider{
+			height:150px;
+		}
+	
+	</style>
+	<script type="text/javascript">
+	function initHTML(){
+		
+		var imgHTML = "";
+	    imgHTML += "<div class='slide' style='width:350px;height:100%;'>" +
+	    	"<img src='../..${decode(strutil.contain(parameter.kdqmpath,'upload'),true,'','/upload')+parameter.kdqmpath}' width='350px' height='150px'></div>";
+		imgHTML += "<div class='slide' style='width:350px;height:100%;'>" +
+	    	"<img src='../..${decode(strutil.contain(parameter.kdsypath,'upload'),true,'','/upload')+parameter.kdsypath}' width='350px' height='150px'></div>";
+	    	
+				
+		$("#sliderwrapper").html(imgHTML);
+		Slider.init({
+			target: $('.slider'),
+			time: 3000
+		});
+	}
+	
+	$(function(){
+		$.ajax({
+		    type: "POST",
+		    url: "${ctxPath}/quxian/getqyinfo",
+		    dataType: "json",
+		    data:{qyzzjgdm:"${parameter.qyzzjgdm}",kdbm:"${parameter.kdbm}"},
+		    success:function(data){		
+				$("#jjxx").html("该库为"+data[0].kdmc+"，地址位于"+data[0].xxdz+"，占地面积"+parseFloat(data[0].zdmj)+"㎡，仓房总仓容"+parseFloat(data[0].cfzcr)+"吨。"
+						+"<a href='#' onclick=\"showMoreInfo('"+data[0].qyzzjgdm+"','"+data[0].kdbm+"')\" style='color:#295786'>详情</a>");
+		    }
+		});
+		
+	});
+	var dialog1;
+	function showMoreInfo(qyzzjgdm,kdbm){
+		dialog1=top.BootstrapDialog.show({
+		    title: '库点信息',
+			closeByBackdrop: true,
+		    message:$('<iframe id="a" name="a" frameborderno="0"  style="width:100%;height:100%;overflow: hidden;" frameborder="0" scrolling="yes" src="${ctxPath}/quxian/kudian?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'"/>'),
+		    onshow:function(dlg){
+		    	
+	       	dlg.$modalDialog.css("width","1000px");//modal-dialog
+	       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+	       },
+	       buttons: [{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-danger btn-xs'
+	       }]
+		});
+	}
+	</script>
+	<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload='initHTML()'>	
+		<div id="slider" class="slider">
+		  <div class="slider-container">
+		    <div id="sliderwrapper" class="slider-wrapper">	
+		    	</div>
+		  </div>
+		</div>
+		<div class="cssJJ" style="width:352px;height:120px;margin-top:160px;text-align: left;text-indent: 2em;">
+		 	<label id="jjxx"></label>
+		</div>
+	</body>
+</html>

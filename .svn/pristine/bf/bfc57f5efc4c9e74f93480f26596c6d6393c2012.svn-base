@@ -1,0 +1,272 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:200px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+.rowtwo{
+	background-color: #B5DCFF;
+}
+
+
+</style>
+
+
+<script type="text/javascript">
+
+var qyzzjgdm;
+var kdbm;
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+
+$(window).load(function() {
+	$(".cjd-select").select2();
+});
+
+(function ($) {
+     $.getUrlParam = function (name) {
+           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if (r != null) return unescape(r[2]); return null;
+       }
+   })(jQuery);
+   
+$(function() {
+	
+	$.ajax({
+		url:'${ctxPath}/zhiliangzs/queryrukudj.do',
+		type:'post',
+		data:{"page":1,"rows":1000},
+		dataType:'json',
+		success:function(data){
+			var pz = [];
+			var op = '<option value="请选择">请选择</option>';
+			
+			$("#hwdm").append(op);
+			$("#hwmc").append(op);
+			$("#lspz").append(op);
+			
+			for(var i = 0; i < data.list.length; i++){
+				if(!pz.in_array(data.list[i].liangshipz) && (data.list[i].liangshipz != null)){
+					pz.push(data.list[i].liangshipz);
+				}
+				var opqy = '<option value = "'+data.list[i].huoweidm+'">'+data.list[i].huoweidm+'</option>';
+				var opdm = '<option value = "'+data.list[i].huoweimc+'">'+data.list[i].huoweimc+'</option>'
+				$("#hwdm").append(opqy);
+				$("#hwmc").append(opdm);
+			}
+			
+			for(var j = 0 ; j < pz.length; j++){
+				var opqz = '<option value = "'+pz[j]+'">'+pz[j]+'</option>';
+				$("#lspz").append(opqz);
+			}
+		},
+		error:function(){
+			alert("加载下拉框失败");
+		}
+	});
+
+	
+	
+	//加载入库登记
+	datatable = $('.table-ruku').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huoweidm"]+'</div>';	
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["huoweimc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["shengchengsj"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["zhichudc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["liangshixz"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["liangqgsjg"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["liangshipz"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["dmstock"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["grade"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["chandimc"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["nianfen"]+'</div>';
+					return div;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var div = '<div>'+row["rukudata"]+'</div>';
+					return div;								
+				}
+			}
+			
+			]
+	});
+});
+
+
+
+
+//条件查询
+function doSearch(){
+	
+	var hwdm = $("#hwdm").val();
+	var hwmc = $("#hwmc").val();
+	var lspz = $("#lspz option:selected").text();
+
+	
+	var querystr = "";
+	if(hwdm != null && hwdm != "" && hwdm != "请选择"){
+		querystr += '&huoweidm='+hwdm;
+	}
+	if(hwmc != null && hwmc != "" && hwmc != "请选择"){
+		querystr += '&huoweimc='+hwmc;
+	}
+	if(lspz != null && lspz != "" && lspz != "请选择"){
+		querystr += '&liangshipz='+lspz;
+	}
+	
+	$(".table-ruku").attr("data-queryparam",querystr);
+	datatable.ajax.reload(null,true);
+	
+}
+</script>
+
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px; margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>入库信息登记</b></span>
+	</div>
+<div class="panel-heading">
+	<div class="form-inline">
+		<div class="chaxuntiaojian" style="float:left;">
+			<label class="cjd-label" style="margin-top: 3px">货位代码:</label>
+			<input id="hwdm" style="height: 28px;">
+			<!--  
+			<select id="hwdm" class="form-control cjd-select" style="width:150px;">
+			</select>	
+			-->
+			<label style="margin-left:20px">货位名称:</label>
+			<input id="hwmc" style="height: 28px;">
+			<!--  
+			<select id="hwmc" class="form-control cjd-select" style="width:150px;">
+			</select>
+			-->
+			<label style="margin-left:20px">粮食品种</label>
+			<select id="lspz" class="form-control cjd-select" style="width:150px;">
+			</select>
+			<a class="btn btn-xs btn-success" type="button" onclick="doSearch()" style="margin-left:5px; margin-top:2px; "><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px">
+   <!-- 入库质量信息 -->
+   <div class="panel-body">
+   	<div id="div-ruku" >
+   		<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover table-bordered datatables table-ruku" data-url="${ctxPath}/zhiliangzs/queryrukudj.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="1" colspan="1" style="vertical-align:middle">货位代码</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">货位名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">生成时间</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">直储/代储</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">粮食性质</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">粮权归属机构</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">粮食品种</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">数量</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">等级</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">产地名称</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">年份</th>
+	     			<th rowspan="1" colspan="1" style="vertical-align:middle">入库时间</th>
+	 			</tr>
+			</thead>	
+		</table>
+   	</div>
+</div>
+</div>
+</div>
+</div>
+
+<%}%>

@@ -1,0 +1,567 @@
+package com.zkzy.njzhpt.controller;
+
+import com.ggy.common.utils.ParamUtil;
+import com.ggy.common.utils.SqlUtil;
+import com.ggy.common.utils.UserInfo;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.PathKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.tx.Tx;
+import com.jfinal.upload.UploadFile;
+import com.zkzy.framework.bo.FrameworkBO;
+import com.zkzy.framework.dao.FrameworkDAO;
+import com.zkzy.njzhpt.bo.SecurityEducationBo;
+import com.zkzy.njzhpt.dao.SecurityEducationDao;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * Created by Administrator
+ * Date: 2017/5/4
+ * Time: 14:07
+ * Description:安全教育相关的controller
+ */
+public class SecurityEducationController extends Controller {
+	public void index() {
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) SecurityEducationBo.class.getMethod(method, HashMap.class)
+						.invoke(Duang.duang(SecurityEducationBo.class),
+								ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				renderText("FrameworkController");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+
+	}
+
+	public void toHTML() {
+		String url = (String) getAttr("_url_");
+		render(url);
+	}
+
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:13:42
+	 * description:上传文件
+	 */
+	public void uploadFile() {
+		UploadFile uploadFile = this.getFile();
+		File file = uploadFile.getFile();
+		String filename = file.getName();
+		File f = uploadFile.getFile();
+		String newFileName = SqlUtil.uuid() + "." + filename.substring(filename.lastIndexOf(".") + 1);
+		try {
+			if (!new File(f.getAbsolutePath().substring(0, f.getAbsolutePath().lastIndexOf("\\") + 1) + "\\safeEducation\\").exists()) {
+				FileUtils.forceMkdir(new File(f.getAbsolutePath().substring(0, f.getAbsolutePath().lastIndexOf("\\") + 1) + "\\safeEducation\\"));
+			}
+			if (f.renameTo(new File(f.getAbsolutePath().substring(0, f.getAbsolutePath().lastIndexOf("\\") + 1) + "\\safeEducation\\" + newFileName))) {
+				System.out.println("true");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		renderJson(newFileName);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/6
+	 * time:2:32
+	 * description:文件下载
+	 */
+	public void downloadFile() {
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		if (!queryparam.containsKey("filename")) {
+			renderText("参数不全");
+			return;
+		}
+		Record record = Db.find("select * from njpt_knowledgeStructFile where uuidName=?", queryparam.get("filename")).get(0);
+		Integer cliclNums = record.getInt("clickNums") + 1;
+		record.set("clickNums", cliclNums);
+
+		if (Db.update("njpt_knowledgeStructFile", record)) {
+			if(new File(PathKit.getWebRootPath() + "\\upload\\safeEducation\\" + queryparam.get("filename")).exists()) {
+				renderFile(new File(PathKit.getWebRootPath() + "\\upload\\safeEducation\\" + queryparam.get("filename")));
+			}else{
+				renderText("文件不存在！");
+			}
+		} else {
+			renderJson("{'ret':false}");
+		}
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/5
+	 * time:17:14
+	 * description:查找文件
+	 *
+	 * @param param
+	 * @throws Exception
+	 */
+	public void findFile() throws Exception {
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(SecurityEducationBo.class).findFile(queryparam));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/8
+	 * time:13:09
+	 * description:查找知识点
+	 * @throws Exception
+	 */
+	public void findknowledgePoint() throws Exception {
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(SecurityEducationBo.class).findknowledgePoint(queryparam));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/8
+	 * time:17:16
+	 * description:查找题目
+	 * @throws Exception
+	 */
+	public void findsubjects() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(SecurityEducationBo.class).findsubjects(queryparam));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/6
+	 * time:12:38
+	 * description:加载视频
+	 * @throws Exception
+	 */
+	public void loadvideo() throws Exception {
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		if(new File(PathKit.getWebRootPath() + "\\upload\\safeEducation\\" + queryparam.get("url")).exists())
+		{
+			setAttr("url",queryparam.get("url"));
+			render("loadvideo.html");
+		}else{
+			renderText("文件不存在");
+		}
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/6
+	 * time:12:39
+	 * description:判断文件是否存在
+	 * @throws Exception
+	 */
+	public void fileIsExist() throws Exception {
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		if(new File(PathKit.getWebRootPath() + "\\upload\\safeEducation\\" + queryparam.get("url")).exists())
+		{
+			renderText("true");
+		}else{
+			renderText("false");		}
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/6
+	 * time:13:20
+	 * description:保存文件
+	 * @throws Exception
+	 */
+	public void saveFileInfo() throws Exception {
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		UserInfo user=(UserInfo)getAttr("userinfo");
+		queryparam.put("uploadAuther",user.getUser().get("id"));
+		renderJson(Duang.duang(SecurityEducationBo.class).saveFileInfo(queryparam).getData());
+	}
+	/**
+	 * * author:dx
+	 * date:2017/5/6
+	 * time:13:58
+	 * description:判断是否可以删除
+	 */
+	public void candelete(){
+
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		//查找文件记录
+		Record record = Db.findById("njpt_knowledgeStructFile", queryparam.get("id"));
+		if(!((UserInfo)getAttr("userinfo")).getUser().get("id").equals(record.get("uploadAuther")))
+		{
+			renderJson("{\"ret\":false}");
+		}else{
+			renderJson("{\"ret\":true}");
+		}
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/8
+	 * time:14:13
+	 * description:新增或者更新知识点
+	 */
+	public void addOrUpdateKnowledgePoint() throws Exception{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(SecurityEducationBo.class).addOrUpdateKnowledgePoint(queryparam).getData());
+	}
+
+
+	/**
+	 * * author:dx
+	 * date:2017/5/10
+	 * time:12:43
+	 * description:虚拟新增或更新试卷
+	 * @param param
+	 * @return
+	 */
+	public void virtualAddOrUpdatePaper() throws Exception
+	{
+		HashMap<String, Object> param = ParamUtil.getParamMap(this.getParaMap());
+		//获取前台组建试卷的参数 随机出试卷并且放入session中 待用户确认组建试卷后插入数据库
+		//数据校验放在页面
+		Record paperBaseInfo=new Record();
+		paperBaseInfo.setColumns(param);
+		//试卷基本信息放入session
+		setSessionAttr("paperBaseInfo",paperBaseInfo);
+		HashMap<String,Object> queryparam=new HashMap<>();
+		queryparam.put("page",1);
+		queryparam.put("rows",10000);
+		getSubjectsAndSetSession("single",queryparam,param,"singleSelections","singleNums");
+		getSubjectsAndSetSession("multi",queryparam,param,"multiSelections","multiNums");
+		getSubjectsAndSetSession("judge",queryparam,param,"judgeSelections","judgeNums");
+		renderJson("{\"ret\":\"true\"}");
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/10
+	 * time:14:40
+	 * description:	生成题目并且放入session
+	 * @param type  类型:题目的类型 目前三种 single multi judge
+	 * @param queryparam 查询的条件集合
+	 * @param userparam  用户传入的参数集合
+	 * @param selectionKeyOfuserparam 三种类型需要的知识点的集合在userparam中对应的key值
+	 * @param numsKeyOfuserparam 三种类型所需数量在userparam中对应的key值
+	 * @throws Exception
+	 *
+	 * 昨夜西风凋碧树，独上高楼，望尽天涯路
+	 *
+	 */
+	public void getSubjectsAndSetSession(String type,HashMap<String, Object> queryparam,HashMap<String, Object> userparam,String selectionKeyOfuserparam,String numsKeyOfuserparam)throws Exception
+	{
+		queryparam.put("type",type);
+		String[] normalSelections=new String[1];
+		if(userparam.get(selectionKeyOfuserparam) instanceof String[]) {
+			normalSelections = (String[]) userparam.get(selectionKeyOfuserparam);
+		}else{
+			normalSelections[0]=(String)userparam.get(selectionKeyOfuserparam);
+		}
+		List<String> listNormalSelections= Arrays.asList(normalSelections);
+		if(!listNormalSelections.contains("all"))
+		{
+			queryparam.put("knowledgePoint",listNormalSelections);
+		}
+		List<Record> normalResult = SecurityEducationDao.findsubjects(queryparam).getList();
+		//打乱顺序
+		Collections.shuffle(normalResult);
+		if(Integer.parseInt((String)userparam.get(numsKeyOfuserparam))<normalResult.size())
+		{
+			//若是需要的数量小于数据库里对应记录数 则去除多余的题目
+			for(int i=0;i<normalResult.size()-Integer.parseInt((String)userparam.get(numsKeyOfuserparam));i++)
+			{
+				normalResult.remove(i);
+			}
+		}
+		//题目放入session
+		setSessionAttr(selectionKeyOfuserparam,normalResult);
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/10
+	 * time:16:36
+	 * description:新增试卷
+	 *
+	 * 众里寻他千百度，蓦然回首，那人却在灯火阑珊处。
+	 *
+	 */
+	@Before(Tx.class)
+	public void addOrUpdatePaper()
+	{
+		//从session中取出试卷基本信息
+		Record paper=getSessionAttr("paperBaseInfo");
+		paper.set("paperCreateTime", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		paper.remove("multiSelections");
+		paper.remove("singleSelections");
+		paper.remove("judgeSelections");
+		Db.save("njpt_paperTest",paper);
+		//从session中取出题目相关的信息   njpt_paper_subject
+		List<Record> singleSelections=getSessionAttr("singleSelections");
+		List<Record> multiSelections=getSessionAttr("multiSelections");
+		List<Record> judgeSelections=getSessionAttr("judgeSelections");
+		if(singleSelections.size()!=0)
+		{
+			for(Record single:singleSelections)
+			{
+				Db.save("njpt_paper_subject",new Record().set("paperId",paper.get("id")).set("subjectId",single.get("id")));
+			}
+		}
+		if(multiSelections.size()!=0)
+		{
+			for(Record multi:multiSelections)
+			{
+				Db.save("njpt_paper_subject",new Record().set("paperId",paper.get("id")).set("subjectId",multi.get("id")));
+			}
+		}
+		if(judgeSelections.size()!=0)
+		{
+			for(Record judge:judgeSelections)
+			{
+				Db.save("njpt_paper_subject",new Record().set("paperId",paper.get("id")).set("subjectId",judge.get("id")));
+			}
+		}
+		renderJson("{\"ret\":\"true\"}");
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/10
+	 * time:17:29
+	 * description:查找试卷
+	 */
+	public void findpaperTest() throws Exception
+	{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(SecurityEducationBo.class).findpaperTest(queryparam));
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/11
+	 * time:17:58
+	 * description:查找考试批次
+	 * @throws Exception
+	 */
+	public void findPaperBatch() throws Exception
+	{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(SecurityEducationBo.class).findPaperBatch(queryparam));
+	}
+
+	public void findpaperTestData() throws Exception
+	{
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		renderJson(Duang.duang(SecurityEducationBo.class).findpaperTestData(queryparam));
+	}
+
+
+
+	/**
+	 * * author:dx
+	 * date:2017/5/11
+	 * time:11:19
+	 * description:查找出对应的试卷相关信息并且放入session
+	 *
+	 * 衣带渐宽终不悔，为伊消得人憔悴
+	 *
+	 */
+	public void findPaperAndSetSession(){
+		HashMap<String, Object> queryparam = ParamUtil.getParamMap(this.getParaMap());
+		if(queryparam.containsKey("id")) {
+			//找出试卷放入session
+			Record paper=Db.findById("njpt_paperTest", queryparam.get("id"));
+			setSessionAttr("paperBaseInfo", paper);
+			if(queryparam.containsKey("batchId")){setSessionAttr("batchId", queryparam.get("batchId"));}
+			//找出试卷的试题
+			List<Record> paper_subjects=Db.find("select * from njpt_paper_subject where paperId=?",paper.getInt("id"));
+			List<Record> subjects=new ArrayList<>();
+			for(Record paper_subject:paper_subjects)
+			{
+				Record currentSuject=Db.findById("njpt_subjects", paper_subject.get("subjectId"));
+				//非空验证 不然下方迭代会报空指针
+				if(currentSuject!=null) {
+					subjects.add(currentSuject);
+				}
+			}
+			//lambda表达式对集合进行操作过滤出对应的数据(ps:lambda表达式在jdk1.8后引入)
+			setSessionAttr("singleSelections",subjects.stream().filter(currentSubject-> StringUtils.equals("single",currentSubject.get("type"))).collect(Collectors.toList()));
+			setSessionAttr("multiSelections",subjects.stream().filter(currentSubject-> StringUtils.equals("multi",currentSubject.get("type"))).collect(Collectors.toList()));
+			setSessionAttr("judgeSelections",subjects.stream().filter(currentSubject-> StringUtils.equals("judge",currentSubject.get("type"))).collect(Collectors.toList()));
+			renderJson("{\"ret\":\"true\"}");
+		}else{
+			renderJson("\"ret\":\"false\",\"message\":\"参数不完整\"");
+		}
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/11
+	 * time:15:31
+	 * description:发布考试
+	 *
+	 * 问君能有几多愁，恰似一江春水向东流
+	 */
+	@Before(Tx.class)
+	public void releasePaper() throws Exception{
+		HashMap<String, Object> userparam = ParamUtil.getParamMap(this.getParaMap());
+		String[] users=new String[1];
+		if(userparam.get("users") instanceof String[]) {
+			users = (String[]) userparam.get("users");
+		}else{
+			users[0]=(String)userparam.get("users");
+		}
+		Record batch=new Record().set("paperId", userparam.get("paperId")).set("releaseTime",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		Integer batchCell=Db.find("select * from njpt_paper_batch where paperId=?",userparam.get("paperId")).size()+1;
+		batch.set("batch","第"+batchCell+"批");
+		List<String> usersLists=Arrays.asList(users);
+		//此处需要下面一行代码不然下处lambda表达式处的add()方法和下面的remove()方法会报unsupportOperation的异常
+		List<String> convertUserLists=new ArrayList<>(usersLists);
+		if(usersLists.contains("all")){
+			HashMap<String, Object> queryparam = new HashMap<>();
+			queryparam.put("page",1);
+			queryparam.put("rows",10000);
+			//lambda表达式
+			FrameworkDAO.queryFwUser(queryparam).getList().forEach(currentUser->convertUserLists.add(currentUser.get("id")));
+			convertUserLists.remove("all");
+			batch.set("isall","y");
+		}
+		//先插入一个批次njpt_paper_batch
+		Db.save("njpt_paper_batch",batch);
+		//遍历插入njpt_user_batch
+		convertUserLists.forEach(currentUser->Db.save("njpt_user_batch",new Record().set("userId",currentUser).set("paperId", userparam.get("paperId")).set("paperBatchId",batch.get("id")).set("istest","n")));
+		renderJson("{\"ret\":\"true\"}");
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/12
+	 * time:10:31
+	 * description:查找考试相关用户
+	 * @return
+	 *
+	 * 无边落木萧萧下，不尽长江滚滚来
+	 *
+	 */
+	public void findPaperBatchUsers() throws Exception{
+		HashMap<String, Object> userparam = ParamUtil.getParamMap(this.getParaMap());
+		if(userparam.containsKey("batchId")) {
+			String batchId = String.valueOf(userparam.get("batchId"));
+			if (StrKit.notBlank(batchId) && Db.findById("njpt_paper_batch", batchId).get("isall")==null) {
+				renderJson(Duang.duang(SecurityEducationDao.class).findPaperBatchUsers(userparam));
+				return;
+			}
+		}
+		renderJson("{\"ret\":\"false\"}");
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/15
+	 * time:8:46
+	 * description:计算考试成绩
+	 * @throws Exception
+	 *
+	 * 欲将心事付瑶琴，知音少，弦断有谁听
+	 *
+	 */
+	@Before(Tx.class)
+	public void calcExam() throws Exception{
+		//根据key排序使用TreeMap
+		TreeMap<String, Object> userparam = new TreeMap<>(ParamUtil.getParamMap(this.getParaMap()));
+		List<String> singleSelectionsFromUser=new ArrayList<>();
+		List<String> multiSelectionsFromUser=new ArrayList<>();
+		List<String> judgeSelectionsFromUser=new ArrayList<>();
+		//处理页面传过来的数据
+		for (String key:userparam.keySet()){
+			if(key.startsWith("judge")) {
+				judgeSelectionsFromUser.add(String.valueOf(userparam.get(key)));
+			}else if(key.startsWith("single")){
+				singleSelectionsFromUser.add(String.valueOf(userparam.get(key)));
+			}else{
+				if(userparam.get(key) instanceof String[]) {
+					multiSelectionsFromUser.add(StringUtils.join((String[])userparam.get(key),","));
+				}else{
+					multiSelectionsFromUser.add(String.valueOf(userparam.get(key)));
+				}
+			}
+		}
+		//计算得出正确题数
+		int singleCalcTrueResults=getSessionAttr("singleSelections")!=null?handleExamCalcAndReturnTrueNumbers(singleSelectionsFromUser, getSessionAttr("singleSelections"),"SelectCorrect"):0;
+		int multiCalcTrueResults=getSessionAttr("multiSelections")!=null?handleExamCalcAndReturnTrueNumbers(multiSelectionsFromUser, getSessionAttr("multiSelections"),"SelectCorrect"):0;
+		int judgeCalcTrueResults=getSessionAttr("judgeSelections")!=null?handleExamCalcAndReturnTrueNumbers(judgeSelectionsFromUser, getSessionAttr("judgeSelections"),"judgeCorrect"):0;
+		//从session中取出此次考试的基本信息计算此次考试得分
+		Record basePaperInfo=getSessionAttr("paperBaseInfo");
+		Record batchToUser=Db.findById("njpt_user_batch",getSessionAttr("batchId"));
+		float score=Float.parseFloat(basePaperInfo.getStr("singleScore"))*singleCalcTrueResults+Float.parseFloat(basePaperInfo.getStr("multiScore"))*multiCalcTrueResults+Float.parseFloat(basePaperInfo.getStr("multiScore"))*judgeCalcTrueResults;
+		batchToUser.set("score",score+"");
+		batchToUser.set("istest","y");
+		//是否合格
+		if(score>Float.parseFloat(basePaperInfo.getStr("passScore"))) {
+			batchToUser.set("isstandard","y");
+		}else{
+			batchToUser.set("isstandard","n");
+		}
+		Db.update("njpt_user_batch",batchToUser);
+		//计算均分
+		basePaperInfo.set("averageScore",Math.round(Db.find("select score from njpt_user_batch where istest='y' and paperId=?",basePaperInfo.getInt("id")).stream().mapToDouble(record -> record.getDouble("score")).summaryStatistics().getAverage()*100)/100);
+		basePaperInfo.set("testedNums",basePaperInfo.getInt("testedNums")+1);
+		Db.update("njpt_paperTest",basePaperInfo);
+		//TODO 过滤组卷一条数据都没有
+		renderJson("{\"ret\":\"false\"}");
+	}
+
+	/**
+	 * * author:dx
+	 * date:2017/5/15
+	 * time:13:02
+	 * description:计算题目正确数
+	 * @param userAnswers 用户答案列表(已排序)
+	 * @param normalRecords 题目信息
+	 * @param key 正确答案在Record中的key
+	 * @return 正确题数
+	 */
+	@Before(Tx.class)
+	public int handleExamCalcAndReturnTrueNumbers(List<String> userAnswers,List<Record> normalRecords,String key)
+	{
+		int rightNumbers=0;
+		for(int i=0;i<userAnswers.size();i++) {
+			Record record=normalRecords.get(i);
+			if(userAnswers.get(i).equals(record.getStr(key))) {
+				rightNumbers++;
+				record.set("correctNums", record.getInt("correctNums")+1);
+			}
+			record.set("answerNums", record.getInt("answerNums")+1);
+		}
+		//保存回答人数正确数的记录
+		normalRecords.forEach(record -> Db.update("njpt_subjects", record));
+		return rightNumbers;
+	}
+}

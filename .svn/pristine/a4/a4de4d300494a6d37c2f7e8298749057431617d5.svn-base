@@ -1,0 +1,114 @@
+package com.zkzy.framework.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ggy.common.utils.ParamUtil;
+import com.ggy.common.utils.UserInfo;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Duang;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.JsonKit;
+import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.framework.bo.FrameworkBO;
+import com.zkzy.framework.kit.UserKit;
+import com.zkzy.framework.validator.FrameworkValidator;
+
+@Before(FrameworkValidator.class)
+public class FrameworkController extends Controller {
+	public void index() {
+		Ret ret = null;
+		try {
+			String method = getAttr("_url_");
+			if (StrKit.notBlank(method)) {
+				ret = (Ret) FrameworkBO.class.getMethod(method, HashMap.class).invoke(Duang.duang(FrameworkBO.class),
+						ParamUtil.getParamMap(this.getParaMap()));
+				if (ret.getData().containsKey("list")) {
+					renderJson(ret.getData().get("list"));
+				} else {
+					renderJson(ret.getData());
+				}
+			} else {
+				renderText("FrameworkController");
+			}
+		} catch (Exception e) {
+			String message = e.getCause().getMessage();
+			LogKit.error(message);
+			ret = Ret.create("ret", false).put("message", message);
+			renderJson(ret.getData());
+		}
+
+	}
+
+	public void toHTML() {
+		String url = getAttr("_url_");
+		render(url);
+	}
+
+	public void toYonghuJiaose() throws Exception {
+		HashMap<String, Object> queryMap = ParamUtil.getParamMap(this.getParaMap());
+		Ret jiaoseRet = Duang.duang(FrameworkBO.class).queryFwRole(queryMap);
+
+		Ret r = Duang.duang(FrameworkBO.class).queryFwUserRole(queryMap);
+		List<Record> recordList = ((Page<Record>) r.getData().get("list")).getList();
+		List<String> selectedList = new ArrayList<String>();
+		recordList.forEach(new Consumer<Record>() {
+
+			@Override
+			public void accept(Record t) {
+				selectedList.add(t.getStr("roleid"));
+			}
+		});
+		List<Record> jiaoseList = ((Page<Record>) jiaoseRet.getData().get("list")).getList();
+		setAttr("selectedList", selectedList);
+		setAttr("jiaoseList", jiaoseList);
+		render("yonghu_jiaose.html");
+	}
+
+	// region 测试用的
+	public void setUser() throws Exception {
+		UserInfo user = new UserInfo();
+		user.setUser((JSONObject) JSON.toJSON(Db.findById("fw_user", getPara(0)).getColumns()));
+		List<Record> depList = Db.find(
+				"select * from fw_dep where id in (select depid from fw_user_dep where userid = ?) order by orderno",
+				user.getUser().getString("id"));
+		List<Record> roleList = Db.find(
+				"select * from fw_role where id in (select roleid from fw_user_role where userid = ?) order by orderno",
+				user.getUser().getString("id"));
+		List<Record> amsList = Db.find(
+				"select * from fw_ams where id in (select amsid from fw_role_ams where roleid in (select roleid from fw_user_role where userid = ?)) order by orderno",
+				user.getUser().getString("id"));
+		user.setDeps(JSON.parseArray(JsonKit.toJson(depList)));
+		user.setRoles(JSON.parseArray(JsonKit.toJson(roleList)));
+		user.setAms(JSON.parseArray(JsonKit.toJson(queryAmsByRoot(amsList, "root"))));
+		setSessionAttr("userinfo", user);
+		UserKit.buildUser(user);
+	}
+
+	// #region
+
+	public static List<Record> queryAmsByRoot(List<Record> recordList, String root) throws Exception {
+		List<Record> r = new ArrayList<Record>();
+		for (int i = 0; i < recordList.size(); i++) {
+			Record ams = recordList.get(i);
+			if (root.equals(ams.getStr("parentid"))) {
+				int childcount = ams.get("childcount");
+				if (childcount > 0) {
+					List<Record> childret = queryAmsByRoot(recordList, ams.get("id"));
+					ams.set("children", childret);
+				}
+				r.add(ams);
+			}
+		}
+		return r;
+	}
+}

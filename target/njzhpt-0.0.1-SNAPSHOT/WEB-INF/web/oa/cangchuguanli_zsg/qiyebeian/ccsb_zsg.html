@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>仓储设备情况</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addCcsb",title="新增仓储设备情况";
+	if (isNotEmpty(parameter.id)) {
+		var ccsb = @com.zkzy.njzhpt.dao.CangchuglDao.findCcsb({"id":parameter.id,"page":"1","rows":"100"});
+		obj = ccsb.list[0];
+		url = ctxPath+"/cangchugl/upCcsb";
+		title = "编辑仓储设备情况";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+        <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	仓储设备信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="qyzzjgdm">企业组织机构代码:</label>
+										<select id="qyzzjgdm" name="qyzzjgdm" class="form-control input-sm" onchange="Changeqiye()">
+											<option value="">请选择企业</option>
+										</select>
+										<!-- <input id="qyzzjgdm" name="qyzzjgdm" class="form-control" placeholder="企业组织机构代码" value="${obj.qyzzjgdm}"> -->
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="quyu">所属辖区:</label>
+										<input id="quyu" name="quyu" class="form-control" placeholder="所属辖区" value="${obj.quyu}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="sbmc">设备名称:</label>
+										<input id="sbmc" name="sbmc" class="form-control" placeholder="设备名称" value="${obj.sbmc}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="gjsj">购进时间:</label>
+										<input id="gjsj" name="gjsj" class="form-control" placeholder="购进时间" value="${obj.gjsj}">
+									</div>	
+								</div>
+								
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="sl">数量（台）:</label>
+										<input id="sl" name="sl" class="form-control" placeholder="数量（台）" value="${obj.sl}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="xhgg">型号规格:</label>
+										<input id="xhgg" name="xhgg" class="form-control" placeholder="型号规格" value="${obj.xhgg}">
+									</div>	
+								</div>
+								
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-12">	
+									<div class="form-group">
+										<label for="bz">备注:</label>
+										<input id="bz" name="bz" class="form-control" placeholder="备注" value="${obj.bz}">
+									</div>	
+								</div>
+							</div>
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+<script type="text/javascript">
+$(function(){
+	$("#gjsj").datetimepicker({
+		
+		format : 'yyyy-mm-dd',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0
+	});
+	$.ajax({
+		url:'${ctxPath}/renyuan/findqiye',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i,n){
+				if("${obj.qyzzjgdm}"==n.qyzzjgdm){
+					$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+" selected>"+n.qymc+"</option>");
+				}else{
+					$("#qyzzjgdm").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				}
+			});
+		}
+	});
+	
+});
+function saveccsb() {
+	var form = $(".widget-body form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		}
+	});
+}
+function Changeqiye(){
+	var qyzzjgdm=$("#qyzzjgdm").val();
+	$.ajax({
+		url:'${ctxPath}/renyuan/findqiye',
+		type:'post',
+		dataType:'json',
+		data:{"qyzzjgdm":qyzzjgdm},
+		success:function(data){
+			if(data){
+				$("#quyu").val(data.list[0].name);
+			}
+		}
+	});
+}
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+</script>
+
+</body>
+</html>

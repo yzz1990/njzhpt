@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/web/showBo.css"/>
+	<script src="${ctxPath}/web/showBo.js" type="text/javascript" charset="utf-8"></script>
+<script src="${ctxPath}/web/jquery.uploadifive.min.js"></script>
+  <link href='${ctxPath}/web/uploadifive.css'/>
+  
+<script src="${ctxPath/js/jquery.min.js"></script>
+
+<link rel="stylesheet"
+	href="${ctxPath/css/font-awesome.min.css">
+
+<link href='${ctxPath/css/jquery.dataTables.min.css'
+	rel='stylesheet'>
+<!-- SIMPLE LINE ICONS-->
+<link rel="stylesheet"
+	href="${ctxPath/css/simple-line-icons.css">
+<!-- ANIMATE.CSS-->
+<link rel="stylesheet"
+	href="${ctxPath/css/animate.min.css">
+<!-- WHIRL (spinners)-->
+<link rel="stylesheet"
+	href="${ctxPath/css/whirl.css">
+<!-- =============== PAGE VENDOR STYLES ===============-->
+<!-- =============== BOOTSTRAP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath/css/bootstrap.css"
+	id="bscss">
+<!-- =============== APP STYLES ===============-->
+<link rel="stylesheet"
+	href="${ctxPath/css/app.css"
+	id="maincss">
+<link rel="stylesheet"
+	href="${ctxPath/css/bootstrap-slider.min.css">
+<script src="${ctxPath/js/jquery.min.js"></script>
+<!----------select-------------->
+<link rel="stylesheet"
+	href="${ctxPath/css/select2.css">
+<link rel="stylesheet"
+	href="${ctxPath/css/select2-bootstrap.css">
+<script src="${ctxPath/js/select2.js"></script>
+<script src="${ctxPath/js/echarts.min.js"></script>
+
+<script src="${ctxPath}/web/jquery.uploadifive.min.js"></script>
+  <link href='${ctxPath}/web/uploadifive.css'/>
+ 
+
+<script src="${ctxPath}/js/bootstrap.min.js"></script>
+<link href="${ctxPath}/css/bootstrap-dialog.min.css" rel="stylesheet">
+<script src="${ctxPath}/js/bootstrap-dialog.min.js"></script>
+<!----------select-------------->
+<!---------kindeditor--------->
+	<script src='${ctxPath}/js/kindeditor-all-min.js'></script>
+	<script src='${ctxPath}/kindeditor-4.1.11/kindeditor/lang/zh-CN.js'></script>
+	<link rel="stylesheet" href='${ctxPath}/css/default.css'>
+	<link rel="stylesheet" href='${ctxPath}/css/default.css'>
+	<link rel="stylesheet" href='${ctxPath}/css/prettify.css'>
+	<script src='${ctxPath}/js/modal.js'></script>
+	<script src='${ctxPath}/js/transition.js'></script>
+	
+	<link rel="stylesheet" href='${ctxPath}/css/animate.css'>
+<!------ datetimepicker ------>
+<link rel="stylesheet" href="${ctxPath}/css/bootstrap-datetimepicker.min.css">
+<script src="${ctxPath}/js/bootstrap-datetimepicker.min.js"></script>
+<script src="${ctxPath}/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="${ctxPath}/js/bootstrap-datetimepicker.fr.js"></script>
+<!------ datetimepicker ------>
+<style type="text/css">
+	a{
+		width:240px;
+		height:35px;
+		font-family : 微软雅黑,宋体;
+		text-align:center;
+	}	
+</style>
+
+</head>
+<body>
+<div style="width:500px;height:400px;">
+	
+	<p>点击下载格式表并填报: <a class="btn btn-success btn-sm btn-smxiazai " type="button" onclick="doSearch()" style="font-size:14pt">下载填报表</a></p>
+	<p>点击上传填报好的表格: <a class="btn btn-sm btn-info" style="font-size:14pt"><input class="file_upload" type="file" name="file" /></a></p>
+	<a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+</div>
+
+
+</body>
+<script type="text/javascript">
+	$(function(){
+		
+		$('.file_upload').uploadifive({
+			'auto' : true,   //自动上传 
+	        'uploadScript' : '${ctxPath}/excel/uploadFile',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+	  	    'buttonText'   : '上传粮情报表',   //按钮显示文字 
+	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+	  	    'fileTypeExts'     : '*.xlsx;*.xls',   //允许上传文件后缀名
+	  	    'onUploadComplete' : function(file, data) { //文件上传成功后执行
+		    	var obj = JSON.parse(data);
+		    	var count = obj.count;
+		    	var uncount = obj.uncount;
+		    	var allcount = obj.allcount;
+		    	var txt= "<span style='font-size:17px;text-align:center;line-height：2pt;'>"+allcount+"</span></br>"+
+		    			 "<span style='font-size:17px;text-align:center;'>"+count+","+uncount+"</span>";
+		    	Showbo.Msg.alert(txt);
+	    	}
+		});
+		
+	});
+	
+	(function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+	
+	function doSearch(){
+		var diqu = $.getUrlParam("shi");
+		var year = $.getUrlParam("year");
+		var qishu = $.getUrlParam("qishu");
+		var jijie = $.getUrlParam("jijie");
+		var url;
+		if(jijie == "xia"){
+			url = 'http://49.65.0.27:8080/WebReport/ReportServer?reportlet=xialiangwuritianbao.cpt&op=write&year='+year+'&qishu='+qishu+'&format=excel&extype=simple';
+		}
+		
+		window.open(url,"_self");
+		
+	}
+	
+	
+</script>
+</html>

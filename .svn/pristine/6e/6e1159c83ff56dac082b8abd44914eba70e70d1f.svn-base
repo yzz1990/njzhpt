@@ -1,0 +1,164 @@
+<%
+	include("/WEB-INF/web/ui/cssjs.html"){}
+		debug(parameter.id);
+		var obj=@com.zkzy.njzhpt.dao.LunHuanGuanLiDAO.querylengthenjkqById({"id":parameter.id,"page":1,"rows":15}).getList().get(0);;
+		debug(obj);
+%>
+<style type="text/css">
+body{
+margin: 0px;
+padding: 0px;
+}
+</style>
+<div class="panel-body">
+<table id="tb"  class="table table-striped table-hover table-bordered datatables" style="border: 0px;">
+	<thead>
+		<tr>
+			<th>延长情况</th>
+			<th width="80">延长时间(月)</th>
+			<th>轮换数量(吨)</th>
+			<th>上传行文</th>
+			<th>行文名称</th>
+			<th width="100">操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>擅自延长</td>
+			<td><input id="sz_month" value="${obj.sz_month}"  style="width: 100%;"/></td>
+			<td>${obj.lhsl}</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>市局同意延长</td>
+			<td>
+				<input id="sj_month" value="${obj.sj_month}" ${array.contain(session.userinfo.auth,'auth_manager')?'':'readonly'} style="width: 100%;"/>
+			</td>
+			<td>${obj.lhsl}</td>
+			<td>
+						
+						<a class="btn btn-sm btn-info" style="font-size:1px" >
+							<input  class="sjfile_upload"  type="file"  />
+						</a>
+						<a id="sjtip-queue"  style="float:right;width:125px;display:none;"></a>
+			<td id="yccjkq_sj">
+				${obj.yccjkq_sj}
+			</td>
+			<td>
+				<a id="sjbtn" type="button"  class="btn btn-success btn-xs" ${obj.yccjkq_sj==''||obj.yccjkq_sj==null?' disabled'} >查看</a>
+				<button type="button" class="btn btn-xs btn-danger">删除</button>
+			</td>
+		</tr>
+		<tr>
+			<td>政府同意延长</td>
+			<td><input id="zf_month" value="${obj.zf_month}" ${array.contain(session.userinfo.auth,'auth_manager')?'':'readonly'} style="width: 100%;"/></td>
+			<td>${obj.lhsl}</td>
+			<td>
+						
+						<a class="btn btn-sm btn-info" style="font-size:1px" >
+							<input  class="zffile_upload"  type="file"  />
+						</a>
+						<a id="zftip-queue"  style="float:right;width:125px;display:none;"></a>
+			</td>
+			<td id="yccjkq_zf">
+				${obj.yccjkq_zf}
+			</td>
+			<td>
+				<a id="zfbtn" type="button" onclick="zfxiazai()" class="btn btn-success btn-xs" ${obj.yccjkq_zf==''||obj.yccjkq_zf==null?' disabled'}>查看</a>
+				<button type="button" class="btn btn-xs btn-danger">删除</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<script>
+$(function(){
+	//市局
+	if(""!="${obj.yccjkq_sj}"&&null!="${obj.yccjkq_sj}"){
+		$("#sjbtn").attr("href","${ctxPath}"+"${obj.yccjkq_sj}");
+    	$("#sjbtn").attr("download","${obj.yccjkq_sj}");
+	}
+	//政府
+	if(""!="${obj.yccjkq_zf}"&&null!="${obj.yccjkq_zf}"){
+		alert(typeof("${obj.yccjkq_zf}"));
+		$("#zfbtn").attr("href","${ctxPath}"+"${obj.yccjkq_zf}");
+    	$("#zfbtn").attr("download","${obj.yccjkq_zf}");
+	}
+})
+$('.sjfile_upload').uploadifive({
+	'auto' : true,   //自动上传 
+    'uploadScript' : '${ctxPath}/excel/uploadlhsqxwFile',  //处理上传文件Action路径
+    'buttonClass' : 'file_upload',
+    'fileObjName' : 'file',        //文件对象
+	    'buttonText'   : '上传行文',   //按钮显示文字 
+	    'queueID'      : 'sjtip-queue', //提示信息放置目标 
+//		'fileTypeExts'     : '*.xlsx;*.xls;*.png',   //允许上传文件后缀名
+	'formData': {},
+	    'onUploadComplete' : function(file, data) { //文件上传成功后执行
+    	var obj = JSON.parse(data);
+    	//$("#scfilename").html(obj.scfilename);
+    	$("#yccjkq_sj").html(obj.scfilename);
+    	$("#sjbtn").removeAttr("disabled");
+    	$("#sjbtn").attr("href","${ctxPath}"+obj.filepath);
+    	$("#sjbtn").attr("download",obj.scfilename);
+	}
+});
+$('.zffile_upload').uploadifive({
+	'auto' : true,   //自动上传 
+    'uploadScript' : '${ctxPath}/excel/uploadlhsqxwFile',  //处理上传文件Action路径
+    'buttonClass' : 'file_upload',
+    'fileObjName' : 'file',        //文件对象
+	    'buttonText'   : '上传行文',   //按钮显示文字 
+	    'queueID'      : 'zftip-queue', //提示信息放置目标 
+//		'fileTypeExts'     : '*.xlsx;*.xls;*.png',   //允许上传文件后缀名
+	'formData': {},
+	    'onUploadComplete' : function(file, data) { //文件上传成功后执行
+    	var obj = JSON.parse(data);
+    	//$("#scfilename").html(obj.scfilename);
+    	$("#yccjkq_zf").html(obj.scfilename);
+    	$("#zfbtn").removeAttr("disabled");
+    	$("#zfbtn").attr("href","${ctxPath}"+obj.filepath);
+    	$("#zfbtn").attr("download",obj.scfilename);
+	}
+});
+$("#sz_month,#sj_month,#zf_month").bind("keyup",function(){
+	 var c=$(this);
+	 if(/[^\d]/.test(c.val())){//替换非数字字符  
+     	 var temp_amount=c.val().replace(/[^\d]/g,'');  
+      	$(this).val(temp_amount);  
+    }
+})
+function saveycjkq(){
+	if(""!=$("#sj_month").val()&&""==$("#yccjkq_sj").text().replace(/(^\s*)|(\s*$)/g, "")){
+		alert("请先上传市局同意行文！");
+		return false;
+	}
+	if(""!=$("#zf_month").val()&&""==$("#yccjkq_zf").text().replace(/(^\s*)|(\s*$)/g, "")){
+		alert("请先上传政府同意行文！");
+		return false;
+	}
+	var data={};
+	data.id="${obj.id}";
+	data.sz_month=$("#sz_month").val();
+	data.sj_month=$("#sj_month").val();
+	data.zf_month=$("#zf_month").val();
+	data.yccjkq_sj=$("#yccjkq_sj").text().replace(/(^\s*)|(\s*$)/g, "");
+	data.yccjkq_zf=$("#yccjkq_zf").text().replace(/(^\s*)|(\s*$)/g, "");
+	
+	$.ajax({
+		url : '${ctxPath}/lunhuan/saveycjkq.do',
+		type : 'post',
+		data : data,
+		dataType : 'json',
+		success : function(data) {
+			if(data.ret){
+				parent.dialog1.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}
+		}
+	});
+}
+</script>
+					

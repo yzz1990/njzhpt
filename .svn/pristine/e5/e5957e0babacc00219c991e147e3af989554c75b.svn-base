@@ -1,0 +1,491 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+
+<style>
+.cjd-select{
+	width:150px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+	margin-right:20px;
+	
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia, #div-baojia{
+	height:500px;
+	overflow-y:auto;
+}
+.caozuo {
+	margin-top: 0px;
+	width: 100%;
+	height: 20px;
+}
+.table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #FFFFFF;
+}
+
+.cj-td{
+	border:1px solid #00AEAE;
+}
+.datatables tbody tr td:nth-child(1), .datatables tbody tr td:nth-child(2),.datatables tbody tr td:nth-child(3),.datatables tbody tr td:nth-child(9) {
+		text-align:center;
+}
+.datatables tbody tr td:nth-child(4), .datatables tbody tr td:nth-child(5),
+.datatables tbody tr td:nth-child(6),.datatables tbody tr td:nth-child(7),
+.datatables tbody tr td:nth-child(8) {
+		text-align:right;
+}
+.hasjg{
+	background-color:#FFFFFF;
+	text-align:right;
+}
+.nojg{
+	background-color: #00FFFF;
+}
+
+</style>
+<script type="text/javascript">
+var mydate = new Date();
+var tyear = mydate.getFullYear();
+var cse = 0;
+$(function(){
+	//$(".cjd-select").select2();
+	$("#cjdmc").select2();
+	$("#cjnd").select2();
+	$("#cjzs").select2();
+	//加载有商品对照的采价点
+	$.ajax({
+		url:'${ctxPath}/jiage/querydzcjdsp.do',
+		type:'post',
+		data:{"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option value="'+n.cjdid+'">'+n.cjdname+'</option>';
+				$("#cjdmc").append(op);
+			});
+		},
+		error:function(){
+			alert("获取有商品对照的采价点失败");
+		}
+	});
+	
+	for(var i = 0 ; i < 5; i++){
+		var op;
+		if(i == 0){
+			op= '<option selected="selected" value = "'+(tyear - i)+'" >'+(tyear - i)+'</option>';
+		}else{
+			op= '<option value = "'+(tyear - i)+'">'+(tyear - i)+'</option>';
+		}
+		$("#cjnd").append(op);
+
+	}
+	$("#select2-cjnd-container").text(tyear);
+
+	
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":tyear,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#cjzs").empty();
+			var selected="";
+			for(var i = data.list.length-1; i >=0 ; i--){
+				if(tyear==new Date().getFullYear())
+				{
+
+					if(i<getYearWeek(new Date())-2)
+					{
+						var op = '<option selected="selected" value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+						if(i==getYearWeek(new Date())-3) {
+							console.log('come in');
+							selected = '第' + data.list[i].iweek + '周' + data.list[i].beginday + '到' + data.list[i].endday;
+						}
+					}
+				}else{
+					var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+				}
+				$("#cjzs").append(op);
+			}
+
+			$("#select2-cjzs-container").text(selected);
+			$.ajax({
+				url:'${ctxPath}/jiage/findzhous.do',
+				data:{"page":1,"rows":10000,"year":tyear,"bj":1},
+				dataType:'json',
+				success:function(data){
+					var week = data.list[0].iweek;
+					$("#cjzs").val(week);
+					doSearch();
+				},
+				error:function(){
+					alert("查询周数失败");
+				}
+			});	
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+	
+});
+
+function Changeyear(){
+	var year = $("#cjnd option:selected").val();
+	//生成星期数据
+	$.ajax({
+		url:'${ctxPath}/jiage/findzhous.do',
+		type:'post',
+		data:{"year":year,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			//初始化采价点下拉框
+			$("#cjzs").empty();
+			//console.log('come in');
+			for(var i = data.list.length-1; i >=0 ; i--){
+				if(year==new Date().getFullYear())
+				{
+					if(i<getYearWeek(new Date())-1	)
+					{
+						var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+					}
+				}else{
+					var op = '<option value="'+data.list[i].iweek+'">第'+data.list[i].iweek+'周'+data.list[i].beginday+'到'+data.list[i].endday+'</option>';
+				}
+				$("#cjzs").append(op);
+			}
+			$("#cjzs").val("");
+		},
+		error:function(){
+			alert("生成年周数失败");
+		}
+	});
+}
+//获取当前周数
+function getYearWeek(date){
+	var date2=new Date(date.getFullYear(), 0, 1);
+	var day1=date.getDay();
+	if(day1==0) day1=7;
+	var day2=date2.getDay();
+	if(day2==0) day2=7;
+	d = Math.round((date.getTime() - date2.getTime()+(day2-day1)*(24*60*60*1000)) / 86400000);
+	return Math.ceil(d /7)+1;
+}
+function doSearch(){
+	//$("#exctable-caijia").find("tbody").empty();
+	var cjdid = $("#cjdmc option:selected").val();
+	var year = $("#cjnd option:selected").val();
+	var week = $("#cjzs option:selected").val();
+	
+	var queryparam = "";
+	if(cjdid != null && cjdid != ""){
+		queryparam += "&cjdid="+cjdid;
+	}
+	if(year != null && year != ""){
+		queryparam += "&year="+year;
+	}
+	if(week != null && week != ""){
+		queryparam += "&week="+week;
+	}
+	
+	$(".datatables").attr("data-queryparam",queryparam);
+	if(cse == 0){
+		datatable = $('.datatables').DataTable({
+			"pageLength": 10,
+			"lengthMenu": [
+			       		[5,10,15,20,10000],
+			       		[5,10,15,20, "所有"]
+			       	],
+	        "columns": [
+				{
+					"data" : "cjdname",
+				},
+	            {
+					"data" : "pzname",
+				},
+				{
+					"data" : "level",
+				},
+				{
+					"render": function (data,type,row,meta) {
+						var div;
+						if(row["jglxname"] == "进厂价"){
+							var price = row["price"];
+							div = '<div class="hasgj">'+price+'</div>';
+						}else{
+							div = '<div class="nogj"></div>';
+						}
+						return div;
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div;
+						if(row["jglxname"] == "出厂价"){
+							var price = row["price"];
+							div = '<div class="hasgj">'+price+'</div>';
+						}else{
+							div = '<div class="nogj"></div>';
+						}
+						return div;					
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div;
+						if(row["jglxname"] == "批发价"){
+							var price = row["price"];
+							div = '<div class="hasgj">'+price+'</div>';
+						}else{
+							div = '<div class="nogj"></div>';
+						}
+						return div;								
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div;
+						if(row["jglxname"] == "农贸市场价"){
+							var price = row["price"];
+							div = '<div class="hasgj">'+price+'</div>';
+						}else{
+							div = '<div class="nogj"></div>';
+						}
+						return div;							
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var div;
+						if(row["jglxname"] == "超市零售价"){
+							var price = row["price"];
+							div = '<div class="hasgj">'+price+'</div>';
+						}else{
+							div = '<div class="nogj"></div>';
+						}
+						return div;					
+					}
+				},{
+					"render": function (data,type,row,meta) {
+						var bjid = row["bjid"];
+						var price = row["price"];
+						bjid = bjid+","+price;
+						var div = '<a class="btn btn-xs btn-success pjax purchasemx" type="button" onclick="upprice(\''+bjid+'\')">修改</a>';
+						return div;
+					}
+				}
+				]
+		});
+		cse++;
+	}else{
+		datatable.ajax.reload(null,true);
+	}
+
+	
+
+	/*
+	$.ajax({
+		url:'${ctxPath}/jiage/querycjdjg.do',
+		type:'post',
+		data:{"cjdid":cjdid,"year":year,"week":week},
+		dataType:'json',
+		success:function(data){
+			//生成报价
+			//var vpzid = "55555";
+			var p = 0;
+			for(var i = 0; i < data.list.length; i++){
+				var pzid = data.list[i].pzid;
+				//if(pzid != vpzid){
+					var cjdname = data.list[i].cjdname;
+					var pzname = data.list[i].pzname;
+					var level = data.list[i].level;
+					var bjid = data.list[i].bjid;
+					p++;
+					var tr = '<tr style="border:1px solid:black;font-weight:bold;">';
+					tr+=	'<td id="cjdmc'+p+'" class="cj-td" style="text-align:center;">'+cjdname+'</td>';
+					tr+=	'<td id="pz'+p+'" class="cj-td" style="text-align:center;">'+pzname+'</td>';
+					tr+= '<td id="dj'+p+'" class="cj-td" style="text-align:center;padding-right:5px">'+level+'</td>';
+					tr+= '<td id="jcj'+p+'" class="cj-td" style="text-align:right;padding-right:5px;background-color: #00FFFF;"></td>';
+					tr+= '<td id="ccj'+p+'" class="cj-td" style="text-align:right;padding-right:5px;background-color: #00FFFF;"></td>';
+					tr+= '<td id="pfj'+p+'" class="cj-td" style="text-align:right;padding-right:5px;background-color: #00FFFF;"></td>';
+					tr+= '<td id="nmscj'+p+'" class="cj-td" style="text-align:right;padding-right:5px;background-color: #00FFFF;"></td>';
+					tr+= '<td id="cslsj'+p+'" class="cj-td" style="text-align:right;padding-right:5px;background-color: #00FFFF;"></td>';
+					tr+= '<td class="cj-td" style="text-align:center;padding-right:5px;background-color: #00FFFF;"><a class="btn btn-xs btn-success pjax purchasemx" type="button" onclick="delprice(\''+bjid+'\')">删除</a></td>';
+					
+					tr+= '</tr>';
+					$("#exctable-caijia").find("tbody").append(tr);
+					//vpzid = pzid;
+				//}
+				var price = data.list[i].price;
+				var jglx = data.list[i].jglxname;
+				if(jglx == "进厂价"){
+					$("#jcj"+p).text(price);
+					$("#jcj"+p).css("background-color","#FFFFFF");
+				}
+				if(jglx == "出厂价"){
+					$("#ccj"+p).text(price);
+					$("#ccj"+p).css("background-color","#FFFFFF");
+				}
+				if(jglx == "批发价"){
+					$("#pfj"+p).text(price);
+					$("#pfj"+p).css("background-color","#FFFFFF");
+				}
+				if(jglx == "农贸市场价"){
+					$("#nmscj"+p).text(price);
+					$("#nmscj"+p).css("background-color","#FFFFFF");
+				}
+				if(jglx == "超市零售价"){
+					$("#cslsj"+p).text(price);
+					$("#cslsj"+p).css("background-color","#FFFFFF");
+				}
+			}
+
+		},
+		error:function(){
+		}
+	});
+	*/
+
+}
+//修改价格
+function upprice(bjid){
+	var strs = bjid.split(",");
+	var price = prompt("请修改价格",strs[1]);
+	if(price != null && price != "" && !isNaN(price)){
+		$.ajax({
+			url:'${ctxPath}/jiage/upprice',
+			type:'post',
+			data:{"bjid":strs[0],"price":price},
+			dataType:'json',
+			success:function(msg){
+				alert(msg.message);
+				datatable.ajax.reload(null,true);
+			},
+			error:function(){
+				
+			}
+		});
+	}else{
+		alert("请输入正确的价格");
+	}
+	
+}
+
+
+
+function delprice(bjid){
+	if(confirm("确认删除该条价格?")){
+		$.ajax({
+			url:'${ctxPath}/jiage/delprice',
+			type:'post',
+			data:{"bjid":bjid},
+			dataType:'json',
+			success:function(data){
+				if(data.ret){
+					alert("删除成功");
+					doSearch();
+				}else{
+					alert("删除失败");
+				}
+			},
+			error:function(){
+				alert("删除失败");
+			}
+		});
+	}
+}
+
+function closedialog(){
+	dialog1.close();
+}
+
+//增加报价
+function addprice(){
+	dialog1=BootstrapDialog.show({
+		draggable:true,
+	    title: '价格填报',
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/jiage/caijia/addprice.html?bj=1"/>'),
+	    onshow:function(dlg){
+	      	dlg.$modalDialog.css("width","1050px");//modal-dialog
+	      	$(".close", dlg.$modalDialog).css("width","35px");//modal-dialog
+		   	$(".close", dlg.$modalDialog).css("height","35px");//modal-dialog
+		   	$(".close", dlg.$modalDialog).css("font-size","35px");//modal-dialog
+		   	$(".close", dlg.$modalDialog).css("color","white");//modal-dialog
+		   	$(".close", dlg.$modalDialog).css("opacity",1);//modal-dialog
+	      	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+	    },
+	});
+}
+
+</script>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>采价单填报</b></span>
+	</div>
+	<div class="panel-heading">
+		<div class="form-inline">
+			<div class="cjd-div cjdmc-div">
+				<label class="cjd-label">采价点名称:</label>
+				<select id="cjdmc" class="cjd-select">
+					<option value="请选择" selected="selected">请选择</option>
+				</select>
+			</div>
+			<div class="cjd-div year-div">
+				<label class="cjd-label">采价年度:</label>
+				<select id="cjnd" class="cjd-select" onchange="Changeyear()">
+				</select>
+			</div>
+			<div class="cjd-div week-div">
+				<label class="cjd-label">采价周数:</label>
+				<select id="cjzs" class="cjd-select" style="width: 220px;">
+				</select>
+			</div>
+			<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left:5px;margin-top: 2px;">查询</a>
+			<div class="" style="float:right;">
+					单位:元/50公斤
+				<a class="btn btn-success btn-xs" type="button" onclick="addprice()" style="text-align:left;margin-left:5px;margin-top: 2px;">新增</a>
+				<!--  
+				<a class="btn btn-success btn-xs" type="button" onclick="" style="margin-left:5px;margin-top: 2px;">删除</a>
+				-->
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+<div class="panel-body">
+  	<table id="exctable-caijia" style="border-collapse:collapse" class="table table-striped table-hover  datatables table-caijia" data-url="${ctxPath}/jiage/querycjdjg.do" >	 
+		<thead>
+			<tr>
+    			<th rowspan="1" colspan="1" style="vertical-align:middle">采价点名称</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">品种</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">等级</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">进厂价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">出厂价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">批发价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">农贸市场零售价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">超市零售价</th>
+     			<th rowspan="1" colspan="1" style="vertical-align:middle">操作</th>
+ 			</tr>
+		</thead>	
+		<tbody>
+		</tbody>
+	</table>
+  </div>   
+</div>
+
+<%}%>

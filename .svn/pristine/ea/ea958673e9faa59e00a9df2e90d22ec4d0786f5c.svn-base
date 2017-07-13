@@ -1,0 +1,122 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+  var qyzzjgdm = parameter.qyzzjgdm;
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+    </style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<!-- <div class="form-inline pull-right">
+						<a href="${ctxPath}/cangchuguanli/yewuguanli/churuku.html" class="btn btn-primary btn-sm" type="button">出入库</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/tongfengxinxi.html" class="btn btn-primary btn-sm" type="button">通风作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/lengquexinxi.html" class="btn btn-primary btn-sm" type="button">冷却作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/xunzhengxinxi.html" class="btn btn-primary btn-sm" type="button">熏蒸作业</a>
+				</div> -->
+				<div class="form-inline" style="float: left;">
+					<label>仓号:</label>
+					<input class="form-control input-sm" name="ch" id="ch" placeholder="仓号" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<label>粮食品种:</label>
+					<select id="lslb" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="Changelb()">
+						<option value="" selected="true" >选择粮食品种</option>
+					</select>
+					<label>通风目的:</label>
+					<input class="form-control input-sm" name="tfmd" id="tfmd" placeholder="通风目的" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body" style="padding:0">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findTongfeng?qyzzjgdm=${qyzzjgdm}&isedit=2" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	});
+
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "ch",
+				"title" : "仓号"
+			},{
+				"data" : "pz",
+				"title" : "粮食品种"
+			},{
+				"data" : "sl",
+				"title" : "数量（吨）",
+				"render": function (data,type,row,meta) {
+					return  parseFloat(row["sl"]).toFixed(3);
+				}
+			},{
+				"data" : "tfmd",
+				"title" : "通风目的"
+			},{
+				"data" : "lchd",
+				"title" : "粮层厚度（厘米）"
+			},{
+				"data" : "zdh",
+				"title" : "总电耗（瓦）",
+			},{
+				"data" : "dwnh",
+				"title" : "单位电耗（瓦）",
+			},{
+				"data" : "jlsj",
+				"title" : "记录时间",
+			}
+			]
+	});
+});
+
+	
+function doSearch(){
+	var ch = $("#ch").val();
+	var pz = $("#lslb").val();
+	var tfmd = $("#tfmd").val();
+	document.querySelector('.datatables').dataset.queryparam="&ch="+ch+"&pz="+pz+"&tfmd="+tfmd;
+	datatable.ajax.reload(null,false);
+}
+
+$('.datatables').on( 'draw.dt', function () {
+	Changelb();
+} );
+
+function Changelb(){
+	
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findlslb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option value='+data[i].vCode+'>'+data[i].vName+'</option>';
+			     $("#lslb").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+		
+	});
+}
+
+</script>
+<%
+	}
+%>

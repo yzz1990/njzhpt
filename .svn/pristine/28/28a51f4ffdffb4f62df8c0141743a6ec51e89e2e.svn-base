@@ -1,0 +1,622 @@
+<%
+ layout("/WEB-INF/web/ui/cssjs.html"){}
+%>
+ <!--echart样式  --> 
+	<link href="${ctxPath}/asset/css/carousel.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/echartsHome.css" rel="stylesheet">
+	<script src="${ctxPath}/www/js/echarts.js"></script>
+    <script src="${ctxPath}/asset/js/codemirror.js"></script>
+    <link href="${ctxPath}/asset/css/codemirror.css" rel="stylesheet">
+    <link href="${ctxPath}/asset/css/monokai.css" rel="stylesheet">
+
+<!--echart样式  -->
+<style>
+html {
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+}
+body{
+	padding-top: 0px; 
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    border: 1px solid #ADD8E6;
+    border-bottom: 1px solid #ADD8E6;
+}
+
+table.datatables>thead>tr:nth-of-type(odd) {
+    background-color:  #B5DCFF;
+}
+
+table.datatables>thead>tr:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+}
+.table-bordered {
+    border: 1px solid #ADD8E6;
+}
+.jumbotron, .well {
+   border: 1px solid #ADD8E6
+}
+.well{
+	    background-color: rgb(244, 251, 251);
+}
+.col-lg-12{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+</style>
+   <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 350px;">
+		   				<h4 id="aa" ></h4>
+		              <div id="container" style="min-width: 380px; max-width: 700px; height: 300px; margin: 0 auto;margin-left: 10px;float: left;"></div>
+		             <hr size=100 width="1" color="#A9B2B8" style="position: absolute;margin-left: 700px;border: 2px;height: 270px;margin-top: -20px;">
+		              <div id="container1" style=" min-width: 450px; max-width: 700px; height: 300px; margin: 0 auto;float: left;margin-left: 400px;margin-top: -20px;"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		    <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 400px;">
+		   				<span style="width: 200px;font-size: 18px;">分品种统计</span><span class="pull-right">单位/万吨</span>
+		   				
+		   				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+		              	<table id="pzck"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+							<thead>
+		           					
+		        			</thead>
+						</table>
+		              <div id="container2" style="min-width: 450px; max-width: 600px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		    <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 400px;">
+		   				<span style="width: 200px;font-size: 18px;">分性质统计</span><span class="pull-right">单位/万吨</span>
+		   				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+		              	<table id="lxck"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+							<thead>
+	           				
+	        			</thead>
+					</table>
+		              <div id="container3" style="min-width: 480px; max-width: 600px; height: 300px; margin: 0 auto;float: left;margin-left: 60px"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		    <div class="row">
+		   		<div class="col-lg-12" >
+		   			<div class="well" style="height: 400px;">
+		   				<span style="width: 200px;font-size: 18px;">分等级统计</span><span class="pull-right">单位/万吨</span>
+		   				<hr size="1" color="#A9B2B8" style="margin-left: -10px;border: 2px;height: 300px;margin-top: 10px;width: 1340px;height: 2px;">
+		              	<table id="djck"  class="table table-striped table-hover table-bordered datatables" style="width: 760px;float: left;" >
+							<thead>
+	           				
+	        			</thead>
+					</table>
+		              <div id="container4" style="min-width: 470px; max-width: 600px; height: 300px; margin: 0 auto;float: left;margin-left: 50px"></div>
+		            </div>
+		   		</div>		
+		   </div>
+		   
+		   <script>
+$(function () {
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/findkczb',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			if(data.zcr==0){
+				$("#aa").html("库存总量:0万吨");			 
+			}else{		
+				$("#aa").html("库存总量:"+(data.dmStock/10000000).toFixed(2)+"万吨");
+			}
+			 option = {
+					    tooltip : {
+					        formatter: "{b} : {c}%"
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    series : [
+					        {
+					            name:'库存占比',
+					            type:'gauge',
+					            center: ['70%', '50%'],
+					            detail : {formatter:'{value}%'},
+					            data:[{value:((data.dmStock/10000000)/(data.zcr)*100).toFixed(2), name: '库存占比'}]
+					        }
+					    ]
+					};
+			 echarts.init(document.getElementById('container')).setOption(option);   
+			}
+		});
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findfqck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			option = {
+				    title : {
+				        text: '全市库存统计',
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}万吨 ({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.qylist
+				    },
+				   
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '50%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    series : [
+				              {
+				                  name:'库存占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '50%'],
+				                  itemStyle:{
+				                	  normal:{
+				                		  label:{
+				                			  show: false 
+				                		  },
+				                		  labelLine:{
+				                			  show: false
+				                		  }
+				                	  }
+				                  },
+				                  data:[
+				                      {value:(data.cklist[0]/10000000).toFixed(2),name:data.qylist[0],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#97b552',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[1]/10000000).toFixed(2), name:data.qylist[1],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#95706d',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[2]/10000000).toFixed(2), name:data.qylist[2]},
+				                      {value:(data.cklist[3]/10000000).toFixed(2), name:data.qylist[3],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#7eb00a',
+						                	  }
+						                  }
+				                      },
+				                      {value:(data.cklist[4]/10000000).toFixed(2), name:data.qylist[4],
+					                    	  itemStyle : {
+							                	  normal : {
+							                		  color:'#f5994e',
+							                	  }
+							                  }
+				                      },
+				                      {value:(data.cklist[5]/10000000).toFixed(2), name:data.qylist[5],
+				                    	  itemStyle : {
+						                	  normal : {
+						                		  color:'#5ab1ef',
+						                	  }
+						                  }
+				                      }
+				                  ]
+				              }
+				          ]
+				};
+			 echarts.init(document.getElementById('container1')).setOption(option);	
+		}
+	});
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/findpzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			var bt="<tr>";	
+			 for(var i=0;i<data.btlist.length;i++){
+				bt+="<th rowspan='1' style='text-align:center;'>"+data.btlist[i]+"</th>";		
+			 } 
+			    bt+="</tr>";
+			$("#pzck > thead").append(bt);
+			
+			var htmlstr="<tr>";
+			for(var i=0;i<data.hjzck.length;i++){
+				htmlstr+="<th rowspan='1' style='text-align:center;'>"+data.hjzck[i]+"</th>";	
+			}
+			htmlstr+="</tr>"
+			$("#pzck > thead").append(htmlstr);
+			for(var i=0;i<data.pzzcklist.length;i++){
+				var trhtml="<tr>";
+				for(var j=0;j<data.btlist.length;j++){
+					trhtml+="<th rowspan='1' style='text-align:center;'>"+data.pzzcklist[i][j]+"</th>";	
+				}
+				trhtml+="</tr>"
+				$("#pzck > thead").append(trhtml);
+			}
+			
+			option2 = {
+				    title : {
+				        text: '全市粮食分品种库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c}万吨({d}%)"
+				    },
+				    legend: {
+				        orient : 'vertical',
+				        y:'center',
+				        x:'left',
+				        data:data.pzlist
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {
+				                show: true, 
+				                type: ['pie', 'funnel'],
+				                option: {
+				                    funnel: {
+				                        x: '60%',
+				                        width: '60%',
+				                        funnelAlign: 'left',
+				                        max: 1548
+				                    }
+				                }
+				            },
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    series : [
+				              {
+				                  name:'粮食品种占比',
+				                  type:'pie',
+				                  radius : '55%',
+				                  center: ['60%', '60%'],
+				                  itemStyle:{
+				                	  normal:{
+				                		  label:{
+				                			  show: false 
+				                		  },
+				                		  labelLine:{
+				                			  show: false
+				                		  }
+				                	  }
+				                  },
+				                  data:data.pzzck
+				              }
+				          ]
+				};
+			echarts.init(document.getElementById('container2')).setOption(option2);		
+		}
+	});
+	
+	
+	$.ajax({
+		url:'${ctxPath}/zonghe/findxzck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			var bt="<tr>";	
+			 for(var i=0;i<data.btlist.length;i++){
+				bt+="<th rowspan='1' style='text-align:center;'>"+data.btlist[i]+"</th>";		
+			 } 
+			    bt+="</tr>";
+			$("#lxck > thead").append(bt);
+			
+			var htmlstr="<tr>";
+			for(var i=0;i<data.hjzck.length;i++){
+				htmlstr+="<th rowspan='1' style='text-align:center;'>"+data.hjzck[i]+"</th>";	
+			}
+			htmlstr+="</tr>"
+			$("#lxck > thead").append(htmlstr);
+			for(var i=0;i<data.pzzcklist.length;i++){
+				var trhtml="<tr>";
+				for(var j=0;j<data.btlist.length;j++){
+					trhtml+="<th rowspan='1' style='text-align:center;'>"+data.pzzcklist[i][j]+"</th>";	
+				}
+				trhtml+="</tr>"
+				$("#lxck > thead").append(trhtml);
+			}
+		
+			option4 = {
+				    title : {
+				        text: '全市粮食分性质库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				    	 orient : 'horizontal',
+					        y:'bottom',
+					        bottom:'10px',
+				        data:data.pzlist
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {show: true, type: ['line', 'bar']},
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    grid:{
+				    	y2:'30%'	
+				    },
+				    calculable : true,
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            data : data.qylist
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            axisLabel : {
+				                formatter: '{value} 万吨'
+				            }
+				        }
+				    ],
+				    series : [
+				              
+				        {
+				            name:data.pzlist[0],
+				            type:'line',
+				            data:data.pzzcklist1[0],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+				                    {type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[1],
+				            type:'line',
+				            data:data.pzzcklist1[1],
+				            markPoint : {
+				                data : [
+									{type : 'max', name: '最大值'},
+									{type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[2],
+				            type:'line',
+				            data:data.pzzcklist1[2],
+				            markPoint : {
+				                data : [
+									{type : 'max', name: '最大值'},
+									{type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[3],
+				            type:'line',
+				            data:data.pzzcklist1[3],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+									{type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },{
+				            name:data.pzlist[4],
+				            type:'line',
+				            data:data.pzzcklist1[4],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+									{type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },{
+				            name:data.pzlist[5],
+				            type:'line',
+				            data:data.pzzcklist1[5],
+				            markPoint : {
+				                data : [
+									{type : 'max', name: '最大值'},
+									{type : 'min', name: '最小值'}
+				                ]
+				            }
+				        }
+				    ]
+				};
+				                   
+			
+			echarts.init(document.getElementById('container3')).setOption(option4);	
+		}
+	});
+	
+	
+
+
+	$.ajax({
+		url:'${ctxPath}/zonghe/finddjck',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			
+			var bt="<tr>";	
+			 for(var i=0;i<data.btlist.length;i++){
+				bt+="<th rowspan='1' style='text-align:center;'>"+data.btlist[i]+"</th>";		
+			 } 
+			    bt+="</tr>";
+			$("#djck > thead").append(bt);
+			
+			var htmlstr="<tr>";
+			for(var i=0;i<data.hjzck.length;i++){
+				htmlstr+="<th rowspan='1' style='text-align:center;'>"+data.hjzck[i]+"</th>";	
+			}
+			htmlstr+="</tr>"
+			$("#djck > thead").append(htmlstr);
+			for(var i=0;i<data.pzzcklist.length;i++){
+				var trhtml="<tr>";
+				for(var j=0;j<data.btlist.length;j++){
+					trhtml+="<th rowspan='1' style='text-align:center;'>"+data.pzzcklist[i][j]+"</th>";	
+				}
+				trhtml+="</tr>"
+				$("#djck > thead").append(trhtml);
+			}
+			
+
+			option5 = {
+				    title : {
+				        text: '全市粮食分等级库存统计'
+				    },
+				    tooltip : {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				    	 orient : 'horizontal',
+					        y:'bottom',
+				        data:data.pzlist
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {show: true, type: ['line', 'bar']},
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            data : data.qylist
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            axisLabel : {
+				                formatter: '{value} 万吨'
+				            }
+				        }
+				    ],
+				    series : [
+				              
+				        {
+				            name:data.pzlist[0],
+				            type:'line',
+				            data:data.pzzcklist1[0],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+				                    {type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[1],
+				            type:'line',
+				            data:data.pzzcklist1[1],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+				                    {type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[2],
+				            type:'line',
+				            data:data.pzzcklist1[2],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+				                    {type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[3],
+				            type:'line',
+				            data:data.pzzcklist1[3],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+				                    {type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[4],
+				            type:'line',
+				            data:data.pzzcklist1[4],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+				                    {type : 'min', name: '最小值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:data.pzlist[5],
+				            type:'line',
+				            data:data.pzzcklist1[5],
+				            markPoint : {
+				                data : [
+				                    {type : 'max', name: '最大值'},
+				                    {type : 'min', name: '最小值'}
+				                ]
+				            }
+				        }
+				    ]
+				};
+			echarts.init(document.getElementById('container4')).setOption(option5);
+		}
+	});	
+});
+</script>
+
+<script src="${ctxPath}/asset/js/echartsExample.js"></script>

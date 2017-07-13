@@ -1,0 +1,107 @@
+<%
+
+	var obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.findcangfang({"qyzzjgdm":parameter.qyzzjgdm,"kdbm":parameter.kdbm,"cfbm":parameter.cfbm,page:1,rows:1}).getList().get(0);
+	
+%>
+
+
+
+<tbody>
+		<tr>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">仓房名称</td>
+   			<td rowspan="1" class="cfmc" style="vertical-align:middle;text-align:center">${obj.cfmc}</td>
+  			<td rowspan="1" style="vertical-align:middle;text-align:center">仓房类型</td>
+   			<td rowspan="1" class="cflx" style="vertical-align:middle;text-align:center">${obj.cflxmc}</td>
+   			
+		</tr>
+		<tr>
+			<td rowspan="1" style="vertical-align:middle;text-align:center">屋顶结构</td>
+   			<td rowspan="1" class="cfjgmc_wd" style="vertical-align:middle;text-align:center">${obj.cfjgmc_wd}</td>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">墙体结构</td>
+   			<td rowspan="1" class="cfjgmc_qt" style="vertical-align:middle;text-align:center">${obj.cfjgmc_qt}</td>
+		</tr>
+		<tr>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">墙体结构</td>
+   			<td rowspan="1" class="cfjgmc_qt" style="vertical-align:middle;text-align:center">${obj.cfjgmc_qt}</td>
+  			<td rowspan="1" style="vertical-align:middle;text-align:center">地面结构</td>
+   			<td rowspan="1" class="cfjgmc_dm" style="vertical-align:middle;text-align:center">${obj.cfjgmc_dm}</td>
+   		</tr>
+   		<tr>	
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">使用情况</td>
+   			<td rowspan="1" class="cfsyqk" style="vertical-align:middle;text-align:center">${obj.cfsyqkmc}</td>
+			<td rowspan="1" style="vertical-align:middle;text-align:center">仓房状态</td>
+   			<td rowspan="1" class="cfzt" style="vertical-align:middle;text-align:center">${obj.cfztmc}</td>
+		</tr>
+		<tr>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">仓房状态</td>
+   			<td rowspan="1" class="cfzt" style="vertical-align:middle;text-align:center">${obj.cfztmc}</td>
+  			<td rowspan="1" style="vertical-align:middle;text-align:center">保粮技术</td>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center"></td>
+		</tr>
+		<tr>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">建设年代</td>
+   			<td rowspan="1" class="jsnd" style="vertical-align:middle;text-align:center">${obj.jsnd}</td>
+  			<td rowspan="1" style="vertical-align:middle;text-align:center">仓房照片</td>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">
+   			<div>
+   				<a id="example2" href="javascript:void(0)" onclick="getpic()">
+   					<img src="${ctxPath+'/'+obj.cfzppath}" width="100px" height="50px"/>
+   				</a>
+   				<!--  
+   				<img data-action="zoom" alt="" src="${ctxPath+'/'+obj.cfzppath}" width="100px" height="50px">
+   				-->
+   			</div>
+   			</td>
+		</tr>
+		<tr>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">设计仓容(吨)</td>
+   			<td rowspan="1" class="sjcr" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.sjcr),3)}</td>
+  			<td rowspan="1" style="vertical-align:middle;text-align:center">实际仓容(吨)</td>
+   			<td rowspan="1" class="shjcr" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.shjcr),3)}</td>
+   		</tr>
+   		<tr>	
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">仓内长度(米)</td>
+   			<td rowspan="1" class="cncd" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.cncd),2)}</td>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">仓内宽度(米)</td>
+   			<td rowspan="1" class="cnkd" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.cnkd),2)}</td>
+		</tr>    
+		<tr>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">仓内宽度(米)</td>
+   			<td rowspan="1" class="cnkd" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.cnkd),2)}</td>
+  			<td rowspan="1" style="vertical-align:middle;text-align:center">檐口高度(米)</td>
+   			<td rowspan="1" class="ykgd" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.ykgd),2)}</td>
+		</tr>
+		<tr>
+			<td rowspan="1" style="vertical-align:middle;text-align:center">仓内直径(米)</td>
+   			<td rowspan="1" class="cnzj" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.cnzj),2)}</td>
+   			<td rowspan="1" style="vertical-align:middle;text-align:center">装粮线高度(米)</td>
+   			<td rowspan="1" colspan="5" class="zlxgd" style="vertical-align:middle;text-align:center">${trunc(parseDouble(obj.zlxgd),2)}</td>
+ 		</tr>	
+</tbody>
+
+<script>
+	
+	$(function(){
+		/*
+		$("#example1").imgbox();
+ 		$("#example2").imgbox({
+ 			'speedIn'		: 0,
+ 			'speedOut'		: 0,
+ 			'alignment'		: 'center',
+ 			'overlayShow'	: false,
+ 			'allowMultiple'	: false
+ 		});
+ 		*/
+ 		//$("#example2").click();
+	});
+	
+	function getpic(){
+		//alert($("#example2").find("img").attr("src"));
+		var url = $("#example2").find("img").attr("src");
+		$("#img2",window.top.document).attr("src",url);
+		$("#example2",window.top.document).attr("href",url);
+		setTimeout("$('#example2',window.top.document).click()",300);
+		top.$("#example2",window.top.document).click();
+		//$("#example2",window.top.document).click();
+	}
+</script>

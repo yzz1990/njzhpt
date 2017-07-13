@@ -1,0 +1,721 @@
+package com.zkzy.njzhpt.bo;
+
+import java.util.HashMap;
+import java.util.List;
+
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.EmergencyDAO;
+import com.zkzy.njzhpt.interceptor.AutoPageInterceptor;
+
+public class EmergencyBO {
+	/**
+	 * 遍历应急状态表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryyingjizt(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.queryyingjizt(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历应急状态等级表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryyingjidj(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.queryyingjidj(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历人口表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryrenkou(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.queryrenkou(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历粮食收购资格许可信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querylssgzg(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.querylssgzg(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	
+	/**
+	 * 遍历粮油收支月报表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querylysz(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.querylysz(map);
+		int rows = Integer.parseInt(map.get("rows").toString());
+		int page = Integer.parseInt(map.get("page").toString());
+		int size = userPageRecord.getList().size();
+		int ttpage = (size / rows) + 1;
+		List<Record> recordl = userPageRecord.getList();
+		Page<Record> pageRecord = new Page<>(recordl, page, rows, ttpage, size);
+		Ret ret = Ret.create("list", pageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历从业人员报表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querycyry(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.querycyry(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+
+	/**
+	 * 遍历粮油加工企业年报
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Ret querylyjgqy(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.querylyjgqy(map);
+		int rows = Integer.parseInt(map.get("rows").toString());
+		int page = Integer.parseInt(map.get("page").toString());
+		int size = userPageRecord.getList().size();
+		int ttpage = (size / rows) + 1;
+		List<Record> recordl = userPageRecord.getList();
+		Page<Record> pageRecord = new Page<>(recordl, page, rows, ttpage, size);
+		Ret ret = Ret.create("list", pageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历粮油科技加工
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querylykjjb(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.querylykjjb(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历粮食产业经济统计
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret querylscyjjtj(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.querylscyjjtj(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 遍历粮食产业经济统计
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public Ret queryccss(HashMap<String, Object> map) throws Exception {
+		Page<Record> userPageRecord = EmergencyDAO.queryccss(map);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取新闻网站信息
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret querynews(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.querynews(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取树形结构列表
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret querytree(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.querytree(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取应急通讯小组树形结构列表
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret querytreeyj(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.querytreeyj(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取通讯录列表
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Page<Record> querytongxun(HashMap<String, Object> param) throws Exception {
+		
+		
+		return EmergencyDAO.querytongxun(param);
+	}
+	
+	/**
+	 * 获取小组成员列表
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret querytongxunyj(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.querytongxunyj(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取企业备案
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret getqiyeba(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.getqiyeba(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取熏蒸备案
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret getxunzhenba(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.getxunzhenba(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取药剂备案
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret getyaojiba(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.getyaojiba(param);
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+	
+	/**
+	 * 获取新闻网站信息
+	 * @author yzz
+	 * @throws Exception 
+	 */
+	@Before(AutoPageInterceptor.class)
+	public  Ret getnews(HashMap<String, Object> param) throws Exception {
+		Page<Record> userPageRecord=EmergencyDAO.getnews(param);
+		//拼接字符串
+		for(Record userRecord:userPageRecord.getList()){
+			String webname = userRecord.getStr("name");
+			//解析网站
+			if("新浪网".equals(webname)){
+				String name = "新浪网";
+				Record record = EmergencyDAO.getnewnow(name);
+				String title = record.getStr("title");
+				String purl = record.getStr("url");
+				userRecord.set("title", title);
+				userRecord.set("purl", purl);
+			}
+			if("中国粮食信息网".equals(webname)){
+				String name = "中国粮食信息网";
+				Record record = EmergencyDAO.getnewnow(name);
+				String title = record.getStr("title");
+				String purl = record.getStr("url");
+				userRecord.set("title", title);
+				userRecord.set("purl", purl);
+	
+			}
+			if("江苏粮网".equals(webname)){
+				String name = "江苏粮网";
+				Record record = EmergencyDAO.getnewnow(name);
+				String title = record.getStr("title");
+				String purl = record.getStr("url");
+				userRecord.set("title", title);
+				userRecord.set("purl", purl);
+			}
+			if("中国粮食行业网".equals(webname)){
+				String name = "中国粮食行业网";
+				Record record = EmergencyDAO.getnewnow(name);
+				String title = record.getStr("title");
+				String purl = record.getStr("url");
+				userRecord.set("title", title);
+				userRecord.set("purl", purl);
+			}
+			if("国家粮食局".equals(webname)){
+				String name = "国家粮食局";
+				Record record = EmergencyDAO.getnewnow(name);
+				String title = record.getStr("title");
+				String purl = record.getStr("url");
+				userRecord.set("title", title);
+				userRecord.set("purl", purl);
+			}
+			if("中国粮食网".equals(webname)){
+				String name = "中国粮食网";
+				Record record = EmergencyDAO.getnewnow(name);
+				String title = record.getStr("title");
+				String purl = record.getStr("url");
+				userRecord.set("title", title);
+				userRecord.set("purl", purl);
+			}
+			if("中国粮油信息网".equals(webname)){
+				String name = "中国粮油信息网";
+				Record record = EmergencyDAO.getnewnow(name);
+				String title = record.getStr("title");
+				String purl = record.getStr("url");
+				userRecord.set("title", title);
+				userRecord.set("purl", purl);
+			}
+			
+		}
+		
+		Ret ret = Ret.create("list", userPageRecord);
+		return ret;
+	}
+
+
+	/**
+	 * 保存应急状态
+	 * @param param
+	 * @return
+	 */
+	public Ret addemergency(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param).remove("id");
+		boolean result = Db.save("njpt_emergency", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 修改应急状态
+	 * @param param
+	 * @return
+	 */
+	public Ret upemergency(HashMap<String, Object> param) {
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("njpt_emergency", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 删除应急状态
+	 * @param param
+	 * @return
+	 */
+	public Ret delemergency(HashMap<String, Object> param) {
+		int id = Integer.parseInt(param.get("id").toString());
+		boolean result = Db.deleteById("njpt_emergency", id);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 保存应急状态等级
+	 * @param param
+	 * @return
+	 */
+	public Ret addemergencydj(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param).remove("id");
+		boolean result = Db.save("njpt_emergencyLevel", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 修改应急状态等级
+	 * @param param
+	 * @return
+	 */
+	public Ret upemergencydj(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("njpt_emergencyLevel", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 删除应急状态等级
+	 * @param param
+	 * @return
+	 */
+	public Ret delemergencydj(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		int id = Integer.parseInt(param.get("id").toString());
+		boolean result = Db.deleteById("njpt_emergencyLevel", id);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 新增人口
+	 * @param param
+	 * @return
+	 */
+	public Ret addrenkou(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param).set("id", SqlUtil.uuid());
+		boolean result = Db.save("njpt_populationInfo", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 修改人口
+	 * @param param
+	 * @return
+	 */
+	public Ret uprenkou(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("njpt_populationInfo", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 删除人口
+	 * @param param
+	 * @return
+	 */
+	public Ret delrenkou(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		//int id = Integer.parseInt(param.get("id").toString());
+		boolean result = Db.deleteById("njpt_populationInfo", param.get("id"));
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 保存粮食收储企业资格备案
+	 * @param param
+	 * @return
+	 */
+	public Ret addlsscba(HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		Record record = new Record().setColumns(param).set("id", uuid);
+		boolean result = Db.save("njpt_lssgzzxkxx", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 修改粮食收储企业资格备案
+	 * @param param
+	 * @return
+	 */
+	public Ret uplsscba(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		Record record = new Record().setColumns(param);
+		boolean result = Db.update("njpt_lssgzzxkxx", "id", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","修改成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","修改失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 删除粮食收储企业资格备案
+	 * @param param
+	 * @return
+	 */
+	public Ret dellsscba(HashMap<String, Object> param) {
+		String id = param.get("id").toString();
+		boolean result = Db.deleteById("njpt_lssgzzxkxx", id);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+		
+	}
+
+	/**
+	 * 保存部门
+	 * 
+	 */
+	public Ret addbumen(HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		Record record = new Record().setColumns(param).set("id", uuid);
+		record.remove("isedit");
+		boolean result = Db.save("oa_treelist", record);
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 保存人
+	 * @param param
+	 * @return
+	 */
+	public Ret addrenyuan(HashMap<String, Object> param) {
+		String uuid = SqlUtil.uuid();
+		Record recordt = new Record();
+		recordt.set("id", uuid).set("cengshu", param.get("cengshu"))
+		.set("isend", 1).set("name", param.get("name")).set("leixing", param.get("leixing"))
+		.set("shangji", param.get("shangji")).set("orderno", param.get("orderno"));
+		
+		Record record = new Record().setColumns(param).set("id", uuid).remove("cengshu").remove("isend")
+				.remove("leixing").remove("shangji").remove("orderno");
+		
+		boolean result = Db.save("oa_treelist", recordt);
+		boolean resulty = Db.save("oa_tongxun", record);
+		
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 删除人员
+	 * @param param
+	 * @return
+	 */
+	public Ret delry(HashMap<String, Object> param) {
+		String id = param.get("id").toString();
+		boolean result = Db.deleteById("oa_tongxun", id);
+		boolean resulty = Db.deleteById("oa_treelist", id);
+		if (result && resulty) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+	
+	/**
+	 * 删除部门
+	 * @param param
+	 * @return
+	 */
+	public Ret delbumen(HashMap<String, Object> param) {
+		String id = param.get("id").toString();
+		String sql = "select count(id) as num from oa_treelist where shangji = ?";
+		Record record = Db.findFirst(sql, id);
+		if(record.getInt("num") == 0){
+			boolean result = Db.deleteById("oa_treelist", id);
+			if (result) {
+				Ret msg = Ret.create("ret", "true");
+				msg.put(Ret.create("message","删除成功"));
+				return msg;
+			}else{
+				Ret msg = Ret.create("ret", "false");
+				msg.put(Ret.create("message","删除失败"));
+				return msg;
+			}
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","请先删除该部门下的所有节点"));
+			return msg;
+		}	
+	}
+
+	/**
+	 * 增加人员应急通讯录
+	 * @param param
+	 * @return
+	 */
+	public Ret addrenyuanyj(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		String uuid = SqlUtil.uuid();
+		Record recordt = new Record();
+		recordt.set("id", uuid).set("cengshu", param.get("cengshu"))
+		.set("isend", 1).set("name", param.get("name")).set("leixing", param.get("leixing"))
+		.set("shangji", param.get("shangji")).set("orderno", param.get("orderno"));
+		
+		Record record = new Record().setColumns(param).set("id", uuid).remove("cengshu").remove("isend")
+				.remove("leixing").remove("shangji").remove("orderno");
+		
+		boolean result = Db.save("oa_treelist", recordt);
+		boolean resulty = Db.save("oa_tongxunyj", record);
+		
+		if (result) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","新增成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","新增失败"));
+			return msg;
+		}
+	}
+
+	/**
+	 * 删除人员通讯录
+	 * @param param
+	 * @return
+	 */
+	
+	public Ret delrenyuanyj(HashMap<String, Object> param) {
+		// TODO Auto-generated method stub
+		String id = param.get("id").toString();
+		boolean result = Db.deleteById("oa_tongxunyj", id);
+		boolean resulty = Db.deleteById("oa_treelist", id);
+		if (result && resulty) {
+			Ret msg = Ret.create("ret", "true");
+			msg.put(Ret.create("message","删除成功"));
+			return msg;
+		}else{
+			Ret msg = Ret.create("ret", "false");
+			msg.put(Ret.create("message","删除失败"));
+			return msg;
+		}
+	}
+
+	
+}

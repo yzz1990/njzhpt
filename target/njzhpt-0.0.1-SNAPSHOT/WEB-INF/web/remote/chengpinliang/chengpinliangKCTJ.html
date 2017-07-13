@@ -1,0 +1,34 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style>
+div{
+margin: 0px;
+padding: 0px;
+}
+iframe{
+margin: 0px;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	var url;
+	//url = 'http://localhost:8075/WebReport/ReportServer?reportlet=chengpinliangyoucbkctjbb.cpt';
+	
+	url = 'http://49.65.0.27:8080/WebReport/ReportServer?reportlet=chengpinliangyoucbkctjbb.cpt';
+
+	$("#chengpinliangKCTJBB").attr("src",url);
+	
+	
+});
+
+
+
+
+</script>
+
+	<div class="panel panel-default">
+		<iframe id="chengpinliangKCTJBB" style="width:1360px; height:630px" src=''></iframe>
+	</div>
+
+<%}%>

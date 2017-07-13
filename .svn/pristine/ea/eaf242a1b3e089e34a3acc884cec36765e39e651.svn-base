@@ -1,0 +1,302 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(8){
+		width: 120px;
+	}
+    </style>
+<div class="panel panel-default">
+
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>空瓶处理</b></span>
+	</div>
+	
+	<div class="panel-heading">
+		<div class="form-inline" style="float: left;">
+			<div class = "div-yjmc" style="float: left;">
+				<label>药剂名称:</label>
+				<select id="yjmc" class="form-control input-sm" style="width:150px; font-size:14px">
+					<option value="" selected="true" >全部药剂</option>
+				</select>
+			</div>
+			<div class = "div-qiye" style="margin-left:20px;float: left;">
+				<label>备案企业:</label>
+				<select id="qiye" class="form-control input-sm" style="width:150px; font-size:14px" onchange="Changeqiye()">
+					<option value="" selected="true" >全部企业</option>
+				</select>
+			</div>
+			<div class = "div-kudian" style="margin-left:20px;float: left;">
+				<label>熏蒸库点:</label>
+				<select id="kudian" class="form-control input-sm" style="width:150px; font-size:14px">
+					<option value="" selected="true" >全部库点</option>
+				</select>
+			</div>
+			<div class = "div-beianhao" style="margin-left:20px;float: left;">
+				<label>熏蒸备案号:</label>
+				<select id="beianhao" class="form-control input-sm" style="width:150px; font-size:14px">
+					<option value="" selected="true" >全部备案号</option>
+				</select>
+			</div>
+			<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left:10px"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+		</div>
+		<a class="btn btn-success btn-xs pull-right" type="button" onclick="addkongping()"><i class="fa fa-plus-circle" aria-hidden="true" style="margin-top: 5px"></i>&nbsp;新增</a>
+		<div class="clearfix"></div>
+	</div>
+	<div class="panel-body" style="padding: 0">
+		<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findkongping" >
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+var kdmc = [];
+
+var qymc = '${session.userinfo.user.realname}';
+
+
+$(function() {
+	$(".form-control").select2();
+	//加载备案企业名称
+	$.ajax({
+		url: "${ctxPath}/cangchugl/findkongping",
+		type:'post',
+		dataType: "json",
+		success: function(data) {
+			$.each(data.list,function(i, n){
+		 		$("#yjmc").append("<option value="+n.yjmc+">"+n.yjmc+"</option>");
+			});
+		}
+	});
+	
+	$.ajax({
+		url: "${ctxPath}/lunhuan/selectQYMC.do",
+		dataType: "json",
+		data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+			,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		success: function(data) {
+			$.each(data.list,function(i, n){
+					$("#qiye").append("<option value="+n.id+">"+n.qymc+"</option>");
+			});
+		}
+	});
+	
+	//加载备案企业名称
+	/*
+	$.ajax({
+		url: "${ctxPath}/cangchugl/querybaqy",
+		dataType: "json",
+		success: function(data) {
+			$.each(data,function(i, n){
+		 		$("#qiye").append("<option qyid="+n.qiyeid+" value="+n.qymc+">"+n.qymc+"</option>");
+			});
+		}
+	});
+	*/
+	
+	$.ajax({
+		url: "${ctxPath}/lunhuan/selectKDMC.do",
+		dataType: "json",
+		data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+			,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				
+				$("#kudian").append("<option value="+n.kdmc+">"+n.kdmc+"</option>");
+			});
+		}
+	});
+	
+	//加载库点名称
+	/*
+	$.ajax({
+		url:'${ctxPath}/cangchugl/queryxzkd',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				if(!kdmc.in_array(n.kdmc)){
+					$("#kudian").append("<option value="+n.kdmc+">"+n.kdmc+"</option>");
+				}
+				kdmc.push(n.kdmc);
+			});
+		},
+		error:function(){
+			alert("获取熏蒸备案详细信息失败");
+		}
+	});
+	*/
+	
+	
+	//加载备案编号
+	$.ajax({
+		url: '${ctxPath}/cangchugl/querybeian',
+		type:'get',
+		dataType: "json",
+		success: function(data) {
+			$.each(data.list,function(i, n){
+				$("#beianhao").append("<option value="+n.beianbianhao+">"+n.beianbianhao+"</option>");
+			});
+		}
+	});
+	
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "yjmc",width:80,
+				"title" : "药剂名称"
+			},{
+				"data" : "xzbabh",width:60,
+				"title" : "熏蒸备案编号"
+			},{
+				"data" : "qiye",width:100,
+				"title" : "备案企业"
+			},{
+				"data" : "kudian",
+				"title" : "熏蒸库点",
+			},{
+				"data" : "yjmc",width:110,
+				"title" : "药剂名称",
+			},{
+				"data" : "shuliang",
+				"title" : "空瓶数量",
+			},{
+				"data" : "canyurenyuan",
+				"title" : "参与人员",
+			},{
+				"data" : "deal",
+				"title" : "处理方式",
+			},{"title":"操作",width:120,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upyjkp(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;编辑</a>';
+                   	var shanchu = '<button type="button" class="btn btn-xs btn-danger" onclick="delyjkp(\''+row["id"]+'\')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;删除</button>';
+               		return bianji + " " + shanchu;
+            	}
+            }
+		]
+	});
+	
+	
+	
+	
+});
+
+//增加空瓶
+function addkongping(){
+	dialog = BootstrapDialog.show({
+	    title: '新增药剂空瓶信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yjkp_zsg.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","700px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveyjkp(); 
+        	   
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+
+function upyjkp(id){
+	dialog = BootstrapDialog.show({
+	    title: '编辑药剂空瓶信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yjkp_zsg.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","700px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","480px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveyjkp(); 
+        	   parent.window.dialog.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-xs btn-success'
+          
+	       },{
+	           label: '关闭',
+	           action: function(dialog) {
+	               dialog.close();
+	           },
+	          cssClass: 'btn-xs btn-danger'
+       		}]
+	});
+	
+}
+
+//删除药剂空瓶
+function delyjkp(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delyjkp',
+			type:'post',
+			data:{"id":id},
+			dataType:'json',
+			success:function(data){
+				alert(data.message);
+				datatable.ajax.reload(null,true);
+			},
+			error:function(){
+				alert("删除空瓶失败");
+			}
+		});
+	}
+}
+
+function doSearch(){
+	var yjmc = $("#yjmc option:selected").val();
+	var qiye = $("#qiye option:selected").val();
+	var kudian = $("#kudian option:selected").val();
+	var beianhao = $("#beianhao option:selected").val();
+	
+	var queryparam = "";
+	if(yjmc != "请选择" && yjmc != null && yjmc != ""){
+		queryparam += ("&yjmc="+yjmc);
+	}
+	if(qiye != "请选择" && qiye != null && qiye != ""){
+		queryparam += ("&qiye="+qiye);
+	}
+	if(kudian != "请选择" && kudian != null && kudian != ""){
+		queryparam += ("&kudian="+kudian);
+	}
+	if(beianhao != "请选择" && beianhao != null && beianhao != ""){
+		queryparam += ("&xzbabh="+beianhao);
+	}
+	$(".datatables").attr("data-queryparam",queryparam);
+	datatable.ajax.reload(null,true);
+	
+}
+
+</script>
+<%
+	}
+%>

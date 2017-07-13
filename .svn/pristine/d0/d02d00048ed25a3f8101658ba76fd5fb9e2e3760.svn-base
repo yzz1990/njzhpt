@@ -1,0 +1,81 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+var obj={};
+   var obj1=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.findkudian({"qyzzjgdm":parameter.qyzzjgdm,page:1,rows:1}).getList();
+	if(obj1.~size>0){
+		obj=@com.zkzy.njzhpt.dao.ShouchukeshihuaDAO.findkudian({"qyzzjgdm":parameter.qyzzjgdm,page:1,rows:1}).getList().get(0);
+	}
+
+
+
+%>
+ <style type="text/css">
+ 	
+ 	
+	.table-striped>tbody>tr>td{
+		background-color: #FFFFFF;
+	}
+	.table-striped>tbody>tr>td:nth-of-type(1){
+		 background-color: #E8F2F9;
+	}
+		.datatables td{
+	 	height:35px;
+	 	width:50%;
+ 	}
+ </style>
+<div class="panel-body" style="padding-left: 10px;padding-right: 10px;">
+	<table  class="table table-striped table-hover table-bordered datatables">
+			<tbody>
+        			<tr>	
+             			<td clospan="1" style="vertical-align:middle;text-align:center">占地面积(平方米)</td>
+             			<td clospan="3" class="zdmj" style="vertical-align:middle;text-align:center">${obj.zhdmj}</td>
+             		</tr>
+        			<tr>	
+             			<td clospan="1" style="vertical-align:middle;text-align:center">库区数(个)</td>
+             			<td clospan="3" class="kqh" style="vertical-align:middle;text-align:center">${obj.kqs}</td>
+             		</tr>
+         			<tr>	
+             			<td clospan="1" style="vertical-align:middle;text-align:center">仓房总仓容(吨)</td>
+             			<td clospan="3" class="cfzcr" style="vertical-align:middle;text-align:center"></td>
+             		</tr>
+             		<tr>	
+             			<td clospan="1" style="vertical-align:middle;text-align:center">有效仓容（吨)</td>
+             			<td clospan="3" class="yxcr" style="vertical-align:middle;text-align:center"></td>
+             		</tr>
+             		<script>
+             			$(function(){
+             				var cfzcr="${obj.cafzcr}";
+             				var yxcr="${obj.youxcr}";
+             				$(".cfzcr").text((cfzcr*1000/1000).toFixed(3));
+             				$(".yxcr").text((yxcr*1000/1000).toFixed(3));
+             				
+             			})
+             		</script>
+             		<tr>	
+             			<td clospan="1" style="vertical-align:middle;text-align:center">粮油保管员(个)</td>
+             			<td clospan="3" class="bgy" style="vertical-align:middle;text-align:center">${obj.bgy}</td>
+             		</tr>
+             		<tr>	
+            			<td clospan="1" style="vertical-align:middle;text-align:center">持证粮油保管员(个)</td>
+             			<td clospan="3" class="czlybgy" style="vertical-align:middle;text-align:center">${obj.czlybgy}</td>
+             		</tr>
+             		<tr>	
+             			<td clospan="1" style="vertical-align:middle;text-align:center">检化验员(个)</td>
+             			<td clospan="3" class="jhyy" style="vertical-align:middle;text-align:center">${obj.jhyy}</td>
+         			</tr>
+         			<tr>	
+             			<td clospan="1" style="vertical-align:middle;text-align:center">持证粮油质量检验员(个)</td>
+             			<td clospan="3" class="czlyzljyy" style="vertical-align:middle;text-align:center">${obj.czlyzljyy}</td>
+         			</tr>
+     			</tbody>
+		</table>
+</div>
+
+<script type="text/javascript">
+ 	
+</script>
+
+
+<%
+	}
+%>

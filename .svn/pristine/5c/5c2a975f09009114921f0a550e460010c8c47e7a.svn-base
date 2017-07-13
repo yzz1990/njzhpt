@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药剂台账信息</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard">
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery">
+    <meta name="author" content="Bootstrap Gallery">
+    
+    <!-- FONT AWESOME-->
+	<link rel="stylesheet" href="${ctxPath}/css/font-awesome.min.css">
+
+    <%include("/WEB-INF/web/ui/cssjs.html"){}%>
+  </head>
+<%
+	var obj={},url=ctxPath+"/cangchugl/addYjtaiz",title="新增药剂台账信息";
+	if (isNotEmpty(parameter.id)) {
+		var yjtz = @com.zkzy.njzhpt.dao.CangchuglDao.findYjtaiz({"id":parameter.id,"page":"1","rows":"100"});
+		obj = yjtz.list[0];
+		url = ctxPath+"/cangchugl/upYjtaiz";
+		title = "编辑药剂台账信息";
+	};
+	
+%>
+<!-- var obj=@com.zkzy.njzhpt.dao.CangchuglDao.findanquantj({"id":parameter.id,page:1,rows:1}).getList().get(0);	 -->
+  <body>
+
+       <div class="dashboard-wrapper-lg" style="padding: 0">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="widget">
+                  <div class="widget-header">
+                    <div class="title">
+                        	药剂台账信息                                        
+                    </div>
+                  </div>
+                  <div class="widget-body">
+				       <form id="contentform" role="form"  action="${url}" method="post" style="overflow: hidden;">
+					       <input type="hidden" name="id" value="${obj.id}">
+					       <div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="xzbabh">熏蒸备案编号:</label>
+										<input id="xzbabh" name="xzbabh" class="form-control" placeholder="熏蒸备案编号" value="${obj.xzbabh}">
+									</div>	
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="xzdd">熏蒸地点:</label>
+										<input id="xzdd" name="xzdd" class="form-control" placeholder="熏蒸地点" value="${obj.xzdd}">
+									</div>
+								</div>
+						   </div>
+					       <div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="xzqydm">行政区域:</label>
+										<select id="xzqydm" name="xzqydm" class="form-control">
+											<option value="">请选择区域</option>
+										</select>
+										<!-- <input id="xzqydm" name="xzqydm" class="form-control" placeholder="行政区域代码" value="${obj.xzqydm}"> -->
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="kdbm">库点编码:</label>
+										<input id="kdbm" name="kdbm" class="form-control" placeholder="库点编码" value="${obj.kdbm}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="yjmc">药剂名称:</label>
+										<input id="yjmc" name="yjmc" class="form-control" placeholder="药剂名称" value="${obj.yjmc}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="scrq">生产日期:</label>
+										<input id="scrq" name="scrq" class="form-control" placeholder="生产日期" value="${obj.scrq}">
+									</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="pp">品牌:</label>
+										<input id="pp" name="pp" class="form-control" placeholder="品牌" value="${obj.pp}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="lqsj">领取时间:</label>
+										<input id="lqsj" name="lqsj" class="form-control" placeholder="领取时间" value="${obj.lqsj}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label for="lydw">领药单位:</label>
+										<input id="lydw" name="lydw" class="form-control" placeholder="领药单位" value="${obj.lydw}">
+									</div>
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="gg">规格:</label>
+										<input id="gg" name="gg" class="form-control" placeholder="规格" value="${obj.gg}">
+									</div>	
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="lqr">领取人:</label>
+										<input id="lqr" name="lqr" class="form-control" placeholder="领取人" value="${obj.lqr}">
+									</div>	
+								</div>
+								<div class="col-xs-6">	
+									<div class="form-group">
+										<label for="lqsl">领取数量:</label>
+										<input id="lqsl" name="lqsl" class="form-control" placeholder="领取数量" value="${obj.lqsl}">
+									</div>	
+								</div>
+							</div>
+							
+					</form>
+					<!-- 	<input type="hidden" id="btn1-s" ></input> -->
+                  </div>
+                </div>
+	
+                
+              </div>
+            </div>
+            <!-- Row End -->
+        </div>
+
+
+<script type="text/javascript">
+$(function(){
+	$("#scrq").datetimepicker({
+			
+			format : 'yyyy-mm-dd',
+			language : 'zh-CN', //这里需要修改
+			weekStart : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			minView : 2,
+			forceParse : 0
+		});
+	$("#lqsj").datetimepicker({
+		
+		format : 'yyyy-mm-dd hh:ii:ss',
+		language : 'zh-CN', //这里需要修改
+		weekStart : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 0,
+		forceParse : 0
+	});
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":"${decode(session.userinfo.role.code,'qxlsj',session.userinfo.area.name,'qiye',session.userinfo.area.name,'ssqiye',session.userinfo.area.name,'')}"},
+		 success:function(data){
+			 $.each(data,function(i, n){
+				 	if("${obj.xzqydm}"==n.xzqhdm){
+				 		$("#xzqydm").append("<option value="+n.xzqhdm+" selected>"+n.name+"</option>");
+				 	}else{
+				 		$("#xzqydm").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				 	}
+					
+				});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	 });
+	});
+function saveyjtz() {
+	var form = $(".widget-body form");
+	$.ajax({
+		url: form.attr("action"),
+		dataType: "json",
+		data: form.serialize(),
+		success: function(msg) {
+			if (!msg.ret) {
+				alert(msg.message);
+			} else {
+				alert("保存成功");
+			}
+		}
+	});
+}
+
+
+/* function saveAnquan(id){
+	$.ajax({
+		url:"${ctxPath}/cangchugl/addanquantj",
+		data:$("form").serialize(),
+		dataType:"JSON",
+		success:function(data){
+			if(data.ret){
+				alert('保存成功');
+				parent.window.qiyeShenheDialog.close();
+				parent.window.datatable.ajax.reload(null,true);
+			}else{
+				alert('保存失败');
+			}
+		}
+	});
+}
+ */
+</script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+	 <div class="panel-heading">
+					  <div class="form-inline" style="text-align:center;margin-top: 10%">
+					  <div >
+					  	   <a>企业安全生产标准化评审申请</a></br>
+					  	   <a class="btn btn-sm btn-info" href="${ctxPath}/download/安全生产标准化建设评审.docx">请点击下载，企业安全生产标准化评审申请表</a></br></br>
+					  	   <a>企业安全生产标准化评定标准</a></br>
+					  	   <a class="btn btn-sm btn-info" href="${ctxPath}/download/安全生产标准化评定标准.doc">请点击下载，企业安全生产标准化评定标准</a></br></br>
+					  	   <a>企业安全生产标准化建设自评</a></br>
+					  	   <a class="btn btn-sm btn-info" href="${ctxPath}/download/安全生产标准化建设自评.doc">请点击下载，企业安全生产标准化建设自评</a></br></br>
+					  	   </br></br>
+				  	   </div>
+				  	       <a>企业安全生产标准化相关文件填写完毕后，请导入，以便粮食局查看</a></br>
+						   <a class="btn btn-sm btn-info"><input class="file_upload " type="file" name="file" /></a>
+						   <a id="tip-queue"  style="float:right;width:125px;display:none;"></a>
+					  </div>
+	  </div>
+	<!-- uploadifive所需js和css -->
+    <script src="${ctxPath}/resource/jquery.uploadifive.min.js"></script>
+    <link href='${ctxPath}/resource/uploadifive.css'/>
+    <!-- alert样式 -->
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/resource/showBo.css"/>
+	<script src="${ctxPath}/resource/showBo.js" type="text/javascript" charset="utf-8"></script>
+	 
+	 
+<script type="text/javascript">
+
+
+	$(function(){
+		 $('.file_upload').uploadifive({
+			'auto' : true,   //自动上传 
+			'multi' : true,  //true，允许同时上传多个文件
+	        'uploadScript' : '${ctxPath}/cangchugl/uploadFile',  //处理上传文件Action路径 
+	        'buttonClass' : 'file_upload',
+	        'fileObjName' : 'file',        //文件对象
+  	  	    'buttonText'   : '导入文件',   //按钮显示文字 
+  	  	 	'queueID'      : 'tip-queue', //提示信息放置目标 
+  	  	    'fileTypeExts'     : '*.doc,*.docx',   //允许上传文件后缀名
+  	  	    'onUploadComplete' : function(file,data) { //文件上传成功后执行
+	  	  	    var obj = JSON.parse(data);
+	  	    	var count = obj.ret;
+	  	    	var txt= "<span style='font-size:17px;text-align:center;line-height：2pt;'>"+count+"</span>";
+	  	    	Showbo.Msg.alert(txt);
+	         }
+	    });
+ 	  
+   });
+	
+	
+</script>	  
+<%
+	}
+%>

@@ -1,0 +1,159 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+  var qyzzjgdm = parameter.qyzzjgdm;
+  var kdbm = parameter.kdbm;
+%>
+ <style type="text/css">
+    	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.form-control{
+		height: 28px;
+	}
+    </style>
+<div class="panel panel-default">
+			<div class="panel-heading">
+				<!-- <div class="form-inline pull-right">
+						<a href="${ctxPath}/cangchuguanli/yewuguanli/churuku.html" class="btn btn-primary btn-sm" type="button">出入库</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/tongfengxinxi.html" class="btn btn-primary btn-sm" type="button">通风作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/lengquexinxi.html" class="btn btn-primary btn-sm" type="button">冷却作业</a>
+						<a href="${ctxPath}/cangchuguanli/zuoyeguanli/xunzhengxinxi.html" class="btn btn-primary btn-sm" type="button">熏蒸作业</a>
+				</div> -->
+				<div class="form-inline" >
+					<div style="float: left;" class="div_cf">
+						<label>仓号:</label>
+						<select id="cf" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="getDate()" >
+							<option value="">全部</option>
+						</select>
+					</div>
+					<div style="float: left;" class="div_sj">
+						<label>时间:</label>
+						<select id="time" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" >
+							<option value="">全部</option>
+						</select>
+					</div>
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left: 10px"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body" style="padding:0">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/yewu/queryLqqipaoJcInfo?qyzzjgdm=${qyzzjgdm}&kdbm=${kdbm}&isedit=2" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	});
+
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "storehouse",
+				"title" : "仓号"
+			},
+			{
+				"data" : "cangming",
+				"title" : "仓名"
+			},{
+				"data" : "pinzhong",
+				"title" : "粮食品种"
+			},{
+				"data" : "kucun",
+				"title" : "库存(公斤)"
+			},{
+				"data" : "time",
+				"title" : "时间"
+			},{
+				"data" : "outtemp",
+				"title" : "气温"
+			},{
+				"data" : "outh",
+				"title" : "气湿"
+			},{
+				"data" : "intemp",
+				"title" : "仓温"
+			},{
+				"data" : "inh",
+				"title" : "仓湿"
+			},{
+				"data" : "averagetemp",
+				"title" : "平均气温"
+			},{
+				"data" : "maxtemp",
+				"title" : "最高温"
+			},{
+				"data" : "mintemp",
+				"title" : "最低温"
+			}
+			
+			
+			]
+	});
+});
+
+$(function(){
+	$.ajax({
+	 		url:'${ctxPath}/shouchukeshihua/findmysqlcf',
+	 		type:'post',
+	 		data:{"qyzzjgdm":"${qyzzjgdm}","kdbm":"${kdbm}","page":1,"rows":1000},
+	 		dataType:'json',
+	 		success:function(data){
+	 			for(var i=0;i<data.list.length;i++){
+	 				$("#cf").append('<option value='+data.list[i].ajbh+'>'+data.list[i].ajmc+'</option>');
+	 			}
+	 		},
+	 		error:function(){
+	 			alert("error");
+	 		}
+	 	});
+});
+	
+function doSearch(){
+	var cf = $("#cf option:selected").val();
+    var time = $("#time option:selected").text();
+	document.querySelector('.datatables').dataset.queryparam="&datetime="+time+"&vCode="+cf;
+	datatable.ajax.reload(null,true); 
+}
+function getDate(){
+	$("#time").empty();
+	$(".div_sj").find(".select2-selection__rendered").text("全部");
+	$(".div_sj").find(".select2-selection__rendered").attr("title","全部");
+	var cf = $("#cf option:selected").val();
+	if(cf==""){
+		$("#time").append('<option value="">全部</option>');
+	}else{
+		$("#time").append('<option value="">全部</option>');
+		$.ajax({
+	 		url:'${ctxPath}/shouchukeshihua/querylqtime',
+	 		type:'post',
+	 		data:{"qyzzjgdm":"${qyzzjgdm}","kdbm":"${kdbm}","vCode":cf,"page":1,"rows":1000},
+	 		dataType:'json',
+	 		success:function(data){
+	 			for(var i=0;i<data.list.length;i++){
+	 				$("#time").append('<option value='+data.list[i].datetime+'>'+data.list[i].datetime+'</option>');
+	 			}
+	 			
+	 		},
+	 		error:function(){
+	 			alert("error");
+	 		}
+	 	}); 
+	}
+	
+}
+</script>
+<%
+	}
+%>

@@ -1,0 +1,81 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var qyzzjgdm = parameter.qyzzjgdm;
+ debug(qyzzjgdm);
+%>
+<body>
+
+<!-- <ul id="myTab" class="nav nav-tabs">
+	<li class="active">
+		<a href="#home" data-toggle="tab">
+			简介
+		</a>
+	</li>
+	<li>
+		<a href="#ios" data-toggle="tab">
+			基本情况
+		</a>
+	</li>
+	<li>
+		<a href="#ios" data-toggle="tab">
+			主要人员
+		</a>
+	</li>
+	<li>
+		<a href="${ctxPath}/cangchuguanli/qiyeguanli/cangchusb.html" data-toggle="tab">
+			仓储设备
+		</a>
+	</li> -->
+	<ul role="tablist" class="nav nav-tabs nav-justified">
+                  <li role="presentation" class="active">
+                     <a href="#jj"  aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+                        简介</a>
+                  </li>
+                  <li role="presentation" class="" >
+                     <a href="#kqqk" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                       库区情况</a>
+                  </li>
+                  <li role="presentation" class="" >
+                     <a href="#zyry" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                        主要人员</a>
+                  </li>
+                   <li role="presentation" class="" >
+                     <a href="#ccsb" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                       仓储设备</a>
+                  </li>
+               </ul>
+	<!-- <li class="dropdown">
+		<a href="#" id="myTabDrop1" class="dropdown-toggle" 
+		   data-toggle="dropdown">Java 
+			<b class="caret"></b>
+		</a>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+			<li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>
+			<li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>
+		</ul>
+	</li> -->
+</ul>
+<div id="myTabContent" class="tab-content" style="padding: 0;">
+	<div class="tab-pane fade in active" id="jj">
+		<span style="text-align: center;"><h2>中国食品有限公司</h2></span></br>
+		<p><h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;中国食品有限公司（以下简称"公司"或"中国食品"）是在香港联合交易所主板上市的品牌食品消费品公司（股票代码：hk0506）。</h4></p></br>
+		<p><h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;中国食品经营的主要业务包括酒类、饮料、厨房食品、休闲食品、方便食品以及物流业务，销售区域覆盖全国。在全国21个省市自治区拥有自建工厂及战略oem工厂，在智利和法国拥有葡萄酒生产基地。现有员工总数19,201人。</h4></p></br>
+		<p><h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;中国食品现时的产品组合包括众多知名品牌，例如长城葡萄酒、孔乙己、黄中皇黄酒、福临门食用油、调味品等厨房系列食品、金帝巧克力、美滋滋糖果及花生等。作为可口可乐公司在中国的战略合作伙伴，中国食品亦在授权区域装瓶和销售可口可乐汽水及销售非汽水饮料，目前位居可口可乐全球十大装瓶集团行列。在2011年中国企业500强排行榜中，中国食品位居191位。</h4></p>
+
+	</div>
+	<div class="tab-pane fade" id="kqqk">
+		<iframe id="if2" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/qiyeguanli/kuquqingkuang.html?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="zyry">
+		<iframe id="if3" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/qiyeguanli/zhuanzhibaoguan.html?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="ccsb">
+		<iframe id="if4" frameborderno="0" width="700px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/qiyeguanli/cangchusb.html?qyzzjgdm=${qyzzjgdm}"></iframe>
+	</div>
+</div>
+<script type="text/javascript">
+
+</script>
+<%
+	}
+%>

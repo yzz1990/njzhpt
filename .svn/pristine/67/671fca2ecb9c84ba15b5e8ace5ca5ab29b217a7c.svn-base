@@ -1,0 +1,428 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(2){
+		text-align: left;
+	}
+	.table-striped>tbody>tr>td:nth-child(3){
+		text-align: left;
+	}
+	.table-striped>tbody>tr>td:nth-child(6){
+		text-align: left;
+	}
+	.div-diqu, .div-qiye, .div-kudian{
+		float:left;
+	}
+</style>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>业务管理</b></span>
+				</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+				<div class = "div-diqu" >
+					<label>区域:</label>
+					<select id="quyu" name="quyu" class="js-example-basic-single input-smqy" style="width:150px; font-size:14px" onchange="getquyu()">
+						<option value="请选择" selected="true" >全部区域</option>
+					</select>
+				</div>
+				<div class = "div-qiye">	
+					<label style="margin-left:20px">企业名称:</label>
+					<select id="qymc" name="qymc" class="js-example-basic-single input-smmc" style="width:150px;font-size:14px" onchange="getqiye()">
+						<option value="请选择" selected="true" >全部企业</option>
+					</select>
+				</div>
+				<div class = "div-kudian">
+					<label style="margin-left:20px">库点名称:</label>
+					<select id="kdmc" name="kdmc" class="js-example-basic-single input-smkd" style="width:150px;font-size:14px">
+						<option value="请选择" selected="true" >全部库点</option>
+					</select>
+				</div>	
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-top: 2px;margin-left: 5px;"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body" style="padding: 0">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findQiye?isedit=2" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+        "columns": [
+			{
+				"data" : "xian",
+				"title" : "区域",width:100
+			},{
+				"data" : "qymc",
+				"title" : "企业名称"
+			},{
+				"data" : "kdmc",
+				"title" : "库点名称"
+			},{
+				"title" : "库点联系人",
+                "render": function (data,type,row,meta) {
+				    if(row["lxr"] == "" || row["lxr"]==null){
+				        return "/";
+					}else{
+				        return row["lxr"];
+					}
+                },width:80
+			},{
+				"title" : "联系方式",
+                "render": function (data,type,row,meta) {
+                    if(row["lxdh"] == "" || row["lxdh"]==null){
+                        return "/";
+                    }else{
+                        return row["lxdh"];
+                    }
+                },width:90
+			},{
+                "data" : "xxdz",
+				"title" : "联系地址"
+			},{
+				"title" : "业务管理",
+				"render": function (data,type,row,meta) {
+					/* var url = 'javascript:void(0)';
+					var chakan1 = '<a  href='+url+' onclick="churuku(\''+row["ID"]+'\')" >出入库</a>';
+					var shu1 = '<a>&nbsp|&nbsp</a>';
+					var chakan2 = '<a  href='+url+' onclick="tongfeng(\''+row["ID"]+'\')" >通风</a>';
+					var shu2 = '<a>&nbsp|&nbsp</a>';
+					var chakan3 = '<a  href='+url+' onclick="lengque(\''+row["ID"]+'\')" >冷却</a>';
+					var shu3 = '<a>&nbsp|&nbsp</a>';
+					var chakan4 = '<a  href='+url+' onclick="xunzheng(\''+row["ID"]+'\')" >熏蒸</a>';
+					return chakan1+shu1+chakan2+shu2+chakan3+shu3+chakan4;	 */
+					var url = 'javascript:void(0)';
+					var chakan = '<a  href='+url+' onclick="yewuxq(\''+row["qyzzjgdm"]+'\',\''+row["kdbm"]+'\')" class="btn btn-xs btn-success pjax" style="margin-top:7px;">详情</a>';								
+					return chakan;
+					},width:100
+				}
+			]
+	});
+});
+
+/*
+ * 
+ */
+function doSearch(){
+	var quyu = $("#quyu option:selected").val();
+	var qymc = $("#qymc option:selected").text();
+	var kdmc = $("#kdmc option:selected").text();
+	var queryparam = " ";
+	if(quyu != "请选择" && quyu != "" && quyu != null && quyu != "全部区域"){
+		queryparam += "&quyu=" + quyu;
+	}
+	if(qymc != "请选择" && qymc != "" && qymc != null && qymc != "全部企业"){
+		queryparam += "&qymc=" + qymc;
+	}
+	if(kdmc != "请选择" && kdmc != "" && kdmc != null && kdmc != "全部库点"){
+		queryparam += "&kdmc=" + kdmc;
+	}
+	document.querySelector('.datatables').dataset.queryparam=queryparam;
+	datatable.ajax.reload(null,true);
+}
+	
+function delChuruku(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delChuruku',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+	
+	
+function churuku(vSwiftNumber){
+	dialog1=BootstrapDialog.show({
+	    title: '出入库管理',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/cangchuguanli/yewuguanli/churuku.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger'
+       }]
+	});
+}	
+
+function xunzheng(vSwiftNumber){
+	dialog1=BootstrapDialog.show({
+	    title: '熏蒸管理',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/cangchuguanli/zuoyeguanli/xunzhengxinxi.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger'
+       }]
+	});
+}	
+
+function tongfeng(vSwiftNumber){
+	dialog1=BootstrapDialog.show({
+	    title: '通风管理',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/cangchuguanli/zuoyeguanli/tongfengxinxi.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger'
+       }]
+	});
+}	
+
+function lengque(vSwiftNumber){
+	dialog1=BootstrapDialog.show({
+	    title: '冷却管理',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/cangchuguanli/zuoyeguanli/lengquexinxi.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger'
+       }]
+	});
+}	
+
+
+function yewuxq(qyzzjgdm,kdbm){
+	dialog1=BootstrapDialog.show({
+	    title: '业务详情',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/shouchukeshihua/biaoqianye?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","1200px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","550px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}	
+//区县下拉框联动
+function getquyu(){
+	$(".input-smmc").html("");
+	$(".input-smkd").html("");
+	
+	var xian = $(".input-smqy option:selected").val().trim();
+	
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:'"+xian+"'}",
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-qiye").find(".select2-selection__rendered").text("全部企业");
+			$(".div-qiye").find(".select2-selection__rendered").attr("title","全部企业");
+			
+			$(".input-smmc").append('<option value="请选择">全部企业</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $(".input-smmc").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	//查找库点
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:'"+xian+"'}",
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		dataType:'json',
+		success:function(data){
+			$(".div-kudian").find(".select2-selection__rendered").text("全部库点");
+			$(".div-kudian").find(".select2-selection__rendered").attr("title","全部库点");
+			
+			$(".input-smkd").append('<option value="请选择">全部库点</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].kdmc+'>'+data.list[i].kdmc+'</option>';
+			     $(".input-smkd").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+}
+
+function getqiye(){
+	
+	$(".input-smkd").html("");
+	var qyzzjgdm = $(".input-smmc option:selected").val();
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"qyzzjgdm":qyzzjgdm,
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		dataType:'json',
+		success:function(data){
+			$(".input-smkd").html("");
+			$(".div-kudian").find(".select2-selection__rendered").text("全部库点");
+			$(".div-kudian").find(".select2-selection__rendered").attr("title","全部库点");
+			
+			$(".input-smkd").append('<option value="请选择" selected="true">全部库点</option>');
+			for(var i = 0; i < data.list.length; i++){
+				//插入库点名称
+				var op = '<option value='+data.list[i].kdmc+'>'+data.list[i].kdmc+'</option>';
+			    $(".input-smkd").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+}
+
+$(document).ready(function() {
+	$(".input-smqy").select2();		//辖区
+	$(".input-smmc").select2();     //企业
+	$(".input-smkd").select2();     //库点
+	
+	//========================加载辖区下拉框====================================
+$.ajax({
+	 url:'${ctxPath}/shouchukeshihua/findquxian',
+	 type:'post',
+	 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+	 dataType:'json',
+	 success:function(data){
+		 $.each(data,function(i, n){
+				$(".input-smqy").append("<option value="+n.name+">"+n.name+"</option>");
+			});
+		 /*
+		 for(var i = 0; i < data.length; i++){
+			 var op = '<option value='+data[i].name+'>'+data[i].name+'</option>';
+			    $(".input-smqy").append(op);
+		 }
+		 */
+	 },
+	 error:function(){
+		// alert("error");
+	 }
+	
+ });
+	//========================加载辖区下拉框结束====================================
+		
+	//========================加载企业下拉框====================================
+		 $.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+				,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$(".input-smmc").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				});
+			}
+		});
+		$.ajax({
+			url: "${ctxPath}/lunhuan/selectKDMC.do",
+			dataType: "json",
+			data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"
+				,"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					
+					$(".input-smkd").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+				});
+			}
+		});
+	//========================加载企业下拉框结束====================================
+		
+	//========================加载库点下拉框====================================
+	/*
+	 $.ajax({
+		 url:'${ctxPath}/cangchugl/findKudianmc',
+		 type:'post',
+		 
+		 dataType:'json',
+		 success:function(data){
+			 for(var i=0; i<data.length;i++){
+				 var op = '<option>'+data[i].kdmc+'</option>';
+				 $(".input-smkd").append(op);
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	*/
+	
+	
+	
+	//========================加载库点下拉框结束====================================
+		
+		
+
+});
+</script>
+
+
+<%
+	}
+%>

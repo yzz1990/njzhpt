@@ -1,0 +1,781 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+	<!----------- shiping ------------>
+	<script src="${ctxPath}/js/preview.js?version=3.0.4.150415"></script>
+	<!----------- shiping ------------>
+	<link rel="stylesheet" href="${ctxPath}/css/bootstrap.css" >
+	
+	 <style type="text/css">
+	 .datatables th{
+	 border:1px  solid #EAF1EF;
+	 		text-align:center;
+	 		vertical-align:middle;
+	 		color:black;
+	 }
+	 	.datatables td{
+	 		border:1px  solid #ADD8E6;
+	 		text-align:center;
+	 		vertical-align:middle;
+	 		color:black;
+	 	}
+	 	.datatables th, .datatables tr{
+	 		height:40px;
+	 	}
+	 	.rowhebin{
+	 		border:0px  solid #ADD8E6;
+	 	}
+	 	table.datatables>thead>tr{
+				 background-color: #B5DCFF;
+			}
+	.table-striped>tbody>tr:nth-of-type(odd) {
+		background-color: #E8F2F9;
+	}
+	.table-striped>tbody>tr:nth-of-type(even) {
+	    background-color: #FFFFFF;
+	}
+    </style>
+    <script type="text/javascript">
+
+    
+    Array.prototype.S=String.fromCharCode(2);
+    Array.prototype.in_array=function(e){
+        var r=new RegExp(this.S+e+this.S);
+        return (r.test(this.S+this.join(this.S)+this.S));
+    };
+    
+    function getnum(array,op){
+    	var num = 0;
+    	for(var i = 0;i < array.length; i++){
+    		if(array[i] == op){
+    			num++;
+    		}
+    	}
+    	return num;
+    }
+    
+
+  
+    $(function(){
+		$.ajax({
+    		url:'${ctxPath}/shouchukeshihua/findqszhj',
+    		type:'post',
+    		data:{"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}",
+				"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}",
+				"page":1,"rows":10000},
+    		dataType:'json',
+    		success:function(data){
+    			
+    	    	
+    			for(var i = 0; i < data.list.length; i++){
+    				
+    				var pzcode = data.list[i].gtcode;
+    				if(pzcode != null && pzcode != ""){
+    					if(parseFloat(data.list[i].dmStock) != 0){
+    						if(pzcode == "1411001"){
+        						$(".dadou").show();
+        						
+        						//央储
+            					if(data.list[i].gpcode.substring(0,2)  == '11' 
+            							|| data.list[i].gpcode  == '1'){
+            						if($(".dadou").find(".zy").text() == null || $(".dadou").find(".zy").text() == ""){
+            							$(".dadou").find(".zy").text(0);
+            						}
+            						$(".dadou").find(".zy").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zy").text())).toFixed(3));
+            						//央储总合计
+            						if($(".heji").find(".zy").text() == null || $(".heji").find(".zy").text() == ""){
+            							$(".heji").find(".zy").text(0);
+            						}
+            						$(".heji").find(".zy").text((data.list[i].dmStock + parseFloat($(".heji").find(".zy").text())).toFixed(3));
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            					}
+            					//省储
+            					if(data.list[i].gpcode == '121'){
+            						
+            						if($(".dadou").find(".sj").text() == null || $(".dadou").find(".sj").text() == ""){
+            							$(".dadou").find(".sj").text(0);
+            						}
+            						if($(".heji").find(".sj").text() == null || $(".heji").find(".sj").text() == ""){
+            							$(".heji").find(".sj").text(0);
+            						}
+            						$(".heji").find(".sj").text((data.list[i].dmStock + parseFloat($(".heji").find(".sj").text())).toFixed(3));
+            						$(".dadou").find(".sj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".sj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						
+            					}
+            					//市储
+            					if(data.list[i].gpcode == '122'){
+            						if($(".dadou").find(".shj").text() == null || $(".dadou").find(".shj").text() == ""){
+            							$(".dadou").find(".shj").text(0);
+            						}
+            						if($(".heji").find(".shj").text() == null || $(".heji").find(".shj").text() == ""){
+            							$(".heji").find(".shj").text(0);
+            						}
+            						$(".heji").find(".shj").text((data.list[i].dmStock + parseFloat($(".heji").find(".shj").text())).toFixed(3));
+            						$(".dadou").find(".shj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".shj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            					}
+            					//县储
+            					if(data.list[i].gpcode == '123'){
+            						if($(".dadou").find(".xj").text() == null || $(".dadou").find(".xj").text() == ""){
+            							$(".dadou").find(".xj").text(0);
+            						}
+            						if($(".heji").find(".xj").text() == null || $(".heji").find(".xj").text() == ""){
+            							$(".heji").find(".xj").text(0);
+            						}
+            						$(".heji").find(".xj").text((data.list[i].dmStock + parseFloat($(".heji").find(".xj").text())).toFixed(3));
+            						$(".dadou").find(".xj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".xj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						
+            						
+            					}
+            					//临时储备
+            					if(data.list[i].gpcode == '32' 
+            							|| data.list[i].gpcode == '33' 
+            							|| data.list[i].gpcode == '34'){
+            						if($(".dadou").find(".ls").text() == null || $(".dadou").find(".ls").text() == ""){
+            							$(".dadou").find(".ls").text(0);
+            						}
+            						if($(".heji").find(".ls").text() == null || $(".heji").find(".ls").text() == ""){
+            							$(".heji").find(".ls").text(0);
+            						}
+            						$(".heji").find(".ls").text((data.list[i].dmStock + parseFloat($(".heji").find(".ls").text())).toFixed(3));
+            						$(".dadou").find(".ls").text((data.list[i].dmStock + parseFloat($(".dadou").find(".ls").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						
+            					}
+         
+            					//商品粮
+            					if(data.list[i].gpcode.substring(0,1)  == '2'){
+            						if($(".dadou").find(".spl").text() == null || $(".dadou").find(".spl").text() == ""){
+            							$(".dadou").find(".spl").text(0);
+            						}
+            						if($(".heji").find(".spl").text() == null || $(".heji").find(".spl").text() == ""){
+            							$(".heji").find(".spl").text(0);
+            						}
+            						$(".heji").find(".spl").text((data.list[i].dmStock + parseFloat($(".heji").find(".spl").text())).toFixed(3));
+            						$(".dadou").find(".spl").text((data.list[i].dmStock + parseFloat($(".dadou").find(".spl").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+
+            					}
+            					//最低价收购
+            					if(data.list[i].gpcode == '31'){
+            						if($(".dadou").find(".zdj").text() == null || $(".dadou").find(".zdj").text() == ""){
+            							$(".dadou").find(".zdj").text(0);
+            						}
+            						if($(".heji").find(".zdj").text() == null || $(".heji").find(".zdj").text() == ""){
+            							$(".heji").find(".zdj").text(0);
+            						}
+            						$(".heji").find(".zdj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zdj").text())).toFixed(3));
+            						$(".dadou").find(".zdj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zdj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            					
+            					}
+            					
+            					//其他价格
+            					if(data.list[i].gpcode == '129' 
+            							|| data.list[i].gpcode == '99'){
+            						if($(".dadou").find(".qt").text() == null || $(".dadou").find(".qt").text() == ""){
+            							$(".dadou").find(".qt").text(0);
+            						}
+            						if($(".heji").find(".qt").text() == null || $(".heji").find(".qt").text() == ""){
+            							$(".heji").find(".qt").text(0);
+            						}
+            						$(".heji").find(".qt").text((data.list[i].dmStock + parseFloat($(".heji").find(".qt").text())).toFixed(3));
+            						$(".dadou").find(".qt").text((data.list[i].dmStock + parseFloat($(".dadou").find(".qt").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($(".dadou").find(".zj").text() == null || $(".dadou").find(".zj").text() == ""){
+            							$(".dadou").find(".zj").text(0);
+            						}
+            						$(".dadou").find(".zj").text((data.list[i].dmStock + parseFloat($(".dadou").find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						
+            					}	
+        					}else{
+        						var bigpz = pzcode.substring(0,3);
+        						var smpz = pzcode.substring(0,4);
+            					var pzlx;
+            					var smpzlx = "";
+            					if(bigpz == "111"){
+            						pzlx = "xiaomai";
+            						$(".xiaomai").show();
+            				    	
+            						/*
+            				    	$(".jingdao").show();
+            				    	$(".xiandao").show();
+            				    	$(".nuodao").show();
+            				    	$(".youzhidao").show();
+            				    	
+            				    	$(".dadou").show();
+            				    	*/
+            					}else if(bigpz == "113"){
+            						pzlx = "daogu";
+            						$(".daogu").show();
+            						$(".xiandao").show();
+            						$(".jingdao").show();
+            						$(".nuodao").show();
+            						$(".youzhidao").show();
+            					}else if(bigpz == "112"){
+            						pzlx = "yumi";
+            						$(".yumi").show();
+            					}else{
+            						pzlx = "qita";
+            						$(".qita").show();
+            					}
+            					
+            					//籼稻谷
+            					if(smpz == "1131"){
+            						smpzlx = "xiandao";
+          
+            					}else if(smpz == "1132"){
+            						//粳稻谷
+            						smpzlx = "jingdao";
+
+            					}else if(smpz == "1133"){
+            						//糯稻谷
+            						smpzlx = "nuodao";
+
+            					}else if(smpz == "1134"){
+            						//优质稻谷
+            						smpzlx = "youzhidao";
+      
+            					}else{
+            						smpzlx = "";
+            					}
+
+        	    				//央储
+            					if(data.list[i].gpcode.substring(0,2)  == '11' 
+            							|| data.list[i].gpcode  == '1'){
+            						if($("."+pzlx).find(".zy").text() == null || $("."+pzlx).find(".zy").text() == ""){
+            							$("."+pzlx).find(".zy").text(0);
+            						}
+            						$("."+pzlx).find(".zy").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zy").text())).toFixed(3));
+            						//央储总合计
+            						if($(".heji").find(".zy").text() == null || $(".heji").find(".zy").text() == ""){
+            							$(".heji").find(".zy").text(0);
+            						}
+            						$(".heji").find(".zy").text((data.list[i].dmStock + parseFloat($(".heji").find(".zy").text())).toFixed(3));
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+            						if(smpzlx != ""){
+            							
+            							if($("."+smpzlx).find(".zy").text() == null || $("."+smpzlx).find(".zy").text() == ""){
+                							$("."+smpzlx).find(".zy").text(0);
+                						}
+            							$("."+smpzlx).find(".zy").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zy").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+            						}
+            					}
+            					//省储
+            					if(data.list[i].gpcode == '121'){
+            						
+            						if($("."+pzlx).find(".sj").text() == null || $("."+pzlx).find(".sj").text() == ""){
+            							$("."+pzlx).find(".sj").text(0);
+            						}
+            						if($(".heji").find(".sj").text() == null || $(".heji").find(".sj").text() == ""){
+            							$(".heji").find(".sj").text(0);
+            						}
+            						$(".heji").find(".sj").text((data.list[i].dmStock + parseFloat($(".heji").find(".sj").text())).toFixed(3));
+            						$("."+pzlx).find(".sj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".sj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+    								if(smpzlx != ""){
+            							if($("."+smpzlx).find(".sj").text() == null || $("."+smpzlx).find(".sj").text() == ""){
+                							$("."+smpzlx).find(".sj").text(0);
+                						}
+            							$("."+smpzlx).find(".sj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".sj").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+    								}
+            					}
+            					//市储
+            					if(data.list[i].gpcode == '122'){
+            						if($("."+pzlx).find(".shj").text() == null || $("."+pzlx).find(".shj").text() == ""){
+            							$("."+pzlx).find(".shj").text(0);
+            						}
+            						if($(".heji").find(".shj").text() == null || $(".heji").find(".shj").text() == ""){
+            							$(".heji").find(".shj").text(0);
+            						}
+            						$(".heji").find(".shj").text((data.list[i].dmStock + parseFloat($(".heji").find(".shj").text())).toFixed(3));
+            						$("."+pzlx).find(".shj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".shj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+    								if(smpzlx != ""){
+            							if($("."+smpzlx).find(".shj").text() == null || $("."+smpzlx).find(".shj").text() == ""){
+                							$("."+smpzlx).find(".shj").text(0);
+                						}
+            							$("."+smpzlx).find(".shj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".shj").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+    								}
+            						
+            					}
+            					//县储
+            					if(data.list[i].gpcode == '123'){
+            						if($("."+pzlx).find(".xj").text() == null || $("."+pzlx).find(".xj").text() == ""){
+            							$("."+pzlx).find(".xj").text(0);
+            						}
+            						if($(".heji").find(".xj").text() == null || $(".heji").find(".xj").text() == ""){
+            							$(".heji").find(".xj").text(0);
+            						}
+            						$(".heji").find(".xj").text((data.list[i].dmStock + parseFloat($(".heji").find(".xj").text())).toFixed(3));
+            						$("."+pzlx).find(".xj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".xj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+    								if(smpzlx != ""){
+            							if($("."+smpzlx).find(".xj").text() == null || $("."+smpzlx).find(".xj").text() == ""){
+                							$("."+smpzlx).find(".xj").text(0);
+                						}
+            							$("."+smpzlx).find(".xj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".xj").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+    								}
+            						
+            					}
+            					//临时储备
+            					if(data.list[i].gpcode == '32' 
+            							|| data.list[i].gpcode == '33' 
+            							|| data.list[i].gpcode == '34'){
+            						if($("."+pzlx).find(".ls").text() == null || $("."+pzlx).find(".ls").text() == ""){
+            							$("."+pzlx).find(".ls").text(0);
+            						}
+            						if($(".heji").find(".ls").text() == null || $(".heji").find(".ls").text() == ""){
+            							$(".heji").find(".ls").text(0);
+            						}
+            						$(".heji").find(".ls").text((data.list[i].dmStock + parseFloat($(".heji").find(".ls").text())).toFixed(3));
+            						$("."+pzlx).find(".ls").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".ls").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+    								if(smpzlx != ""){
+            							if($("."+smpzlx).find(".ls").text() == null || $("."+smpzlx).find(".ls").text() == ""){
+                							$("."+smpzlx).find(".ls").text(0);
+                						}
+            							$("."+smpzlx).find(".ls").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".ls").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+    								}
+            						
+            					}
+         
+            					//商品粮
+            					if(data.list[i].gpcode.substring(0,1)  == '2'){
+            						if($("."+pzlx).find(".spl").text() == null || $("."+pzlx).find(".spl").text() == ""){
+            							$("."+pzlx).find(".spl").text(0);
+            						}
+            						if($(".heji").find(".spl").text() == null || $(".heji").find(".spl").text() == ""){
+            							$(".heji").find(".spl").text(0);
+            						}
+            						$(".heji").find(".spl").text((data.list[i].dmStock + parseFloat($(".heji").find(".spl").text())).toFixed(3));
+            						$("."+pzlx).find(".spl").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".spl").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+    								if(smpzlx != ""){
+            							if($("."+smpzlx).find(".spl").text() == null || $("."+smpzlx).find(".spl").text() == ""){
+                							$("."+smpzlx).find(".spl").text(0);
+                						}
+            							$("."+smpzlx).find(".spl").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".spl").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+    								}
+            						
+            					}
+            					//最低价收购
+            					if(data.list[i].gpcode == '31'){
+            						if($("."+pzlx).find(".zdj").text() == null || $("."+pzlx).find(".zdj").text() == ""){
+            							$("."+pzlx).find(".zdj").text(0);
+            						}
+            						if($(".heji").find(".zdj").text() == null || $(".heji").find(".zdj").text() == ""){
+            							$(".heji").find(".zdj").text(0);
+            						}
+            						$(".heji").find(".zdj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zdj").text())).toFixed(3));
+            						$("."+pzlx).find(".zdj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zdj").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+    								if(smpzlx != ""){
+            							if($("."+smpzlx).find(".zdj").text() == null || $("."+smpzlx).find(".zdj").text() == ""){
+                							$("."+smpzlx).find(".zdj").text(0);
+                						}
+            							$("."+smpzlx).find(".zdj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zdj").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+    								}
+            					
+            					}
+            					
+            					//其他价格
+            					if(data.list[i].gpcode == '129' 
+            							|| data.list[i].gpcode == '99'){
+            						if($("."+pzlx).find(".qt").text() == null || $("."+pzlx).find(".qt").text() == ""){
+            							$("."+pzlx).find(".qt").text(0);
+            						}
+            						if($(".heji").find(".qt").text() == null || $(".heji").find(".qt").text() == ""){
+            							$(".heji").find(".qt").text(0);
+            						}
+            						$(".heji").find(".qt").text((data.list[i].dmStock + parseFloat($(".heji").find(".qt").text())).toFixed(3));
+            						$("."+pzlx).find(".qt").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".qt").text())).toFixed(3));
+            						
+            						//品种合计
+            						if($("."+pzlx).find(".zj").text() == null || $("."+pzlx).find(".zj").text() == ""){
+            							$("."+pzlx).find(".zj").text(0);
+            						}
+            						$("."+pzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+pzlx).find(".zj").text())).toFixed(3));
+            						//全部合计
+            						if($(".heji").find(".zj").text() == null || $(".heji").find(".zj").text() == ""){
+            							$(".heji").find(".zj").text(0);
+            						}
+            						$(".heji").find(".zj").text((data.list[i].dmStock + parseFloat($(".heji").find(".zj").text())).toFixed(3));
+            						
+            						//加载稻谷小类
+    								if(smpzlx != ""){
+            							if($("."+smpzlx).find(".qt").text() == null || $("."+smpzlx).find(".qt").text() == ""){
+                							$("."+smpzlx).find(".qt").text(0);
+                						}
+            							$("."+smpzlx).find(".qt").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".qt").text())).toFixed(3));
+            							if($("."+smpzlx).find(".zj").text() == null || $("."+smpzlx).find(".zj").text() == ""){
+                							$("."+smpzlx).find(".zj").text(0);
+                						}
+                						$("."+smpzlx).find(".zj").text((data.list[i].dmStock + parseFloat($("."+smpzlx).find(".zj").text())).toFixed(3));
+    								}
+            						
+            					}
+        					}
+    					}
+    					
+    					
+    					
+    				}
+    			
+    			}
+			},
+    		error:function(){
+    			alert("加载明细失败");
+    		}
+    		
+    	});	
+    });
+    </script>
+
+      <!-- Unnamed (表格) -->
+        <div  style="width:100%;margin-top:20px;">
+        	<h4 id="kdmc" style="width:100%;text-align:center;font-weight:bold;">库存汇总</h4>
+         	<table  class=" datatables" style="border:solid 1px #add9c0;width:99%;height:100%;margin-right:0px">
+         		<thead>
+       				<tr>
+             			<th rowspan="2" colspan="2" id="col4" style="vertical-align:middle">品种</th>
+             			<th rowspan="2" id="col6" style="vertical-align:middle;border-right:none;">总库存</th>
+             			<th colspan="16" id="col7" style="vertical-align:middle;">其中<p style="float:right;color:black;margin-right:20px">单位：吨</p></th>
+         			</tr>
+         			<tr>
+             			<th colspan="2" id="col8" style="vertical-align:middle">中央储备粮</th>
+            			<th colspan="2" id="col9" style="vertical-align:middle">省级储备粮</th>
+             			<th colspan="2" id="col10" style="vertical-align:middle">市级储备粮</th>
+             			<th colspan="2" id="col11" style="vertical-align:middle">县级储备粮</th>
+            			<th colspan="2" id="col12" style="vertical-align:middle">临时储备粮</th>
+             			<th colspan="2" id="col13" style="vertical-align:middle">商品粮</th>
+             			<th colspan="2" id="col12" style="vertical-align:middle">最低价收购</th>
+             			<th colspan="2" id="col13" style="vertical-align:middle">其他储备粮</th>
+         			</tr>
+     			</thead>
+     			<tbody>
+     				<tr class="heji">
+             			<th rowspan="1" colspan="2" style="vertical-align:middle">合计</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+     			
+     				<tr class="xiaomai" style="display:none">
+             			<th rowspan="1" colspan="2" style="vertical-align:middle">小麦</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="daogu" style="display:none">
+             			<th rowspan="1" colspan="2" style="vertical-align:middle">稻谷</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="xiandao" style="display:none">
+             			<th rowspan="4" colspan="1" style="vertical-align:middle">其中</th>
+             			<th rowspan="1" colspan="1" style="vertical-align:middle">籼稻</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="jingdao" style="display:none">
+             			<th rowspan="1" colspan="1" style="vertical-align:middle">粳稻</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="nuodao" style="display:none">
+             			<th rowspan="1" colspan="1" style="vertical-align:middle">糯稻</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="youzhidao" style="display:none">
+             			<th rowspan="1" colspan="1" style="vertical-align:middle">优质稻</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="yumi" style="display:none">
+             			<th rowspan="1" colspan="2" style="vertical-align:middle">玉米</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="dadou" style="display:none">
+             			<th rowspan="1" colspan="2" style="vertical-align:middle">大豆</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+         			<tr class="qita" style="display:none">
+             			<th rowspan="1" colspan="2" style="vertical-align:middle">其他</th>
+             			<th rowspan="1" class="zj" style="vertical-align:middle;border-right:none;"></th>
+             			<th colspan="2" class="zy" style="vertical-align:middle"></th>
+            			<th colspan="2" class="sj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="shj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="xj" style="vertical-align:middle"></th>
+            			<th colspan="2" class="ls" style="vertical-align:middle"></th>
+             			<th colspan="2" class="spl" style="vertical-align:middle"></th>
+             			<th colspan="2" class="zdj" style="vertical-align:middle"></th>
+             			<th colspan="2" class="qt" style="vertical-align:middle"></th>
+         			</tr>
+     			</tbody>
+    		</table>
+   		</div>
+      			
+<%
+	}
+%>
+  

@@ -1,0 +1,1283 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<script type="text/javascript"  src="${ctxPath}/web/echarts.js"></script>
+<style>
+	.panel-body p{
+		margin-bottom:0px;
+		margin-top:0px;
+	}
+	
+	.panel-body{
+		float:left;
+	    left: 0px;
+	    margin-top:0px;
+	    width:76%;
+	
+	}
+	.panel-body-right{
+	    float:left;
+	    margin-top:16px;
+	    width:23%;
+	}
+	#exctable{
+	width:100%;
+	}
+
+	#kudian{
+		height:33px;
+		background:green;
+		color:white;
+		vertical-align:middle;
+		font-size:20px;
+	}
+	.uu1124{
+		font-size:16px;
+		background:#0066CC;
+		width:110px;
+		float:left;
+		display:inline-block;
+		font-color:white;
+		text-align:center;
+		color: white;
+		margin-top:0px;
+	}
+	.u1128{
+		font-size:16px;
+		width:130px;
+		float:left;
+		display:inline-block;
+		margin-top:0px;
+		color:black;
+	}
+	#u1126{
+		width:280px;
+		height:250px;
+		float:left;
+	}
+	.heji{
+		font-family : 微软雅黑,宋体;
+		color : black;
+	}
+	#qszcr,#qszkc,#lssgzl{
+		background:#87CEFA;
+	}
+	.div-diqu, .div-qiye, .div-kudian{
+		float:left;
+	}
+	
+	.datatables{
+		color : black;
+	}
+	.datatables thead th{
+		border:1px solid #ADD8E6;
+	}
+	.datatables thead tr td{
+		border:1px solid #ADD8E6;
+	}
+	.datatables tbody tr td{
+		vertical-align: middle;
+		text-align:right;
+		border:1px solid #ADD8E6;
+	}
+	.datatables tbody tr td:nth-child(1){
+		text-align:center;
+	}
+	
+	.datatables tbody tr td:nth-child(2), .datatables tbody tr td:nth-child(3),.datatables tbody tr td:nth-child(4) {
+		text-align:left;
+	}
+	.panel.panel-default {
+	    border-top-width: 3px;
+	    margin-top: 6px;
+	}
+	.jinqu{
+		color: black;
+	}
+</style>
+		<div class="panel panel-default">
+				<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+					<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+					<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>实时出入库</b></span>
+				</div>
+			<div class="panel-heading">
+				
+				<div class="form-inline">
+					<div class = "div-diqu" >
+						<label>地区:</label>
+						<select id="quxian" class="form-control input-sm" style="width:150px; font-size:14px" onchange="Change()">
+							<option value="" selected="true" >请选择</option>
+						</select>
+					</div>
+					<div class = "div-qiye" style="margin-left:20px">
+						<label>企业:</label>
+						<select id="qiye" class="form-control input-sm" style="width:150px; font-size:14px" onchange="Changeqiye()">
+							<option value="" selected="true" >请选择</option>
+						</select>
+					</div>
+					<div class = "div-kudian" style="margin-left:20px">
+						<label>库点名称:</label>
+							<select id="kdmc" class="js-example-basic-single" style="width:150px;font-size:14px">
+								<option value="" selected="true" >请选择</option>
+							</select>
+					</div>
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()" style="margin-left:5px; margin-top: 2px;"><i class="fa fa-search" aria-hidden="true">&nbsp;查询</i></a>
+					
+					<label style="margin-left:100px">
+					<input name="keshi" type="radio" value="1" checked="checked" onclick="getksh()" />&nbsp;可视化库</label>&nbsp;&nbsp; 
+					<label>
+					<input name="keshi" type="radio" value="0" onclick="getquanbu()" />&nbsp;全部</label> 
+				</div>
+			</div>
+			<div id="contentmass">
+				<div class="panel-body ">
+					<!--  
+					<div id="panelDemo8" class="panel panel-primary" style="width:100%;border:0px">
+			          <div class="panel-heading" style="width:100%; margin-bottom:-20px;border:0px">库点信息</div>
+			       -->
+			        <div  style="width:100%;margin-top:0px;">
+
+			          	<table id="exctable" style="border-collapse:collapse" class="table table-striped table-hover  datatables" data-url="${ctxPath}/shouchukeshihua/queryshishi?isedit=2" >
+				          <thead style="color:black;font-size:16px;border-collapse:collapse">
+				          	<tr style="color:black;font-size:16px;border:0px solid #ADD8E6">
+				          		<th style="vertical-align:middle;text-align:center">序号</th>
+	                			<th style="vertical-align:middle;text-align:center">所属地区</th>
+	                			<th style="vertical-align:middle;text-align:center">企业名称</th>
+	               				<th style="vertical-align:middle;text-align:center">库点名称</th>
+	                			<th style="vertical-align:middle;text-align:center">总仓容(吨)</th>
+	                			<th style="vertical-align:middle;text-align:center">实时库存(吨)</th>
+	                			<th style="vertical-align:middle;text-align:center">当季收购量(吨)</th>
+	                			<th style="vertical-align:middle;text-align:center">操作</th>
+	            			</tr>
+	            			<tr style="color:black;font-size:16px;border:0px solid #ADD8E6;">
+	            				<td style="text-align:center" class="xuhao"></td>
+	                			<td style="text-align:center">合计</td>
+	               				<td style="text-align:center"></td>
+	                			<td style="text-align:center"></td>
+	                			<td style="text-align:right" class="zongcangrong"></td>
+	                			<td style="text-align:right" class="shishikucun"></td>
+	                			<td style="text-align:right" class="dangjishougou"></td>
+	                			<td style="text-align:center"></td>
+	            			</tr>
+			          	</thead>
+			          	<tbody>
+			          	</tbody>
+						</table>
+		      		</div>
+				</div>
+				<div class="panel-body-right">
+					<p style="float:right;color:black">单位:吨</p>
+					<div id="u1125" style=" margin-top:0px;float:right;font-family: "Source Sans Pro", sans-serif;">
+						<div>
+							<p  class="u1128" style="margin-top:10px">全市总仓容:</p><p id="qszcr" class="uu1124" style="margin-top:10px">0.000</p>
+						</div>
+						<div>
+							<p  class="u1128">全市总库存:</p><p id="qszkc" class="uu1124">0.000</p>
+						</div>
+						<div>
+							<p  class="u1128">当季收购总量:</p><p id="lssgzl" class="uu1124">0.000</p>
+						</div>
+						<div>
+							<h3 style="color: black;">当日出入库情况</h3>
+						</div>
+						<div>
+							<p  class="u1128">今日出库总量:</p><p id="uu1128" class="uu1124">0.000</p>
+						</div>
+						<div>
+							<p  class="u1128">今日入库总量:</p><p id="u1124" class="uu1124">0.000</p>
+						</div>
+						<div>
+							<p  class="u1128">昨日出库总量:</p><p id="zrckzl" class="uu1124">0.000</p>
+						</div>
+						<div>
+							<p  class="u1128">昨日入库总量:</p><p id="zrrkzl" class="uu1124">0.000</p>
+						</div>
+						<div>
+							<p  class="u1128">今日平均水分:</p><p id="uu1124" class="uu1124">0.00%</p>
+						</div>
+						<div>
+							<p  class="u1128">今日平均杂质:</p><p id="uu1126" class="uu1124">0.00%</p>
+						</div>
+					</div>
+					<div id="u1123" style=" height:500px; margin-top:0px;float:right">
+						<div id="u1126" style="margin-top:30px;"></div>
+						<div id="u1130"></div>
+					</div>
+				</div>
+		
+		</div>
+</div>
+
+<script type="text/javascript">
+
+
+var isksh= $('input:radio[name="keshi"]:checked').val();
+Date.prototype.Format = function (fmt) { //author: meizz  
+    var o = {  
+        "M+": this.getMonth() + 1, //月份  
+        "d+": this.getDate(), //日  
+        "h+": this.getHours(), //小时  
+        "m+": this.getMinutes(), //分  
+        "s+": this.getSeconds(), //秒  
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度  
+        "S": this.getMilliseconds() //毫秒  
+    };  
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+    for (var k in o)  
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));  
+    return fmt;  
+};  
+
+var xian;
+var qyzzjgdm;
+var kdmc;
+var kdbm;
+
+$(document).ready(function() {
+	  $(".js-example-basic-single").select2();
+	  $("#quxian").select2();
+	  $("#qiye").select2();
+	  
+	  //=============================加载区县===================================
+
+	  $.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		 dataType:'json',
+		 success:function(data){
+			$.each(data,function(i, n){
+				$("#quxian").append("<option value="+n.name+">"+n.name+"</option>");
+			});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+		
+	  });
+	  $.ajax({
+			url: "${ctxPath}/lunhuan/selectQYMC.do",
+			dataType: "json",
+			data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}",
+				"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}","isksh":isksh},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+						$("#qiye").append("<option value="+n.qyzzjgdm+">"+n.qymc+"</option>");
+				});
+			}
+		});
+	  var value= $('input:radio[name="keshi"]:checked').val();
+		$.ajax({
+			url: "${ctxPath}/lunhuan/selectKDMC.do",
+			dataType: "json",
+			data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}",
+				"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}",
+				"isksh":isksh},
+			success: function(data) {
+				$.each(data.list,function(i, n){
+					$("#kdmc").append("<option value="+n.kdbm+">"+n.kdmc+"</option>");
+				});
+			}
+		});
+	  //===========================加载全市库存情况=================================
+	
+	  $.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryshishi.do',
+			type:'post',
+			data:{"page":1,"rows":10000,"isksh":"1"},
+			dataType:'json',
+			success:function(data){
+				var sumcf = 0;
+				var sumcr = 0;
+				var sumdj = 0;
+				for(var i = 0; i < data.list.length; i++){
+					var num = parseInt(data.list[i].cfzcr);
+					if(isNaN(num)){
+					   num = 0;
+					}
+					var sumcf1 = num;
+					var sumcr1 = data.list[i].sum!=null ? data.list[i].sum:0;
+					var sumdj1 = data.list[i].sumNW!=null ? data.list[i].sumNW:0;
+
+					sumcf = sumcf + parseFloat(sumcf1);
+					sumcr = sumcr + parseFloat(sumcr1);
+					sumdj = sumdj + parseFloat(sumdj1);
+				}
+				$("#qszcr").text(sumcf.toFixed(3));
+				$("#qszkc").text((sumcr/1000).toFixed(3));
+				$("#lssgzl").text((sumdj/1000).toFixed(3));
+			},
+			error:function(){
+				alert("计算合计错误");
+			}
+			
+		});
+	  
+});
+
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+    var r=new RegExp(this.S+e+this.S);
+    return (r.test(this.S+this.join(this.S)+this.S));
+};
+ 
+
+$(function(){
+	//当天日期
+	var today = (new Date).Format("yyyy-MM-dd");
+	var yestoday = (new Date(((new Date).getTime() - 24*60*60*1000))).Format("yyyy-MM-dd");
+	//=====================================================
+	//計算當日收儲情況
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findshuiza.do',
+		type:'post',
+		data:{"dtRegistrateTime":today,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			$("#uu1124").text(data.avgshuifen.toFixed(2)+"%");
+			$("#uu1126").text(data.avgzazhi.toFixed(2)+"%");
+			$("#uu1128").text((data.sumnwck/1000).toFixed(3));
+			$("#u1124").text((data.sumnwrk/1000).toFixed(3));
+		},
+		error:function(){
+			alert("error");
+		}
+		
+	});
+	
+	//計算昨日收儲情況
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/findshuiza.do',
+		type:'post',
+		data:{"dtRegistrateTime":yestoday,"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			$("#zrckzl").text((data.sumnwck/1000).toFixed(3));
+			$("#zrrkzl").text((data.sumnwrk/1000).toFixed(3));
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	//=====================================================
+	
+	$(".datatables").attr("data-queryparam","&isksh=1");
+	datatable = $('.datatables').DataTable({
+		"pageLength": 10,
+		"lengthMenu": [
+		       		[5,10,15,20,10000],
+		       		[5,10,15,20, "所有"]
+		       	],
+        "columns": [
+			{
+				"data" : "xuhao",
+				width:40
+			},
+            {
+				"render": function (data,type,row,meta) {
+					var div = '<div class="xianmc">'+row["xian"]+'</div>';	
+					return div;
+				}
+			},{
+				width:150,
+				"render": function (data,type,row,meta) {
+					var qymc;
+					if(row["qymc"] == null){
+						qymc = "";
+					}else{
+						qymc = row["qymc"];
+					}
+					var div = '<div class="qiyemc">'+qymc+'</div>';	
+					return div;
+				}
+			},{
+				width:150,
+				"render": function (data,type,row,meta) {
+					var sum = row["sum"]!=null ? row["sum"]:0;
+					var num = parseFloat(row["cfzcr"]);
+					if(isNaN(num)){
+					   num = 0;
+					}
+					var kc = parseFloat(sum)/num/10
+					var k = parseInt(parseFloat(sum)/num/10);
+					if(num == 0){
+						kc = 0;
+						k = 0;
+					}
+					var div = '<div class="kdmcmx">'
+						div+=	'<div class="kdmcmc">'+row["kdmc"]+'</div>';
+						//div+=	'<p>库存占比:</p>'; 	
+						div+=	'<div class="progress" style="border:1px #C0C0C0 solid;">'+
+	        	 					'<div role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="border:1px solid;width: '+k+'%" class="progress-bar progress-bar-purple progress-bar-striped">'+
+                   					'<span class="sr-only">40% Complete (success)</span><span class="jinqu">'+kc.toFixed(2)+'%</span>'+
+                 					'</div>'+
+                 				'</div>';
+                 		div+='</div>';
+					return div;
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var num = parseInt(row["cfzcr"]);
+					if(isNaN(num)){
+					   num = 0;
+					}
+					var s = '<div>'+num.toFixed(3)+'</div>';
+					return s;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var num = row["sum"]!=null ? row["sum"]:0;
+					var s = '<div>'+(num/1000).toFixed(3)+'</div>';
+					return s;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+					var num = row["sumNW"]!=null ? row["sumNW"]:0;
+					var s = '<div>'+(num/1000).toFixed(3)+'</div>';
+					return s;								
+				}
+			},{
+				"render": function (data,type,row,meta) {
+				var url = 'javascript:void(0)';
+				//var chakan = '<a class="purchasemx"  href='+url+'">详细</a>';			
+				var qiye = '<div class="qiye" style="display:none">'+row["qyzzjgdm"]+'</div>';
+				var kdbm = '<div class="kdbm" style="display:none">'+row["kdbm"]+'</div>';
+				var qymc = '<div class="qymc" style="display:none">'+row["qymc"]+'</div>';
+				
+				var chakan = '<a  href='+url+' class="btn btn-xs btn-success pjax purchasemx">查看</a>'
+				
+				return chakan+qiye+kdbm+qymc;								
+				}
+			}
+			]
+	});
+	
+	$('.datatables').on( 'draw.dt', function () {
+		
+		//Change();
+		
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/queryshishi',
+			type:'post',
+			data:{"xian":xian,"qyzzjgdm":qyzzjgdm,"kdmc":kdmc,"isksh":isksh,"isedit":2,"page":1,"rows":10000},
+			dataType:'json',
+			success:function(data){
+				var sumcf = 0;
+				var sumcr = 0;
+				var sumdj = 0;
+				
+				for(var i = 0; i < data.list.length; i++){
+					
+					var num = parseInt(data.list[i].cfzcr);
+					if(isNaN(num)){
+					   num = 0;
+					}
+					var sumcf1 = num;
+					var sumcr1 = data.list[i].sum!=null ? data.list[i].sum:0;
+					var sumdj1 = data.list[i].sumNW!=null ? data.list[i].sumNW:0;
+
+					sumcf = sumcf + parseFloat(sumcf1);
+					sumcr = sumcr + parseFloat(sumcr1);
+					sumdj = sumdj + parseFloat(sumdj1);
+				}
+
+				$(".zongcangrong").text(sumcf.toFixed(3));
+    			$(".shishikucun").text((sumcr/1000).toFixed(3));
+    			$(".dangjishougou").text((sumdj/1000).toFixed(3));
+				
+				
+			},
+			error:function(){
+				alert("计算合计错误");
+			}
+			
+		});
+		
+		var value= $('input:radio[name="keshi"]:checked').val();
+		
+		/*
+		if(value==1){
+			 $.ajax({
+					url:'${ctxPath}/shouchukeshihua/queryshishido',
+					type:'post',
+					data:{"page":1,"rows":10000,"isksh":"1"},
+					dataType:'json',
+					success:function(data){
+						$(".zongcangrong").text(data.list.list[0].cfzcr.toFixed(3));
+					}
+					
+					
+				});
+		}else{
+			 $.ajax({
+					url:'${ctxPath}/shouchukeshihua/queryshishido',
+					type:'post',
+					data:{"page":1,"rows":10000},
+					dataType:'json',
+					success:function(data){
+						$(".zongcangrong").text(data.list.list[0].cfzcr.toFixed(3));
+					}
+					
+					
+				});
+		}
+		*/
+		
+		
+		
+
+		
+		$(".purchasemx").click(function (e) { 
+			var qyzzjgdm = $(e.target).parent().children(".qiye").text();
+			var kdbm = $(e.target).parent().children(".kdbm").text(); 
+			var qymc = $(e.target).parent().children(".qymc").text(); 
+			var kdmc = $(e.target).parent().parent().find(".kdmcmc").text(); 
+			
+			var vurl = '${ctxPath}/shouchukeshihua/churuku/mingxi.html?qyzzjgdm='+qyzzjgdm+'&kdbm='+kdbm+'&kdmc='+kdmc;
+			var url = encodeURI(vurl);
+			dialog1=BootstrapDialog.show({
+			    title: qymc+'出入库明细',
+			    draggable:true,
+			    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="'+url+'"/>'),
+			    onshow:function(dlg){
+		       	dlg.$modalDialog.css("width","1050px");//modal-dialog
+		       	$(".close", dlg.$modalDialog).css("width","35px");//modal-dialog
+		    	$(".close", dlg.$modalDialog).css("height","35px");//modal-dialog
+		    	$(".close", dlg.$modalDialog).css("font-size","35px");//modal-dialog
+		    	$(".close", dlg.$modalDialog).css("color","white");//modal-dialog
+		    	$(".close", dlg.$modalDialog).css("opacity",1);//modal-dialog
+		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","600px");//modal-dialog
+		       },
+			});
+		});
+		
+		//库点名称单击事件展示库点存储状况
+		$(".kdmcmx").click(function (e) { 
+			var kdmc = $(e.target).parent().find(".kdmcmc").text();
+			var myChart = echarts.init(document.getElementById('u1126'));
+			if(kdmc == null || kdmc == ""){
+				kdmc = $(e.target).parent().parent().parent().find(".kdmcmc").text();
+			}
+			$.ajax({
+				url:'${ctxPath}/shouchukeshihua/queryshishi',
+				type:'post',
+				data:{"kdmc":kdmc,"page":1,"rows":5},
+				dataType:'json',
+				success:function(data){
+					var kczb = (data.list[0].sum != null ? data.list[0].sum : 0)/1000;
+					var syzb = parseFloat(data.list[0].cfzcr) - kczb;
+					option = {
+							title : {
+						        text: kdmc+'\n库存状况(库点)',
+						        x:'left',
+						        textStyle:{
+						        	fontSize:15
+						        }
+						    },
+						    tooltip: {
+						        trigger: 'item',
+						        formatter: "{b}<br/>{c} ({d}%)"
+						    },
+						    /*
+						    legend: {
+						        orient: 'vertical',
+						        x: 'left',
+						        bottom:0,
+						        data:['库存占比','剩余库存']
+						    },*/
+						    color : ['#61a0a8', '#FFFFFF', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+						    normal: {
+			                    position: 'inner'
+			                },
+						    series: [
+						        {
+						            name:'数量(占比)',
+						            type:'pie',
+						            radius: ['50%', '70%'],
+						            avoidLabelOverlap: false,
+						            label: {
+						                normal: {
+						                    //show: false,
+						                    position: 'center',
+						                    textStyle: {
+						                        fontSize: '20',
+						                        fontWeight: 'bold'
+						                    }
+						                },
+						                emphasis: {
+						                    show: true,
+						                    textStyle: {
+						                        fontSize: '30',
+						                        fontWeight: 'bold'
+						                    }
+						                }
+						            },
+						            itemStyle: {
+						            	normal:{
+						            		borderColor: "#61a0a8",
+						            		borderWidth: 1,
+						            	}
+						            },
+						            
+						            data:[
+						                {value:kczb.toFixed(3), name:'库存'},
+						                {value:syzb.toFixed(3), name:''},
+						            ]
+						        }
+						    ]
+						};
+					myChart.setOption(option);	
+				},
+				error:function(){
+					alert("加载库点错误");
+				}
+			});
+			
+		});
+		//==================================库点名称单击结束======================================
+			
+		//=========================企业名称单击事件展示企业存储状况===================================
+		$(".qiyemc").click(function (e) { 
+			var qymc = $(e.target).text();
+			var myChart = echarts.init(document.getElementById('u1126'));
+			$.ajax({
+				url:'${ctxPath}/shouchukeshihua/queryshishi',
+				type:'post',
+				data:{"qymc":qymc,"page":1,"rows":100},
+				dataType:'json',
+				success:function(data){
+					var qyzb = 0;
+					var qyzl = 0;
+					var qysy = 0;
+					for(var i = 0; i < data.list.length; i++){
+						var kczb = (data.list[i].sum != null ? data.list[i].sum : 0)/1000;
+						var cfzl = parseFloat(data.list[i].cfzcr);
+						qyzb += kczb;
+						qyzl += cfzl;
+					}
+					qysy = qyzl - qyzb;
+					
+					option = {
+							title : {
+						        text: qymc+'\n库存状况(企业)',
+						        x:'left',
+						        textStyle:{
+						        	fontSize:15
+						        }
+						    },
+						    tooltip: {
+						        trigger: 'item',
+						        formatter: "{b}<br/> {c} ({d}%)"
+						    },
+						    /*
+						    legend: {
+						        orient: 'vertical',
+						        x: 'left',
+						        bottom:0,
+						        data:['库存占比','剩余库存']
+						    },
+						    */
+						    color : ['#61a0a8', '#FFFFFF', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+						    normal: {
+			                    position: 'inner'
+			                },
+						    series: [
+						        {
+						            name:'数量(占比)',
+						            type:'pie',
+						            radius: ['50%', '70%'],
+						            avoidLabelOverlap: false,
+						            label: {
+						                normal: {
+						                    //show: false,
+						                    position: 'center',
+						                    textStyle: {
+						                        fontSize: '20',
+						                        fontWeight: 'bold'
+						                    }
+						                },
+						                emphasis: {
+						                    show: true,
+						                    textStyle: {
+						                        fontSize: '30',
+						                        fontWeight: 'bold',
+						                    }
+						                },
+						            },
+						            itemStyle: {
+						            	normal:{
+						            		
+						            		borderColor: "#61a0a8",
+						            		borderWidth: 1,
+						            	}
+						            },
+						            data:[
+						                {value:qyzb.toFixed(3), name:'库存'},
+						                {value:qysy.toFixed(3), name:''},
+						            ]
+						        }
+						    ]
+						};
+					myChart.setOption(option);	
+				},
+				error:function(){
+					alert("加载库点错误");
+				}
+			});
+		});
+		//==================================企业名称单击结束======================================
+			
+		
+		//===========================县名称单击事件展示企业存储状况===================================
+		$(".xianmc").click(function (e) { 
+			var xian = $(e.target).text();
+			var myChart = echarts.init(document.getElementById('u1126'));
+			$.ajax({
+				url:'${ctxPath}/shouchukeshihua/queryshishi',
+				type:'post',
+				data:{"xian":xian,"page":1,"rows":1000},
+				dataType:'json',
+				success:function(data){
+					var qyzb = 0;
+					var qyzl = 0;
+					var qysy = 0;
+					for(var i = 0; i < data.list.length; i++){
+						var kczb = (data.list[i].sum != null ? data.list[i].sum : 0)/1000;
+						var cfzl = parseFloat(data.list[i].cfzcr);
+						qyzb += kczb;
+						qyzl += cfzl;
+					}
+					qysy = qyzl - qyzb;
+					
+					option = {
+							title : {
+						        text: xian+'库存状况',
+						        x:'left',
+						        textStyle:{
+						        	fontSize:15
+						        }
+						    },
+						    tooltip: {
+						        trigger: 'item',
+						        formatter: "{b}<br/> {c} ({d}%)"
+						    },
+						    /*
+						    legend: {
+						        orient: 'vertical',
+						        x: 'left',
+						        bottom:0,
+						        data:['库存占比','剩余库存']
+						    },
+						    */
+						    color : ['#61a0a8', '#FFFFFF', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+						    normal: {
+			                    position: 'inner'
+			                },
+						    series: [
+						        {
+						            name:'数量(占比)',
+						            type:'pie',
+						            radius: ['50%', '70%'],
+						            avoidLabelOverlap: false,
+						            label: {
+						                normal: {
+						                    //show: false,
+						                    position: 'center',
+						                    textStyle: {
+						                        fontSize: '20',
+						                        fontWeight: 'bold'
+						                    }
+						                },
+						                emphasis: {
+						                    show: true,
+						                    textStyle: {
+						                        fontSize: '30',
+						                        fontWeight: 'bold'
+						                    }
+						                }
+						            },
+						            itemStyle: {
+						            	normal:{
+						            		borderColor: "#61a0a8",
+						            		borderWidth: 1,
+						            	}
+						            },
+						            data:[
+						                {value:qyzb.toFixed(3), name:'库存'},
+						                {value:qysy.toFixed(3), name:''},
+						            ]
+						        }
+						    ]
+						};
+					myChart.setOption(option);	
+				},
+				error:function(){
+					alert("加载库点错误");
+				}
+			});
+		});
+		//==================================县名称单击结束======================================
+	}); 
+	loadxianshuliang();
+});
+
+var oldTime = 0;
+function doSearch(){
+	
+	var nowTime = new Date().getTime();
+	
+	if( nowTime != 'undefined' && (nowTime - oldTime > 500)){
+	
+		xian = $("#quxian option:selected").text().trim();
+		qyzzjgdm = $("#qiye option:selected").val();
+		kdmc = $(".js-example-basic-single option:selected").text().trim();
+		kdbm = $(".js-example-basic-single option:selected").val();
+		
+	
+		
+		xian = (xian != null&&xian != "请选择")?xian:"请选择";
+		qyzzjgdm = (qyzzjgdm != null&&qyzzjgdm != "请选择")?qyzzjgdm:"请选择";
+		kdmc = (kdmc != null&&kdmc !="请选择")?kdmc:"请选择";
+		kdbm = (kdbm != null&&kdbm !="请选择")?kdbm:"请选择";
+			
+		var queryparam;
+		//重新加载实时列表
+		var value= $('input:radio[name="keshi"]:checked').val();
+		$(".datatables").attr("data-queryparam","&xian="+xian+"&qyzzjgdm="+qyzzjgdm+"&kdmc="+kdmc+"&isksh="+isksh);
+		
+		
+		datatable.ajax.reload(null,true);
+		
+		//=====================================================
+		//計算當日收儲情況
+		$("#uu1124").text("0.00%");
+		$("#uu1126").text("0.00%");
+		$("#uu1128").text("0.000");
+		$("#u1124").text("0.000");
+		$("#zrckzl").text("0.000");
+		$("#zrrkzl").text("0.000");
+		
+		//当天日期
+		var today = (new Date).Format("yyyy-MM-dd");
+		var yestoday = (new Date(((new Date).getTime() - 24*60*60*1000))).Format("yyyy-MM-dd");
+		//=====================================================
+		//計算當日收儲情況
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/findshuiza.do',
+			type:'post',
+			data:{"dtRegistrateTime":today,"xian":xian,"qyzzjgdm":qyzzjgdm,"kdmc":kdmc,"page":1,"rows":10000},
+			dataType:'json',
+			success:function(data){
+				$("#uu1124").text(data.avgshuifen.toFixed(2)+"%");
+				$("#uu1126").text(data.avgzazhi.toFixed(2)+"%");
+				$("#uu1128").text((data.sumnwck/1000).toFixed(3));
+				$("#u1124").text((data.sumnwrk/1000).toFixed(3));
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+		
+		//計算昨日收儲情況
+		$.ajax({
+			url:'${ctxPath}/shouchukeshihua/findshuiza.do',
+			type:'post',
+			data:{"dtRegistrateTime":yestoday,"xian":xian,"qyzzjgdm":qyzzjgdm,"kdmc":kdmc,"page":1,"rows":10000},
+			dataType:'json',
+			success:function(data){
+				$("#zrckzl").text((data.sumnwck/1000).toFixed(3));
+				$("#zrrkzl").text((data.sumnwrk/1000).toFixed(3));
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+		//=====================================================
+		loadxianshuliang();
+		oldTime = nowTime;
+	}
+	
+	
+	//=====================================区县显示库点结束====================================
+	
+}
+
+function exportExcel(){
+	window.open('${ctxPath}/shouchukeshihua/churuku/shiping.html','',
+	'height=600,width=1000,top=200,left=200,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+}
+
+function Change(){
+	$(".js-example-basic-single").empty();
+	$("#qiye").empty();
+	var xian = $("#quxian option:selected").text().trim();
+	
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye1.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:'"+xian+"'}",
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}","isksh":isksh},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-qiye").find(".select2-selection__rendered").text("请选择");
+			$(".div-qiye").find(".select2-selection__rendered").attr("title","请选择");
+			
+			$("#qiye").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	//查找库点
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:{"page":1,"rows":1000,"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:'"+xian+"'}",
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}","isksh":isksh},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-kudian").find(".select2-selection__rendered").text("请选择");
+			$(".div-kudian").find(".select2-selection__rendered").attr("title","请选择");
+			
+			$(".js-example-basic-single").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].kdbm+'>'+data.list[i].kdmc+'</option>';
+			     $(".js-example-basic-single").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+	});
+}
+
+//企业下拉框change事件
+function Changeqiye(){
+	$(".js-example-basic-single").empty();
+	var qyzzjgdm = $("#qiye option:selected").val();
+	
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:{"qyzzjgdm":qyzzjgdm,"page":1,"rows":10000,
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}","isksh":isksh},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-kudian").find(".select2-selection__rendered").text("请选择");
+			$(".div-kudian").find(".select2-selection__rendered").attr("title","请选择");
+			
+			$(".js-example-basic-single").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option>'+data.list[i].kdmc+'</option>';
+			     $(".js-example-basic-single").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+	});	
+}
+
+function loadxianshuliang(){
+	//====================================================今日收购分布(区县)
+	//垂直柱状图
+	//当天日期
+	var today = (new Date).Format("yyyy-MM-dd");
+	var myChart = echarts.init(document.getElementById('u1126'));
+	$.ajax({
+		url:"${ctxPath}/shouchukeshihua/queryfengquzongliang.do",
+		type:"post",
+		data:{"dtRegistrateTime":today,"page":1,"rows":10000},
+		dataType:"json",
+		success:function(data){
+			var sumck = [];
+			var sumrk = [];
+			var allxian = [];
+			for(var i = 0; i < data.list.length; i++){
+				if((data.list[i].xian != null)&&(data.list[i].xian != "")){
+					if(!allxian.in_array(data.list[i].xian)){
+						allxian.push(data.list[i].xian);
+						sumck.push(0);
+						sumrk.push(0);
+					}
+					if(data.list[i].vDirection == "出库"){
+						sumck[sumck.length - 1] = (data.list[i].sum/1000).toFixed(3);
+						//sumck.push((data.list[i].sum/1000).toFixed(2));
+					}
+					if(data.list[i].vDirection == "入库"){
+						sumrk[sumrk.length - 1] = (data.list[i].sum/1000).toFixed(3);
+						//sumrk.push((data.list[i].sum/1000).toFixed(2));
+					}
+				}
+			}
+			option = {
+					title: {
+				        text: '各区出入库情况',
+				    },
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+				            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        }
+				    },
+				    legend: {
+				    	x: 'right',
+				        data: ['入库', '出库']
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    color : ['#008B8B', '#87CEEB', '#00FF00','#00FFFF','#EE82EE', '#9400D3','#9370DB', '#0000FF', '#c4ccd3'],
+				    xAxis:  {
+			        	type: 'category',
+				        data: allxian
+				    },
+				    yAxis: {
+				    	type: 'value'
+				    },
+				    series: [
+				        {
+				            name: '入库',
+				            type: 'bar',
+				            stack: '总量',
+				            label: {
+				                normal: {
+				                    show: true,
+				                    //position: 'insideCenter'
+				                }
+				            },
+				            data: sumrk
+				        },
+				        {
+				            name: '出库',
+				            type: 'bar',
+				            stack: '总量',
+				            label: {
+				                normal: {
+				                    show: true,
+				                    //position: 'insideCenter'
+				                }
+				            },
+				            data: sumck
+				        }
+				    ]
+				};
+			myChart.setOption(option);	
+		},	
+		error:function(){
+			alert("error");
+		}
+	});	
+}
+
+//获取可视化库
+function getksh(){
+	isksh = 1;
+	$(".datatables").attr("data-queryparam","&isksh=1");
+	datatable.ajax.reload(null,true);
+	var xian = $("#quxian option:selected").text().trim();
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryshishi.do',
+		type:'post',
+		data:{"page":1,"rows":10000,"isksh":"1"},
+		dataType:'json',
+		success:function(data){
+			var sumcf = 0;
+			var sumcr = 0;
+			var sumdj = 0;
+			
+			for(var i = 0; i < data.list.length; i++){
+				
+				var num = parseInt(data.list[i].cfzcr);
+				if(isNaN(num)){
+				   num = 0;
+				}
+				
+				var sumcf1 = num;
+				var sumcr1 = data.list[i].sum!=null ? data.list[i].sum:0;
+				var sumdj1 = data.list[i].sumNW!=null ? data.list[i].sumNW:0;
+
+				sumcf = sumcf + parseFloat(sumcf1);
+				sumcr = sumcr + parseFloat(sumcr1);
+				sumdj = sumdj + parseFloat(sumdj1);
+			}
+			
+			$("#qszcr").text(sumcf.toFixed(3));
+			$("#qszkc").text((sumcr/1000).toFixed(3));
+			$("#lssgzl").text((sumdj/1000).toFixed(3));
+		},
+		error:function(){
+			alert("计算合计错误");
+		}
+	});
+	$("#qiye").empty();
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye1.do',
+		type:'post',
+		data:{"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}","isksh":isksh},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-qiye").find(".select2-selection__rendered").text("请选择");
+			$(".div-qiye").find(".select2-selection__rendered").attr("title","请选择");
+			
+			$("#qiye").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	
+	
+	$(".js-example-basic-single").empty();
+	
+	//查找库点
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:{"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}","isksh":isksh},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-kudian").find(".select2-selection__rendered").text("请选择");
+			$(".div-kudian").find(".select2-selection__rendered").attr("title","请选择");
+			
+			$(".js-example-basic-single").append('<option value="请选择">请选择</option>').trigger("change");
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].kdbm+'>'+data.list[i].kdmc+'</option>';
+			     $(".js-example-basic-single").append(op).trigger("change");
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+	});
+	
+	
+	
+}
+
+//获取全部库
+function getquanbu(){
+	
+	isksh = 0;
+	$(".datatables").attr("data-queryparam","&isksh=0");
+	datatable.ajax.reload(null,true);
+	var xian = $("#quxian option:selected").text().trim();
+	
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryshishi.do',
+		type:'post',
+		data:{"page":1,"rows":10000},
+		dataType:'json',
+		success:function(data){
+			var sumcf = 0;
+			var sumcr = 0;
+			var sumdj = 0;
+			
+			for(var i = 0; i < data.list.length; i++){
+				
+				var num = parseInt(data.list[i].cfzcr);
+				if(isNaN(num)){
+				   num = 0;
+				}
+				
+				var sumcf1 = num;
+				var sumcr1 = data.list[i].sum!=null ? data.list[i].sum:0;
+				var sumdj1 = data.list[i].sumNW!=null ? data.list[i].sumNW:0;
+
+				sumcf = sumcf + parseFloat(sumcf1);
+				sumcr = sumcr + parseFloat(sumcr1);
+				sumdj = sumdj + parseFloat(sumdj1);
+			}
+			
+			$("#qszcr").text(sumcf.toFixed(3));
+			$("#qszkc").text((sumcr/1000).toFixed(3));
+			$("#lssgzl").text((sumdj/1000).toFixed(3));
+			
+			
+		},
+		error:function(){
+			alert("计算合计错误");
+		}
+		
+	});
+	$("#qiye").empty();
+	//查找企业
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/queryqiye1.do',
+		type:'post',
+		data:{"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}",
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-qiye").find(".select2-selection__rendered").text("请选择");
+			$(".div-qiye").find(".select2-selection__rendered").attr("title","请选择");
+			
+			$("#qiye").append('<option value="请选择">请选择</option>');
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].qyzzjgdm+'>'+data.list[i].qymc+'</option>';
+			     $("#qiye").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+	});
+	
+	
+$(".js-example-basic-single").empty();
+	
+	//查找库点
+	$.ajax({
+		url:'${ctxPath}/shouchukeshihua/querykudian.do',
+		type:'post',
+		data:{"xian":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}",
+			"qymc":"${array.contain(session.userinfo.auth,'auth_company')?session.userinfo.dep.name:''}"},
+		dataType:'json',
+		success:function(data){
+			
+			$(".div-kudian").find(".select2-selection__rendered").text("请选择");
+			$(".div-kudian").find(".select2-selection__rendered").attr("title","请选择");
+			
+			$(".js-example-basic-single").append('<option value="请选择">请选择</option>').trigger("change");
+			for(var i = 0; i < data.list.length; i++){
+				 var op = '<option value='+data.list[i].kdbm+'>'+data.list[i].kdmc+'</option>';
+			     $(".js-example-basic-single").append(op).trigger("change");
+			}
+		},
+		error:function(){
+			alert("error");
+		}
+		
+	});
+	
+
+	
+}
+
+</script>
+<%}%>

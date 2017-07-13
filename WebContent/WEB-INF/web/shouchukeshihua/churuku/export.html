@@ -1,0 +1,15 @@
+
+<%
+ 	var page = 1;
+	var rows = 1000000; 
+	var xian="";var status="";
+	if(!isEmpty(parameter.xian)){
+		xian=parameter.xian;
+	}
+
+	var qiyeInfo=@com.zkzy.njzhpt.dao.ShouchukeshihuaDao.queryshishi({page:page,rows:rows,xian:xian}).getList();
+ 	var jsonarray=@net.sf.json.JSONArray.fromObject(qiyeInfo);
+ 	var a=@com.zkzy.njzhpt.bo.ExportExcel.exportExcel(null,jsonarray,"");
+	print("{\"file\":\""+a+"\"}");
+
+%>

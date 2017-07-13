@@ -1,0 +1,51 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var xzqydm = parameter.xzqydm;
+ var kdbm = parameter.kdbm;
+%>
+<body>
+<ul role="tablist" class="nav nav-tabs nav-justified">
+                 <li role="presentation" class="active">
+                    <a href="#yjkc"  aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+                       药剂库存</a>
+                 </li>
+                  <li role="presentation" class="" >
+                    <a href="#yjrk" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                      药剂入库</a>
+                 </li>
+                 <li role="presentation" class="" >
+                    <a href="#yjck" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                      药剂出库</a>
+                 </li>
+                  <li role="presentation" class="" >
+                    <a href="#yjbs" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                      药剂报损</a>
+                 </li>
+                  <li role="presentation" class="" >
+                    <a href="#kpcl" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true">
+                      空瓶处理</a>
+                 </li>
+</ul>
+<div id="myTabContent" class="tab-content" style="padding: 0;">
+	<div class="tab-pane fade in active" id="yjkc">
+		<iframe id="if1" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojikucun.html?xzqydm=${xzqydm}&kdbm=${kdbm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="yjrk">
+		<iframe id="if2" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojirk.html?xzqydm=${xzqydm}&kdbm=${kdbm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="yjck">
+		<iframe id="if3" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojick.html?xzqydm=${xzqydm}&kdbm=${kdbm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="yjtz">
+		<iframe id="if4" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojitaizhang.html?xzqydm=${xzqydm}&kdbm=${kdbm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="yjbs">
+		<iframe id="if5" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/yaojisunhao.html?xzqydm=${xzqydm}&kdbm=${kdbm}"></iframe>
+	</div>
+	<div class="tab-pane fade" id="kpcl">
+		<iframe id="if6" frameborderno="0" width="600px" height="500px" style="border-width: 0px; width: 100%;" src="${ctxPath}/cangchuguanli/zuoyeguanli/yaojiguanli/kongpingcl.html?xzqydm=${xzqydm}&kdbm=${kdbm}"></iframe>
+	</div>
+</div>
+<%
+	}
+%>

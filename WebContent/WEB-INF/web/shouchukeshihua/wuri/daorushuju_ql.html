@@ -1,0 +1,71 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+ var liucid = parameter.liucid;
+%>
+<div class="panel panel-default">
+	<div class="panel-heading" style="width: 100%;height: 40px;padding: 0">
+		<div style="width: 33%;height: 40px;float: left;text-align: center;font-size: 18px;margin-top: 6px;color: #D3D3D3;"><span>上传Excel</span></div>
+		<div style="width: 33%;height: 40px;float: left;text-align: center;font-size: 18px;margin-top: 6px;color: #D3D3D3;"><span>预览数据</span></div>
+		<div style="width: 33%;height: 40px;float: right;text-align: center;font-size: 18px;font-weight:bold;margin-top: 6px;"><img src="${ctxPath}/img/table_row_insert.png"><span>导入数据</span></div>
+
+	</div>
+<div class="panel-body" style="padding: 0">
+	<input type="hidden" id="liucid" name="liucid" value="${liucid}"></br>
+</div>
+
+<div>
+	<div  id="chenggong" style="border:1px solid #fff;text-align: center;margin-top: 4%;">
+		<p>
+			<img src="${ctxPath}/img/ms.jpg" width="170" height="170"><br>
+			<p style="font-family: 宋体;font-size: 40px;font-weight: bold;">导入成功</p>
+		</p>
+	</div>
+	<div  id="shibai" style="border:1px solid #fff;text-align: center;margin-top: 4%; display: none;">
+		<p>
+			<img src="${ctxPath}/img/cuo.jpg" width="170" height="170"><br>
+			<p style="font-family: 宋体;font-size: 40px;font-weight: bold;">导入失败</p>
+		</p>
+	</div>
+	<div class="fankui" id="fankui" style="width:450px ;height:140px ;margin-left: 20%;background-color: #E6E6FA; font-size:18px;color:#333;">
+		<span>
+		
+		</span>
+		
+	
+	</div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+
+	$(function(){
+		var liucid = $("#liucid").val();
+		$.ajax({
+			url: "${ctxPath}/shouchukeshihua/Daorushuju_ql",
+			type:"post",
+			data:{"liucid":liucid},
+			dataType: "json",
+			success: function(data) {
+				parent.reload();
+   	  	    	var count = data.count;
+   	  	    	var uncount = data.uncount;
+   	  	    	var allcount = data.allcount;
+   	  	    	var p1 =  '<p>&nbsp;&nbsp;&nbsp;&nbsp;'+allcount+'</p>'
+	   	  	   			 +'<p>&nbsp;&nbsp;&nbsp;&nbsp;'+count+'</p>';
+	   	  	   			 //+'<p>&nbsp;&nbsp;&nbsp;&nbsp;'+uncount+'</p>';	
+   	  	   		$("#fankui").find("span").append(p1);
+			},
+			error: function(e) { 
+				$("#shibai").css("display","block");
+				$("#chenggong").css("display","none");
+			}
+		});
+	});
+	
+	/* var th1 =  '<th>'+i+'</th>';
+	$("#createtable").find("tfoot tr").append(th1); */
+</script>
+<%
+	}
+%>

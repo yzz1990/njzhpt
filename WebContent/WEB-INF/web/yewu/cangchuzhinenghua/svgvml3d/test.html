@@ -1,0 +1,83 @@
+<html xmlns:v ="urn:schemas-microsoft-com:vml">
+<head>
+<title>SVG-VML-3D-Example - Rubik's Cube</title>
+<style>
+v\:* { behavior: url(#default#VML); }
+input { background-color:#c0c0ff; width:28; height:28; font-family:'Times New Roman'; font-size:14pt; }
+tr { height:30px; }
+td { width:30px; }
+</style>
+<script src="svgvml3d.js" LANGUAGE="JavaScript" TYPE="text/javascript"></script>
+<script src="colorbox3d.js" LANGUAGE="JavaScript" TYPE="text/javascript"></script>
+<script>
+Init();
+//the function Init is called by the onload event handler of the html file
+function Init()
+{ //First you need the object Scene, this is the world which contains all other objects
+  //The object Scene holds all the information about light, position of the observer, and so on
+  if (useSVG)
+  { //We must wait until the file scene.svg is completely loaded then SVGObjects[0] will be available
+    if (! SVGObjects[0]) //If you have more than one scene.svg embedded, then you can use SVGObjects[n] (n=0,1,...)
+    { setTimeout("Init()",100); //If scene.svg is not loaded then try again in 0.1 seconds 
+      return;
+    }
+    S=new Scene3D(SVGObjects[0],0,500,500); //use the same n for SVGObjects[n] here
+  }
+  else S=new Scene3D(document.getElementById("Scene1"),1);
+
+  //Now you can add the objects which you want to view to the scene and subsequently do some manipulations to
+  //resize the objects and to move them from the origin of the coordinate system to the position you want:  
+  T=new Tetrahedron(S, "#0080ff", "#0000ff", "#000000", 1);
+  T.Shift(1,1,1);
+  O=new Octahedron(S, "#0080ff", "#0000ff", "#000000", 1);
+  O.Zoom(1.4);
+  O.Shift(-1,1,-1);
+  C=new Cube(S, "#0080ff", "#0000ff", "#000000", 1);
+  C.Zoom(0.9);
+  C.Shift(1,-1,-1);
+  I=new Icosahedron(S, "#0080ff", "#0000ff", "#000000", 1);
+  I.Shift(-1,-1,1);
+  D=new Dodecahedron(S, "#0080ff", "#0000ff", "#000000", 1);
+
+  //add an Id and an onClick event action to the tetrahedron
+  D.SetId("myDodedahedron");
+  D.SetEventAction("click", parent.ClickMsg);
+  //use D.SetEventAction("click", ""); to remove the onClick event action later
+  //all objects must share the same function for an event action (here function ClickMsg for the onclick event)
+
+//Finaly when all objects are added to the scene we must detect the borders of the box which covers all objects:
+  S.AutoCenter();
+//This detects the center of the scene (which is the center of the box) and also sets distance of the observer
+//and the angel of view to reasonable values
+
+//Even when all objects are located around the origin of the coordinate system, normally the center calculated by
+//AutoCenter() will not exactly be the origin of the coordinate system. When you later want to rotate the objects
+//around the origin of the coordinate system, then also the center of the scene should be there, you do this with
+  S.Center.Zoom(0.0);
+
+//With the following you can zoom in and zoom out the whole scene on the screen 
+  S.ZoomAll*=1.4;
+
+//The viewer (=observer) and the light are located on a sphere which covers the scene. The center of the scene is
+//also the center of the sphere. You can change the positions by ChangeViewer(d¦¨, d¦µ) and ChangeLight(d¦¨, d¦µ)
+//d¦¨ goes to north/south (-90...+90) and d¦µ goes to east/west (0-360).
+  S.ChangeViewer(-15,0);
+  S.ChangeLight(-20,-30);
+
+//To find the right order in which the objects of the scene shall be drawn use the following
+  S.Sort();
+
+//Now we're ready to draw all the objects of the scene
+  S.Draw();
+}
+//the function is called when clicking on the dodecahedron
+function ClickMsg(evt)
+{ if (evt) alert("You clicked on "+evt.target.id+"."); //SVG
+  else alert("You clicked on "+this.id+"."); //VML
+}
+//Finally, add the following code to your html document. This is the canvas where the scene will be drawn.
+if (useSVG) document.writeln("<embed width='500' height='500' name='Scene1' src='scene.svg' wmode='transparent' type='image/svg+xml' />");
+else document.writeln("<div id='Scene1' style='position: relative; width:500; height:500; overflow: hidden;'></div>");
+//The following is a bit more detailed reference of the available objects with their properties and methods which can be used.
+</script>
+</html>

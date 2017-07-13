@@ -1,0 +1,92 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+</style>
+<div class="panel panel-default">
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>密码信息</b></span>
+		</div>
+		<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+				</div> 
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findUserxinxi?id=${session.userinfo.user.id}" ></table>
+			</div>
+		</div>
+
+
+<script type="text/javascript">
+
+	
+
+var datatable;
+$(function(){
+	datatable = $('.datatables').DataTable({
+		"autoWidth": false,
+        "columns": [
+			
+			{
+				"data" : "realname",width:150,
+				"title" : "真实名称"
+			},
+			{
+				"data" : "loginname",width:100,
+				"title" : "登录名称"
+			},
+			{
+				"data" : "password",width:80,
+				"title" : "密码"
+			},
+			 {"title":"操作",width:100,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var bianji = '<a href='+url+' onclick="upykgl(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;修改密码</a>';
+               		return bianji;
+            	}
+            }
+			]
+	});
+});
+
+function upykgl(id){
+	dialog1=BootstrapDialog.show({
+	    title: '修改密码',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/weihu/xiugaimima.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","500px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","310px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.baocun(); 
+           },
+          cssClass: 'btn-xs btn-success'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-xs btn-danger'
+       }]
+	});
+}
+</script>
+<%
+	}
+%>

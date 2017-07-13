@@ -1,0 +1,534 @@
+package com.zkzy.njzhpt.bo;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+
+import com.jfinal.kit.Ret;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Record;
+import com.zkzy.njzhpt.dao.ChuBeiLiangJHDAO;
+
+public class saveShiwuKucun {
+	
+	public Ret saveshiwukucun() throws Exception {
+		
+		Ret ret=new Ret();
+		Calendar cal = Calendar.getInstance();
+		//得到当前年度
+		int yearInt = cal.get(Calendar.YEAR);
+		String year=String.valueOf(yearInt);
+		//得到当前month
+		int monthInt=cal.get(Calendar.MONTH);
+		String month=String.valueOf((monthInt+1));
+		HashMap<String, Object> para=new HashMap<>();
+		para.put("year", year);
+		para.put("month", month);
+		boolean succes=Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				System.out.println("2.Atom");
+				//市级储备
+				List<Record> shifoucunzai=Db.find("select * from njpt_shiwukucun where year=? and month=?",year,month);
+				boolean boolshiji=false;
+				boolean boolxianji=false;
+				para.put("xingzhi", "122");
+				if(shifoucunzai.size()>0){
+					for(Record record:shifoucunzai){
+						int id=record.getInt("id");
+						boolshiji= Db.deleteById("njpt_shiwukucun", id);
+					}
+					boolshiji=saveshiwukucunfangfa(para);
+				}else{
+					boolshiji=saveshiwukucunfangfa(para);
+				}
+				List<Record> xianji=Db.find("select * from njpt_shiwukucun_xianji where year=? and month=?",year,month);
+				para.remove("xingzhi");
+				para.put("xingzhi", "123");
+				if(xianji.size()>0){
+					for(Record record:xianji){
+						int id=record.getInt("id");
+						boolxianji= Db.deleteById("njpt_shiwukucun_xianji", id);
+					}
+					boolxianji=saveshiwukucunfangfa(para);
+				}else{
+					boolxianji=saveshiwukucunfangfa(para);
+				}
+				return boolshiji&&boolxianji;
+			}
+		});
+		ret.put("ret", succes);
+		return ret;
+		
+	}
+	
+	
+	
+	public void saveshiwukucun(HashMap<String, Object> map) throws Exception {
+		
+		
+		Calendar cal = Calendar.getInstance();
+		//得到当前年度
+		int yearInt = cal.get(Calendar.YEAR);
+		String year=String.valueOf(yearInt);
+		//得到当前month
+		int monthInt=cal.get(Calendar.MONTH);
+		String month=String.valueOf((monthInt+1));
+		
+		
+		HashMap<String, Object> para=new HashMap<>();
+		para.put("year", year);
+		para.put("month", month);
+		Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				List<Record> shifoucunzai=Db.find("select * from njpt_shiwukucun where year=? and month=?",year,month);
+				boolean bool1=false;
+				System.out.println(shifoucunzai.size());
+				if(shifoucunzai.size()>0){
+					for(Record record:shifoucunzai){
+						int id=record.getInt("id");
+						bool1= Db.deleteById("njpt_shiwukucun", id);
+					}
+					bool1=saveshiwukucunfangfa(para);
+				}else{
+					bool1=saveshiwukucunfangfa(para);
+				}
+				
+				return bool1;
+			}
+		});
+			
+		
+		
+		
+	}
+	
+	
+	
+	
+	public static boolean saveshiwukucunfangfa(HashMap<String, Object> map){
+		String year=(String) map.get("year");
+		String month=(String) map.get("month");
+		List<Record> list=new ArrayList<>();
+		//查询南京市
+		List<Record> qunshiList=quanshi(map); //（格式符合）
+		for(Record record:qunshiList){
+			list.add(record);
+		}
+		//南京市属企业(小麦 粳稻 籼稻)
+		String[] shishuqyzzjgdm = { "134967560", "660696497" };// 铁心桥粮库  下关粮库
+		for (String qyzzjgdm : shishuqyzzjgdm) {
+			List<Record> shishu = shishuqiye(qyzzjgdm, map);
+			for(Record record:shishu){
+				list.add(record);
+				
+			}
+		}
+		//南京市属企业（粳稻 籼到）
+		List<Record> shishujunliang = qita("660696498", map);//军粮供应站 (格式正确)
+			for(Record record:shishujunliang){
+				list.add(record);
+			}
+		//区(小麦 粳稻 籼稻)
+		String[] qu = { "320115", "320111", "320116" };// 江宁 浦口 六合  （格式符合）
+		for (String xzqhdm : qu) {
+			List<Record> quList=quswkc(xzqhdm, map);
+			for(Record record:quList){
+				if ("320115"==xzqhdm) {
+					record.set("qymc", "江宁区粮食购销公司");
+				}
+				if ("320111"==xzqhdm) {
+					record.set("qymc", "浦口区粮食购销公司");
+				}
+				if ("320116"==xzqhdm) {
+					record.set("qymc", "六合区粮食购销公司");
+				}
+				list.add(record);
+			}
+		}
+		//溧水 高淳(粳稻)
+		String[] biedequ = {"320124", "320125"};   //溧水 高淳 
+		for(String xzqhdm:biedequ){
+			List<Record> gaochunList=gaochun(xzqhdm, map);
+			for(Record record:gaochunList){
+				if("320124"==xzqhdm){
+					record.set("qymc", "溧水区粮食购销公司");
+				}
+				if("320125"==xzqhdm){
+					record.set("qymc", "高淳区粮食购销公司");
+				}
+				list.add(record);
+			}
+		}
+		
+		
+		//其他(沙塘庵市场--粳稻)
+			List<Record> qitashatangyan = shatangqita("736094548", map);//沙塘庵市场 
+			for(Record record:qitashatangyan){
+				list.add(record);
+			}
+		//其他(海悦公司--小麦)	
+			List<Record> qitahaiyue = haiyueqita("765432125", map);//海悦公司
+			for(Record record:qitahaiyue){
+				list.add(record);
+			}
+		//得到当前年度
+		boolean succes= Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				// TODO Auto-generated method stub
+				boolean bool=false;
+				if("122".equals(map.get("xingzhi"))){  //保存到市级储备表里
+					for(Record record:list){
+						record.set("year", year);
+						record.set("month", month);
+						bool=Db.save("njpt_shiwukucun", record);
+					}
+				}else if ("123".equals(map.get("xingzhi"))){  //保存到县级储备表里
+					for(Record record:list){
+						record.set("year", year);
+						record.set("month", month);
+						bool=Db.save("njpt_shiwukucun_xianji", record);
+					}
+				}
+				return bool;
+			}
+		});
+		return succes;
+	}
+	
+	/**
+	 * 生成实物库存全市整条信息（储备粮计划，实物库存，占比）
+	 */
+	public static List<Record> quanshi(HashMap<String, Object> year){
+		List<Record> quanshiList=new ArrayList<>();
+		Record quanshi=ChuBeiLiangJHDAO.quanshi(year);
+		
+		Record heji=new Record().set("quming", "南京市")
+				.set("qymc", "")
+				.set("pz", "合计")
+				.set("cbljh", quanshi.get("xjcbljh"))
+				.set("swkc", quanshi.get("xjswkc"))
+				.set("sjkczb", quanshi.get("sjkczb"))
+				.set("sjkczbbool", quanshi.get("sjkczbbool"))
+				.set("sjjdzb", quanshi.get("sjjdzb"))
+				.set("sjjdzbbool", quanshi.get("sjjdzbbool"))
+				.set("sjxdzb", quanshi.get("sjxdzb"))
+				.set("sjxdzbbool", quanshi.get("sjxdzbbool"))
+				.set("sjxmzb", quanshi.get("sjxmzb"))
+				.set("sjxmzbbool", quanshi.get("sjxmzbbool"));
+		Record xm=new Record().set("quming", "南京市")
+				.set("qymc", "")
+				.set("pz", "小麦")
+				.set("cbljh", quanshi.get("xmcbljh"))
+				.set("swkc", quanshi.get("xmswkc"))
+				.set("sjkczb", quanshi.get("sjkczb"))
+				.set("sjkczbbool", quanshi.get("sjkczbbool"))
+				.set("sjjdzb", quanshi.get("sjjdzb"))
+				.set("sjjdzbbool", quanshi.get("sjjdzbbool"))
+				.set("sjxdzb", quanshi.get("sjxdzb"))
+				.set("sjxdzbbool", quanshi.get("sjxdzbbool"))
+				.set("sjxmzb", quanshi.get("sjxmzb"))
+				.set("sjxmzbbool", quanshi.get("sjxmzbbool"));
+		Record jd=new Record().set("quming", "南京市")
+				.set("qymc", "")
+				.set("pz", "粳稻")
+				.set("cbljh", quanshi.get("jdcbljh"))
+				.set("swkc", quanshi.get("jdswkc"))
+				.set("sjkczb", quanshi.get("sjkczb"))
+				.set("sjkczbbool", quanshi.get("sjkczbbool"))
+				.set("sjjdzb", quanshi.get("sjjdzb"))
+				.set("sjjdzbbool", quanshi.get("sjjdzbbool"))
+				.set("sjxdzb", quanshi.get("sjxdzb"))
+				.set("sjxdzbbool", quanshi.get("sjxdzbbool"))
+				.set("sjxmzb", quanshi.get("sjxmzb"))
+				.set("sjxmzbbool", quanshi.get("sjxmzbbool"));
+		Record xd=new Record().set("quming", "南京市")
+				.set("qymc", "")
+				.set("pz", "籼稻")
+				.set("cbljh", quanshi.get("xdcbljh"))
+				.set("swkc", quanshi.get("xdswkc"))
+				.set("sjkczb", quanshi.get("sjkczb"))
+				.set("sjkczbbool", quanshi.get("sjkczbbool"))
+				.set("sjjdzb", quanshi.get("sjjdzb"))
+				.set("sjjdzbbool", quanshi.get("sjjdzbbool"))
+				.set("sjxdzb", quanshi.get("sjxdzb"))
+				.set("sjxdzbbool", quanshi.get("sjxdzbbool"))
+				.set("sjxmzb", quanshi.get("sjxmzb"))
+				.set("sjxmzbbool", quanshi.get("sjxmzbbool"));
+		quanshiList.add(heji);
+		quanshiList.add(xm);
+		quanshiList.add(jd);
+		quanshiList.add(xd);
+		return quanshiList;
+		
+	}
+	
+	/**
+	 * 生成市属企业实物库存整条信息（储备粮计划，实物库存，占比）
+	 */
+	public static List<Record> shishuqiye(String qyzzjgdm,HashMap<String, Object> year){
+		List<Record> shishuList=new ArrayList<>();
+		Record shishu=ChuBeiLiangJHDAO.shishuqiyeshiwukucun(qyzzjgdm,year);
+		
+		Record heji=new Record().set("quming", "市属企业")
+				.set("qymc",shishu.get("qymc"))
+				.set("pz", "小计")
+				.set("cbljh", shishu.get("xjcbljh"))
+				.set("swkc", shishu.get("xjswkc"))
+				.set("sjkczb", shishu.get("sjkczb"))
+				.set("sjkczbbool", shishu.get("sjkczbbool"))
+				.set("sjjdzb", shishu.get("sjjdzb"))
+				.set("sjjdzbbool", shishu.get("sjjdzbbool"))
+				.set("sjxdzb", shishu.get("sjxdzb"))
+				.set("sjxdzbbool", shishu.get("sjxdzbbool"))
+				.set("sjxmzb", shishu.get("sjxmzb"))
+				.set("sjxmzbbool", shishu.get("sjxmzbbool"));
+		Record xm=new Record().set("quming", "市属企业")
+				.set("qymc", shishu.get("qymc"))
+				.set("pz", "小麦")
+				.set("cbljh", shishu.get("xmcbljh"))
+				.set("swkc", shishu.get("xmswkc"))
+				.set("sjkczb", shishu.get("sjkczb"))
+				.set("sjkczbbool", shishu.get("sjkczbbool"))
+				.set("sjjdzb", shishu.get("sjjdzb"))
+				.set("sjjdzbbool", shishu.get("sjjdzbbool"))
+				.set("sjxdzb", shishu.get("sjxdzb"))
+				.set("sjxdzbbool", shishu.get("sjxdzbbool"))
+				.set("sjxmzb", shishu.get("sjxmzb"))
+				.set("sjxmzbbool", shishu.get("sjxmzbbool"));
+		Record jd=new Record().set("quming", "市属企业")
+				.set("qymc", shishu.get("qymc"))
+				.set("pz", "粳稻")
+				.set("cbljh", shishu.get("jdcbljh"))
+				.set("swkc", shishu.get("jdswkc"))
+				.set("sjkczb", shishu.get("sjkczb"))
+				.set("sjkczbbool", shishu.get("sjkczbbool"))
+				.set("sjjdzb", shishu.get("sjjdzb"))
+				.set("sjjdzbbool", shishu.get("sjjdzbbool"))
+				.set("sjxdzb", shishu.get("sjxdzb"))
+				.set("sjxdzbbool", shishu.get("sjxdzbbool"))
+				.set("sjxmzb", shishu.get("sjxmzb"))
+				.set("sjxmzbbool", shishu.get("sjxmzbbool"));
+		Record xd=new Record().set("quming", "市属企业")
+				.set("qymc", shishu.get("qymc"))
+				.set("pz", "籼稻")
+				.set("cbljh", shishu.get("xdcbljh"))
+				.set("swkc", shishu.get("xdswkc"))
+				.set("sjkczb", shishu.get("sjkczb"))
+				.set("sjkczbbool", shishu.get("sjkczbbool"))
+				.set("sjjdzb", shishu.get("sjjdzb"))
+				.set("sjjdzbbool", shishu.get("sjjdzbbool"))
+				.set("sjxdzb", shishu.get("sjxdzb"))
+				.set("sjxdzbbool", shishu.get("sjxdzbbool"))
+				.set("sjxmzb", shishu.get("sjxmzb"))
+				.set("sjxmzbbool", shishu.get("sjxmzbbool"));
+		shishuList.add(heji);
+		shishuList.add(xm);
+		shishuList.add(jd);
+		shishuList.add(xd);
+		return shishuList;
+		
+	}
+	
+	/**
+	 * 生成 其他 实物库存整条信息（储备粮计划，实物库存，占比）
+	 */
+	public static List<Record> qita(String qyzzjgdm,HashMap<String, Object> year){
+		List<Record> qitaList=new ArrayList<>();
+		Record qitaRecord=ChuBeiLiangJHDAO.qitashiwukucun(qyzzjgdm, year);
+		Record heji=new Record().set("quming", "市属企业")
+				.set("qymc", "军粮供应站")
+				.set("pz", "小计")
+				.set("cbljh", qitaRecord.get("xjcbljh"))
+				.set("swkc", qitaRecord.get("xjswkc"))
+				.set("sjkczb", qitaRecord.get("sjkczb"))
+				.set("sjkczbbool", qitaRecord.get("sjkczbbool"))
+				.set("sjjdzb", qitaRecord.get("sjjdzb"))
+				.set("sjjdzbbool", qitaRecord.get("sjjdzbbool"))
+				.set("sjxdzb", qitaRecord.get("sjxdzb"))
+				.set("sjxdzbbool", qitaRecord.get("sjxdzbbool"))
+				.set("sjxmzb", qitaRecord.get("sjxmzb"))
+				.set("sjxmzbbool", qitaRecord.get("sjxmzbbool"));
+		Record jd=new Record().set("quming", "市属企业")
+				.set("qymc",  "军粮供应站")
+				.set("pz", "粳稻")
+				.set("cbljh", qitaRecord.get("jdcbljh"))
+				.set("swkc", qitaRecord.get("jdswkc"))
+				.set("sjkczb", qitaRecord.get("sjkczb"))
+				.set("sjkczbbool", qitaRecord.get("sjkczbbool"))
+				.set("sjjdzb", qitaRecord.get("sjjdzb"))
+				.set("sjjdzbbool", qitaRecord.get("sjjdzbbool"))
+				.set("sjxdzb", qitaRecord.get("sjxdzb"))
+				.set("sjxdzbbool", qitaRecord.get("sjxdzbbool"))
+				.set("sjxmzb", qitaRecord.get("sjxmzb"))
+				.set("sjxmzbbool", qitaRecord.get("sjxmzbbool"));
+		Record xd=new Record().set("quming", "市属企业")
+				.set("qymc",  "军粮供应站")
+				.set("pz", "籼稻")
+				.set("cbljh", qitaRecord.get("xdcbljh"))
+				.set("swkc", qitaRecord.get("xdswkc"))
+				.set("sjkczb", qitaRecord.get("sjkczb"))
+				.set("sjkczbbool", qitaRecord.get("sjkczbbool"))
+				.set("sjjdzb", qitaRecord.get("sjjdzb"))
+				.set("sjjdzbbool", qitaRecord.get("sjjdzbbool"))
+				.set("sjxdzb", qitaRecord.get("sjxdzb"))
+				.set("sjxdzbbool", qitaRecord.get("sjxdzbbool"))
+				.set("sjxmzb", qitaRecord.get("sjxmzb"))
+				.set("sjxmzbbool", qitaRecord.get("sjxmzbbool"));
+		qitaList.add(heji);
+		qitaList.add(jd);
+		qitaList.add(xd);
+		return qitaList;
+	}
+	
+	/**
+	 * 生成区实物库存整条信息（储备粮计划，实物库存，占比）（高淳除外）
+	 */
+	public static List<Record> quswkc(String xzqhdm,HashMap<String, Object> year){
+		List<Record> quList=new ArrayList<>();
+		Record quRecord=ChuBeiLiangJHDAO.quShiWuKuCun(xzqhdm,year);
+		Record heji=new Record().set("quming", quRecord.get("quming"))
+				.set("qymc", "")
+				.set("pz", "小计")
+				.set("cbljh", quRecord.get("xjcbljh"))
+				.set("swkc", quRecord.get("xjswkc"))
+				.set("sjkczb", quRecord.get("sjkczb"))
+				.set("sjkczbbool", quRecord.get("sjkczbbool"))
+				.set("sjjdzb", quRecord.get("sjjdzb"))
+				.set("sjjdzbbool", quRecord.get("sjjdzbbool"))
+				.set("sjxdzb", quRecord.get("sjxdzb"))
+				.set("sjxdzbbool", quRecord.get("sjxdzbbool"))
+				.set("sjxmzb", quRecord.get("sjxmzb"))
+				.set("sjxmzbbool", quRecord.get("sjxmzbbool"));
+		Record xm=new Record().set("quming", quRecord.get("quming"))
+				.set("qymc", "")
+				.set("pz", "小麦")
+				.set("cbljh", quRecord.get("xmcbljh"))
+				.set("swkc", quRecord.get("xmswkc"))
+				.set("sjkczb", quRecord.get("sjkczb"))
+				.set("sjkczbbool", quRecord.get("sjkczbbool"))
+				.set("sjjdzb", quRecord.get("sjjdzb"))
+				.set("sjjdzbbool", quRecord.get("sjjdzbbool"))
+				.set("sjxdzb", quRecord.get("sjxdzb"))
+				.set("sjxdzbbool", quRecord.get("sjxdzbbool"))
+				.set("sjxmzb", quRecord.get("sjxmzb"))
+				.set("sjxmzbbool", quRecord.get("sjxmzbbool"));
+		Record jd=new Record().set("quming", quRecord.get("quming"))
+				.set("qymc", "")
+				.set("pz", "粳稻")
+				.set("cbljh", quRecord.get("jdcbljh"))
+				.set("swkc", quRecord.get("jdswkc"))
+				.set("sjkczb", quRecord.get("sjkczb"))
+				.set("sjkczbbool", quRecord.get("sjkczbbool"))
+				.set("sjjdzb", quRecord.get("sjjdzb"))
+				.set("sjjdzbbool", quRecord.get("sjjdzbbool"))
+				.set("sjxdzb", quRecord.get("sjxdzb"))
+				.set("sjxdzbbool", quRecord.get("sjxdzbbool"))
+				.set("sjxmzb", quRecord.get("sjxmzb"))
+				.set("sjxmzbbool", quRecord.get("sjxmzbbool"));
+		Record xd=new Record().set("quming", quRecord.get("quming"))
+				.set("qymc", "")
+				.set("pz", "籼稻")
+				.set("cbljh", quRecord.get("xdcbljh"))
+				.set("swkc", quRecord.get("xdswkc"))
+				.set("sjkczb", quRecord.get("sjkczb"))
+				.set("sjkczbbool", quRecord.get("sjkczbbool"))
+				.set("sjjdzb", quRecord.get("sjjdzb"))
+				.set("sjjdzbbool", quRecord.get("sjjdzbbool"))
+				.set("sjxdzb", quRecord.get("sjxdzb"))
+				.set("sjxdzbbool", quRecord.get("sjxdzbbool"))
+				.set("sjxmzb", quRecord.get("sjxmzb"))
+				.set("sjxmzbbool", quRecord.get("sjxmzbbool"));
+		quList.add(heji);
+		quList.add(xm);
+		quList.add(jd);
+		quList.add(xd);
+		return quList;
+		
+	}
+	
+	/**
+	 * 生成高淳实物库存整条信息（储备粮计划，实物库存，占比）
+	 */
+	public static List<Record> gaochun(String xzqhdm,HashMap<String, Object> year){
+		List<Record> gaochunList=new ArrayList<>();
+		Record gaochunRecord=ChuBeiLiangJHDAO.gaochunShiWuKuCun(xzqhdm, year);
+		Record jd=new Record().set("quming", gaochunRecord.get("quming"))
+				.set("qymc", "")
+				.set("pz", "粳稻")
+				.set("cbljh", gaochunRecord.get("jdcbljh"))
+				.set("swkc", gaochunRecord.get("jdswkc"))
+				.set("sjkczb", gaochunRecord.get("sjkczb"))
+				.set("sjkczbbool", gaochunRecord.get("sjkczbbool"))
+				.set("sjjdzb", gaochunRecord.get("sjjdzb"))
+				.set("sjjdzbbool", gaochunRecord.get("sjjdzbbool"))
+				.set("sjxdzb", gaochunRecord.get("sjxdzb"))
+				.set("sjxdzbbool", gaochunRecord.get("sjxdzbbool"))
+				.set("sjxmzb", gaochunRecord.get("sjxmzb"))
+				.set("sjxmzbbool", gaochunRecord.get("sjxmzbbool"));
+		
+		gaochunList.add(jd);
+		return gaochunList;
+	}
+	
+	
+	/**
+	 * 生成 其他(沙塘堰) 实物库存整条信息（储备粮计划，实物库存，占比）
+	 */
+	public static List<Record> shatangqita(String qyzzjgdm,HashMap<String, Object> year){
+		List<Record> qitaList=new ArrayList<>();
+		Record qitaRecord=ChuBeiLiangJHDAO.shatangqita(qyzzjgdm, year);
+	
+		Record jd=new Record().set("quming", "其他")
+				.set("qymc",  qitaRecord.get("qymc"))
+				.set("pz", "粳稻")
+				.set("cbljh", qitaRecord.get("jdcbljh"))
+				.set("swkc", qitaRecord.get("jdswkc"))
+				.set("sjkczb", qitaRecord.get("sjkczb"))
+				.set("sjkczbbool", qitaRecord.get("sjkczbbool"))
+				.set("sjjdzb", qitaRecord.get("sjjdzb"))
+				.set("sjjdzbbool", qitaRecord.get("sjjdzbbool"))
+				.set("sjxdzb", qitaRecord.get("sjxdzb"))
+				.set("sjxdzbbool", qitaRecord.get("sjxdzbbool"))
+				.set("sjxmzb", qitaRecord.get("sjxmzb"))
+				.set("sjxmzbbool", qitaRecord.get("sjxmzbbool"));
+		
+		qitaList.add(jd);
+		return qitaList;
+	}
+	
+	
+	/**
+	 * 生成 其他(沙塘堰) 实物库存整条信息（储备粮计划，实物库存，占比）
+	 */
+	public static List<Record> haiyueqita(String qyzzjgdm,HashMap<String, Object> year){
+		List<Record> qitaList=new ArrayList<>();
+		Record qitaRecord=ChuBeiLiangJHDAO.haiyueqita(qyzzjgdm, year);
+	
+		Record jd=new Record().set("quming", "其他")
+				.set("qymc",  "海悦公司")
+				.set("pz", "小麦")
+				.set("cbljh", qitaRecord.get("xmcbljh"))
+				.set("swkc", qitaRecord.get("xmswkc"))
+				.set("sjkczb", qitaRecord.get("sjkczb"))
+				.set("sjkczbbool", qitaRecord.get("sjkczbbool"))
+				.set("sjjdzb", qitaRecord.get("sjjdzb"))
+				.set("sjjdzbbool", qitaRecord.get("sjjdzbbool"))
+				.set("sjxdzb", qitaRecord.get("sjxdzb"))
+				.set("sjxdzbbool", qitaRecord.get("sjxdzbbool"))
+				.set("sjxmzb", qitaRecord.get("sjxmzb"))
+				.set("sjxmzbbool", qitaRecord.get("sjxmzbbool"));
+		
+		qitaList.add(jd);
+		return qitaList;
+	}
+	
+	
+	
+
+}

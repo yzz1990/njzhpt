@@ -1,0 +1,317 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyle.html"){
+%>
+<style type="text/css">
+	.table-striped>thead>tr>th{
+		text-align: center;
+	}
+	.table-striped>tbody>tr {
+		font-family: '微软雅黑'
+	}
+	.table-striped>tbody>tr>td{
+		text-align: center;
+	}
+	.table-striped>tbody>tr>td:nth-child(11){
+		width: 120px;
+	}
+	.table-striped>tbody>tr>td:nth-child(5){
+		text-align: left;
+	}
+</style>
+<div class="panel panel-default">
+		<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;" align="left">
+				<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+				<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>药剂审批</b></span>
+		</div>
+			<div class="panel-heading">
+				<div class="form-inline" style="float: left;">
+					<label>所属辖区:</label>
+					<select id="shiqu" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="Changequyu()">
+						<option value="" selected="true" >选择区域</option>	
+					</select>
+					<label>存放库点:</label>
+					<select id="cfkudian" class="js-example-basic-single input-sm" style="width:150px;font-size:14px" onchange="Changeyaoku()">
+						<option value="" selected="true" >选择药库</option>	
+					</select>
+					<label>负责人:</label>
+					<input class="form-control input-sm" name="fuzeren" id="fuzeren" placeholder="负责人" onkeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" type="text">	
+					<a class="btn btn-success btn-xs" type="button" onclick="doSearch()"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body">
+					<table  class="table table-striped table-hover table-bordered datatables" data-url="${ctxPath}/cangchugl/findYjck?isedit=2" ></table>
+			</div>
+		</div>
+<script type="text/javascript">
+
+var datatable;
+$(function(){
+	$.ajax({
+		 url:'${ctxPath}/shouchukeshihua/findquxian',
+		 type:'post',
+		 dataType:'json',
+		 data:{"name":"${array.contain(session.userinfo.auth,'auth_select_part')?session.userinfo.area.name:''}"},
+		 success:function(data){
+			 $.each(data,function(i, n){
+					$("#shiqu").append("<option value="+n.xzqhdm+">"+n.name+"</option>");
+				});
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+	$.ajax({
+		url:'${ctxPath}/cangchugl/findyaoku',
+		type:'post',
+		dataType:'json',
+		success:function(data){
+			for(var i = 0; i < data.length; i++){
+				 var op = '<option value='+data[i].kdbm+'>'+data[i].cfkudian+'</option>';
+			     $("#cfkudian").append(op);
+			}
+		},
+		error:function(){
+			alert("error");
+		}		
+	});
+	datatable = $('.datatables').DataTable({
+		"columns": [
+			{
+				"data":"xuhao",width:40,
+				"title":"序号"
+			},
+			{
+				"data" : "xzbah",width:120,
+				"title" : "熏蒸备案编号"
+			},{
+				"data" : "qymc",width:120,
+				"title" : "领用企业",
+			},{
+				"data" : "lyrq",width:120,
+				"title" : "领药日期",
+			},{
+				"data" : "lqr",width:60,
+				"title" : "领取人",
+			},{
+				"data" : "status",width:60,
+				"title" : "状态",
+				"render":function(data,type,row,meta){
+	   				 var result;
+	   				 if(data==0){
+	   					result='<a class="label label-success">审核通过</a>';
+	   				 }else if(data==1){
+	   					result='<a class="label label-success">待审核</a>';
+	   				 }else if(data==10){
+	   					result='<a class="label label-danger">审批不通过</a>';
+	   				 }
+	   				 return result;
+				}
+			},
+			  { "title":"操作",width:120,
+            	"render": function (data,type,row,meta) {
+            		var url = 'javascript:void(0)';
+                   	var shenhe = '<a href='+url+' onclick="upYjck(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;审批</a>';
+                   	var liyou = '<button type="button" onclick="chakanliyou(\''+row["id"]+'\')" style="" class="btn btn-xs btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;查看驳回理由</button>';
+                   	var liyou1 = '<button type="button" onclick="chakanliyou(\''+row["id"]+'\')" disabled="disabled" style="" class="btn btn-xs btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;查看驳回理由</button>';
+                   	var chakan = '<button type="button" onclick="chakan(\''+row["id"]+'\')" class="btn btn-xs btn-success"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;查看</button>';
+                   	if(row["status"]==1){
+               			return shenhe+" "+liyou1;
+               		}else if(row["status"]==0){
+               			return chakan+" "+liyou1;
+               		}else if(row["status"]==10){
+               			return chakan+" "+liyou;
+               		}
+            	}
+	          }
+			]
+	});
+});
+
+	
+function doSearch(){
+	var shiqu = $("#shiqu").val();
+	var cfkudian = $("#cfkudian").val();
+	var fuzeren = $("#fuzeren").val();
+	document.querySelector('.datatables').dataset.queryparam="&shiqu="+shiqu+"&cfkudian="+cfkudian+"&fuzeren="+fuzeren;
+	datatable.ajax.reload(null,false);
+}
+
+$(document).ready(function() {
+	  $("#shiqu").select2();
+});
+
+$(document).ready(function() {
+	  $("#cfkudian").select2();
+});
+
+function addYjck(){
+	dialog1=BootstrapDialog.show({
+	    title: '新增药剂申请',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0"  src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojichuku_zsg.html"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","800px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '保存',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.saveYjck(); 
+        	   parent.window.dialog1.close();
+        	   parent.window.datatable.ajax.reload(null,true);
+           },
+          cssClass: 'btn-success btn-xs '
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+var dialog2;
+function chakan(id){
+	dialog2=BootstrapDialog.show({
+	    title: '查看药剂出库信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojichuku_chakan.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+
+var shenheDialog;var bohuiDialog;
+function upYjck(id){
+	shenheDialog=BootstrapDialog.show({
+	    title: '审批药剂出库信息',
+		closeByBackdrop: true,
+	    message:$('<iframe frameborderno="0"  style="width:100%;height:100%;" frameborder="0" scrolling="yes" src="${ctxPath}/oa/cangchuguanli_zsg/yaojiguanli/yaojichuku_shenhe.html?id='+id+'"/>'),
+	    onshow:function(dlg){
+       	dlg.$modalDialog.css("width","900px");//modal-dialog
+       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","520px");//modal-dialog
+       },
+       buttons: [{
+    	   id:'tongguo',
+           label: '通过',
+           action: function(dialog) {
+        	   $(window.parent.document).contents().find("iframe")[0].contentWindow.updateTg(id);   
+           },
+          cssClass: 'btn-primary btn-xs'
+       },{
+    	   id:'fanhui',
+           label: '驳回',
+           action: function(dialog) {
+        	    bohuiDialog=top.BootstrapDialog.show({
+   			    title: '驳回理由',
+   				closeByBackdrop: true,
+   			    message:$('<iframe frameborderno="0" id="iframe1" name="iframe1"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/renyuan/bohuiyaojishenpi?id='+id+'&page=1&rows=1000"/>'),
+   			    onshow:function(dlg){
+   		       	dlg.$modalDialog.css("width","500px");//modal-dialog
+   		       	$(".bootstrap-dialog-message", dlg.$modalContent).css("height","300px");//modal-dialog
+   		       },
+   		       buttons: [{
+   		           label: '提交',
+   		           action: function(dialog) {
+   		        	 var id= iframe1.window.$("#id").val();		
+	   		        	$.ajax({
+	   		     		url:'${ctxPath}/renyuan/saveBohuiyjsq',
+	   		     		type:'post',
+	   		     		data:iframe1.window.$(".widget-body form").serialize(),
+	   		     		dataType:'json',
+	   		     		success:function(data){
+	   		     			if(data.ret){
+	   		     				alert("提交成功!");
+	   		     				parent.window.shenheDialog.close();
+	   		     				bohuiDialog.close();
+	   		     				datatable.ajax.reload(null,true);
+	   		     			}
+	   		     		},
+		   		     		error:function(){
+		   		     			alert("error");
+		   		     		}
+		   		     	});
+   		           },
+   		          cssClass: 'btn-warning btn-xs'
+   		          
+   		       },{
+   		           label: '取消',
+   		           action: function(dialog) {
+   		               dialog.close();
+   		           },
+   		          cssClass: 'btn-danger btn-xs'
+   		       }]
+   			});
+        	   
+           },
+          cssClass: 'btn-warning btn-xs'
+          
+       },{
+           label: '关闭',
+           action: function(dialog) {
+               dialog.close();
+           },
+          cssClass: 'btn-danger btn-xs'
+       }]
+	});
+}
+var  viewDialog;
+function chakanliyou(id){
+	viewDialog=top.BootstrapDialog.show({
+			    title: '查看驳回理由',
+				closeByBackdrop: true,
+			    message:$('<iframe frameborderno="0" id="iframe1" name="iframe1"  style="width:100%;height:100%;" frameborder="0" scrolling="no" src="${ctxPath}/renyuan/bohuiyaojishenpi?id='+id+'&page=1&rows=1000"/>'),
+			    onshow:function(dlg){
+		       		dlg.$modalDialog.css("width","500px");//modal-dialog
+		       		$(".bootstrap-dialog-message", dlg.$modalContent).css("height","300px");//modal-dialog
+		       	},
+		      	buttons: [{
+		           label: '取消',
+		           action: function(dialog) {
+		               dialog.close();
+		           },
+		          cssClass: 'btn-danger btn-xs'
+		       }]
+			});
+}
+
+function delYjck(id){
+	if(confirm("确认删除?")){
+		$.ajax({
+			url:'${ctxPath}/cangchugl/delYjck',
+			type:'post',
+			data:{'id':id},
+			dataType:'json',
+			success:function(data){
+				if(data){
+					alert("删除成功");
+					datatable.ajax.reload(null,false);
+				}else{
+					alert("删除失败");
+				}
+				
+			},
+			error:function(){
+				alert("error");
+			}
+			
+		});
+	}
+}
+
+
+</script>
+<%
+	}
+%>

@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>粮情信息</title>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.4.5/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/js/jquery-easyui-1.4.5/themes/icon.css">
+		<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.min.js"></script>
+		<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="${ctxPath}/js/jquery-easyui-1.4.5/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="${ctxPath}/js/scroll.js"></script>
+		<link rel="stylesheet" href="${ctxPath}/css/jdashboard.min.css" />
+		<link rel="stylesheet" href="${ctxPath}/css/jdashboard/style.css" />
+		<script src="${ctxPath}/js/jdashboard.min.js"></script>
+		<style type="text/css">
+			.title_ch {
+				font-family: 微软雅黑;
+				font-size: 20px;
+				font-style: italic;
+				color: #658FBE;
+			}
+			
+			#title_table {
+				width: 100%;
+				margin-top: 10px;
+				border: 1px solid #ECECEC;
+				border-radius: 15px;
+				background-color: #FFF;
+			}
+			
+			.tt_toolbar {
+				height: 70px;
+				width: 60px;
+				padding-left: 5px;
+				float: left;
+			}
+			
+			.tt_cell {
+				margin-top: 4px;
+				text-align: center;
+				font-weight: bold;
+			}
+			
+			.tt_bottom {
+				margin-top: 10px;
+				text-align: center;
+				font-weight: bold;
+				color: #97B514;
+			}
+			
+			#grad {
+				line-height: 30px;
+				margin-top: 10px;
+				height: 30px;
+				width: 100%;
+				border-radius: 15px;
+				background: -webkit-linear-gradient(left, blue, green, yellow, red);
+				/* Safari 5.1 - 6.0 */
+				background: -o-linear-gradient(right, blue, green, yellow, red);
+				/* Opera 11.1 - 12.0 */
+				background: -moz-linear-gradient(right, blue, green, yellow, red);
+				/* Firefox 3.6 - 15 */
+				background: linear-gradient(to right, rgba(7, 18, 23, 0.85), green, yellow, red);
+				/* 标准的语法 */
+			}
+			
+			.grad_sign {
+				font-family: 微软雅黑;
+				font-size: 20px;
+				font-style: italic;
+				color: #fff;
+			}
+			
+			.login-dialog .modal-dialog {
+				width: 1000px;
+			}
+		</style>
+	</head>
+
+	<body style="padding-top:0px;font-family: 微软雅黑;">
+
+		<div style="height:150px;">
+			<div>
+				<div class="title_ch" style="display: inline;">
+					<span style="font-size:25px;margin-right:50px;"><span id="cangming"></span>粮情</span>
+					<span style="font-size:15px;margin-right:5px;">检测批次:</span>
+					<select id="search_hms" class="easyui-combobox" style="width:150px;"></select>
+				</div>
+				<div id="title_table" style="display: inline-block;">
+					<table style="font-size: 16px;width:100%">
+						<tr style="height: 40px;">
+							<td width="15%" align="center" style="font-weight: bold;"><b>品种</b></td>
+							<td width="15%" align="center" style="font-weight: bold;"><b>库存</b></td>
+							<td width="10%" align="center" style="font-weight: bold;"><b>气温</b></td>
+							<td width="10%" align="center" style="font-weight: bold;"><b>气湿</b></td>
+							<td width="10%" align="center" style="font-weight: bold;"><b>仓温</b></td>
+							<td width="10%" align="center" style="font-weight: bold;"><b>仓湿</b></td>
+							<td width="10%" align="center" style="font-weight: bold;"><b>平均粮温</b></td>
+							<td width="10%" align="center" style="font-weight: bold;"><b>最高粮温</b></td>
+							<td width="10%" align="center" style="font-weight: bold;"><b>最低粮温</b></td>
+						</tr>
+						<tr class="tt_cell" style="height: 40px;">
+							<td align="center" id="pinzhong" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="kucun" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="qiwen" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="qishi" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="cangwen" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="cangshi" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="avgT" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="maxT" style="color:#97B514;font-weight: bold;"></td>
+							<td align="center" id="minT" style="color:#97B514;font-weight: bold;"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div>
+			<iframe width="100%" height="320px" id="liangqing" style="background-color: #F9F9F9" frameborder="0"></iframe>
+		</div>
+
+		<div style="margin-top:20px;">
+			<div class="title_ch">温度范围</div>
+			<div id="grad">
+				<span class="grad_sign" style="margin-left:15%">10℃</span>
+				<span class="grad_sign" style="margin-left:30%">20℃</span>
+				<span class="grad_sign" style="margin-left:30%">30℃</span>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$.fn.combobox.defaults.panelHeight = 'auto';
+			$.fn.combobox.defaults.panelMaxHeight = '180';
+			var x,y,z,liangwen,layers;
+			function doSearch() {
+				var time = $("#search_hms").combobox("getValue");
+				getLingqing(time);
+			}
+
+			function formatDateText(date) {
+				var month = date.getMonth() + 1;
+				if("" != date) {
+					if(date.getMonth() + 1 < 10) {
+						month = '0' + (date.getMonth() + 1);
+					}
+					var day = date.getDate();
+					if(date.getDate() < 10) {
+						day = '0' + date.getDate();
+					}
+					//返回格式化后的时间
+					return date.getFullYear() + '-' + month + '-' + day;
+				} else {
+					return "";
+				}
+			}
+
+			$(function() {
+				$("#search_hms").combobox({
+					editable: true,
+					valueField: 'datetime',
+					textField: 'datetime',
+					url: '${ctxPath}/yewu/queryhs.do?vCode=${parameter.orderno}&qyzzjgdm=${parameter.qyzzjgdm}&kdbm=${parameter.kdbm}',onLoadSuccess: function() {
+						var data = $('#search_hms').combobox('getData');
+						if(data.length > 0) {
+							$('#search_hms').combobox('select', data[0].datetime);
+						}
+					},onChange: function(value){  
+						getLingqing(value);
+					}  
+				});
+			});
+
+			function getLingqing(datetime) {
+				$.post("${ctxPath}/yewu/queryLqqipaoInfo.do", {
+					vCode: '${parameter.orderno}',
+					qyzzjgdm: "${parameter.qyzzjgdm}",
+					kdbm: "${parameter.kdbm}",
+					datetime: datetime
+				}, function(data) {
+					x=data.x;
+					y=data.y;
+					z=data.z;
+					liangwen=data.liangwen;
+					layers=data.layers;
+					$("#cangming").html(data.cangming);
+					$("#liangqing").attr("src", "${ctxPath}/yewu/cangchuzhinenghua/liangqingdetail.html?z="+z);
+					if(data.qishi == 2000 || data.qishi == 0||data.qishi=="null") {
+						$("#qishi").html("--");
+					} else {
+						$("#qishi").html(data.qishi + "%");
+					}
+					if(data.qiwen == 2000 || data.qiwen == 0||data.qiwen=="null") {
+						$("#qiwen").html("--");
+					} else {
+						$("#qiwen").html(data.qiwen + "℃");
+					}
+					if(data.cangwen == 2000 || data.cangwen == 0) {
+						$("#cangwen").html("--");
+					} else {
+						$("#cangwen").html(data.cangwen + "℃");
+					}
+					if(data.cangshi == 2000 || data.cangshi == 0) {
+						$("#cangshi").html("--");
+					} else {
+						$("#cangshi").html(data.cangshi + "%");
+					}
+					if(data.zuigaowen == 2000 || data.zuigaowen == 0) {
+						$("#maxT").html("--");
+					} else {
+						$("#maxT").html(data.zuigaowen + "℃");
+					}
+					if(data.pingjunwen == 2000 || data.pingjunwen == 0) {
+						$("#avgT").html("--");
+					} else {
+						$("#avgT").html(data.pingjunwen + "℃");
+					}
+					if(data.zuidiwen == 2000 || data.zuidiwen == 0) {
+						$("#minT").html("--");
+					} else {
+						$("#minT").html(data.zuidiwen + "℃");
+					}
+					$("#kucun").html(Number(data.kucun) + "公斤");
+					$("#pinzhong").html(data.pinzhong);
+				}, 'json');
+			}
+		</script>
+	</body>
+
+</html>

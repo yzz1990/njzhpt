@@ -1,0 +1,273 @@
+<%
+ layout("/WEB-INF/web/ui/globalStyleDialog.html"){
+%>
+
+<style>
+.cjd-select{
+	width:150px;
+	float:left;
+}
+.cjd-label{
+	float:left;
+}
+.cjd-text{
+	float:left;
+}
+.cjd-div{
+	float:left;
+}
+.sp_input{
+	width:55px;
+}
+.sp_inputo{
+	width:55px;
+	background-color:#C0C0C0;
+}
+.tworow{
+	width:60px;
+}
+#div-caijia{
+	overflow-y:auto;
+}
+.leixin{
+	background-color:#E6E6FA;
+	height:40px;
+}
+.pinlei , .pinlein{
+	background-color:#FFFFFF;
+	border:1px solid #E6E6FA;
+	text-align:center;
+	height:40px;
+}
+.input-pinlei{
+	width:100px;
+	height:30px;
+}
+.caozuo{
+	margin-top:0px;
+	width:100%;
+	height:20px;
+}
+</style>
+<script type="text/javascript">
+var mydate = new Date();
+var day = mydate.toLocaleDateString();
+
+$(window).load(function() {
+	$("#cjrq").val(day);
+	
+});
+
+$(function(){
+	$(".cjd-select").select2();
+	//加载计量单位
+	$.ajax({
+		url:'${ctxPath}/jiage/queryjldw.do',
+		type:'post',
+		data:{"page":1,"rows":100},
+		dataType:'json',
+		success:function(data){
+			$.each(data.list,function(i, n){
+				var op = '<option value="'+n.jldwbh+'">'+n.jldwmc+'</option>';
+				$("#jldw").append(op);
+			});
+			
+			$("#jldw").val("");
+		    $("#jldw-div").find(".select2-selection__rendered").text("");
+			$("#jldw-div").find(".select2-selection__rendered").attr("title","");
+			
+			//初始化单据状态
+			$("#djzt").val("");
+		    $("#djzt-div").find(".select2-selection__rendered").text("");
+			$("#djzt-div").find(".select2-selection__rendered").attr("title","");
+		},
+		error:function(){
+			alert("获取有商品对照的采价点失败");
+		}
+	});
+	
+});
+
+//保存国内报价
+function savegnbj(){
+	//采价日期
+	var cjrq = $("#cjrq").val();
+	//采价员编号
+	var cjybh = $("#cjymc").val();
+	//单据状态
+	var djzt = $("#djzt option:selected").val();
+	//计量单位
+	var jldw = $("#jldw option:selected").val();
+	//循环遍历input
+	var inputList = $(".input-pinlei");
+	var num = 0;
+	var shibai = 0;
+	for(var i = 0; i < inputList.length; i++){
+		var code = inputList.eq(i).attr("code");
+		var jglx = inputList.eq(i).attr("jglx");
+		var price = inputList.eq(i).val();
+		$.ajax({
+			url:'${ctxPath}/jiage/savegnbj',
+			type:'post',
+			data:{"cjrq":cjrq,"djzt":"已提交","jldw":jldw,"pzcode":code,"jglxcode":jglx,"price":price},
+			dataType:'json',
+			success:function(msg){
+				if (!msg.ret) {
+					alert(msg.message);
+				} else {
+					num++;
+				}
+			},
+			error:function(){
+				shibai++;
+			}
+		});
+		
+	}
+	alert("成功保存"+num+"条数据失败"+shibai+"查看是否数据重复");
+}
+
+</script>
+<div class="panel panel-default" style="height:750px">
+	<!--  
+	<div style="border: 1px solid  #ADD8E6;width:100%;background-color: #E8F2F9;border-radius: 3px;margin-top:5px" align="left">
+		<img alt="" src="${ctxPath}/img/titleico.png" style="padding: 5px;position: absolute;">
+		<span style="height:50px;font-size:20px;color: black;padding: 0px;margin-left: 25px;"><b>国内价格填报</b></span>
+	</div>
+	-->
+
+<div class="panel-heading">
+		<div class="form-inline">
+   <div class="caozuo">
+		<div class="cjd-div cjrq-div">
+			<label class="cjd-label">采价日期:</label>
+			<input id="cjrq" type="text">
+		</div>
+		<div class="cjd-div cjymc-div" style="margin-left:10px">
+			<label class="cjd-label">采价员名称:</label>
+			<input id="cjymc" type="text">
+		</div>
+		<div class="cjd-div djzt-div" style="margin-left:10px">
+			<label class="cjd-label">单据状态:</label>
+			<select id="djzt"  class="form-control cjd-select" >
+				<option value="未提交">未提交</option>
+				<option value="已提交">已提交</option>
+				<option value="已审批">已审批</option>
+				<option value="驳回">驳回</option>
+				<option value="所有状态">所有状态</option>
+			</select>
+		</div>
+		<div class="cjd-div jldw-div" style="margin-left:10px">
+			<label class="cjd-label">计量单位:</label>
+			<select id="jldw" class="form-control cjd-select" style="width: 150px;">
+			</select>
+		</div>
+   		<a class="btn btn-xs btn-success" type="button" onclick="savegnbj()" style="margin-left:10px; margin-top:2px;"><i class="fa fa-search" aria-hidden="true">&nbsp;保存</i></a>
+   </div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+<div class="panel-body">
+<div id="panelDemo55" class="panel panel-info" style="margin-top:0px;height:700px">
+   <div id="div-caijia" class="panel-body">
+   		<table id="exctable-caijia" style="border-collapse:collapse;height:600px;" class="table table-striped table-hover  datatables table-caijia" data-url="${ctxPath}/jiage/querycaijia.do" >	 
+			<thead>
+				<tr>
+	    			<th rowspan="2" colspan="1" id="col3" style="vertical-align:middle">价格类型</th>
+	     			<th rowspan="2" colspan="1" id="col6" style="vertical-align:middle">收购价</th>
+	     			<th rowspan="2" colspan="1" id="col7" style="vertical-align:middle">出货价</th>
+	     			<th rowspan="2" colspan="1" id="col8" style="vertical-align:middle">批发价</th>
+	     			<th rowspan="2" colspan="1" id="col9" style="vertical-align:middle">零售价</th>
+	     			<th rowspan="2" colspan="1" id="col10" style="vertical-align:middle">加工出厂价</th>
+	 			</tr>
+			</thead>	
+			<tbody>
+				<tr>
+					<td rowspan="" colspan="10" class="leixin" style="vertical-align:left">原粮</td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">粳稻</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="sg_jd" code="1132" jglx="001" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="ch_jd" code="1132" jglx="002" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">籼稻</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="sg_xd" code="1131" jglx="001" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="ch_xd" code="1131" jglx="002" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">小麦</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="sg_xm" code="1112" jglx="001" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="ch_xm" code="1112" jglx="002" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+				</tr>
+				<tr>
+					<td rowspan="" colspan="10"  class="leixin" style="vertical-align:left">成品粮</td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">粳米</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="pf_jm" code="2362" jglx="005" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="ls_jm" code="2362" jglx="006" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">籼米</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="pf_xianm" code="2361" jglx="005" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="ls_xianm" code="2361" jglx="006" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">面粉</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="pf_mf" code="2311" jglx="005" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="ls_mf" code="2311" jglx="006" class="input-pinlei" type="text"></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+				</tr>
+				<tr>
+					<td rowspan="" colspan="10"  class="leixin"  style="vertical-align:left">加工</td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">粳米</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="jg_jm" code="2362" jglx="004" class="input-pinlei" type="text"></td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">面粉</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="jg_mf" code="2311" jglx="004" class="input-pinlei" type="text"></td>
+				</tr>
+				<tr>
+					<td rowspan="1" colspan="1" class="pinlein" style="">油脂</td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""></td>
+					<td rowspan="1" colspan="1" class="pinlei" style=""><input id="jg_yz" code="1411" jglx="004" class="input-pinlei" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+   </div>
+</div>
+</div>
+</div>
+
+<%}%>

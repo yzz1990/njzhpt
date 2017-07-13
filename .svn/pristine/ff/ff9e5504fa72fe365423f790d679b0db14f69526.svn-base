@@ -1,0 +1,1086 @@
+package com.zkzy.njzhpt.dao;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import org.jsoup.select.Evaluator.Id;
+
+import com.ggy.common.utils.Param;
+import com.ggy.common.utils.SqlAndParam;
+import com.ggy.common.utils.SqlUtil;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.server.Scanner;
+import com.zkzy.framework.kit.UserKit;
+
+public class LunHuanGuanLiDAO {
+	public static String creatuuid(HashMap<String, Object> map) throws Exception{
+		String uuid=SqlUtil.uuid();
+		
+		return uuid;
+		
+	}
+	public static Record selectSWKC(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and qyzzjgdm = ?", "qyzzjgdm");
+//		p.put("and kdbm = ?", "kdbm");
+//		p.put("and vWareHouseCode = ?", "cfbm");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		//查询实物库存
+		Record xm=Db.findFirst("select sum(dmStock)/1000 as xmkc from kc_CurrentStock where 1=1  and vGrainSubTypeCode='111' and qyzzjgdm=?",map.get("qyzzjgdm"));
+		Record jd=Db.findFirst("select sum(dmStock)/1000 as jdkc from kc_CurrentStock where 1=1  and vGrainSubTypeCode='430' and qyzzjgdm=?",map.get("qyzzjgdm"));
+		Record xd=Db.findFirst("select sum(dmStock)/1000 as xdkc from kc_CurrentStock where 1=1  and vGrainSubTypeCode='431' and qyzzjgdm=?",map.get("qyzzjgdm"));
+		//查询储备粮计划
+		Record xmcbl=Db.findFirst("select sum(cbljh_xm)/1000 as xmcbljh from njpt_chubeiliangjihua where 1=1   and ccqy=?",map.get("qyzzjgdm"));
+		Record jdcbl=Db.findFirst("select sum(cbljh_jd)/1000 as jdcbljh from njpt_chubeiliangjihua where 1=1   and ccqy=?",map.get("qyzzjgdm"));
+		Record xdcbl=Db.findFirst("select sum(cbljh_xd)/1000 as xdcbljh from njpt_chubeiliangjihua where 1=1   and ccqy=?",map.get("qyzzjgdm"));
+		
+		//轮换管理下拉时 根据企业查询实物库存
+		Object ceshi=xm.get("xmkc");
+		BigDecimal xmkcbg=null;
+		BigDecimal jdkcbg=null;
+		BigDecimal xdkcgb=null;
+		double xmkc = 0;
+		double jdkc=0;
+		double xdkc=0;
+			xmkcbg = xm.get("xmkc");
+			if (xmkcbg!=null) {
+				xmkc=xmkcbg.doubleValue();
+				
+			}
+			jdkcbg = jd.get("jdkc");
+			if (jdkcbg!=null) {
+				
+				jdkc=jdkcbg.doubleValue();
+			}
+			xdkcgb = xd.get("xdkc");
+			if (xdkcgb!=null) {
+				
+				xdkc=xdkcgb.doubleValue();
+			}
+		double xj=xmkc+jdkc+xdkc;
+		DecimalFormat    df   = new DecimalFormat("#0.000");  
+		Record record=new Record().set("swkc_xm", df.format(xmkc)).set("swkc_jd", df.format(jdkc)).set("swkc_xd", df.format(xdkc)).set("swkc_xj", df.format(xj));
+		
+		BigDecimal xmcbljh=null;
+		BigDecimal jdcbljh=null;
+		BigDecimal xdcbljh=null;
+		double xmsl=0;
+		double jdsl=0;
+		double xdsl=0;
+		
+			xmcbljh = xmcbl.get("xmcbljh");
+			if (xmcbljh!=null) {
+				xmsl=xmcbljh.doubleValue();
+			}
+			
+			jdcbljh = jdcbl.get("jdcbljh");
+			if (jdcbljh!=null) {
+				jdsl=jdcbljh.doubleValue();
+			}
+			xdcbljh = xdcbl.get("xdcbljh");
+			if (xdcbljh!=null) {
+				xdsl=xdcbljh.doubleValue();
+			}
+		double xjcbl=xmsl+jdsl+xdsl;
+		record.set("cbljh_xm", df.format(xmsl)).set("cbljh_jd", df.format(jdsl)).set("cbljh_xd", df.format(xdsl)).set("cbljh_xj", df.format(xjcbl));
+		
+		return record;
+	}
+	public static Record selectCCJH(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and qyzzjgdm = ?", "qyzzjgdm");
+//		p.put("and kdbm = ?", "kdbm");
+//		p.put("and vWareHouseCode = ?", "cfbm");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Record xmcbl=Db.findFirst("select sum(cbljh_xm) as xmcbljh from njpt_chubeiliangjihua where 1=1   and qyzzjgdm=?",map.get("qyzzjgdm"));
+		Record jdcbl=Db.findFirst("select sum(cbljh_jd) as jdcbljh from njpt_chubeiliangjihua where 1=1   and qyzzjgdm=?",map.get("qyzzjgdm"));
+		Record xdcbl=Db.findFirst("select sum(cbljh_xd) as xdcbljh from njpt_chubeiliangjihua where 1=1   and qyzzjgdm=?",map.get("qyzzjgdm"));
+		String xmcbljh=null;
+		String jdcbljh=null;
+		String xdcbljh=null;
+		double xmsl=0;
+		double jdsl=0;
+		double xdsl=0;
+		if (xmcbl!=null) {
+			xmcbljh = xmcbl.get("xmcbljh");
+			if (xmcbljh!=null&&"".equals(xmcbljh)) {
+				xmsl=Double.valueOf(xmcbljh);
+			}
+		}
+		if (jdcbl!=null) {
+			
+			jdcbljh = jdcbl.get("jdcbljh");
+			if (jdcbljh!=null&&"".equals(jdcbljh)) {
+				jdsl=Double.valueOf(jdcbljh);
+			}
+		}
+		if (xdcbl!=null) {
+			xdcbljh = xdcbl.get("xdcbljh");
+			if (xdcbljh!=null&&"".equals(xdcbljh)) {
+				xdsl=Double.valueOf(xdcbljh);
+			}
+		}
+	
+		double xjcbl=xmsl+jdsl+xdsl;
+		Record record=new Record().set("cbljh_xm", xmsl).set("cbljh_jd", jdsl).set("cbljh_xd", xdsl).set("cbljh_xj", xjcbl);
+		return record;
+	}
+	
+	
+	//回显，根据编辑申请时传回的id回显
+	public static Page<Record> querylhsqById(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and id = ?", "id");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb where 1=1 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		for(Record r:page.getList()){
+			Object qyzzjgdm=r.get("qymc");//轮换申请_企业名称
+			Object kdbm=r.get("lhsq_kdmc");//轮换申请_库点名称
+			Object cfbm=r.get("lhsq_ch");//轮换申请_仓房名称
+			Object pzbm=r.get("lhsq_pz");//轮换申请_品种名称
+			
+			Object lhpz_kdmc=r.get("lhpz_kdmc");//轮换批准_库点名称
+			Object lhpz_ch=r.get("lhpz_ch");//轮换批准_仓房名称
+			Object lhpz_pz=r.get("lhpz_pz");//轮换批准_品种名称
+			
+			Object qrsq_kdmc=r.get("qrsq_kdmc");//确认申请_库点名称
+			Object qrsq_ch=r.get("qrsq_ch");//确认申请_仓房名称
+			Object qrsq_pz=r.get("qrsq_pz");//确认申请_品种名称
+			
+			Object qrtz_kdmc=r.get("qrtz_kdmc");//确认通知_库点名称
+			Object qrtz_ch=r.get("qrtz_ch");//确认通知_仓房名称
+			Object qrtz_pz=r.get("qrtz_pz");//确认通知_品种名称
+			
+			Record qymc= Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+			if(qymc!=null){
+				r.set("qymc", qymc.getStr("qymc"));
+				r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+				r.set("szqymc", qymc.getStr("xian"));
+			}
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("kudianmc", kdmc.getStr("kdmc"));
+			}
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("canghaomc", cfmc.getStr("cfmc"));
+			}
+			Record lspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",pzbm);
+			if(lspzmc!=null){
+				r.set("pinzhongmc", lspzmc.getStr("vName"));
+			}
+			//轮换批准
+			Record pzkdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",lhpz_kdmc,qyzzjgdm);
+			if(pzkdmc!=null){
+				r.set("pzkudianmc", pzkdmc.getStr("kdmc"));
+			}
+			Record pzcfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,lhpz_kdmc,lhpz_ch);
+			if(pzcfmc!=null){
+				r.set("pzcanghaomc", pzcfmc.getStr("cfmc"));
+			}
+			Record pzlspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",lhpz_pz);
+			if(pzlspzmc!=null){
+				r.set("pzpinzhongmc", pzlspzmc.getStr("vName"));
+			}
+			//确认申请
+			Record qrsqkdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",qrsq_kdmc,qyzzjgdm);
+			if(qrsqkdmc!=null){
+				r.set("qrsqkudianmc", qrsqkdmc.getStr("kdmc"));
+			}
+			Record qrsqcfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,qrsq_kdmc,qrsq_ch);
+			if(qrsqcfmc!=null){
+				r.set("qrsqcanghaomc", qrsqcfmc.getStr("cfmc"));
+			}
+			Record qrsqlspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",qrsq_pz);
+			if(qrsqlspzmc!=null){
+				r.set("qrsqpinzhongmc", qrsqlspzmc.getStr("vName"));
+			}
+			//确认通知
+			Record qrtzkdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",qrtz_kdmc,qyzzjgdm);
+			if(qrtzkdmc!=null){
+				r.set("qrtzkudianmc", qrtzkdmc.getStr("kdmc"));
+			}
+			Record qrtzcfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,qrtz_kdmc,qrtz_ch);
+			if(qrtzcfmc!=null){
+				r.set("qrtzcanghaomc", qrtzcfmc.getStr("cfmc"));
+			}
+			Record qrtzlspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",qrtz_pz);
+			if(qrtzlspzmc!=null){
+				r.set("qrtzpinzhongmc", qrtzlspzmc.getStr("vName"));
+			}
+		}
+		
+		
+		
+		return page;
+	}
+	//根据企业名称或库点名称 模糊查询
+	public static Page<Record> queryLunHuanShenQingQX(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		
+		String userid=UserKit.currentUserInfo().getUser().getString("id");
+		map.put("shenpiren", userid);
+		p.put("and l.lhsq_zt = ?", "lhsq_zt");
+		p.put(" and (q.qymc like ?", "qymc","%%%s%%");
+		p.put(" or k.kdmc like ?)", "qymc","%%%s%%");
+		p.put("and l.lhsq_pz = ?", "lhsq_pz");
+		p.put("and l.lhsqsj >= ?", "qssj");
+		p.put("and l.lhsqsj <= ?", "jssj");
+		p.put("and l.shenpiren=?", "shenpiren");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"SELECT l.*,k.kdmc as kudianmc,q.qymc as qiyemc,q.xian as diqu ",
+				"from njpt_lunhuanshenqingb l LEFT JOIN  tz_kudian k  on l.qymc=k.qyzzjgdm and l.lhsq_kdmc =k.kdbm left JOIN tz_qiye q on k.qyzzjgdm=q.qyzzjgdm where 1=1 and l.lhsq_zt not in(6)"+s.getSql()+" order by l.lhsq_zt asc ",s.getParam().toArray(new Object[0]));
+		
+		for(Record r:page.getList()){
+			Object qyzzjgdm=r.get("qymc");
+			Object kdbm=r.get("lhsq_kdmc");
+			Object cfbm=r.get("lhsq_ch");
+			Object lsxzbm=r.get("lsxz");
+			Object pzbm=r.get("lhsq_pz");
+			Record qymc= Db.findFirst("select qymc,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+			/*if(qymc!=null){
+				r.set("qymc", qymc.getStr("qymc"));
+				r.set("szqy", qymc.getStr("xian"));
+			}
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("lhsq_kdmc", kdmc.getStr("kdmc"));
+			}*/
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("lhsq_ch", cfmc.getStr("cfmc"));
+			}
+			//粮食性质
+			Record lsxzmc= Db.findFirst("select vGrainProperties from tz_GrainProperties where vCode=? ",lsxzbm);
+			if(lsxzmc!=null){
+				r.set("lsxz", lsxzmc.getStr("vGrainProperties"));
+			}
+			//粮食品种
+			Record lspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",pzbm);
+			if(lspzmc!=null){
+				r.set("lhsq_pz", lspzmc.getStr("vName"));
+			}
+		
+			
+		}
+		
+		return page;
+		//Db.find("SELECT j.biaodihao,j.pinzhong,j.chengchudanwei,j.nianfen,j.jiaoyishuliang,j.qibaojia,j.zuixinbaojia,c.daojishi,c.liupaishijian,j.zhuangtai FROM gnjy_jingbiao j, gnjy_canshu c WHERE j.biaodihao=c.biaodihao");
+	
+		
+	}
+	//根据企业名称或库点名称 模糊查询
+		public static Page<Record> queryLunHuanShenQingQY(HashMap<String, Object> map) throws Exception{
+			Param p = new Param();
+			//UserKit.currentUserInfo().getUser().getString("id");
+			String sql="SELECT c.xzqhdm as xzqhdm,c.dizhi,e.qyzzjgdm from fw_user_dep a LEFT JOIN fw_dep b ON a.depid=b.id LEFT JOIN njpt_diqu c ON b.areaid=c.areaid LEFT JOIN fw_user d ON a.userid=d.id LEFT JOIN tz_qiye e ON d.realname=e.qymc WHERE a.userid= ?";
+			Record record= Db.findFirst(sql,UserKit.currentUserInfo().getUser().getString("id"));
+			String qyzz=record.getStr("qyzzjgdm");
+			p.put("and l.lhsq_zt = ?", "lhsq_zt");
+			p.put(" and (q.qymc like ?", "qymc","%%%s%%");
+			p.put(" or k.kdmc like ?)", "qymc","%%%s%%");
+			p.put("and l.lhsq_pz = ?", "lhsq_pz");
+			p.put("and l.lhsqsj >= ?", "qssj");
+			p.put("and l.lhsqsj <= ?", "jssj");
+			p.put("and l.id=?","id");
+			SqlAndParam s = SqlUtil.buildSql(p, map);
+			Page<Record> page = Db.paginate(
+					Integer.valueOf(String.valueOf(map.get("page"))),
+					Integer.valueOf(String.valueOf(map.get("rows"))),
+					"SELECT l.*,k.kdmc as kudianmc,q.qymc as qiyemc,q.xian as diqu ",
+					"from njpt_lunhuanshenqingb l LEFT JOIN  tz_kudian k  on l.qymc=k.qyzzjgdm and l.lhsq_kdmc =k.kdbm left JOIN tz_qiye q on k.qyzzjgdm=q.qyzzjgdm where 1=1 "+ s.getSql()+"and l.szqy="+record.get("xzqhdm")+"and l.qymc='"+qyzz+"' order by l.lhsq_zt asc ",s.getParam().toArray(new Object[0]));
+			
+			for(Record r:page.getList()){
+				Object qyzzjgdm=r.get("qymc");
+				Object kdbm=r.get("lhsq_kdmc");
+				Object cfbm=r.get("lhsq_ch");
+				Object lsxzbm=r.get("lsxz");
+				Object pzbm=r.get("lhsq_pz");
+				Record qymc= Db.findFirst("select qymc,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+				/*if(qymc!=null){
+					r.set("qymc", qymc.getStr("qymc"));
+					r.set("szqy", qymc.getStr("xian"));
+				}
+				Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+				if(kdmc!=null){
+					r.set("lhsq_kdmc", kdmc.getStr("kdmc"));
+				}*/
+				Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+				if(cfmc!=null){
+					r.set("lhsq_ch", cfmc.getStr("cfmc"));
+				}
+				//粮食性质
+				Record lsxzmc= Db.findFirst("select vGrainProperties from tz_GrainProperties where vCode=? ",lsxzbm);
+				if(lsxzmc!=null){
+					r.set("lsxz", lsxzmc.getStr("vGrainProperties"));
+				}
+				//粮食品种
+				Record lspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",pzbm);
+				if(lspzmc!=null){
+					r.set("lhsq_pz", lspzmc.getStr("vName"));
+				}
+			
+				
+			}
+			
+			return page;
+			//Db.find("SELECT j.biaodihao,j.pinzhong,j.chengchudanwei,j.nianfen,j.jiaoyishuliang,j.qibaojia,j.zuixinbaojia,c.daojishi,c.liupaishijian,j.zhuangtai FROM gnjy_jingbiao j, gnjy_canshu c WHERE j.biaodihao=c.biaodihao");
+		
+			
+		}
+	//根据企业名称或库点名称 模糊查询
+	public static Page<Record> queryLunHuanShenQing(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		//UserKit.currentUserInfo().getUser().getString("id");
+		p.put("and l.lhsq_zt = ?", "lhsq_zt");
+		p.put(" and (q.qymc like ?", "qymc","%%%s%%");
+		p.put(" or k.kdmc like ?)", "qymc","%%%s%%");
+		p.put("and l.lhsq_pz = ?", "lhsq_pz");
+		p.put("and l.lhsqsj >= ?", "qssj");
+		p.put("and l.lhsqsj <= ?", "jssj");
+		
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"SELECT l.*,k.kdmc as kudianmc,q.qymc as qiyemc,q.xian as diqu ",
+				"from njpt_lunhuanshenqingb l LEFT JOIN  tz_kudian k  on l.qymc=k.qyzzjgdm and l.lhsq_kdmc =k.kdbm left JOIN tz_qiye q on k.qyzzjgdm=q.qyzzjgdm where lhsq_zt in (0,1,4,5,10,20) "+ s.getSql()+" order by l.lhsq_zt asc ",s.getParam().toArray(new Object[0]));
+		
+		for(Record r:page.getList()){
+			Object qyzzjgdm=r.get("qymc");
+			Object kdbm=r.get("lhsq_kdmc");
+			Object cfbm=r.get("lhsq_ch");
+			Object lsxzbm=r.get("lsxz");
+			Object pzbm=r.get("lhsq_pz");
+			Record qymc= Db.findFirst("select qymc,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+			/*if(qymc!=null){
+				r.set("qymc", qymc.getStr("qymc"));
+				r.set("szqy", qymc.getStr("xian"));
+			}
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("lhsq_kdmc", kdmc.getStr("kdmc"));
+			}*/
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("lhsq_ch", cfmc.getStr("cfmc"));
+			}
+			//粮食性质
+			Record lsxzmc= Db.findFirst("select vGrainProperties from tz_GrainProperties where vCode=? ",lsxzbm);
+			if(lsxzmc!=null){
+				r.set("lsxz", lsxzmc.getStr("vGrainProperties"));
+			}
+			//粮食品种
+			Record lspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",pzbm);
+			if(lspzmc!=null){
+				r.set("lhsq_pz", lspzmc.getStr("vName"));
+			}
+		
+			
+		}
+		
+		return page;
+		//Db.find("SELECT j.biaodihao,j.pinzhong,j.chengchudanwei,j.nianfen,j.jiaoyishuliang,j.qibaojia,j.zuixinbaojia,c.daojishi,c.liupaishijian,j.zhuangtai FROM gnjy_jingbiao j, gnjy_canshu c WHERE j.biaodihao=c.biaodihao");
+	
+		
+	}
+	public static Page<Record> queryqykd(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put(" and (a.qymc like ?", "qymc","%%%s%%");
+		p.put(" or b.kdmc like ?)", "qymc","%%%s%%");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select b.qyzzjgdm,b.kdbm ",
+				"from tz_qiye a,tz_kudian b where a.qyzzjgdm = b.qyzzjgdm "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		return page;
+		//Db.find("SELECT j.biaodihao,j.pinzhong,j.chengchudanwei,j.nianfen,j.jiaoyishuliang,j.qibaojia,j.zuixinbaojia,c.daojishi,c.liupaishijian,j.zhuangtai FROM gnjy_jingbiao j, gnjy_canshu c WHERE j.biaodihao=c.biaodihao");
+	
+		
+	}
+	public static Page<Record> selectlunhuanHZ(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and szqy=?", "szqy");
+		p.put("and qymc=?", "qymc");
+		p.put("and lhsq_kdmc=?", "lhsq_kdmc");
+		p.put("and lhsq_ch=?", "lhsq_ch");
+		p.put("and lhsq_pz=?", "lhsq_pz");
+		p.put("and lhsqsj >= ?", "qssj");
+		p.put("and lhsqsj <= ?", "jssj");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb where lhsq_zt=0 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		
+		for(Record r:page.getList()){
+//			Object xzqhdm=r.get("xzqhdm");
+			Object qyzzjgdm=r.get("qymc");
+			Object kdbm=r.get("lhsq_kdmc");
+			Object cfbm=r.get("lhsq_ch");
+			Object vCode=r.get("lhsq_pz");
+			
+			Record qymc= Db.findFirst("select qymc,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+			if(qymc!=null){
+				r.set("qymc", qymc.getStr("qymc"));
+				r.set("szqy", qymc.getStr("xian"));
+			}
+			Record  liangshiPZ= Db.findFirst("select vName from tz_GrainType where vCode=?",vCode);
+			if(liangshiPZ!=null){
+				r.set("lhsq_pz", liangshiPZ.getStr("vName"));
+			}
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("lhsq_kdmc", kdmc.getStr("kdmc"));
+			}
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("lhsq_ch", cfmc.getStr("cfmc"));
+			}
+		}
+		
+		return page;
+		//Db.find("SELECT j.biaodihao,j.pinzhong,j.chengchudanwei,j.nianfen,j.jiaoyishuliang,j.qibaojia,j.zuixinbaojia,c.daojishi,c.liupaishijian,j.zhuangtai FROM gnjy_jingbiao j, gnjy_canshu c WHERE j.biaodihao=c.biaodihao");
+	
+		
+	}
+	
+	public static Page<Record> selectlhsqlb(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and szqy=?", "szqy");
+		p.put("and qymc=?", "qymc");
+		p.put("and lhsq_kdmc=?", "lhsq_kdmc");
+		p.put("and lsxz=?", "lsxz");
+		p.put("and lhsq_pz=?", "lhsq_pz");
+		p.put("and sqlhsj=?", "sqlhsj");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb where 1=1"+ s.getSql(),s.getParam().toArray(new Object[0]));
+		for(Record r:page.getList()){
+			Object qyzzjgdm=r.get("qymc");
+			Object kdbm=r.get("lhsq_kdmc");
+			Object cfbm=r.get("lhsq_ch");
+			Record qymc= Db.findFirst("select qymc,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+			if(qymc!=null){
+				r.set("qymc", qymc.getStr("qymc"));
+				r.set("szqy", qymc.getStr("xian"));
+			}
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("lhsq_kdmc", kdmc.getStr("kdmc"));
+			}
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("lhsq_ch", cfmc.getStr("cfmc"));
+			}
+		}
+		
+		
+		
+		return page;
+	
+		
+	}
+	public static Page<Record> selectQRSQ(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and lhsq_sqwh=?", "lhsq_sqwh");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb where 1=1 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		for(Record r:page.getList()){
+			Object qyzzjgdm=r.get("qymc");
+			Object kdbm=r.get("lhsq_kdmc");
+			Object cfbm=r.get("lhsq_ch");
+		//	Object lsxzbm=r.get("lsxz");
+			Object pzbm=r.get("lhsq_pz");
+			Object lhsq_kdbg=r.get("lhsq_kdbg");//库点变更
+			Object lhsq_chbg=r.get("lhsq_chbg");//仓号变更
+			Object lhsq_pzbg=r.get("lhsq_pzbg");//品种变更
+			Record qymc= Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+			if(qymc!=null){
+				r.set("qymc", qymc.getStr("qymc"));
+				r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+				r.set("szqymc", qymc.getStr("xian"));
+			}
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("lhsq_kdmc", kdmc.getStr("kdmc"));
+			}
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("lhsq_ch", cfmc.getStr("cfmc"));
+			}
+			//粮食品种
+			Record lspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",pzbm);
+			if(lspzmc!=null){
+				r.set("lhsq_pz", lspzmc.getStr("vName"));
+			}
+			
+		}
+		
+	
+		
+		return page;
+		//Db.find("SELECT j.biaodihao,j.pinzhong,j.chengchudanwei,j.nianfen,j.jiaoyishuliang,j.qibaojia,j.zuixinbaojia,c.daojishi,c.liupaishijian,j.zhuangtai FROM gnjy_jingbiao j, gnjy_canshu c WHERE j.biaodihao=c.biaodihao");
+	
+		
+	}
+	public static Page<Record> selectQRTZ(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and lhsq_sqwh=?", "lhsq_sqwh");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb where 1=1 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		for(Record r:page.getList()){
+			Object qyzzjgdm=r.get("qymc");
+			Object kdbm=r.get("lhsq_kdmc");
+			Object cfbm=r.get("lhsq_ch");
+		//	Object lsxzbm=r.get("lsxz");
+			Object pzbm=r.get("lhsq_pz");
+			Object lhsq_kdbg=r.get("lhsq_kdbg");//库点变更
+			Object lhsq_chbg=r.get("lhsq_chbg");//仓号变更
+			Object lhsq_pzbg=r.get("lhsq_pzbg");//品种变更
+			Record qymc= Db.findFirst("select qymc,qyzzjgdm,xian,xzqhdm from tz_qiye where qyzzjgdm=?",qyzzjgdm);
+			if(qymc!=null){
+				r.set("qymc", qymc.getStr("qymc"));
+				r.set("qyzzjgdm", qymc.getStr("qyzzjgdm"));
+				r.set("szqymc", qymc.getStr("xian"));
+			}
+			Record kdmc= Db.findFirst("select kdmc from tz_kudian where kdbm=? and qyzzjgdm=?",kdbm,qyzzjgdm);
+			if(kdmc!=null){
+				r.set("lhsq_kdmc", kdmc.getStr("kdmc"));
+			}
+			Record cfmc= Db.findFirst("select cfmc from tz_cangfang where qyzzjgdm=? and kdbm=? and cfbm=? ",qyzzjgdm,kdbm,cfbm);
+			if(cfmc!=null){
+				r.set("lhsq_ch", cfmc.getStr("cfmc"));
+			}
+			//粮食品种
+			Record lspzmc= Db.findFirst("select vName from tz_GrainType  where vCode=? ",pzbm);
+			if(lspzmc!=null){
+				r.set("lhsq_pz", lspzmc.getStr("vName"));
+			}
+			
+		}
+		
+		return page;
+		//Db.find("SELECT j.biaodihao,j.pinzhong,j.chengchudanwei,j.nianfen,j.jiaoyishuliang,j.qibaojia,j.zuixinbaojia,c.daojishi,c.liupaishijian,j.zhuangtai FROM gnjy_jingbiao j, gnjy_canshu c WHERE j.biaodihao=c.biaodihao");
+	
+		
+	}
+	//保存轮换批准，状态改为1（轮换批准）
+	public static boolean saveLunHuanB1(HashMap<String, Object> map) throws Exception {
+		boolean bool=false;
+		Record record=new Record();
+			record.setColumns(map);
+			record.set("lhsq_zt",1);
+			bool= Db.update("njpt_lunhuanshenqingb", record);
+		
+		return bool;
+		
+	}
+	public static Page<Record> querybylhsqwh(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and lhsq_sqwh=?", "lhsq_sqwh");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb_duotiao where 1=1"+ s.getSql(),s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	public static Page<Record> selectlunhuan(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and szqy=?", "szqy");
+		p.put("and qymc=?", "qymc");
+		p.put("and lhsq_sqwh=?", "lhsq_sqwh");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb where 1=1"+ s.getSql(),s.getParam().toArray(new Object[0]));
+		return page;
+	}
+	public static Record selectlhpz(HashMap<String, Object> map) throws Exception{
+	
+		Record pizhun=Db.findFirst("select * from njpt_lunhuanshenqingb where lhsq_sqwh=?",map.get("lhsq_sqwh"));
+			return pizhun;
+	}
+	public static Page<Record> selectquanbuCH(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select c.cfbm,c.cfmc ",
+				"from tz_cangfang c where 1=1 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		return page;
+		//"select c.cfmc,c.cfbm",
+		//+" GROUP BY c.cfmc,c.cfbm"
+	}
+	public static Page<Record> selectpz(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select vCode,vName ",
+				"from tz_GrainType  where 1=1 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		return page;
+		//"select c.cfmc,c.cfbm",
+		//+" GROUP BY c.cfmc,c.cfbm"
+	}
+	//查询性质
+	public static Page<Record> selectXZ(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select vCode,vGrainProperties ",
+				"from tz_GrainProperties  where 1=1 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		return page;
+
+	}
+	public static Page<Record> selectCH(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and c.qyzzjgdm=?", "qyzzjgdm");
+		p.put("and c.kdbm=?", "kdbm");
+		p.put("and k.kdmc =?", "kdmc");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select c.cfbm,c.cfmc,c.kdbm,c.qyzzjgdm ",
+				"from tz_cangfang c,tz_kudian k WHERE  k.kdbm=c.kdbm and k.qyzzjgdm=c.qyzzjgdm "+ s.getSql()+"GROUP BY c.cfbm,c.cfmc,c.kdbm,c.qyzzjgdm",s.getParam().toArray(new Object[0]));
+		return page;
+		//"select c.cfmc,c.cfbm",
+		//+" GROUP BY c.cfmc,c.cfbm"
+	}
+	public static Page<Record> selectAJ(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and a.qyzzjgdm=?", "qyzzjgdm");
+		p.put("and a.kdbm=?", "kdbm");
+		p.put("and a.cfbm=?", "cfbm");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select a.ajbh,a.ajmc ",
+				"from tz_cangfang c,tz_aojian a WHERE  a.cfbm=c.cfbm and a.qyzzjgdm=c.qyzzjgdm and c.kdbm=a.kdbm "+ s.getSql()+" GROUP BY a.ajbh,a.ajmc",s.getParam().toArray(new Object[0]));
+		return page;
+	//"select c.cfmc,c.cfbm",
+	//+" GROUP BY c.cfmc,c.cfbm"
+	}
+	public static Page<Record> selectKDMC(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and q.qyzzjgdm=?", "qyzzjgdm");
+		p.put("and fw.name=?", "name");
+		p.put("and q.qymc=?", "qymc"); 
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select q.qyzzjgdm as qyzzjgdm,k.kdbm as kdbm,k.kdmc as kdmc,fw.orderno as orderno,k.ID as ID,q.xzqhdm as xzqhdm ",
+				"from njpt_diqu d inner join fw_area fw on d.areaid=fw.id inner JOIN  tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN tz_kudian k on q.qyzzjgdm=k.qyzzjgdm where 1=1 and k.kdlxbh<>'06' "+ s.getSql()+" GROUP BY fw.orderno,q.qyzzjgdm,k.kdbm,k.kdmc,k.ID,q.xzqhdm ORDER BY fw.orderno ",s.getParam().toArray(new Object[0]));
+		return page;
+	
+		
+	}
+	public static Page<Record> selectKDMCJK(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and q.qyzzjgdm=?", "qyzzjgdm");
+		p.put("and fw.name=?", "name");
+		p.put("and q.qymc=?", "qymc"); 
+		p.put("and d.xzqhdm=?", "xzqhdm");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select q.qyzzjgdm as qyzzjgdm,k.kdbm as kdbm,k.kdmc as kdmc,fw.orderno as orderno,k.ID as ID,q.xzqhdm as xzqhdm ",
+				"from njpt_diqu d inner join fw_area fw on d.areaid=fw.id inner JOIN  tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN tz_kudian k on q.qyzzjgdm=k.qyzzjgdm where 1=1 and k.kdlxbh<>'06' AND k.haveshipin='1' "+ s.getSql()+" GROUP BY fw.orderno,q.qyzzjgdm,k.kdbm,k.kdmc,k.ID,q.xzqhdm ORDER BY fw.orderno ",s.getParam().toArray(new Object[0]));
+		return page;
+	
+		
+	}
+	
+	public static Page<Record> selectQYMC(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and q.xzqhdm=?", "xzqhdm");
+		p.put("and q.qymc like ?", "qymc","%%%s%%");
+		p.put("and q.id = ?", "qiyeid");
+		p.put("and fw.name=?", "name");                                                
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select q.qyzzjgdm as qyzzjgdm,q.qymc as qymc,q.xzqhdm as xzqhdm,fw.orderno as orderno ",
+				"from njpt_diqu d inner join fw_area fw on d.areaid=fw.id inner JOIN  tz_qiye q on d.xzqhdm=q.xzqhdm inner JOIN tz_kudian k on q.qyzzjgdm=k.qyzzjgdm where 1=1 and k.kdlxbh<>'06' "+ s.getSql()+" GROUP BY fw.orderno,q.qyzzjgdm,q.qymc,q.xzqhdm ORDER BY fw.orderno",s.getParam().toArray(new Object[0]));
+		return page;
+		
+		
+	}
+	public static Page<Record> selectQY(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		p.put("and a.xzqhdm=?", "xzqhdm");
+		p.put("and a.name = ?", "name");
+		//p.put("and areaid like ?", "areaid","%%%s%%");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select b.*,a.name",
+				" from fw_area a LEFT JOIN njpt_diqu b on a.id=b.areaid where a.parentid!='root' " + s.getSql() + " ORDER BY a.orderno",
+				s.getParam().toArray(new Object[0]));
+		return page;
+		
+		
+	}
+	public static boolean querenshenqing(HashMap<String, Object> map) throws Exception {
+		String lhsq_lhwc=(String) map.get("lhsq_lhwc");
+		String id=Db.find("select * from njpt_lunhuanshenqingb where lhsq_sqwh=?",map.get("lhsq_sqwh")).get(0).getStr("id");
+		Record record=new Record().set("id", id).set("lhsq_lhwc", 1);
+		boolean bool= Db.update("njpt_lunhuanshenqingb", record);
+		return bool;
+		
+	}
+	
+	public static boolean deleteSQ(HashMap<String, Object> map) throws Exception {
+		String id=(String) map.get("id");
+		boolean bool= Db.deleteById("njpt_lunhuanshenqingb", id);
+		return bool;
+		
+	}
+	public static boolean querentongzhi(HashMap<String, Object> map) throws Exception {
+		String lhsq_lhwc=(String) map.get("lhsq_lhwc");
+		String id=Db.find("select * from njpt_lunhuanshenqingb where lhsq_sqwh=?",map.get("lhsq_sqwh")).get(0).getStr("id");
+		Record record=new Record().set("id", id).set("lhsq_lhwc", 2);
+		boolean bool= Db.update("njpt_lunhuanshenqingb", record);
+		return bool;
+		
+	}
+	/**
+	 * 根据临时的uuid查询多条轮换记录
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public static Page<Record> querylinshi(HashMap<String, Object> map) throws Exception{
+		Param p = new Param();
+		
+		p.put(" and lhsq_sqwh", "lhsq_sqwh");
+		SqlAndParam s = SqlUtil.buildSql(p, map);
+		Page<Record> page = Db.paginate(
+				Integer.valueOf(String.valueOf(map.get("page"))),
+				Integer.valueOf(String.valueOf(map.get("rows"))),
+				"select * ",
+				"from njpt_lunhuanshenqingb_duotiao where 1=1 "+ s.getSql(),s.getParam().toArray(new Object[0]));
+		return page;
+		
+	}
+	//如果id为空为新增，不为空为编辑，
+	public static boolean saveLHSQ(HashMap<String, Object> map) throws Exception {
+		String id=(String)map.get("id");
+		Record record = new Record().setColumns(map);
+				
+		boolean bool=false;
+		if(StrKit.isBlank(id)){//
+			record.set("id", SqlUtil.uuid());
+			  bool=Db.save("njpt_lunhuanshenqingb", record);
+		}else{
+			record.set("id", id);
+			bool=Db.update("njpt_lunhuanshenqingb", record);
+			
+		
+		}
+		
+		return bool;
+		
+	}	
+		//提交轮换批准，状态改为1（轮换申请提交）
+			public static boolean LunHuanSQTJ(HashMap<String, Object> map) throws Exception {
+				Record record=new Record();
+				record.set("id", map.get("id"));
+				record.set("lhsq_zt",1);
+				boolean bool= Db.update("njpt_lunhuanshenqingb","id", record);
+				return bool;
+				
+			}
+			//提交轮换批准，状态改为1（轮换申请提交）
+			public static Ret LunHuanSQSC(HashMap<String, Object> map) throws Exception {
+				Record sq= Db.findById("njpt_lunhuanshenqingb", map.get("id"));
+				Ret ret=new Ret();
+				boolean bool=false;
+				if("6".equals(sq.getStr("lhsq_zt"))||"1".equals(sq.getStr("lhsq_zt"))){
+					bool= Db.deleteById("njpt_lunhuanshenqingb","id", map.get("id"));
+					ret.put("bool",bool);
+				}else{
+					ret.put("msg","删除失败，已审批的轮换申请不可删除").put("bool",bool);
+				}
+				return ret;
+				
+			}
+		//保存轮换批准，状态改为1（轮换批准）
+		public static boolean saveLunHuanB(HashMap<String, Object> map) throws Exception {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date date=new Date();
+			String time=sdf.format(date);
+			Record record=new Record();
+			record.set("id", SqlUtil.uuid());
+			record.set("lhsqsj", time);
+			record.setColumns(map);
+			record.set("lhsq_zt",6);
+			record.remove("uuid");
+			boolean bool= Db.save("njpt_lunhuanshenqingb","id", record);
+			return bool;
+			
+		}
+		//保存轮换批准，状态改为4（确认申请）
+		public static boolean saveLunHuanPZ(HashMap<String, Object> map) throws Exception {
+			Record record=new Record();
+			record.set("id", map.get("id"));
+			record.setColumns(map);
+			record.set("lhsq_zt",4);
+			
+			Calendar curr = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String lhpz_lckssj=(String) map.get("lhpz_lckssj");
+			record.set("lhpz_lckssj", lhpz_lckssj);
+			curr.setTime(sdf.parse(lhpz_lckssj));
+			curr.set(Calendar.MONTH,curr.get(Calendar.MONTH)+Integer.valueOf((String)map.get("lhpz_lrqx")));
+			Date date=curr.getTime();
+			String lhpz_lcjssj=sdf.format(date);//轮换申请——轮出结束时间
+			
+			record.set("lhpz_lcjssj", lhpz_lcjssj);
+			String lhpzsj=sdf.format(curr.getTime());
+			record.set("lhpzsj", lhpzsj);//轮换批准时间
+			boolean bool= Db.update("njpt_lunhuanshenqingb", record);
+			return bool;
+			
+		}
+		//保存确认申请，状态改为5（确认通知）
+		public static boolean saveLunHuanQRSQ(HashMap<String, Object> map) throws Exception {
+			Record record=new Record();
+			record.set("id", map.get("id"));
+			record.setColumns(map);
+			record.set("lhsq_zt",5);
+			
+			Calendar curr = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String qrsqsj=sdf.format(curr.getTime());
+			record.set("qrsqsj", qrsqsj);//确认申请时间
+
+			
+			boolean bool= Db.update("njpt_lunhuanshenqingb", record);
+			return bool;
+			
+		}
+		//保存确认通知，状态改为0（完成）
+		public static boolean saveLunHuanQRTZ(HashMap<String, Object> map) throws Exception {
+			Record record=new Record();
+			record.set("id", map.get("id"));
+			record.setColumns(map);
+			record.set("lhsq_zt",0);
+			
+			
+			boolean bool= Db.update("njpt_lunhuanshenqingb", record);
+			return bool;
+			
+		}
+		//根据uuid查询当条记录的提示结果
+		public static Record querytishiByuuid(HashMap<String, Object> map) throws Exception{
+			String id=(String) map.get("id");
+			//查出年限，品种
+			Record record =Db.findFirst("select * from njpt_lunhuanshenqingb_duotiao where id=?", id);
+			//全市总量比例，总量比例，分品种比例，最早生产年限
+			return record;
+		}
+		public static Record findYearPZ(HashMap<String, Object> map) throws Exception{
+			String cfbm=(String) map.get("cfbm");
+			String kdbm=(String) map.get("kdbm");
+			String qyzzjgdm=(String) map.get("qyzzjgdm");
+			//查出年限，品种
+			Record record =Db.findFirst("select c.year ,g.vCode,g.vName,round((sum(c.dmStock)/1000),3) as zongkucun from kc_CurrentStock c INNER JOIN tz_GrainType g on c.vGrainSubTypeCode=g.vCode where c.qyzzjgdm=? and c.kdbm=? and c.vWareHouseCode=? GROUP BY c.year,g.vCode,g.vName", qyzzjgdm,kdbm,cfbm);
+			//全市总量比例，总量比例，分品种比例，最早生产年限
+			return record;
+			
+		}
+		/**
+		 * 添加一条轮换申请，且得到轮换批准提示结果，并保存
+		 * @param map
+		 * @return
+		 * @throws Exception
+		 */
+		public static Record pizhuntishi(HashMap<String, Object> map) throws Exception{
+			String qyzzjgdm=(String) map.get("qyzzjgdm");//企业组织机构代码
+			String kdbm=(String) map.get("kdbm");		 //库点编码
+			String cfbm=(String) map.get("cfbm");		 //仓房编码
+			String scnx=(String)map.get("scnx");		 //生产年限
+			double lhsl=Double.valueOf((String) map.get("lhsl"));		 //轮换数量
+			String pz=(String) map.get("pz");			 //品种
+			//得到当前年度
+			Calendar cal = Calendar.getInstance();
+			int yearInt = cal.get(Calendar.YEAR);
+			String year=String.valueOf(yearInt);
+			//全市总量比例，总量比例，分品种比例，最早生产年限
+			Record tishi=new Record();
+			
+			//全市总量比例
+			BigDecimal quanshizl =Db.findFirst("select sum(dmStock) as quanshizl from kc_CurrentStock where vGrainPropertyCode in(123,122) ").get("quanshizl");
+			double qszlbldouble=(double)(lhsl/(quanshizl.doubleValue()));
+			DecimalFormat format = new DecimalFormat("0.00%");
+			String qszlbl = format.format(qszlbldouble);
+			/*//总量比例
+			BigDecimal zl =Db.findFirst("select sum(dmStock) as zl from kc_CurrentStock where  qyzzjgdm=? and kdbm=?",qyzzjgdm,kdbm).get("zl");
+			double zldouble=(double)(lhsl/(zl.doubleValue()));
+			DecimalFormat format2 = new DecimalFormat("0.00%");
+			String zlbl=format2.format(zldouble);
+			//分品种比例
+			BigDecimal fpz=Db.findFirst("select sum(dmStock) as fpz from kc_CurrentStock where  qyzzjgdm=? and kdbm=? and vGrainSubTypeCode=?",qyzzjgdm,kdbm,pz).get("fpz");
+			double fpzdouble=(double)(lhsl/(fpz.doubleValue()));
+			DecimalFormat format3 = new DecimalFormat("0.00%");
+			String fpzbl=format3.format(fpzdouble);*/
+			//最早生产年限
+			String zzscnx=Db.findFirst("select min(year) as year  from kc_CurrentStock where  qyzzjgdm=? and kdbm=? and vGrainSubTypeCode=? and vGrainPropertyCode in(122,123)",qyzzjgdm,kdbm,pz).get("year");
+			
+			//提示结果——是否最早生产年限
+			if (scnx.equals(zzscnx)) {
+				tishi.set("sfzzscnx", "1");
+			}else {
+				tishi.set("sfzzscnx", "0");
+			}
+			//现有库存实物数-报批数/计划数不得少于1/2
+			//先取出当前库存
+			Record cfswkcrecord=Db.findFirst("select sum(dmStock) as cfswkc from kc_CurrentStock where  qyzzjgdm=? and kdbm=?  and vGrainPropertyCode in(122,123)",qyzzjgdm,kdbm);
+			BigDecimal cfswkcbigdecimal=cfswkcrecord.get("cfswkc");
+			double cfswkc=cfswkcbigdecimal.doubleValue();
+			//查询当前年度该库点储备计划数
+			Record cbljhsRecord=Db.findFirst("select sum(cbljh_xj) as cbljhs from njpt_chubeiliangjihua where  ccqy=? and cckd=? and niandu=? ",qyzzjgdm,kdbm,year);
+			double cbljhs=Double.valueOf(((BigDecimal)(cbljhsRecord.get("cbljhs"))).doubleValue());
+			//得到现有库存实物数-报批数/计划数
+			double budiyu=(cfswkc-lhsl)/cbljhs;
+		
+			NumberFormat nf = NumberFormat.getPercentInstance();
+			nf.setMinimumFractionDigits(2);//设置保留小数位
+			nf.setRoundingMode(RoundingMode.HALF_UP); //设置舍入模式
+			String zlbl = nf.format(budiyu);
+			String fpzbl="";
+			if((budiyu-0.5)>=0){
+				tishi.set("budiyu", "1");
+			}else {
+				tishi.set("budiyu", "0");
+			}
+			//分品种比例——小麦：不低于小麦库存的1/2
+			if ((pz).startsWith("111")) {
+				//小麦实际库存
+				Record xmswkcRecord=Db.findFirst("select sum(dmStock) as xmswkc from kc_CurrentStock where qyzzjgdm=? and kdbm=? and  vGrainSubTypeCode=? and vGrainPropertyCode in(122,123)",qyzzjgdm,kdbm,pz);
+				BigDecimal xmswkcBigDecimal=xmswkcRecord.get("xmswkc");
+				double xmswkc=xmswkcBigDecimal.doubleValue();
+				Record xmcbljhRecord=Db.findFirst("select sum(cbljh_xm) as cbljhxm from njpt_chubeiliangjihua where  ccqy=? and cckd=? and niandu=?",qyzzjgdm,kdbm,year);
+				double xmcbljh=Double.valueOf(((BigDecimal)(xmcbljhRecord.get("cbljhxm"))).doubleValue());
+				double xmbudiyuDouble=(xmswkc-lhsl)/xmcbljh;
+				fpzbl = nf.format(xmbudiyuDouble);
+				if ((xmbudiyuDouble-(1.0/2.0))>=0) {
+					tishi.set("fpzbudiyu", "1");
+				}else {
+					tishi.set("fpzbudiyu", "2");
+				}
+			}
+			//分品种比例——粳稻：不低于粳稻库存的1/4
+			if (pz.startsWith("1132")) {
+				Record jdswkcRecord=Db.findFirst("select sum(dmStock) as jdswkc from kc_CurrentStock where qyzzjgdm=? and kdbm=? and  vGrainSubTypeCode=? and vGrainPropertyCode in(122,123)",qyzzjgdm,kdbm,pz);
+				BigDecimal jdswkcBigDecimal=jdswkcRecord.get("jdswkc");
+				double jdswkc=jdswkcBigDecimal.doubleValue();
+				Record jdcbljhRecord=Db.findFirst("select sum(cbljh_jd) as cbljhjd from njpt_chubeiliangjihua where  ccqy=? and cckd=? and niandu=?",qyzzjgdm,kdbm,year);
+				double jdcbljh=Double.valueOf(((BigDecimal)(jdcbljhRecord.get("cbljhjd"))).doubleValue());
+				double jdbudiyuDouble=(jdswkc-lhsl)/jdcbljh;
+				fpzbl = nf.format(jdbudiyuDouble);
+				if ((jdbudiyuDouble)-(1.0/4.0)>=0) {
+					tishi.set("fpzbudiyu", "3");
+				}else {
+					tishi.set("fpzbudiyu", "4");
+				} 
+			}
+			//分品种比例——籼稻：不低于籼稻库存的1/3
+			if (pz.startsWith("1131")) {
+				Record xdswkcRecord=Db.findFirst("select sum(dmStock) as xdswkc from kc_CurrentStock where qyzzjgdm=? and kdbm=? and  vGrainSubTypeCode=? and vGrainPropertyCode in(122,123)",qyzzjgdm,kdbm,pz);
+				BigDecimal xdswkcBigDecimal=xdswkcRecord.get("xdswkc");
+				double xdswkc=xdswkcBigDecimal.doubleValue();
+				Record xdcbljhRecord=Db.findFirst("select sum(cbljh_xd) as cbljhxd from njpt_chubeiliangjihua where  ccqy=? and cckd=? and niandu=?",qyzzjgdm,kdbm,year);
+				double xdcbljh=Double.valueOf(((BigDecimal)(xdcbljhRecord.get("cbljhxd"))).doubleValue());
+				double xdbudiyuDouble=(xdswkc-lhsl)/xdcbljh;
+				fpzbl = nf.format(xdbudiyuDouble);
+				if ((xdbudiyuDouble)-(1.0/3.0)>=0) {
+					tishi.set("fpzbudiyu", "5");
+				}else {
+					tishi.set("fpzbudiyu", "6");
+				}
+			}
+			
+			tishi.set("qszlbl", qszlbl).set("zlbl", zlbl).set("fpzbl", fpzbl).set("zzscnx", zzscnx);
+			
+			return tishi;
+		}
+		
+		public static boolean deleteduotiao(HashMap<String, Object> map) throws Exception {
+			String id=(String) map.get("id");
+			boolean bool= Db.deleteById("njpt_lunhuanshenqingb_duotiao", id);
+			return bool;
+			
+		}
+		public static boolean saveLunHuanYanQiB(HashMap<String, Object> map) throws Exception {
+			Record record=new Record();
+			record.set("id", SqlUtil.uuid());
+			record.setColumns(map);
+			boolean bool= Db.save("njpt_yanqilunhuansq","id", record);
+			return bool;
+			
+		}
+		public static boolean lunhuanpizhunTG(HashMap<String, Object> map) throws Exception {
+			String id=Db.find("select * from njpt_lunhuanshenqingb where lhsq_sqwh=?",map.get("lhsq_sqwh")).get(0).getStr("id");
+			Record record=new Record().set("id", id).set("lhsq_pzwh", SqlUtil.uuid()).set("lhsq_lhpz", 1).set("lhsq_lhwc", 0);
+			boolean bool= Db.update("njpt_lunhuanshenqingb", record);
+			return bool;
+			
+		}
+		public static boolean lunhuanpizhun(HashMap<String, Object> map) throws Exception {
+			Record record=new Record().set("id", map.get("id")).set("lhsq_zt", 1);
+			boolean bool= Db.update("njpt_lunhuanshenqingb", record);
+			return bool;
+			
+		}
+	
+
+}
